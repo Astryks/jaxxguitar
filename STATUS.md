@@ -2,7 +2,7 @@
 
 _Last updated 2026-10-06._ This file is the checklist of everything requested for Jaxx Guitar, so nothing gets missed. ✅ done · 🟡 in progress / waiting on something · ⬜ not started.
 
-Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (GitHub Pages; DNS still to be set up, see below) · iOS bundle: `com.jaxxguitar.app`
+Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (GitHub Pages) · iOS bundle: `com.jaxxguitar.app`
 
 ---
 
