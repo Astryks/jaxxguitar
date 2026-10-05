@@ -54,6 +54,21 @@ import { WORLD_SONGS, WORLD_LANGUAGES, WORLD_ALSO } from "./world-songs.js";
 
 const SONGS = [
   {
+    title: "Stairway to Heaven",
+    artist: "Led Zeppelin",
+    genre: "Rock",
+    popularityRank: 120,
+    year: 1971,
+    key: "A minor",
+    chords: ["Am", "Am/G#", "Am/G", "D/F#", "Fmaj7", "G", "Am"],
+    degreeSequence: "i with a descending bass line (A–G#–G–F#–F), then bVII – i",
+    confidence: "confirmed",
+    oneFiveSixFourMatch: false,
+    difficulty: "Intermediate",
+    notes:
+      "The famous intro is a fingerpicked Am chord over a bass line that walks down by half steps, A–G#–G–F#–F, landing on Fmaj7 and G back to Am — the chord names here are that intro's widely agreed harmony. The later 12-string section moves around C, D, Fmaj7 and Am, and the guitar solo is played over a repeating Am–G–F. Taught in the Intermediate 'Song study: Stairway to Heaven' lesson. No transcription of the guitar part is included.",
+  },
+  {
     title: "Love Story",
     artist: "Taylor Swift",
     genre: "Pop/Country",

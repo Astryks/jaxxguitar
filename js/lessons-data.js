@@ -385,6 +385,41 @@ const INTERMEDIATE = [
         }, bpm: 70, modes: ["listen", "wait"], mic: true, label: "p-i-m-a-m-i over C – G – Am – Em", showTab: true } },
     ],
   },
+  {
+    id: "lesson-stairway", title: "Song study: Stairway to Heaven", subtitle: "Led Zeppelin, 1971 — fingerpicking to a solo",
+    pages: [
+      { html: `<h3>One of the most famous guitar songs ever</h3>
+        <p>"Stairway to Heaven" was written by <strong>Jimmy Page</strong> and <strong>Robert Plant</strong> and released on Led Zeppelin's fourth album in <strong>1971</strong>. It was never released as a single in the UK or US — yet it became one of the most-played rock songs on radio.</p>
+        <p>It grows like a staircase: it starts soft, fingerpicked with recorders, adds a 12-string guitar, then drums, and ends as full-on hard rock with a famous solo. Page recorded that solo on a <strong>Fender Telecaster</strong> he'd been given by his friend Jeff Beck. Live, he played a <strong>double-neck guitar</strong> — a 12-string neck on top and a 6-string neck below — so he could switch parts without changing guitars.</p>
+        <p class="jg-note">The recording is copyrighted, so we don't copy Page's guitar part note for note. You'll learn what it's built from — the chords, the bass line, the picking style and the scale — and play our own exercises with them.</p>` },
+      { html: `<h3>The secret: a bass line that walks down</h3>
+        <p>The intro keeps the <strong>A minor</strong> sound on top while the lowest note steps down one fret at a time: <strong>A → G# → G → F# → F</strong>. Each step makes a new chord name, even though your top fingers barely move:</p>
+        <p><strong>Am – Am/G# – Am/G – D/F# – Fmaj7</strong>, then <strong>G</strong> and back to <strong>Am</strong>.</p>
+        <p class="jg-note">A slash chord like "Am/G#" means "Am, with G# as the lowest note". Watch the bass note on the low strings move down in the diagrams.</p>`,
+        diagrams: ["Am", "Am/G#", "Am/G", "D/F#", "Fmaj7", "G"] },
+      { html: `<h3>Fingerpick it (our own exercise)</h3>
+        <p>Thumb plays the bass note, then index, middle and ring fingers play the G, B and high e strings — the p-i-m-a pattern from the Fingerpicking lesson. Go slowly with <strong>Wait for me</strong> and the microphone: hear the bass walk down underneath.</p>`,
+        diagrams: ["Am", "Am/G#", "Am/G", "D/F#", "Fmaj7", "G"],
+        practice: { items: () => {
+          const out = [];
+          ["Am", "Am/G#", "Am/G", "D/F#", "Fmaj7", "G", "Am", "Am"].forEach((c, i) => {
+            const sh = chordShape(c);
+            const bass = sh.frets.findIndex((f) => f >= 0);
+            [[bass, 0], [3, 1], [4, 2], [5, 3]].forEach(([str, k]) => out.push({ string: str, fret: sh.frets[str], start: i * 2 + k * 0.5, dur: 0.5 }));
+          });
+          return out;
+        }, bpm: 66, modes: ["listen", "wait", "timed"], mic: true, label: "Walking bass, p-i-m-a", showTab: true } },
+      { html: `<h3>The 12-string part: strum C – D – Fmaj7 – Am</h3>
+        <p>In the middle of the song the chords open up around <strong>C, D, Fmaj7 and Am</strong>. Strum them gently with the D · D U · U D U pattern — if you have a 12-string guitar, this is where it shines.</p>`,
+        diagrams: ["C", "D", "Fmaj7", "Am"],
+        practice: { items: strumItems(["C", "D", "Fmaj7", "Am", "C", "D", "Fmaj7", "Am"], DDUUDU), bpm: 72, modes: ["listen", "wait"], label: "C – D – Fmaj7 – Am", drums: true } },
+      { html: `<h3>The solo: A minor pentatonic over Am – G – F</h3>
+        <p>For the big ending, the band repeats <strong>Am – G – F</strong> and Page solos over it, mostly using the <strong>A minor pentatonic</strong> — the very first scale box you learned, at the <strong>5th fret</strong>. That's why it's such a great first "real" solo to explore.</p>
+        <p>Practice the box below, then make up your own lines over the loop in the Practice tab (try Am, G, F with Downs ×4). A good habit: end each phrase on a note of the current chord — <strong>A</strong> over Am, <strong>G</strong> over G, <strong>F</strong> or <strong>C</strong> over F.</p>`,
+        notes: AMIN_PENT.map((n) => ({ string: n.string, fret: n.fret, tone: n.root ? "root" : undefined, label: String(n.fret) })),
+        practice: { items: scaleItems(AMIN_PENT), bpm: 84, modes: ["listen", "wait", "timed"], mic: true, label: "A minor pentatonic, 5th position", showTab: true } },
+    ],
+  },
 ];
 
 const ADVANCED = [

@@ -21,6 +21,7 @@ _Last updated 2026-10-06_
 - [x] Practice tab: chord-loop builder, scales (6 scale types × 12 keys × any position), metronome with tap tempo, and upload → chords with Original / Guitar only / Guitar + song.
 - [x] Tuner tab: per string, ±8 cents, a reference tone, and it moves on to the next string automatically.
 - [x] Kid-friendly "Did you know?" guitar facts at random between lessons (how guitars are built, why they ring, legendary players).
+- [x] Song study: Stairway to Heaven (Intermediate) — the walking bass line, an original fingerpicking exercise, the 12-string section and the A-minor-pentatonic solo approach; also in the Songs library.
 - [x] Gamification: XP and levels, daily quests, stars, streak plus freezes, confetti, and the 2-minute Leitner daily review.
 - [x] PWA: manifest, service worker, icons, privacy policy, third-party notices, and a GitHub Pages workflow.
 - [x] Tests: wait mode with simulated mic input (single notes and chords); screenshots of every tab, desktop and landscape phone.
