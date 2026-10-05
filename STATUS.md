@@ -52,12 +52,13 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 | | Item | Notes |
 |---|---|---|
 | ✅ | GitHub repo + Pages workflow; Pages enabled | |
-| 🟡 | **Custom domain jaxxguitar.com** | Pages is set to redirect there, but the domain has **no DNS records yet**. At the registrar add A records `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` for `@`, and a CNAME `www → astryks.github.io`. Until then the site is unreachable. |
+| ✅ | Custom domain jaxxguitar.com | DNS set 2026-10-06 (4 A records + www CNAME); site is live. ⬜ Once GitHub's certificate is issued, tick **Enforce HTTPS** in Settings → Pages. |
 | ✅ | iOS project, Info.plist (mic text, encryption = NO), icon, App Store screenshots, listing draft | `ios/` |
 | ✅ | App Store Connect record "Jaxx Guitar" (`com.jaxxguitar.app`, SKU `jaxxguitar-ios-1`, app ID 6819445036) | Created 2026-10-06 |
 | ✅ | Build 1.0 (1) uploaded to App Store Connect | It doesn't include the photos/videos added afterwards; upload build 2 before submitting |
-| ⬜ | Upload build 1.0 (2) with the photos and videos | |
-| ⬜ | Store listing: paste the text from `ios/APP_STORE_LISTING.md` and upload `ios/screenshots/` | |
+| ✅ | Build 1.0 (2) with photos and videos uploaded | 2026-10-06 |
+| ✅ | Store text entered in App Store Connect: promo text, description, keywords, support URL, subtitle, categories (Education / Music), privacy URL, price Free, all 175 countries | |
+| ⬜ | Owner: upload the screenshots from `ios/screenshots/` (6.9", 6.5", iPad 13"), select build 2 on the version page, fill in Content Rights, Age Rating, App Privacy (Publish) and App Review contact | The browser pane can't upload files |
 | ⬜ | Owner: App Privacy ("Data Not Collected"), age rating, App Review contact, TestFlight test; submit only when the owner says so | |
 | ✅ | Privacy policy mentions the optional YouTube videos | `privacy.html` |
 
