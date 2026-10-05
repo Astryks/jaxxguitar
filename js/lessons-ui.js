@@ -121,6 +121,7 @@ function roadmapHtml(currentId) {
 }
 
 function showHome() {
+  ensureLessonsTab();
   runCleanup();
   const nxt = nextLesson();
   const streak = getStreak();
@@ -162,7 +163,15 @@ function wireCommon() {
 }
 
 // --- Lesson player -------------------------------------------------------------
+// Called from outside the Lessons tab too (e.g. a song's lesson): make
+// sure the Lessons tab is the one showing first.
+function ensureLessonsTab() {
+  const panel = document.getElementById("panel-lessons");
+  if (!panelEl || panel.classList.contains("jg-hidden")) document.querySelector('.jg-tab[data-tab="lessons"]')?.click();
+}
+
 function openLesson(id, pageIndex = 0) {
+  ensureLessonsTab();
   const lesson = allLessons().find((l) => l.id === id);
   if (!lesson) return showHome();
   runCleanup();
