@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Jaxx Guitar — Learn Guitar, Gamified</title>
+<meta name="description" content="A free, gamified guitar course: 4 chords to play 100 songs, a mic tuner, falling-note practice, scales and solos. Runs entirely on your device." />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="assets/icons/icon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png" />
+<meta name="theme-color" content="#fbf4ea" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Jaxx Guitar" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="jg-header">
+    <img src="assets/icons/icon-192.png" alt="" class="jg-logo" />
+    <div>
+      <h1>Jaxx Guitar</h1>
+      <p class="jg-tagline">Learn any song on guitar, free.</p>
+    </div>
+    <div class="jg-level-chip" id="jg-level-chip"></div>
+  </header>
+
+  <nav class="jg-tabs">
+    <button class="jg-tab jg-tab-active" data-tab="lessons">Lessons</button>
+    <button class="jg-tab" data-tab="songs">Songs</button>
+    <button class="jg-tab" data-tab="practice">Practice</button>
+    <button class="jg-tab" data-tab="tuner">Tuner</button>
+    <button class="jg-tab" data-tab="about">About</button>
+  </nav>
+
+  <main>
+    <section id="panel-lessons" class="jg-panel"></section>
+    <section id="panel-songs" class="jg-panel jg-hidden"></section>
+    <section id="panel-practice" class="jg-panel jg-hidden"></section>
+    <section id="panel-tuner" class="jg-panel jg-hidden"></section>
+    <section id="panel-about" class="jg-panel jg-hidden"></section>
+  </main>
+
+  <footer class="jg-footer">
+    <p>Jaxx Guitar runs 100% on your device. No account, no ads, no cost. ·
+       <a href="privacy.html">Privacy Policy</a> ·
+       <a href="https://github.com/Astryks/jaxxguitar/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">Notices</a> ·
+       A sibling of <a href="https://haydenkeys.com" target="_blank" rel="noopener">Hayden Keys</a> (piano).</p>
+  </footer>
+
+  <div class="jg-rotate-prompt">
+    <div class="jg-rotate-icon">📱</div>
+    <h2>Rotate your phone</h2>
+    <p>The fretboard needs the width — turn your phone sideways.</p>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator && !window.Capacitor) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+/* Jaxx Guitar — warm wood + amber theme (sibling of Hayden Keys' pastel piano theme). */
+:root {
+  --jg-bg: #fbf4ea;
+  --jg-bg-2: #f3e7d6;
+  --jg-panel: #ffffff;
+  --jg-border: #e8d9c4;
+  --jg-text: #2e2419;
+  --jg-text-dim: #75644f;
+  --jg-accent: #c46a1f;      /* amber / sunburst */
+  --jg-accent-soft: #f6d9b5;
+  --jg-accent-2: #2f8f83;    /* teal */
+  --jg-accent-2-soft: #c5ebe5;
+  --jg-wood: #6b3f1f;
+  --jg-wood-2: #8a5a33;
+  --jg-stage: #221a14;
+  --jg-good: #3fa35f;
+  --jg-bad: #c94a4a;
+  --jg-purple: #7d5bc9;
+  --jg-purple-soft: #ece4fb;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; color: var(--jg-text); min-height: 100vh;
+  background: linear-gradient(160deg, var(--jg-bg), var(--jg-bg-2)); background-attachment: fixed;
+  padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+main { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+.jg-hidden { display: none !important; }
+.jg-header { display: flex; align-items: center; gap: 12px; justify-content: center; padding: 16px 16px 6px; flex-wrap: wrap; }
+.jg-logo { width: 54px; height: 54px; border-radius: 14px; }
+.jg-header h1 { margin: 0; font-size: 1.9rem; color: var(--jg-wood); letter-spacing: 0.5px; }
+.jg-tagline { margin: 0; color: var(--jg-text-dim); font-size: 0.9rem; }
+.jg-level-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; background: var(--jg-panel); border: 1px solid var(--jg-border); border-radius: 999px; padding: 3px 10px; }
+.jg-level-chip:empty { display: none; }
+.jg-level-bar { display: inline-block; width: 70px; height: 6px; border-radius: 3px; background: var(--jg-accent-soft); overflow: hidden; }
+.jg-level-bar span { display: block; height: 100%; background: var(--jg-accent); }
+.jg-tabs { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; padding: 8px 12px; }
+.jg-tab { border: 1px solid var(--jg-border); background: var(--jg-panel); color: var(--jg-text); border-radius: 999px; padding: 8px 16px; font-size: 0.95rem; cursor: pointer; min-height: 40px; }
+.jg-tab-active { background: var(--jg-accent); color: #fff; border-color: var(--jg-accent); }
+.jg-footer { text-align: center; font-size: 0.8rem; color: var(--jg-text-dim); padding: 24px 16px; }
+.jg-footer a { color: var(--jg-accent); }
+
+.jg-btn, .hk-btn { border: 1px solid var(--jg-border); background: var(--jg-panel); color: var(--jg-text); border-radius: 10px; padding: 9px 14px; font-size: 0.95rem; cursor: pointer; min-height: 40px; }
+.jg-btn:hover, .hk-btn:hover { border-color: var(--jg-accent); }
+.jg-btn-primary { background: var(--jg-accent); color: #fff; border-color: var(--jg-accent); }
+.jg-btn-small { padding: 5px 10px; font-size: 0.82rem; min-height: 32px; }
+.jg-pill { border: 1px solid var(--jg-border); background: var(--jg-panel); color: var(--jg-text-dim); border-radius: 999px; padding: 5px 12px; cursor: pointer; font-size: 0.82rem; min-height: 32px; }
+.jg-pill-active { color: var(--jg-text); border-color: var(--jg-accent); background: var(--jg-accent-soft); }
+.jg-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 8px 0; }
+.jg-label { color: var(--jg-text-dim); font-size: 0.82rem; }
+.jg-note { color: var(--jg-text-dim); font-size: 0.85rem; font-style: italic; }
+.jg-card { background: var(--jg-panel); border: 1px solid var(--jg-border); border-radius: 12px; padding: 12px 14px; margin: 8px 0; }
+
+/* Mascot speech */
+.jg-say { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+.jg-avatar { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; background: var(--jg-accent-soft); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+.jg-bubble { background: var(--jg-panel); border: 1px solid var(--jg-border); border-radius: 14px; padding: 10px 14px; line-height: 1.45; }
+.jg-bubble h3 { margin: 2px 0 6px; }
+.jg-bubble p { margin: 6px 0; }
+
+/* Fretboard */
+.jg-fretboard { width: 100%; }
+.jg-fretboard-svg { display: block; width: 100%; height: auto; touch-action: manipulation; user-select: none; }
+.jg-wood { fill: var(--jg-wood); }
+.jg-fret { stroke: #d9d2c4; stroke-width: 2.2; }
+.jg-nut { fill: #f1ead9; }
+.jg-inlay { fill: #e9dcc2; opacity: 0.65; }
+.jg-string { stroke: #e9e2d0; }
+.jg-string-name { font-size: 13px; font-weight: bold; fill: var(--jg-text-dim); }
+.jg-fret-num { font-size: 11px; fill: var(--jg-text-dim); text-anchor: middle; }
+.jg-hit { fill: transparent; cursor: pointer; }
+.jg-dot { stroke: #fff; stroke-width: 2; }
+.jg-dot-label { font-size: 12px; font-weight: bold; fill: #fff; text-anchor: middle; pointer-events: none; }
+.jg-dot-label-dark { fill: var(--jg-text); }
+.jg-open { fill: transparent; stroke: var(--jg-accent-2); stroke-width: 3; }
+.jg-mute { font-size: 20px; font-weight: bold; fill: var(--jg-bad); text-anchor: middle; }
+.jg-barre { fill: rgba(255,255,255,0.35); stroke: #fff; stroke-width: 2; }
+.jg-root { fill: var(--jg-accent) !important; }
+.jg-ghost { fill: rgba(255,255,255,0.25) !important; stroke: rgba(255,255,255,0.5); }
+.jg-good { fill: var(--jg-good) !important; }
+.jg-bad { fill: var(--jg-bad) !important; }
+.jg-tap-flash { fill: rgba(255,255,255,0.55); pointer-events: none; }
+
+.jg-highway { position: relative; width: 100%; height: 110px; background: var(--jg-stage); border-radius: 10px 10px 0 0; overflow: hidden; }
+.jg-highway canvas { width: 100%; height: 100%; display: block; }
+.jg-instrument { margin-top: 8px; }
+
+/* Chord diagrams */
+.jg-diagram { width: 108px; height: auto; display: inline-block; }
+.jg-diagram-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.jg-dg-name { font-size: 15px; font-weight: bold; text-anchor: middle; fill: var(--jg-text); }
+.jg-dg-line { stroke: #6d5c47; stroke-width: 1.2; }
+.jg-dg-nut { stroke-width: 4; }
+.jg-dg-dot { fill: var(--jg-wood); }
+.jg-dg-finger { font-size: 10px; fill: #fff; text-anchor: middle; font-weight: bold; }
+.jg-dg-open { fill: none; stroke: #6d5c47; stroke-width: 1.4; }
+.jg-dg-top { font-size: 13px; text-anchor: middle; fill: var(--jg-bad); }
+.jg-dg-fretno { font-size: 11px; text-anchor: end; fill: var(--jg-text-dim); }
+.jg-dg-barre { fill: var(--jg-wood); }
+
+/* Tab */
+.jg-tab-wrap { overflow-x: auto; background: #fff; border: 1px solid var(--jg-border); border-radius: 10px; margin: 8px 0; }
+.jg-tabsvg { display: block; max-width: none; }
+.jg-tab-line { stroke: #9a8b77; stroke-width: 1; }
+.jg-tab-bar { stroke: #6d5c47; stroke-width: 1.4; }
+.jg-tab-sname { font-size: 11px; fill: var(--jg-text-dim); }
+.jg-tab-clef { font-size: 11px; font-weight: bold; fill: var(--jg-text); }
+.jg-tab-bg { fill: #fff; }
+.jg-tab-num { font-size: 13px; font-weight: bold; text-anchor: middle; fill: var(--jg-text); }
+.jg-tab-now { fill: var(--jg-accent); }
+.jg-tab-done { fill: #aaa; }
+.jg-tab-label { font-size: 10px; text-anchor: middle; fill: var(--jg-accent-2); }
+
+/* Lessons layout */
+.jg-lessons-layout { display: flex; gap: 18px; align-items: flex-start; }
+.jg-lesson-main { flex: 1 1 auto; min-width: 0; }
+.jg-lesson-sidebar { flex: 0 0 250px; position: sticky; top: 10px; }
+.jg-roadmap { background: var(--jg-panel); border: 1px solid var(--jg-border); border-radius: 12px; padding: 12px; }
+.jg-roadmap h3 { margin: 0 0 4px; }
+.jg-roadmap-list { display: flex; flex-direction: column; gap: 5px; max-height: 70vh; overflow-y: auto; margin-top: 6px; }
+.jg-node { display: flex; gap: 8px; align-items: center; text-align: left; border: 1px solid var(--jg-border); background: var(--jg-panel); border-radius: 10px; padding: 7px 9px; cursor: pointer; font-size: 0.85rem; color: var(--jg-text); position: relative; }
+.jg-node[disabled] { opacity: 0.45; cursor: not-allowed; }
+.jg-node-done { background: var(--jg-accent-soft); border-color: var(--jg-accent); }
+.jg-node-current { border-color: var(--jg-accent-2); box-shadow: 0 0 0 2px var(--jg-accent-2-soft); }
+.jg-node-num { flex: 0 0 26px; height: 26px; border-radius: 50%; background: var(--jg-bg-2); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; }
+.jg-node-done .jg-node-num { background: var(--jg-accent); color: #fff; }
+.jg-tag { font-size: 0.62rem; border: 1px solid var(--jg-border); border-radius: 6px; padding: 0 5px; margin-left: 4px; color: var(--jg-text-dim); }
+.jg-section-head { margin: 14px 0 4px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--jg-text-dim); }
+.jg-lesson-player { padding: 6px 0; }
+.jg-exit { background: none; border: none; color: var(--jg-text-dim); cursor: pointer; font-size: 0.9rem; padding: 4px 0; }
+.jg-step { color: var(--jg-text-dim); font-size: 0.82rem; margin: 4px 0; }
+.jg-controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; margin: 10px 0; }
+.jg-big { font-size: 2.6rem; font-weight: 800; color: var(--jg-accent); text-align: center; margin: 4px 0; }
+.jg-quests { background: var(--jg-panel); border: 1px solid var(--jg-border); border-radius: 12px; padding: 10px 14px; margin: 8px 0; }
+.jg-quest { font-size: 0.9rem; margin: 3px 0; }
+.jg-quest-done { color: var(--jg-good); text-decoration: line-through; }
+.jg-stars { color: #e1a62b; font-size: 1.2rem; letter-spacing: 2px; }
+.jg-score { font-weight: 600; margin: 6px 0; }
+.jg-review-banner { display: block; margin: 0 0 8px; padding: 8px 12px; border-radius: 10px; cursor: pointer; font-weight: 600; background: var(--jg-purple-soft); border: 1px solid var(--jg-purple); color: var(--jg-text); }
+
+/* Songs */
+.jg-song-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.jg-song { background: var(--jg-panel); border: 1px solid var(--jg-border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 4px; }
+.jg-song h3 { margin: 0; font-size: 1rem; }
+.jg-song-meta { font-size: 0.82rem; color: var(--jg-text-dim); }
+.jg-badge { display: inline-block; font-size: 0.68rem; border-radius: 6px; padding: 1px 6px; border: 1px solid var(--jg-border); margin-right: 4px; }
+.jg-badge-ok { background: #e6f4ea; border-color: #b8dfc4; }
+.jg-badge-warn { background: #fdf0dc; border-color: #f0d3a3; }
+.jg-capo { font-size: 0.82rem; color: var(--jg-accent-2); font-weight: 600; }
+
+/* Tuner */
+.jg-tuner-strings { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin: 10px 0; }
+.jg-tuner-string { min-width: 54px; }
+.jg-tuner-big { text-align: center; font-size: 3rem; font-weight: 800; margin: 6px 0; }
+.jg-tuner-meter { position: relative; width: min(420px, 100%); height: 70px; margin: 0 auto; border-radius: 70px 70px 0 0; background: var(--jg-panel); border: 2px solid var(--jg-border); border-bottom: none; overflow: hidden; }
+.jg-tuner-needle { position: absolute; left: 50%; bottom: 0; width: 3px; height: 64px; background: var(--jg-text-dim); transform-origin: bottom center; transition: transform 0.12s ease-out; }
+.jg-tuner-center { position: absolute; left: 50%; top: 0; width: 2px; height: 12px; background: var(--jg-text); transform: translateX(-50%); }
+.jg-tuner-ok .jg-tuner-meter { background: #e3f6e9; border-color: var(--jg-good); }
+.jg-tuner-ok .jg-tuner-needle { background: var(--jg-good); }
+.jg-tuner-msg { text-align: center; min-height: 1.4em; font-weight: 600; }
+
+/* Tuner widget (pitch.js), shared with Hayden Keys */
+.hk-tuner { margin: 10px 0; }
+.hk-tuner-display { margin-top: 10px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 14px; border-radius: 12px; border: 2px solid transparent; }
+.hk-tuner-dial { position: relative; width: 140px; height: 70px; overflow: hidden; border: 2px solid var(--jg-border); border-bottom: none; border-radius: 70px 70px 0 0; background: var(--jg-bg); }
+.hk-tuner-center-mark { position: absolute; left: 50%; top: 0; width: 2px; height: 10px; background: var(--jg-text-dim); transform: translateX(-50%); }
+.hk-tuner-needle { position: absolute; left: 50%; bottom: 0; width: 2px; height: 64px; background: var(--jg-text-dim); transform-origin: bottom center; transform: translateX(-50%) rotate(0deg); transition: transform 0.15s ease-out; }
+.hk-tuner-needle.hk-tuner-in-tune { background: var(--jg-good); }
+.hk-tuner-needle.hk-tuner-off { background: var(--jg-accent); }
+.hk-tuner-readout, .hk-tuner-heard { font-size: 0.85rem; margin: 0; text-align: center; }
+.hk-tuner-scale { display: flex; justify-content: space-between; width: 150px; font-size: 0.62rem; color: var(--jg-text-dim); }
+.hk-tuner-matched .hk-tuner-display { background: #e3f6e9; border-color: var(--jg-good); }
+.hk-tuner-matched .hk-tuner-readout { color: #217a3d; font-weight: bold; }
+
+/* Gamification */
+#jg-toasts { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 6px; align-items: center; pointer-events: none; }
+.jg-toast { background: #2e2419; color: #fff; padding: 7px 14px; border-radius: 999px; font-size: 0.85rem; transition: opacity 0.4s, transform 0.4s; }
+.jg-toast-big { background: var(--jg-accent); font-weight: bold; }
+.jg-toast-out { opacity: 0; transform: translateY(-8px); }
+.jg-confetti { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
+.jg-confetti i { position: absolute; top: -12px; width: 8px; height: 12px; border-radius: 2px; animation: jg-fall 2.2s ease-in forwards; }
+@keyframes jg-fall { to { top: 105%; transform: translateX(40px) rotate(720deg); } }
+
+.jg-choose { display: flex; flex-direction: column; gap: 6px; }
+.jg-choose .jg-btn { text-align: left; }
+.jg-sub { display: block; font-size: 0.78rem; color: var(--jg-text-dim); margin-top: 2px; }
+.jg-quiz-ok { color: var(--jg-good); font-weight: 600; }
+.jg-quiz-bad { color: var(--jg-bad); font-weight: 600; }
+.jg-strum { font-size: 1.6rem; letter-spacing: 6px; font-weight: bold; color: var(--jg-accent); }
+.jg-strum span.jg-now { color: var(--jg-accent-2); text-decoration: underline; }
+.jg-fact { border-left: 4px solid var(--jg-accent); padding-left: 10px; }
+table.jg-table { border-collapse: collapse; font-size: 0.88rem; margin: 6px 0; }
+.jg-table th, .jg-table td { border: 1px solid var(--jg-border); padding: 4px 10px; text-align: left; }
+.jg-table th { background: var(--jg-bg-2); }
+
+@media (max-width: 760px) {
+  .jg-lessons-layout { flex-direction: column; }
+  .jg-lesson-sidebar { position: static; width: 100%; flex: 1 1 auto; order: 2; }
+}
+/* Landscape phones: instrument pinned at the bottom, no sidebar */
+@media (orientation: landscape) and (max-height: 500px) {
+  .jg-header { padding: 4px 10px; }
+  .jg-logo { width: 30px; height: 30px; }
+  .jg-header h1 { font-size: 1.1rem; }
+  .jg-tagline { display: none; }
+  .jg-tab { padding: 5px 12px; min-height: 34px; }
+  .jg-lesson-sidebar { display: none; }
+  .jg-lesson-player { display: flex; flex-direction: column; }
+  .jg-lesson-content { order: 1; }
+  .jg-controls { order: 2; margin: 6px 0; }
+  .jg-instrument { order: 3; position: sticky; bottom: 0; z-index: 5; background: var(--jg-bg); }
+  .jg-highway { height: 56px; }
+}
+@media (orientation: portrait) and (max-width: 700px) {
+  body > *:not(.jg-rotate-prompt) { display: none !important; }
+  .jg-rotate-prompt { display: flex !important; position: fixed; inset: 0; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: var(--jg-bg); padding: 24px; }
+}
+.jg-rotate-prompt { display: none; }
+.jg-rotate-icon { font-size: 3rem; }
+
+/* Instrument: inline on big screens, pinned to the bottom on landscape phones */
+.jg-instrument-host { margin: 8px 0; }
+@media (orientation: landscape) and (max-height: 500px) { .jg-instrument-host { position: sticky; bottom: 0; z-index: 5; background: var(--jg-bg); padding-top: 4px; } }
+.jg-instrument-host .jg-instrument { margin-top: 0; }
+.jg-instrument-host .jg-fb { background: var(--jg-bg); }
+.jg-dg-btn { padding: 2px; background: var(--jg-panel); }
+.jg-practice .jg-row strong { margin-right: 4px; }
+details > summary { list-style: none; cursor: pointer; margin: 4px 0; }
+details > summary::-webkit-details-marker { display: none; }
+.jg-song-q { text-align: left; cursor: text; }
