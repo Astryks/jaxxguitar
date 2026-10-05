@@ -68,18 +68,25 @@ function toast(text, { big = false } = {}) {
 }
 
 function confetti() {
-  const c = document.createElement("div");
-  c.className = "jg-confetti";
+  // Tiny musical notes drifting down from the sky, each swaying as it falls.
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const host = document.createElement("div");
+  host.className = "jg-notefall";
+  host.setAttribute("aria-hidden", "true");
+  const glyphs = ["♪", "♫", "♩", "♬"];
   const colors = ["#c46a1f", "#2f8f83", "#e1a62b", "#7d5bc9", "#e0625b"];
-  for (let i = 0; i < 60; i++) {
-    const p = document.createElement("i");
-    p.style.left = `${Math.random() * 100}%`;
-    p.style.background = colors[i % colors.length];
-    p.style.animationDelay = `${Math.random() * 0.6}s`;
-    c.appendChild(p);
+  for (let i = 0; i < 46; i++) {
+    const n = document.createElement("span");
+    n.textContent = glyphs[i % glyphs.length];
+    n.style.left = `${Math.random() * 100}%`;
+    n.style.color = colors[i % colors.length];
+    n.style.fontSize = `${14 + Math.random() * 18}px`;
+    n.style.animationDuration = `${2.4 + Math.random() * 1.8}s, ${0.9 + Math.random() * 0.8}s`;
+    n.style.animationDelay = `${Math.random() * 1.2}s, 0s`;
+    host.appendChild(n);
   }
-  document.body.appendChild(c);
-  setTimeout(() => c.remove(), 3200);
+  document.body.appendChild(host);
+  setTimeout(() => host.remove(), 5200);
 }
 
 window.addEventListener("jg-xp", (e) => {

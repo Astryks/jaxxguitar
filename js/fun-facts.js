@@ -4,6 +4,8 @@
 // players. Each fact is shown once before any repeats. Kept to what's
 // well documented.
 
+import { peopleHtml } from "./media.js";
+
 const FACTS = [
   {
     title: "A string by itself is really quiet!",
@@ -28,6 +30,7 @@ const FACTS = [
   },
   {
     title: "The secret skeleton inside",
+    people: ["cf-martin"],
     text: `Look inside the sound hole with a torch and you'll see wooden sticks glued under the top — the guitar's <strong>braces</strong>. They're like a skeleton: they stop the thin top from cracking under the strings' pull, while still letting it wobble to make sound. The famous <strong>X-shaped</strong> pattern used in most steel-string guitars was developed by the guitar maker <strong>C. F. Martin</strong> back in the 1800s.`,
   },
   {
@@ -44,26 +47,32 @@ const FACTS = [
   },
   {
     title: "A coin for a pick",
+    people: ["brian-may"],
     text: `<strong>Brian May</strong> of Queen plays with an old British <strong>sixpence coin</strong> instead of a plastic pick. He says the hard metal edge gives him a crunchier sound. (He also built his own guitar with his dad — see the Red Special lesson!)`,
   },
   {
     title: "Playing a guitar upside down",
+    people: ["jimi-hendrix"],
     text: `<strong>Jimi Hendrix</strong> was left-handed, but most guitars in shops were made for right-handers. So he often flipped a right-handed guitar <strong>upside down</strong> and restrung it so the thick string was on top. He became one of the greatest guitarists ever!`,
   },
   {
     title: "Two fingers, one legend",
+    people: ["django"],
     text: `<strong>Django Reinhardt</strong> was a young guitarist in France when a fire badly hurt his left hand, and two of his fingers stopped working properly. Doctors thought he'd never play again. He invented a whole new way of playing using mostly <strong>two fingers</strong> — and became one of the most famous jazz guitarists in history.`,
   },
   {
     title: "The guitar he ran into a fire to save",
+    people: ["bb-king"],
     text: `One night in 1949, a fire started at a dance hall where <strong>B.B. King</strong> was playing. He ran back inside to rescue his guitar! He later learned the fight that started the fire was over a woman named <strong>Lucille</strong> — so he named his guitars "Lucille" to remind himself never to do something that dangerous again.`,
   },
   {
     title: "The inventor who didn't play guitar",
+    people: ["leo-fender"],
     text: `<strong>Leo Fender</strong> designed some of the most famous electric guitars ever — the Telecaster and Stratocaster — and the Fender amplifiers. But he wasn't a guitar player! He was a radio repairman who listened carefully to what musicians wanted.`,
   },
   {
     title: "The Frankenstein guitar",
+    people: ["eddie-van-halen"],
     text: `<strong>Eddie Van Halen</strong> couldn't find a guitar that did everything he wanted, so he built his own from <strong>spare parts</strong>, painted it with stripes of tape and spray paint, and called it the <strong>"Frankenstrat"</strong> — half Fender Stratocaster, half Gibson, like Frankenstein's monster!`,
   },
 ];
@@ -95,6 +104,7 @@ function showFunFact(fact = nextFact()) {
       <div class="jg-funfact-kicker">Did you know?</div>
       <h3>${fact.title}</h3>
       <p>${fact.text}</p>
+      ${peopleHtml(fact.people)}
       ${fact.footnote ? `<p class="jg-note">${fact.footnote}</p>` : ""}
       <button class="jg-btn jg-btn-primary jg-funfact-close">Cool! Keep going</button>
     </div>`;

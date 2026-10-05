@@ -47,11 +47,48 @@ const PRE = [
           <li><strong>Bass guitar</strong> — usually 4 thicker strings, plays the low notes in a band. It's a different instrument; this app teaches 6-string guitar.</li>
           <li>Also out there: <strong>12-string</strong> guitars (pairs of strings, a shimmering sound) and ukuleles (4 strings, different tuning).</li>
         </ul>` },
-      { html: `<h3>Buying smart</h3>
-        <p><strong>Size:</strong> adults use full size; younger kids often fit a 1/2 or 3/4 size.</p>
-        <p><strong>Budget:</strong> a playable beginner acoustic or electric usually costs around $100–200 new — used ones on Facebook Marketplace can be much less.</p>
-        <p><strong>Check before you buy:</strong> the strings shouldn't sit too high above the frets near the middle of the neck (that makes pressing hard); play every string at several frets and listen for buzzing; look along the neck to make sure it isn't visibly bent.</p>
-        <p><strong>Handy extras:</strong> a few picks (medium thickness), a clip-on tuner (or this app's tuner), and a capo.</p>` },
+      { html: `<h3>Electric, acoustic, classical… or a ukulele?</h3>
+        <table class="jg-table">
+          <tr><th></th><th>Strings</th><th>Feels</th><th>Good for</th></tr>
+          <tr><td><strong>Classical</strong></td><td>6 nylon</td><td>Softest on fingertips; wide neck</td><td>Fingerpicking, classical, Spanish styles; young kids</td></tr>
+          <tr><td><strong>Acoustic</strong></td><td>6 steel</td><td>Bright and loud; a bit harder to press at first</td><td>Strumming songs, singing along, campfires</td></tr>
+          <tr><td><strong>Electric</strong></td><td>6 thin steel</td><td>Easiest to press; needs an amp (or headphones amp)</td><td>Rock, blues, solos, bending notes</td></tr>
+          <tr><td><strong>Ukulele</strong></td><td>4 nylon</td><td>Tiny, light, very easy</td><td>A fun first instrument — but it's not a guitar</td></tr>
+        </table>
+        <p><strong>Which should you start on?</strong> The one that makes you want to play every day! Everything in this app works on acoustic, electric and classical guitars.</p>
+        <p class="jg-fact">Ukulele secret: a uke is tuned <strong>G C E A</strong> — the same as a guitar's top four strings with a capo on the 5th fret. So a guitar "G" shape on the top four strings is a uke "C"! Learn one and you're halfway to the other.</p>` },
+      { html: `<h3>Get one cheap (or free!)</h3>
+        <p>You don't need a new or fancy guitar to learn. Some smart places to look:</p>
+        <ul>
+          <li><strong>Facebook Marketplace</strong>, Craigslist, Gumtree or local buy-and-sell groups — beginner guitars often sell for <strong>$40–100</strong> used, because lots of people buy one and stop playing.</li>
+          <li><strong>Family and friends</strong> — ask around; there's often a guitar sitting in someone's closet.</li>
+          <li><strong>Your school</strong> or a local community music centre, which may lend instruments.</li>
+          <li>New: a decent beginner acoustic or electric is usually around <strong>$100–200</strong>.</li>
+        </ul>
+        <h3>What to check before you pay</h3>
+        <ul>
+          <li><strong>The neck:</strong> look down it from the headstock like aiming an arrow — it should be straight, not twisted.</li>
+          <li><strong>String height ("action"):</strong> at the 12th fret the strings should sit low — about the thickness of two or three coins. Very high strings make every chord hard.</li>
+          <li><strong>Play every string</strong> at a few frets: listen for buzzing or dead notes.</li>
+          <li><strong>Tuning pegs</strong> turn smoothly and hold their tuning; no cracks in the body or where the neck meets it.</li>
+          <li><strong>Electric?</strong> Plug it in and wiggle the knobs and the cable — crackles mean repairs.</li>
+        </ul>
+        <p class="jg-note">Old strings are fine to start — a fresh set costs about $5–10 and makes any guitar sound better. Grab a few picks, and a capo when you can.</p>` },
+
+    ],
+  },
+  {
+    id: "p-tune", pre: true, title: "Tune your guitar (free tuner)", subtitle: "Every string, one by one",
+    pages: [
+      { html: `<h3>Tune up before you play — every time</h3>
+        <p>An out-of-tune guitar makes even perfect chords sound wrong, so guitarists tune before every practice. This app has a <strong>free tuner</strong> built in — it listens through your microphone.</p>
+        <ol>
+          <li>Pick a string below, starting with the thickest: <strong>low E</strong>.</li>
+          <li>Tap <strong>Start listening</strong> and pluck that string (let it ring).</li>
+          <li>Too low (flat)? <strong>Tighten</strong> its peg a little. Too high (sharp)? <strong>Loosen</strong> a little, then come back up.</li>
+          <li>When the meter turns <strong>green</strong>, it jumps to the next string by itself. Do all six: <strong>E A D G B E</strong>.</li>
+        </ol>
+        <p class="jg-note">Turn pegs slowly — a quarter turn can be a big change, and over-tightening can snap a string. Not sure which way to turn? Turn a tiny bit and watch the needle.</p>`, tuner: true },
     ],
   },
   {
@@ -81,7 +118,7 @@ const PRE = [
           <li>Make the <strong>neck</strong>, with a steel <strong>truss rod</strong> hidden inside, and tap metal <strong>frets</strong> into little slots.</li>
           <li>Add the <strong>bridge</strong>, tuning pegs and strings… and tune it up!</li>
         </ol>
-        <p class="jg-fact">All six strings pull with about <strong>70 kilograms</strong> of force — like a grown-up hanging off your guitar all day long. That's why it needs braces and a truss rod!</p>` },
+        <p class="jg-fact">All six strings pull with about <strong>70 kilograms</strong> of force — like a grown-up hanging off your guitar all day long. That's why it needs braces and a truss rod!</p>`, video: "how-guitar-made" },
       { html: `<h3>Why does it make sound?</h3>
         <p>When you pluck a string, it <strong>wiggles</strong> back and forth really fast. But a string is so thin it hardly pushes any air — on its own, you'd barely hear it!</p>
         <ol>
@@ -144,12 +181,66 @@ const PRE = [
         practice: { items: melody([[4, 1], [4, 2], [4, 3], [4, 4], [3, 1], [3, 2], [3, 3], [3, 4]]), bpm: 60, modes: ["listen", "wait"], label: "1-2-3-4 on the B and G strings" } },
     ],
   },
+  {
+    id: "p-hands", pre: true, title: "Left-handed or right-handed?", subtitle: "Which hand does what",
+    pages: [
+      { html: `<h3>Both hands work hard on guitar</h3>
+        <p>On a standard (right-handed) guitar, your <strong>right hand strums or picks</strong> near the sound hole, and your <strong>left hand presses the frets</strong>. Your fretting hand actually does the trickier finger work!</p>
+        <p><strong>If you're left-handed</strong>, you have three choices:</p>
+        <ul>
+          <li><strong>Play right-handed anyway.</strong> Many lefties do — both hands are learning something new either way.</li>
+          <li><strong>Get a left-handed guitar</strong> — a mirror image, strumming with your left hand. Paul McCartney and Jimi Hendrix played left-handed (Hendrix often flipped a right-handed guitar and restrung it).</li>
+          <li><strong>Flip a right-handed guitar upside down without restringing</strong> — the thin strings end up on top. Bluesman <strong>Albert King</strong> and folk legend <strong>Elizabeth Cotten</strong> played this way, and invented their own styles because of it!</li>
+        </ul>
+        <p class="jg-note">For now, Jaxx Guitar's diagrams are drawn for right-handed playing. Left-handed players on a lefty guitar can read every diagram as a mirror image — the strings and frets are the same, just flipped.</p>`, people: ["jimi-hendrix"] },
+    ],
+  },
+  {
+    id: "p-hold", pre: true, title: "Sitting, standing and straps", subtitle: "Comfortable from day one",
+    pages: [
+      { html: `<h3>Sitting down</h3>
+        <ul>
+          <li>Sit on a chair without arms, near the front, back straight and shoulders relaxed.</li>
+          <li>Rest the guitar's waist (the curvy dip) on your <strong>right leg</strong>, the body against your tummy, neck pointing slightly up — not flat.</li>
+          <li><strong>Classical players</strong> rest it on the <strong>left leg</strong> with that foot on a small footstool, so the neck sits higher. Try both and use what's comfortable.</li>
+          <li>Don't lean over to look at the fretboard — tilt your head a little, not your whole body.</li>
+        </ul>` },
+      { html: `<h3>Standing up: should it hang around your neck?</h3>
+        <p>Not around your neck! A <strong>strap</strong> goes over your <strong>left shoulder</strong> and across your back, so your shoulders and back carry the weight, not your neck.</p>
+        <ul>
+          <li>Set the strap so the guitar sits at about the <strong>same height as when you're sitting</strong> — then your hands work the same way standing up. Rock stars wear guitars low; it looks cool and is much harder to play!</li>
+          <li>Strap buttons: most acoustic and electric guitars have one at the bottom and one near the neck. Some acoustics need the strap tied around the headstock.</li>
+          <li>Check the strap ends are pushed fully on — rubber <strong>strap locks</strong> are cheap and stop the guitar falling.</li>
+        </ul>` },
+    ],
+  },
+  {
+    id: "p-pick", pre: true, title: "Pick or fingers?", subtitle: "And which pick to buy",
+    pages: [
+      { html: `<h3>When to use a pick</h3>
+        <ul>
+          <li><strong>Use a pick</strong> for strumming, rock and pop, single-note solos on electric guitar — it's louder and brighter.</li>
+          <li><strong>Use your fingers</strong> for fingerpicking, classical and Spanish guitar, and soft songs — warmer, and you can play bass and melody at once.</li>
+          <li>Many songs use both — and on a steel-string acoustic, a light pick is easiest for beginners' strumming.</li>
+        </ul>
+        <h3>Pick thickness</h3>
+        <table class="jg-table">
+          <tr><th>Thin (about 0.4–0.6 mm)</th><td>Flexible and forgiving — great for strumming acoustic chords.</td></tr>
+          <tr><th>Medium (about 0.6–0.8 mm)</th><td>The all-rounder: strumming and single notes. A good first pick.</td></tr>
+          <tr><th>Heavy (1 mm and up)</th><td>Stiff and precise — for solos and fast picking.</td></tr>
+        </table>
+        <h3>How to hold it</h3>
+        <p>Curl your index finger, lay the pick on the side of its first joint, and press it there with your thumb — only the tip pokes out, pointing at the strings. Grip just firmly enough that it doesn't fly away.</p>` },
+    ],
+  },
 ];
 
 const BEGINNER = [
   {
     id: "lesson-1", title: "The 4 chords to play 100 songs", subtitle: "G, D, Em, C — the 1-5-6-4",
     pages: [
+      { html: `<h3>First: is your guitar in tune?</h3>
+        <p>Before every practice, check your tuning — it takes a minute and makes everything sound right. Play each string with the tuner below; it moves to the next string on its own when one goes green. Already tuned? Tap <strong>Next</strong>.</p>`, tuner: true },
       { html: `<h3>Four chords play hundreds of songs.</h3>
         <p>"Let It Be", "Someone Like You", "I'm Yours", "With or Without You"… all built on the same 4-chord pattern. On guitar, the friendliest version is <strong>G – D – Em – C</strong>.</p>
         <p class="jg-note">You may have heard the famous four as "G, A, C, D" — the real pattern is <strong>G, D, Em and C</strong> (the 1st, 5th, 6th and 4th chords of the key of G, which is why it's called "1-5-6-4"). G-C-D are in there; the fourth chord is E minor, not A.</p>`,
@@ -174,6 +265,16 @@ const BEGINNER = [
       { html: `<h3>Hold the pick and strum from the wrist.</h3>
         <p>Pinch the pick between your thumb and the side of your index finger, with just the tip showing. Strum with a loose wrist, like shaking water off your hand — not a stiff arm.</p>
         <p><strong>Downstrums</strong> go toward the floor (thick strings first); <strong>upstrums</strong> come back up and usually just catch the thinner strings.</p>` },
+      { html: `<h3>How hard should you strum?</h3>
+        <p>Much more gently than you'd think! Loud comes from <strong>speed and a relaxed swing</strong>, not from pushing hard.</p>
+        <ul>
+          <li>Hold the pick <strong>loosely</strong> — just firm enough that it doesn't fall. A tight grip makes it catch and clack on the strings.</li>
+          <li>Let only the <strong>tip</strong> of the pick brush the strings, and let it flex a little as it passes.</li>
+          <li><strong>Downstrums</strong> hit more of the thick strings, so they're naturally a bit stronger; <strong>upstrums</strong> are lighter and usually just catch the top three or four strings.</li>
+          <li>Move from the <strong>wrist</strong> (like shaking water off your hand), not the whole arm or shoulder.</li>
+          <li>Strings rattling or a harsh clang? Strum softer. Chord sounds thin? Make sure you're catching all the strings it uses.</li>
+        </ul>
+        <p class="jg-note">Fretting hand: press each string just behind the fret with your fingertip — only hard enough for the buzz to stop (see "How to press a fret" in Before you start). Pressing harder than that just tires your hand.</p>` },
       { html: `<h3>Count "1 & 2 & 3 & 4 &"</h3>
         <p>Your hand moves down on every number and up on every "&" — all the time, like a pendulum — even when it doesn't touch the strings. That steady motion is the secret to good rhythm.</p>
         <p>The most-used pattern in pop and folk: <span class="jg-strum">D · D U · U D U</span> (down on 1, down on 2, up on "&", miss 3, up on "&", down on 4, up on "&").</p>`,
@@ -218,7 +319,7 @@ const BEGINNER = [
         <p>So he rigged up his own solution: he jammed a <strong>record-player needle</strong> into his guitar to pick up the vibrations and ran it into a <strong>radio speaker</strong>. Suddenly people could hear him.</p>
         <p>That homemade hack started a lifetime of inventing. Les Paul went on to build one of the first <strong>solid-body electric guitars</strong> (nicknamed "The Log" — a block of wood with a guitar neck), which led to the famous Gibson Les Paul guitar. He also pioneered multitrack recording.</p>
         <p class="jg-fact">He's in both the <strong>Rock and Roll Hall of Fame</strong> and the <strong>National Inventors Hall of Fame</strong> — often called the only person in both. Isn't that amazing?</p>
-        <p class="jg-note">To be precise: he didn't invent the amplifier itself — but his DIY rig to be heard as a young performer is a big part of how the electric guitar came to be.</p>` },
+        <p class="jg-note">To be precise: he didn't invent the amplifier itself — but his DIY rig to be heard as a young performer is a big part of how the electric guitar came to be.</p>`, people: ["les-paul"], video: "les-paul" },
     ],
   },
   {
@@ -257,7 +358,7 @@ const BEGINNER = [
       { html: `<h3>A father-and-son project that went to stadiums</h3>
         <p>In August 1963, a teenage <strong>Brian May</strong> — later the guitarist of <strong>Queen</strong> — couldn't afford the guitar he wanted. So he and his dad, <strong>Harold</strong>, built one at home.</p>
         <p>The neck was carved from wood from a <strong>century-old fireplace mantel</strong> a family friend was throwing out (Brian filled the wormholes with matchsticks). They finished it in October 1964 and called it the <strong>Red Special</strong>. Brian has played it on almost every Queen record and concert since.</p>
-        <p class="jg-note">This story is sometimes mixed up with Led Zeppelin — it's actually Brian May of Queen, and the guitar is now one of the most famous instruments in rock.</p>` },
+        <p class="jg-note">This story is sometimes mixed up with Led Zeppelin — it's actually Brian May of Queen, and the guitar is now one of the most famous instruments in rock.</p>`, people: ["brian-may"], video: "brian-may-red-special" },
     ],
   },
   {
@@ -309,6 +410,37 @@ const INTERMEDIATE = [
     ],
   },
   {
+    id: "lesson-scale-practice", title: "How to practise scales", subtitle: "A 10-minute routine that works",
+    pages: [
+      { html: `<h3>Scales are workouts for your fingers and ears</h3>
+        <p>Practising scales builds speed, accuracy and the "map" of the fretboard you'll use for solos. A simple daily routine:</p>
+        <ol>
+          <li><strong>Slow and clean first.</strong> Set the metronome where you can play every note perfectly — even 60 BPM. Speed comes later, by itself.</li>
+          <li><strong>One finger per fret.</strong> In a 4-fret box, index takes the lowest fret, pinky the highest. Keep fingers hovering close to the strings.</li>
+          <li><strong>Alternate picking:</strong> down, up, down, up — never two downs in a row.</li>
+          <li><strong>Up and back down</strong>, then play it in <strong>groups of three</strong> (1-2-3, 2-3-4, 3-4-5…) so your fingers learn the shape, not just a list.</li>
+          <li><strong>Raise the tempo 5 BPM</strong> only after three clean runs in a row.</li>
+          <li><strong>Make music:</strong> finish by improvising a little over a chord loop — that's what scales are for!</li>
+        </ol>
+        <p class="jg-note">The Practice tab has every scale in every key and position, with Wait for me and Play in time.</p>` },
+      { html: `<h3>Try it: A minor pentatonic in groups of three</h3>
+        <p>Each group starts one note higher: notes 1-2-3, then 2-3-4, then 3-4-5… Use alternate picking and Wait for me first.</p>`,
+        notes: AMIN_PENT.map((n) => ({ string: n.string, fret: n.fret, tone: n.root ? "root" : undefined, label: String(n.fret) })),
+        practice: { items: () => {
+          const out = [];
+          let t = 0;
+          for (let i = 0; i + 2 < AMIN_PENT.length; i++) {
+            for (let k = 0; k < 3; k++) {
+              const n = AMIN_PENT[i + k];
+              out.push({ string: n.string, fret: n.fret, start: t, dur: 1 / 3 });
+              t += 1 / 3;
+            }
+          }
+          return out;
+        }, bpm: 60, modes: ["listen", "wait", "timed"], mic: true, label: "Pentatonic in threes", showTab: true } },
+    ],
+  },
+  {
     id: "lesson-techniques", title: "Lead techniques", subtitle: "Bends, hammer-ons, pull-offs, slides, vibrato",
     pages: [
       { html: `<h3>How solos "talk"</h3>
@@ -333,11 +465,37 @@ const INTERMEDIATE = [
     ],
   },
   {
+    id: "lesson-all-chords", title: "Learn every chord", subtitle: "Recipes, shapes and the chord library",
+    pages: [
+      { html: `<h3>Every chord is a recipe</h3>
+        <p>Chords are built from the notes of a scale. Count up from the chord's root note:</p>
+        <table class="jg-table">
+          <tr><th>Major</th><td>root + 4 half-steps + 3 more (1 – 3 – 5)</td><td>happy</td></tr>
+          <tr><th>Minor (m)</th><td>root + 3 half-steps + 4 more (1 – ♭3 – 5)</td><td>sad</td></tr>
+          <tr><th>7 (dominant)</th><td>major + a ♭7</td><td>bluesy, wants to move</td></tr>
+          <tr><th>maj7</th><td>major + a 7</td><td>dreamy, jazzy</td></tr>
+          <tr><th>m7</th><td>minor + a ♭7</td><td>smooth, soulful</td></tr>
+          <tr><th>sus2 / sus4</th><td>the 3rd swapped for a 2nd / 4th</td><td>open, floating</td></tr>
+          <tr><th>5 (power)</th><td>root + 5th only</td><td>rock</td></tr>
+        </table>
+        <p>That's why one finger changes E into Em: it moves the 3rd down a half step.</p>`,
+        diagrams: ["E", "Em", "E7", "Emaj7", "Em7", "Esus4"] },
+      { html: `<h3>12 roots × these recipes = every common chord</h3>
+        <p>You don't memorise hundreds of shapes. You learn the <strong>open chords</strong> (C A G E D and their minors and 7ths), then use <strong>barre shapes</strong> to move them anywhere:</p>
+        <ul>
+          <li><strong>E-shape barre</strong>, root on the 6th string: fret 1 = F, 3 = G, 5 = A, 7 = B, 8 = C.</li>
+          <li><strong>A-shape barre</strong>, root on the 5th string: fret 2 = B, 3 = C, 5 = D, 7 = E.</li>
+        </ul>
+        <p>Open the <strong>Practice tab → All chords</strong> to see and hear every chord in every key, and quiz yourself. A good goal: learn 2 new chords a week, and practise switching between them.</p>`,
+        diagrams: ["F", "Fm", "F7", "Bb", "Bbm", "Bb7"] },
+    ],
+  },
+  {
     id: "lesson-hotel", title: "Solo study: Hotel California", subtitle: "Eagles, 1976",
     pages: [
       { html: `<h3>One of the most famous guitar solos ever.</h3>
         <p>The song's long outro solo is played by <strong>Don Felder</strong> and <strong>Joe Walsh</strong>, trading lines and then playing together in harmony with flowing arpeggios. In 1998, readers of <em>Guitarist</em> magazine voted it the best guitar solo of all time.</p>
-        <p>The solo is copyrighted, so we won't copy it note for note — instead you'll learn what it's <strong>built from</strong>: its chord progression, its scales, and the techniques.</p>` },
+        <p>The solo is copyrighted, so we won't copy it note for note — instead you'll learn what it's <strong>built from</strong>: its chord progression, its scales, and the techniques.</p>`, people: ["don-felder", "joe-walsh"], video: "hotel-california" },
       { html: `<h3>The chords underneath: B minor</h3>
         <p><strong>Bm – F#7 – A – E – G – D – Em – F#7</strong>. Learn to strum it first — every lick in the solo is aimed at these chords.</p>`,
         diagrams: ["Bm", "F#7", "A", "E", "G", "D", "Em", "F#7"],
@@ -358,7 +516,7 @@ const INTERMEDIATE = [
         <p>"November Rain" is a nearly nine-minute power ballad, led by Axl Rose's piano with an orchestra behind the band. <strong>Slash</strong> plays melodic solos full of long bends and wide vibrato, and for the finale the band kicks into a heavier outro with his most famous solo of the song.</p>
         <p class="jg-note">Guns N' Roses tune their guitars down a half step (to E♭), so to play along with the record you'd tune each string one half-step lower. The scales and shapes stay exactly the same.</p>
         <p>We'll practise his style in B minor — a classic, comfortable key for this kind of lead playing.</p>
-        <p>Like Hotel California, the solos are copyrighted — so here's what they're made of.</p>` },
+        <p>Like Hotel California, the solos are copyrighted — so here's what they're made of.</p>`, people: ["slash"], video: "november-rain" },
       { html: `<h3>Make a note sing: bend + vibrato</h3>
         <p>Slash's signature is a <strong>whole-step bend held with vibrato</strong>. In B minor pentatonic (7th position): bend the G string at the 9th fret up a whole step (to sound like the 11th fret), hold it, and add vibrato. Then the B string 10th fret bent up to the sound of the 12th.</p>
         <p>Practice the scale below slowly, then work bends into the top notes.</p>`,
@@ -371,7 +529,7 @@ const INTERMEDIATE = [
     pages: [
       { html: `<h3>Each finger gets a job.</h3>
         <p>Your <strong>thumb (p)</strong> plays the bass strings (6, 5, 4); <strong>index (i)</strong> the 3rd string; <strong>middle (m)</strong> the 2nd; <strong>ring (a)</strong> the 1st. A simple pattern over C: thumb on the 5th string, then i, m, a, m, i.</p>
-        <p><strong>Travis picking</strong> (named after Merle Travis) keeps the thumb alternating between two bass strings while the fingers add melody on top — the sound of countless folk and country songs.</p>`,
+        <p><strong>Travis picking</strong> (named after Merle Travis) keeps the thumb alternating between two bass strings while the fingers add melody on top — the sound of countless folk and country songs.</p>`, people: ["merle-travis"],
         diagrams: ["C", "G", "Am", "Em"],
         practice: { items: () => {
           const pat = (s, root) => [[root, 0], [3, 1], [4, 2], [5, 3], [4, 4], [3, 5]].map(([str, k]) => ({ string: str, fret: s.frets[str], start: k * 0.5, dur: 0.5 }));
@@ -391,7 +549,7 @@ const INTERMEDIATE = [
       { html: `<h3>One of the most famous guitar songs ever</h3>
         <p>"Stairway to Heaven" was written by <strong>Jimmy Page</strong> and <strong>Robert Plant</strong> and released on Led Zeppelin's fourth album in <strong>1971</strong>. It was never released as a single in the UK or US — yet it became one of the most-played rock songs on radio.</p>
         <p>It grows like a staircase: it starts soft, fingerpicked with recorders, adds a 12-string guitar, then drums, and ends as full-on hard rock with a famous solo. Page recorded that solo on a <strong>Fender Telecaster</strong> he'd been given by his friend Jeff Beck. Live, he played a <strong>double-neck guitar</strong> — a 12-string neck on top and a 6-string neck below — so he could switch parts without changing guitars.</p>
-        <p class="jg-note">The recording is copyrighted, so we don't copy Page's guitar part note for note. You'll learn what it's built from — the chords, the bass line, the picking style and the scale — and play our own exercises with them.</p>` },
+        <p class="jg-note">The recording is copyrighted, so we don't copy Page's guitar part note for note. You'll learn what it's built from — the chords, the bass line, the picking style and the scale — and play our own exercises with them.</p>`, people: ["jimmy-page", "robert-plant"], video: "stairway" },
       { html: `<h3>The secret: a bass line that walks down</h3>
         <p>The intro keeps the <strong>A minor</strong> sound on top while the lowest note steps down one fret at a time: <strong>A → G# → G → F# → F</strong>. Each step makes a new chord name, even though your top fingers barely move:</p>
         <p><strong>Am – Am/G# – Am/G – D/F# – Fmaj7</strong>, then <strong>G</strong> and back to <strong>Am</strong>.</p>
@@ -418,6 +576,96 @@ const INTERMEDIATE = [
         <p>Practice the box below, then make up your own lines over the loop in the Practice tab (try Am, G, F with Downs ×4). A good habit: end each phrase on a note of the current chord — <strong>A</strong> over Am, <strong>G</strong> over G, <strong>F</strong> or <strong>C</strong> over F.</p>`,
         notes: AMIN_PENT.map((n) => ({ string: n.string, fret: n.fret, tone: n.root ? "root" : undefined, label: String(n.fret) })),
         practice: { items: scaleItems(AMIN_PENT), bpm: 84, modes: ["listen", "wait", "timed"], mic: true, label: "A minor pentatonic, 5th position", showTab: true } },
+    ],
+  },
+  {
+    id: "lesson-classical", title: "Classical guitar: playing with your fingers", subtitle: "Spain — Tárrega, Segovia and Romance",
+    people: ["tarrega", "segovia"],
+    pages: [
+      { html: `<h3>The guitar's home: Spain</h3>
+        <p>The six-string classical guitar as we know it took shape in <strong>Spain</strong> in the 1800s — the luthier <strong>Antonio de Torres</strong> designed the bigger body and fan-shaped bracing still used today. Composer <strong>Francisco Tárrega</strong> wrote beautiful pieces for it, and later <strong>Andrés Segovia</strong> carried it onto the world's great concert stages, proving the guitar could be a serious solo instrument.</p>
+        <p>Classical guitarists use <strong>nylon strings</strong>, play with their <strong>fingers and nails</strong> (no pick), and sit with the guitar on the left leg, raised by a footstool.</p>`, people: ["tarrega", "segovia"] },
+      { html: `<h3>Your picking fingers have Spanish names</h3>
+        <table class="jg-table">
+          <tr><th>p</th><td>pulgar — thumb</td><td>plays the bass strings (6, 5, 4)</td></tr>
+          <tr><th>i</th><td>índice — index</td><td>usually the G string</td></tr>
+          <tr><th>m</th><td>medio — middle</td><td>usually the B string</td></tr>
+          <tr><th>a</th><td>anular — ring</td><td>usually the high e string</td></tr>
+        </table>
+        <h3>Two ways to pluck</h3>
+        <ul>
+          <li><strong>Free stroke</strong> (tirando): pluck the string and your finger swings up into your palm, missing the next string. Used for chords and arpeggios.</li>
+          <li><strong>Rest stroke</strong> (apoyando): pluck "through" the string so your finger comes to rest on the next string. Fuller and louder — for melodies.</li>
+        </ul>
+        <p>Keep your wrist slightly arched and still; the movement comes from the finger joints. Pluck from the fingertip, not the whole hand.</p>` },
+      { html: `<h3>Romance — "Spanish Romance" (traditional, public domain)</h3>
+        <p>Nobody knows for sure who wrote this famous piece — that's why it's called <em>Romance anónimo</em>. It's in 3/4 time: each beat is three notes — the <strong>melody on the high e string</strong> (finger a, a rest stroke if you like), then the open <strong>B</strong> (m) and <strong>G</strong> (i) strings, with the <strong>low E</strong> bass (p) at the start of each bar. Here are the first four bars over E minor:</p>`,
+        video: "romance",
+        practice: { items: () => {
+          const melodyFrets = [[7, 7, 7], [7, 5, 3], [3, 2, 0], [0, 3, 7]];
+          const out = [];
+          melodyFrets.forEach((bar, b) => {
+            out.push({ string: 0, fret: 0, start: b * 3, dur: 3 });
+            bar.forEach((f, k) => {
+              const t = b * 3 + k;
+              out.push({ string: 5, fret: f, start: t, dur: 1 / 3 });
+              out.push({ string: 4, fret: 0, start: t + 1 / 3, dur: 1 / 3 });
+              out.push({ string: 3, fret: 0, start: t + 2 / 3, dur: 1 / 3 });
+            });
+          });
+          return out;
+        }, bpm: 50, modes: ["listen", "wait"], mic: true, label: "Romance — bars 1-4 (p-a-m-i)", showTab: true } },
+    ],
+  },
+  {
+    id: "lesson-world", title: "Guitar around the world", subtitle: "Flamenco, Italian tremolo, bossa nova, slack key and more",
+    pages: [
+      { html: `<h3>🇪🇸 Flamenco: the fastest strumming you'll ever see</h3>
+        <p>Flamenco comes from Andalusia in southern Spain. Its guitarists — like the legendary <strong>Paco de Lucía</strong> — play with fingers and nails, tap on the guitar's body, and use the <strong>rasgueado</strong>: flicking the fingers out one after another across the strings — little finger, ring, middle, index — so fast it sounds like a drum roll.</p>
+        <p>The classic flamenco chord walk is the <strong>Andalusian cadence</strong>: <strong>Am – G – F – E</strong>, falling step by step to that dramatic E chord. Below: a 4-finger rasgueado burst on each chord, then strums. Practise slowly; flamenco players spend years on this!</p>`,
+        people: ["paco-de-lucia"], video: "flamenco",
+        diagrams: ["Am", "G", "F", "E"],
+        practice: { items: () => chordTimeline(shapes(["Am", "G", "F", "E", "Am", "G", "F", "E"]), { beatsPerChord: 4, pattern: ["down", "down", "down", "down", "down", null, "up", null, "down", "down", "down", "down", "down", null, "up", null] }), bpm: 70, modes: ["listen", "wait"], label: "Andalusian cadence with rasgueado" } },
+      { html: `<h3>🇮🇹 Italy and the Godfather sound: tremolo picking</h3>
+        <p>Italian mandolin players make a single note <strong>sing</strong> by picking it super fast — down-up-down-up — over and over. That's <strong>tremolo picking</strong>. It's the shimmering sound guitarists use when they play the love theme from <strong>The Godfather</strong> (1972), composed by <strong>Nino Rota</strong>.</p>
+        <p>The Godfather music is copyrighted, so we won't print it — but here's the technique on our own little A-minor melody. Each note is picked four times, as fast and even as you can. Keep your wrist loose, use small movements, and let the pick just graze the string.</p>
+        <p class="jg-note">Classical guitarists do tremolo with their fingers instead (p-a-m-i, very fast) — listen to Tárrega's <em>Recuerdos de la Alhambra</em> (1896), the most famous tremolo piece ever.</p>`,
+        people: ["nino-rota"], video: "godfather-tremolo",
+        practice: { items: () => {
+          const tune = [[5, 0], [5, 1], [5, 0], [4, 3], [4, 1], [4, 0], [4, 1], [3, 2], [3, 2], [4, 0], [4, 1], [5, 0]];
+          const out = [];
+          tune.forEach(([str, f], i) => { for (let k = 0; k < 4; k++) out.push({ string: str, fret: f, start: i + k * 0.25, dur: 0.25 }); });
+          return out;
+        }, bpm: 60, modes: ["listen", "wait"], mic: true, label: "Tremolo melody in A minor", showTab: true } },
+      { html: `<h3>🇧🇷 Brazil: bossa nova</h3>
+        <p>In the late 1950s in Rio de Janeiro, <strong>João Gilberto</strong> invented a quiet, swinging guitar style called <strong>bossa nova</strong> ("new trend"). His thumb plays a steady bass on every beat while his fingers pluck the chord off the beat, like a samba drum group squeezed onto one guitar. Jazzy chords like <strong>Am7</strong> and <strong>D7</strong> are its colours.</p>`,
+        people: ["joao-gilberto"], video: "bossa-nova",
+        diagrams: ["Am7", "D7"],
+        practice: { items: () => {
+          const out = [];
+          const parts = [
+            { chord: "Am7", bass: [1, 0], top: { frets: [-1, -1, 2, 0, 1, 0] } },
+            { chord: "D7", bass: [2, 0], top: { frets: [-1, -1, -1, 2, 1, 2] } },
+          ];
+          for (let bar = 0; bar < 4; bar++) {
+            const pt = parts[bar % 2];
+            const t0 = bar * 4;
+            [0, 1, 2, 3].forEach((b) => out.push({ string: pt.bass[0], fret: pt.bass[1], start: t0 + b, dur: 1 }));
+            [0, 1.5, 2.5].forEach((b) => out.push({ chord: pt.chord, shape: pt.top, strum: "up", start: t0 + b, dur: 0.5 }));
+          }
+          return out;
+        }, bpm: 80, modes: ["listen"], label: "Bossa feel: thumb on the beat, fingers off it" } },
+      { html: `<h3>🌺 Hawaii: slack key</h3>
+        <p>Hawaiian <strong>kī hōʻalu</strong> — "slack key" — means loosening ("slacking") some strings into an <strong>open tuning</strong>, so the open strings already make a chord. A favourite is "taro patch" tuning, <strong>D G D G B D</strong> (an open G chord). Players like <strong>Gabby Pahinui</strong> keep a rolling bass going with the thumb while the fingers play the melody — gentle, rippling music that sounds like the ocean.</p>`,
+        people: ["gabby-pahinui"], video: "slack-key" },
+      { html: `<h3>🌍 West Africa and 🇮🇳 India</h3>
+        <ul>
+          <li><strong>Mali:</strong> <strong>Ali Farka Touré</strong> played hypnotic, repeating fingerpicked lines rooted in centuries-old West African music — so close to American blues that people call it "desert blues". His album with Ry Cooder, <em>Talking Timbuktu</em>, won a Grammy.</li>
+          <li><strong>Congo:</strong> in Congolese rumba and soukous, guitarists play bright, fast, interlocking melodies high up the neck — <strong>Franco Luambo</strong> was nicknamed "the Sorcerer of the Guitar".</li>
+          <li><strong>India:</strong> <strong>Vishwa Mohan Bhatt</strong> turned a guitar into the <strong>Mohan veena</strong>, played lying flat with a slide, bending notes like a sitar to play Indian ragas. He won a Grammy with Ry Cooder for <em>A Meeting by the River</em>.</li>
+        </ul>
+        <p>Same six strings — completely different music. Which style will you try?</p>`,
+        people: ["ali-farka-toure"], video: "ali-farka-toure" },
     ],
   },
 ];

@@ -13,6 +13,7 @@ import { songPlan, songsByTier } from "./song-plan.js";
 import { WORLD_LANGUAGES } from "./songs-data.js";
 import { isLessonComplete, markLessonComplete, markSongStatus, getQuests, getStreak, getDailyGoal, awardXp, getStreakFreezes } from "./storage.js";
 import { openDailyReview, reviewDoneToday } from "./daily-review.js";
+import { peopleHtml, videoHtml, wireVideos } from "./media.js";
 
 // Jaxx the kitten — a different pose for each kind of moment.
 const MASCOT_BY_LESSON = {
@@ -26,8 +27,8 @@ const MASCOT_BY_LESSON = {
   "lesson-fingerpicking": "playing-guitar", "lesson-stairway": "playing-guitar", "lesson-caged": "map-glasses",
   "lesson-greensleeves": "cello", "lesson-modes": "big-pen",
 };
-function mascot(name, alt = "Jaxx the kitten") {
-  return `<div class="jg-avatar"><img src="assets/mascot/${name}.webp" alt="${alt}" loading="lazy"></div>`;
+function mascot(name, alt = "Jaxx the kitten", extra = "") {
+  return `<div class="jg-avatar ${extra}"><img src="assets/mascot/${name}.webp" alt="${alt}" loading="lazy"></div>`;
 }
 
 const DDUUDU = ["down", null, "down", "up", null, "up", "down", "up"];
@@ -200,7 +201,7 @@ function openLesson(id, pageIndex = 0) {
         <div class="jg-lesson-content">
           <button class="jg-exit">← All lessons</button>
           <div class="jg-step">${esc(lesson.title)} · ${pageIndex + 1} of ${lesson.pages.length}</div>
-          <div class="jg-say">${mascot(MASCOT_BY_LESSON[lesson.id] || (lesson.world ? "singing-mic" : lesson.song ? "playing-guitar" : "happy-guitar"))}<div class="jg-bubble">${page.html || ""}</div></div>
+          <div class="jg-say">${mascot(MASCOT_BY_LESSON[lesson.id] || (lesson.world ? "singing-mic" : lesson.song ? "playing-guitar" : "happy-guitar"))}<div class="jg-bubble">${page.html || ""}${peopleHtml(page.people)}${videoHtml(page.video)}</div></div>
           ${page.diagrams ? `<div class="jg-diagram-row">${page.diagrams.map((c) => `<button class="jg-btn jg-dg-btn" data-chord="${esc(c)}" title="Show ${esc(c)} on the fretboard">${chordDiagramSvg(chordShape(c), c)}</button>`).join("")}</div><p class="jg-note">Tap a chord box to see it on the fretboard and hear it.</p>` : ""}
           ${page.tab ? `<div class="jg-tab-wrap">${tabSvg(page.tab.items, { beatsPerBar: page.tab.beatsPerBar, bars: page.tab.bars })}</div>` : ""}
           <div class="jg-extra"></div>
@@ -215,6 +216,7 @@ function openLesson(id, pageIndex = 0) {
       <aside class="jg-lesson-sidebar"><div class="jg-roadmap"><h3>Roadmap</h3><div class="jg-roadmap-list">${roadmapHtml(lesson.id)}</div></div></aside>
     </div>`;
   panelEl.scrollIntoView?.({ block: "start" });
+  wireVideos(panelEl);
   wireCommon();
   panelEl.querySelector(".jg-exit").addEventListener("click", showHome);
   panelEl.querySelector(".jg-prev")?.addEventListener("click", () => openLesson(id, pageIndex - 1));
@@ -260,7 +262,7 @@ function openLesson(id, pageIndex = 0) {
 
 function finishScreen(lesson, nxt) {
   panelEl.innerHTML = `
-    <div class="jg-say">${mascot("juggling-picks")}<div class="jg-bubble">
+    <div class="jg-say">${mascot("juggling-picks", "Jaxx celebrating", "jg-mascot-celebrate")}<div class="jg-bubble">
       <h3>Lesson complete: ${esc(lesson.title)}</h3>
       <p>Nice work! ${lesson.song ? "Song added to your learned list." : ""}</p>
       <div class="jg-row">

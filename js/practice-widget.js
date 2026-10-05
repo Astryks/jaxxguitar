@@ -113,6 +113,7 @@ function createPracticeBox(host, inst, opts) {
   }
 
   function stop() {
+    document.body.classList.remove("jg-playing");
     if (player) player.stop();
     player = null;
     stopDrums();
@@ -132,6 +133,7 @@ function createPracticeBox(host, inst, opts) {
       },
       onFinish: (r) => {
         player = null;
+        document.body.classList.remove("jg-playing");
         stopDrums();
         goBtn.textContent = "Start again";
         if (opts.showTab) drawTab(-1);
@@ -156,6 +158,7 @@ function createPracticeBox(host, inst, opts) {
       },
     });
     player.start();
+    document.body.classList.add("jg-playing");
     if (drums) startDrums(bpm * speed);
     goBtn.textContent = "Stop";
   }

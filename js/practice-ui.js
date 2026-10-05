@@ -35,6 +35,7 @@ function renderPractice(panel) {
       <img class="jg-inline-mascot" src="assets/mascot/running-guitar.webp" alt="">
       <button class="jg-pill jg-pill-active" data-sec="chords">🎸 Chord loop</button>
       <button class="jg-pill" data-sec="scales">🎼 Scales</button>
+      <button class="jg-pill" data-sec="library">📖 All chords</button>
       <button class="jg-pill" data-sec="metronome">⏱ Metronome</button>
       <button class="jg-pill" data-sec="upload">📁 Upload a song</button>
     </div>
@@ -289,7 +290,40 @@ function renderPractice(panel) {
     stopUpload = () => { audio.pause(); if (raf) cancelAnimationFrame(raf); raf = null; URL.revokeObjectURL(url); };
   }
 
-  const SECTIONS = { chords: chordsSection, scales: scalesSection, metronome: metronomeSection, upload: uploadSection };
+
+  function librarySection() {
+    const QUALITIES = [["", "major"], ["m", "minor"], ["7", "7"], ["maj7", "maj7"], ["m7", "m7"], ["sus2", "sus2"], ["sus4", "sus4"], ["5", "power"], ["dim", "dim"], ["6", "6"]];
+    const ROOTS = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+    let root = "C";
+    sec.innerHTML = `
+      <div class="jg-card">
+        <p><strong>Every common chord, in every key.</strong> Pick a root note, then tap any chord to see it on the fretboard and hear it. Open shapes are shown when there's an easy one; otherwise the movable barre shape.</p>
+        <div class="jg-row">${ROOTS.map((r) => `<button class="jg-pill ${r === root ? "jg-pill-active" : ""}" data-root="${r}">${r}</button>`).join("")}</div>
+        <div class="jg-diagram-row jg-lib"></div>
+      </div>`;
+    const draw = () => {
+      sec.querySelector(".jg-lib").innerHTML = QUALITIES.map(([q, label]) => {
+        const sym = root + q;
+        const sh = chordShape(sym);
+        return sh ? `<button class="jg-btn jg-dg-btn" data-chord="${sym}" title="${sym} (${label})">${chordDiagramSvg(sh, sym)}</button>` : "";
+      }).join("");
+    };
+    sec.onclick = (e) => {
+      const b = e.target.closest("button");
+      if (!b) return;
+      if (b.dataset.root) {
+        root = b.dataset.root;
+        sec.querySelectorAll("[data-root]").forEach((x) => x.classList.toggle("jg-pill-active", x === b));
+        draw();
+      } else if (b.dataset.chord) {
+        const sh = chordShape(b.dataset.chord);
+        inst.fb.showShape(sh);
+        strum(shapeMidis(sh));
+      }
+    };
+    draw();
+  }
+  const SECTIONS = { library: librarySection, chords: chordsSection, scales: scalesSection, metronome: metronomeSection, upload: uploadSection };
   panel.querySelectorAll("[data-sec]").forEach((b) => b.addEventListener("click", () => {
     panel.querySelectorAll("[data-sec]").forEach((x) => x.classList.toggle("jg-pill-active", x === b));
     clearSec();
