@@ -584,7 +584,7 @@ const INTERMEDIATE = [
     pages: [
       { html: `<h3>The guitar's home: Spain</h3>
         <p>The six-string classical guitar as we know it took shape in <strong>Spain</strong> in the 1800s — the luthier <strong>Antonio de Torres</strong> designed the bigger body and fan-shaped bracing still used today. Composer <strong>Francisco Tárrega</strong> wrote beautiful pieces for it, and later <strong>Andrés Segovia</strong> carried it onto the world's great concert stages, proving the guitar could be a serious solo instrument.</p>
-        <p>Classical guitarists use <strong>nylon strings</strong>, play with their <strong>fingers and nails</strong> (no pick), and sit with the guitar on the left leg, raised by a footstool.</p>`, people: ["tarrega", "segovia"] },
+        <p>Classical guitarists use <strong>nylon strings</strong>, play with their <strong>fingers and nails</strong> (no pick), and sit with the guitar on the left leg, raised by a footstool.</p>`, people: ["tarrega", "segovia"], video: "segovia" },
       { html: `<h3>Your picking fingers have Spanish names</h3>
         <table class="jg-table">
           <tr><th>p</th><td>pulgar — thumb</td><td>plays the bass strings (6, 5, 4)</td></tr>
@@ -597,7 +597,8 @@ const INTERMEDIATE = [
           <li><strong>Free stroke</strong> (tirando): pluck the string and your finger swings up into your palm, missing the next string. Used for chords and arpeggios.</li>
           <li><strong>Rest stroke</strong> (apoyando): pluck "through" the string so your finger comes to rest on the next string. Fuller and louder — for melodies.</li>
         </ul>
-        <p>Keep your wrist slightly arched and still; the movement comes from the finger joints. Pluck from the fingertip, not the whole hand.</p>` },
+        <p>Keep your wrist slightly arched and still; the movement comes from the finger joints. Pluck from the fingertip, not the whole hand.</p>
+        <p class="jg-note">Listen to the famous "tremolo" piece <em>Recuerdos de la Alhambra</em> (Tárrega, 1896) — the melody is one note plucked by a-m-i in a super-fast blur, with the thumb playing the bass.</p>`, video: "recuerdos" },
       { html: `<h3>Romance — "Spanish Romance" (traditional, public domain)</h3>
         <p>Nobody knows for sure who wrote this famous piece — that's why it's called <em>Romance anónimo</em>. It's in 3/4 time: each beat is three notes — the <strong>melody on the high e string</strong> (finger a, a rest stroke if you like), then the open <strong>B</strong> (m) and <strong>G</strong> (i) strings, with the <strong>low E</strong> bass (p) at the start of each bar. Here are the first four bars over E minor:</p>`,
         video: "romance",

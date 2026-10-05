@@ -6,7 +6,7 @@
 // bundled in these same JS files, so no separate data-fetching to
 // worry about). Bump CACHE_NAME on every
 // deploy that changes shell files so old caches are dropped on activate.
-const CACHE_NAME = "jaxx-guitar-v2";
+const CACHE_NAME = "jaxx-guitar-v3";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -60,6 +60,26 @@ const APP_SHELL = [
   "./assets/mascot/top-hat-shelf.webp",
   "./assets/mascot/trumpet.webp",
   "./assets/mascot/wrenches.webp",
+  "./assets/people/ali-farka-toure.webp",
+  "./assets/people/bb-king.webp",
+  "./assets/people/brian-may.webp",
+  "./assets/people/cf-martin.webp",
+  "./assets/people/django.webp",
+  "./assets/people/don-felder.webp",
+  "./assets/people/eddie-van-halen.webp",
+  "./assets/people/jimi-hendrix.webp",
+  "./assets/people/jimmy-page.webp",
+  "./assets/people/joao-gilberto.webp",
+  "./assets/people/joe-walsh.webp",
+  "./assets/people/les-paul.webp",
+  "./assets/people/merle-travis.webp",
+  "./assets/people/paco-de-lucia.webp",
+  "./assets/people/robert-plant.webp",
+  "./assets/people/segovia.webp",
+  "./assets/people/slash.webp",
+  "./assets/people/tarrega.webp",
+  "./js/media.js",
+  "./js/media-data.js",
   "./assets/icons/icon-16.png",
   "./assets/icons/icon-32.png",
   "./assets/icons/icon-180.png",

@@ -45,8 +45,8 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 | ✅ | App icon from the mascot | `assets/icons/`, iOS AppIcon |
 | ✅ | Not locked to landscape; works in portrait (the fretboard scrolls sideways); dismissible rotate tip | |
 | ✅ | No iOS text inflation, no stuck zoom; sound plays with the ringer switch on silent | |
-| 🟡 | **Photos of every person mentioned** (Brian May, Les Paul, Hendrix, Segovia…) | Code is ready (`media.js`, with credit + licence under each photo). Freely licensed Wikimedia Commons photos are being researched; they need the owner's OK to download and bundle into `assets/people/`. |
-| 🟡 | **Embed free YouTube videos** | Code is ready: click-to-load, youtube-nocookie.com on the web, opens YouTube in the iOS app. Official video IDs are being researched and verified. |
+| ✅ | **Photos of every person mentioned** (Brian May, Les Paul, Hendrix, Segovia…) | 18 freely licensed Wikimedia Commons photos in `assets/people/`, author and licence under each one and in THIRD_PARTY_NOTICES. No free photo exists for Leo Fender or Gabby Pahinui; the Nino Rota image was skipped because its source was unclear. |
+| ✅ | **Embed free YouTube videos** | 14 videos, IDs verified, mostly official channels (Led Zeppelin, Eagles, Guns N' Roses, Queen, Les Paul, Martin Guitar, Smithsonian…). Click-to-load: youtube-nocookie.com on the web, opens YouTube in the iOS app. Privacy policy updated. |
 
 ### Shipping
 | | Item | Notes |
@@ -54,9 +54,12 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 | ✅ | GitHub repo + Pages workflow; Pages enabled | |
 | 🟡 | **Custom domain jaxxguitar.com** | Pages is set to redirect there, but the domain has **no DNS records yet**. At the registrar add A records `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` for `@`, and a CNAME `www → astryks.github.io`. Until then the site is unreachable. |
 | ✅ | iOS project, Info.plist (mic text, encryption = NO), icon, App Store screenshots, listing draft | `ios/` |
-| ⬜ | Owner confirms the name "Jaxx Guitar" and bundle ID `com.jaxxguitar.app` → create the App Store Connect record | |
-| ⬜ | Archive and upload to TestFlight; owner tests; App Privacy, age rating and review contact (owner); submit when told | `ios/SUBMISSION_CHECKLIST.md` |
-| ⬜ | Update the privacy policy once videos ship (tapping a video contacts YouTube) | `privacy.html` |
+| ✅ | App Store Connect record "Jaxx Guitar" (`com.jaxxguitar.app`, SKU `jaxxguitar-ios-1`, app ID 6819445036) | Created 2026-10-06 |
+| ✅ | Build 1.0 (1) uploaded to App Store Connect | It doesn't include the photos/videos added afterwards; upload build 2 before submitting |
+| ⬜ | Upload build 1.0 (2) with the photos and videos | |
+| ⬜ | Store listing: paste the text from `ios/APP_STORE_LISTING.md` and upload `ios/screenshots/` | |
+| ⬜ | Owner: App Privacy ("Data Not Collected"), age rating, App Review contact, TestFlight test; submit only when the owner says so | |
+| ✅ | Privacy policy mentions the optional YouTube videos | `privacy.html` |
 
 ### Ideas not yet requested
 - A left-handed (mirrored) fretboard view setting.
