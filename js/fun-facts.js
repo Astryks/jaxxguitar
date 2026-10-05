@@ -91,7 +91,8 @@ function showFunFact(fact = nextFact()) {
   card.setAttribute("aria-label", "Did you know?");
   card.innerHTML = `
     <div class="jg-funfact-card">
-      <div class="jg-funfact-kicker">🎸 Did you know?</div>
+      <img class="jg-funfact-img" src="assets/mascot/map-glasses.webp" alt="">
+      <div class="jg-funfact-kicker">Did you know?</div>
       <h3>${fact.title}</h3>
       <p>${fact.text}</p>
       ${fact.footnote ? `<p class="jg-note">${fact.footnote}</p>` : ""}

@@ -26,7 +26,7 @@ function renderSongs(panel) {
       ${tiers.map((t) => `<button class="jg-pill ${filter.tier === t ? "jg-pill-active" : ""}" data-tier="${t}">${t}</button>`).join("")}
       <button class="jg-pill ${filter.world ? "jg-pill-active" : ""}" data-world>🌍 World songs</button>
     </div>
-    <p class="jg-note">Chord names and progressions only — no lyrics. Every song shows the easiest way to play it, often with a capo.</p>
+    <div class="jg-say"><div class="jg-avatar"><img src="assets/mascot/music-scrolls.webp" alt=""></div><p class="jg-note" style="align-self:center">Chord names and progressions only — no lyrics. Every song shows the easiest way to play it, often with a capo.</p></div>
     <div class="jg-song-grid"></div>`;
   const grid = panel.querySelector(".jg-song-grid");
   function draw() {

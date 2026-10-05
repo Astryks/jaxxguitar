@@ -6,7 +6,7 @@
 // bundled in these same JS files, so no separate data-fetching to
 // worry about). Bump CACHE_NAME on every
 // deploy that changes shell files so old caches are dropped on activate.
-const CACHE_NAME = "jaxx-guitar-v1";
+const CACHE_NAME = "jaxx-guitar-v2";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -37,6 +37,29 @@ const APP_SHELL = [
   "./js/transcribe.js",
   "./js/tuner.js",
   "./js/world-songs.js",
+  "./assets/mascot/big-pen.webp",
+  "./assets/mascot/cello.webp",
+  "./assets/mascot/chef.webp",
+  "./assets/mascot/happy-guitar.webp",
+  "./assets/mascot/juggling-picks.webp",
+  "./assets/mascot/keyhole.webp",
+  "./assets/mascot/map-glasses.webp",
+  "./assets/mascot/music-scrolls.webp",
+  "./assets/mascot/painter.webp",
+  "./assets/mascot/playing-guitar.webp",
+  "./assets/mascot/quill-scroll.webp",
+  "./assets/mascot/running-guitar.webp",
+  "./assets/mascot/sheet-music-jump.webp",
+  "./assets/mascot/singing-mic.webp",
+  "./assets/mascot/singing-stage.webp",
+  "./assets/mascot/sleep-in-hat.webp",
+  "./assets/mascot/sleeping-guitar.webp",
+  "./assets/mascot/strumming.webp",
+  "./assets/mascot/tangled-strings.webp",
+  "./assets/mascot/teacup-books.webp",
+  "./assets/mascot/top-hat-shelf.webp",
+  "./assets/mascot/trumpet.webp",
+  "./assets/mascot/wrenches.webp",
   "./assets/icons/icon-16.png",
   "./assets/icons/icon-32.png",
   "./assets/icons/icon-180.png",

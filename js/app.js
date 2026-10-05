@@ -35,7 +35,7 @@ function show(tab) {
   if (tab === "songs") renderSongs(el);
   if (tab === "practice") renderPractice(el);
   if (tab === "tuner") {
-    el.innerHTML = `<div class="jg-card"><h2 style="margin:4px 0">Tune your guitar</h2>
+    el.innerHTML = `<div class="jg-card"><img class="jg-hero-mascot" src="assets/mascot/tangled-strings.webp" alt="A kitten tangled in guitar strings"><h2 style="margin:4px 0">Tune your guitar</h2>
       <p>Standard tuning, thickest to thinnest: <strong>E A D G B E</strong>. Pick a string, tap <em>Start listening</em> and play it — turn the peg until the meter goes green. It moves on to the next string by itself.</p>
       <div class="jg-tuner-host"></div></div>`;
     tunerWidget = renderStringTuner(el.querySelector(".jg-tuner-host"));

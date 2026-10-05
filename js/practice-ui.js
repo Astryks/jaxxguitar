@@ -32,6 +32,7 @@ function renderPractice(panel) {
   const st = { chords: ["G", "D", "Em", "C"], pattern: "D·DU·UDU", bpm: 80, root: 9, scale: "minorPentatonic", pos: 5, section: "chords" };
   panel.innerHTML = `
     <div class="jg-row">
+      <img class="jg-inline-mascot" src="assets/mascot/running-guitar.webp" alt="">
       <button class="jg-pill jg-pill-active" data-sec="chords">🎸 Chord loop</button>
       <button class="jg-pill" data-sec="scales">🎼 Scales</button>
       <button class="jg-pill" data-sec="metronome">⏱ Metronome</button>

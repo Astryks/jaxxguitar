@@ -14,6 +14,22 @@ import { WORLD_LANGUAGES } from "./songs-data.js";
 import { isLessonComplete, markLessonComplete, markSongStatus, getQuests, getStreak, getDailyGoal, awardXp, getStreakFreezes } from "./storage.js";
 import { openDailyReview, reviewDoneToday } from "./daily-review.js";
 
+// Jaxx the kitten — a different pose for each kind of moment.
+const MASCOT_BY_LESSON = {
+  "p-guitar": "keyhole", "p-parts": "map-glasses", "p-howitworks": "wrenches", "p-strings": "tangled-strings",
+  "p-fretboard": "top-hat-shelf", "p-press": "strumming", "lesson-1": "happy-guitar", "lesson-strum": "strumming",
+  "lesson-changes": "running-guitar", "lesson-minor": "playing-guitar", "lesson-more": "playing-guitar",
+  "lesson-lespaul": "singing-stage", "lesson-capo": "strumming", "lesson-tab": "quill-scroll", "lesson-power": "running-guitar",
+  "lesson-redspecial": "wrenches", "lesson-barre": "strumming", "lesson-sevenths": "singing-mic",
+  "lesson-pentatonic": "sheet-music-jump", "lesson-major-scale": "music-scrolls", "lesson-techniques": "tangled-strings",
+  "lesson-minor-scales": "music-scrolls", "lesson-hotel": "singing-stage", "lesson-november": "singing-stage",
+  "lesson-fingerpicking": "playing-guitar", "lesson-stairway": "playing-guitar", "lesson-caged": "map-glasses",
+  "lesson-greensleeves": "cello", "lesson-modes": "big-pen",
+};
+function mascot(name, alt = "Jaxx the kitten") {
+  return `<div class="jg-avatar"><img src="assets/mascot/${name}.webp" alt="${alt}" loading="lazy"></div>`;
+}
+
 const DDUUDU = ["down", null, "down", "up", null, "up", "down", "up"];
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
@@ -133,7 +149,7 @@ function showHome() {
     <div class="jg-lessons-layout">
       <div class="jg-lesson-main">
         ${reviewDoneToday() ? "" : '<button class="jg-review-banner jg-open-review">🧠 Your 2-minute daily review is ready — tap to start</button>'}
-        <div class="jg-say"><div class="jg-avatar">🎸</div><div class="jg-bubble">
+        <div class="jg-say">${mascot(nxt ? "happy-guitar" : "juggling-picks")}<div class="jg-bubble">
           ${nxt ? `<h3>${done ? "Welcome back!" : "Welcome to Jaxx Guitar!"}</h3>
             <p>${done ? "Up next:" : "Start here — in your first lesson you'll learn the four chords behind hundreds of songs."}</p>
             <p><strong>${esc(nxt.title)}</strong><span class="jg-sub">${esc(nxt.subtitle || "")}</span></p>
@@ -184,7 +200,7 @@ function openLesson(id, pageIndex = 0) {
         <div class="jg-lesson-content">
           <button class="jg-exit">← All lessons</button>
           <div class="jg-step">${esc(lesson.title)} · ${pageIndex + 1} of ${lesson.pages.length}</div>
-          <div class="jg-say"><div class="jg-avatar">${lesson.fun ? "🤩" : "🎸"}</div><div class="jg-bubble">${page.html || ""}</div></div>
+          <div class="jg-say">${mascot(MASCOT_BY_LESSON[lesson.id] || (lesson.world ? "singing-mic" : lesson.song ? "playing-guitar" : "happy-guitar"))}<div class="jg-bubble">${page.html || ""}</div></div>
           ${page.diagrams ? `<div class="jg-diagram-row">${page.diagrams.map((c) => `<button class="jg-btn jg-dg-btn" data-chord="${esc(c)}" title="Show ${esc(c)} on the fretboard">${chordDiagramSvg(chordShape(c), c)}</button>`).join("")}</div><p class="jg-note">Tap a chord box to see it on the fretboard and hear it.</p>` : ""}
           ${page.tab ? `<div class="jg-tab-wrap">${tabSvg(page.tab.items, { beatsPerBar: page.tab.beatsPerBar, bars: page.tab.bars })}</div>` : ""}
           <div class="jg-extra"></div>
@@ -244,7 +260,7 @@ function openLesson(id, pageIndex = 0) {
 
 function finishScreen(lesson, nxt) {
   panelEl.innerHTML = `
-    <div class="jg-say"><div class="jg-avatar">🏆</div><div class="jg-bubble">
+    <div class="jg-say">${mascot("juggling-picks")}<div class="jg-bubble">
       <h3>Lesson complete: ${esc(lesson.title)}</h3>
       <p>Nice work! ${lesson.song ? "Song added to your learned list." : ""}</p>
       <div class="jg-row">

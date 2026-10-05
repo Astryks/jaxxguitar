@@ -3,7 +3,9 @@
 function renderAbout(panel) {
   panel.innerHTML = `
     <div class="jg-card">
+      <img class="jg-hero-mascot" src="assets/mascot/painter.webp" alt="">
       <h2 style="margin:4px 0">About Jaxx Guitar</h2>
+      <p>Hi, I'm <strong>Jaxx</strong> — a kitten in a top hat who loves guitars. I'll be with you through every lesson!</p>
       <p>A free, gamified guitar course that runs entirely on your device — no account, no ads, no tracking. Your progress is saved in this browser/app only.</p>
       <h3>How it works</h3>
       <ul>

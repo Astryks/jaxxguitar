@@ -87,7 +87,7 @@ function openDailyReview(panel, { onClose }) {
   panel.innerHTML = `
     <div class="jg-lesson-player">
       <button class="jg-exit">← Back</button>
-      <div class="jg-row"><strong>🧠 2-minute daily review</strong><span class="jg-label jg-dr-time">2:00</span><span class="jg-label jg-dr-score"></span></div>
+      <div class="jg-row"><img class="jg-inline-mascot" src="assets/mascot/quill-scroll.webp" alt=""><strong>2-minute daily review</strong><span class="jg-label jg-dr-time">2:00</span><span class="jg-label jg-dr-score"></span></div>
       <div class="jg-card jg-dr-body"></div>
       <div class="jg-instrument-host"></div>
     </div>`;
@@ -113,7 +113,7 @@ function openDailyReview(panel, { onClose }) {
     completeQuest("review");
     awardXp(right * 2, "Daily review");
     recordDailyProgress();
-    body.innerHTML = `<div class="jg-big">${right} / ${i}</div><p style="text-align:center">Review done for today — the ones you missed will come back sooner.</p>
+    body.innerHTML = `<img class="jg-hero-mascot" src="assets/mascot/juggling-picks.webp" alt=""><div class="jg-big">${right} / ${i}</div><p style="text-align:center">Review done for today — the ones you missed will come back sooner.</p>
       <div class="jg-row" style="justify-content:center"><button class="jg-btn jg-btn-primary jg-dr-close">Back to lessons</button></div>`;
     body.querySelector(".jg-dr-close").addEventListener("click", onClose);
   }
