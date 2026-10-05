@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>Jaxx Guitar — Learn Guitar, Gamified</title>
 <meta name="description" content="A free, gamified guitar course: 4 chords to play 100 songs, a mic tuner, falling-note practice, scales and solos. Runs entirely on your device." />
 <link rel="manifest" href="manifest.webmanifest" />
@@ -46,11 +46,7 @@
        A sibling of <a href="https://haydenkeys.com" target="_blank" rel="noopener">Hayden Keys</a> (piano).</p>
   </footer>
 
-  <div class="jg-rotate-prompt">
-    <div class="jg-rotate-icon">📱</div>
-    <h2>Rotate your phone</h2>
-    <p>The fretboard needs the width — turn your phone sideways.</p>
-  </div>
+  <button type="button" class="jg-rotate-tip" onclick="this.remove()" aria-label="Dismiss tip">📱 Tip: turn your phone sideways for a bigger fretboard. <span aria-hidden="true">✕</span></button>
 
   <script type="module" src="js/app.js"></script>
   <script>

@@ -1,4 +1,5 @@
 /* Jaxx Guitar — warm wood + amber theme (sibling of Hayden Keys' pastel piano theme). */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; touch-action: manipulation; }
 :root {
   --jg-bg: #fbf4ea;
   --jg-bg-2: #f3e7d6;
@@ -195,7 +196,8 @@ table.jg-table { border-collapse: collapse; font-size: 0.88rem; margin: 6px 0; }
 .jg-table th { background: var(--jg-bg-2); }
 
 @media (max-width: 760px) {
-  .jg-lessons-layout { flex-direction: column; }
+  .jg-lessons-layout { flex-direction: column; align-items: stretch; }
+  .jg-lesson-main { width: 100%; }
   .jg-lesson-sidebar { position: static; width: 100%; flex: 1 1 auto; order: 2; }
 }
 /* Landscape phones: instrument pinned at the bottom, no sidebar */
@@ -212,12 +214,18 @@ table.jg-table { border-collapse: collapse; font-size: 0.88rem; margin: 6px 0; }
   .jg-instrument { order: 3; position: sticky; bottom: 0; z-index: 5; background: var(--jg-bg); }
   .jg-highway { height: 56px; }
 }
+/* Any orientation. In portrait on a phone the instrument keeps a usable
+   size and scrolls sideways (frets 0-5 show first, where beginner shapes
+   live); a small dismissible tip suggests turning sideways. */
+.jg-rotate-tip { display: none; }
 @media (orientation: portrait) and (max-width: 700px) {
-  body > *:not(.jg-rotate-prompt) { display: none !important; }
-  .jg-rotate-prompt { display: flex !important; position: fixed; inset: 0; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: var(--jg-bg); padding: 24px; }
+  .jg-rotate-tip { display: block; position: fixed; left: 12px; right: 12px; top: calc(8px + env(safe-area-inset-top, 0px)); z-index: 50; animation: jg-tip-out 0.6s ease-in 9s forwards; box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 6px 10px; border: 1px solid var(--jg-border); border-radius: 10px; background: var(--jg-panel); color: var(--jg-text-dim); font-size: 0.82rem; text-align: left; cursor: pointer; }
+  .jg-rotate-tip span { float: right; }
+  .jg-instrument-host, .jg-dr-board { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .jg-instrument { min-width: 720px; }
+  .jg-header h1 { font-size: 1.4rem; }
+  .jg-tab { padding: 6px 12px; }
 }
-.jg-rotate-prompt { display: none; }
-.jg-rotate-icon { font-size: 3rem; }
 
 /* Instrument: inline on big screens, pinned to the bottom on landscape phones */
 .jg-instrument-host { margin: 8px 0; }
@@ -235,3 +243,5 @@ details > summary::-webkit-details-marker { display: none; }
 .jg-funfact-card { background: var(--jg-panel); border-radius: 18px; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 18px 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.25); border-top: 6px solid var(--jg-accent); line-height: 1.5; }
 .jg-funfact-card h3 { margin: 4px 0 8px; }
 .jg-funfact-kicker { font-weight: 700; color: var(--jg-accent); }
+
+@keyframes jg-tip-out { to { opacity: 0; visibility: hidden; } }
