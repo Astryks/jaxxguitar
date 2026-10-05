@@ -7,6 +7,7 @@ import { renderStringTuner } from "./tuner.js";
 import { renderAbout } from "./about.js";
 import { getLevel } from "./storage.js";
 import { disableMic } from "./input-hub.js";
+import { maybeShowFunFact, showFunFact } from "./fun-facts.js";
 
 const panels = {
   lessons: document.getElementById("panel-lessons"),
@@ -86,7 +87,13 @@ window.addEventListener("jg-xp", (e) => {
   drawLevel();
 });
 window.addEventListener("jg-toast", (e) => toast(e.detail.text, { big: e.detail.big }));
-window.addEventListener("jg-celebrate", confetti);
+window.addEventListener("jg-celebrate", () => {
+  confetti();
+  maybeShowFunFact();
+});
+document.addEventListener("click", (e) => {
+  if (e.target.closest(".jg-funfact-open")) showFunFact();
+});
 
 drawLevel();
 let startTab = "lessons";

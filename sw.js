@@ -20,6 +20,7 @@ const APP_SHELL = [
   "./js/drums.js",
   "./js/fret-highway.js",
   "./js/fretboard.js",
+  "./js/fun-facts.js",
   "./js/guitar-audio.js",
   "./js/guitar-player.js",
   "./js/guitar-theory.js",

@@ -144,6 +144,7 @@ function showHome() {
           <div class="jg-row"><strong>Today</strong>
             <span class="jg-label">🔥 ${streak.count}-day streak${freezes ? ` · ❄️ ${freezes}` : ""} · daily goal ${goal.metToday ? "✓ met" : "— finish 1 lesson or song"}</span></div>
           ${quests.map((q) => `<div class="jg-quest ${q.done ? "jg-quest-done" : ""}">${q.done ? "✅" : "⬜"} ${q.text} <span class="jg-label">+10 XP</span></div>`).join("")}
+          <button class="jg-btn jg-btn-small jg-funfact-open" style="margin-top:6px">🎸 Did you know? — a guitar fun fact</button>
         </div>
         <p class="jg-note">${done} of ${allLessons().filter((l) => !l.world).length} lessons done. Lessons are a guide, not a gate — open any of them from the roadmap.</p>
       </div>

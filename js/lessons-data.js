@@ -70,6 +70,39 @@ const PRE = [
     ],
   },
   {
+    id: "p-howitworks", pre: true, fun: true, title: "Just for fun: how a guitar is made — and why it rings", subtitle: "Wood, wiggles and air",
+    pages: [
+      { html: `<h3>Someone builds every guitar!</h3>
+        <p>A guitar maker is called a <strong>luthier</strong> (say "LOO-tee-er"). Here's how they make an acoustic guitar:</p>
+        <ol>
+          <li>Carve the <strong>top</strong> from a thin sheet of wood — often spruce, about as thick as two coins. It has to be thin so it can wobble.</li>
+          <li>Glue wooden sticks called <strong>braces</strong> underneath, like a skeleton, so the top doesn't crack when the strings pull on it.</li>
+          <li>Bend the <strong>sides</strong> into that curvy shape with heat, and glue on the <strong>back</strong> — now it's a hollow wooden box.</li>
+          <li>Make the <strong>neck</strong>, with a steel <strong>truss rod</strong> hidden inside, and tap metal <strong>frets</strong> into little slots.</li>
+          <li>Add the <strong>bridge</strong>, tuning pegs and strings… and tune it up!</li>
+        </ol>
+        <p class="jg-fact">All six strings pull with about <strong>70 kilograms</strong> of force — like a grown-up hanging off your guitar all day long. That's why it needs braces and a truss rod!</p>` },
+      { html: `<h3>Why does it make sound?</h3>
+        <p>When you pluck a string, it <strong>wiggles</strong> back and forth really fast. But a string is so thin it hardly pushes any air — on its own, you'd barely hear it!</p>
+        <ol>
+          <li>The wiggle travels through the <strong>bridge</strong> into the wooden <strong>top</strong>…</li>
+          <li>…which wobbles like a <strong>trampoline</strong> and pushes LOTS of air…</li>
+          <li>…and the air inside the body puffs <strong>in and out of the sound hole</strong>, like blowing across a bottle — <em>hoooo</em> — making the low notes big and warm.</li>
+        </ol>
+        <p>The thick low E string wiggles about <strong>82 times every second</strong>. The thin high e wiggles about <strong>330 times a second</strong>. Listen to all six, thick to thin:</p>`,
+        notes: [0, 1, 2, 3, 4, 5].map((s) => ({ string: s, fret: 0, label: STRING_NAMES[s] })),
+        practice: { items: melody([[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0]]), bpm: 60, modes: ["listen"], label: "The six open strings" } },
+      { html: `<h3>The halfway trick</h3>
+        <p>Pressing a fret makes the wiggly part of the string <strong>shorter</strong> — and shorter strings wiggle faster, so the note goes higher.</p>
+        <p>The <strong>12th fret</strong> (the double dot) is exactly <strong>halfway</strong> along the string. Half the string wiggles twice as fast, which sounds like the <strong>same note, only higher</strong>. Tap the open low E, then the low E at the 12th fret, and hear it!</p>
+        <p class="jg-note">That's also why the frets get closer together as you go up the neck — each one sits about one-eighteenth of the way along the string that's left.</p>`,
+        notes: [{ string: 0, fret: 0, label: "E" }, { string: 0, fret: 12, label: "E", tone: "root" }] },
+      { html: `<h3>Electric guitars "hear" with magnets</h3>
+        <p>An electric guitar is usually a <strong>solid</strong> block of wood, so it's quiet by itself. Under the strings sit <strong>pickups</strong>: magnets wrapped in thousands of turns of super-thin copper wire. When a steel string wiggles over the magnet, it makes a tiny <strong>electric signal</strong>, and the <strong>amplifier</strong> turns it into big sound.</p>
+        <p>Acoustic or electric, it all starts the same way: a string, wiggling. 🎸</p>` },
+    ],
+  },
+  {
     id: "p-strings", pre: true, title: "The six strings — and tuning", subtitle: "E A D G B E",
     pages: [
       { html: `<h3>Six strings, thickest to thinnest: E A D G B E.</h3>

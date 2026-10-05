@@ -10,9 +10,9 @@ _Last updated 2026-10-06_
   - Listen / Wait for me / Play-in-time player.
   - Mic input via the shared input hub.
 - [x] Lessons:
-  - 27 hand-written lessons: Before you start ×5, Beginner ×12, Intermediate ×7, Advanced ×3.
+  - 28 hand-written lessons: Before you start ×6 (incl. how a guitar is made), Beginner ×12, Intermediate ×7, Advanced ×3.
   - 24 auto-generated song lessons (8 per level) and 10 optional World-songs lessons.
-  - All 191 pages render with no errors.
+  - All 195 pages render with no errors.
 - [x] Fact-check notes:
   - The Red Special was built by Brian May and his father (Queen, not Led Zeppelin).
   - Les Paul's teenage phonograph-needle and radio-speaker rig was the start of his electric-guitar work. He didn't invent the amplifier.
@@ -20,6 +20,7 @@ _Last updated 2026-10-06_
 - [x] Songs tab: search, level filter, World songs, capo plus chord diagrams, play-along with a beat, and "mark as learned".
 - [x] Practice tab: chord-loop builder, scales (6 scale types × 12 keys × any position), metronome with tap tempo, and upload → chords with Original / Guitar only / Guitar + song.
 - [x] Tuner tab: per string, ±8 cents, a reference tone, and it moves on to the next string automatically.
+- [x] Kid-friendly "Did you know?" guitar facts at random between lessons (how guitars are built, why they ring, legendary players).
 - [x] Gamification: XP and levels, daily quests, stars, streak plus freezes, confetti, and the 2-minute Leitner daily review.
 - [x] PWA: manifest, service worker, icons, privacy policy, third-party notices, and a GitHub Pages workflow.
 - [x] Tests: wait mode with simulated mic input (single notes and chords); screenshots of every tab, desktop and landscape phone.

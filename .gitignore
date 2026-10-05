@@ -5,3 +5,4 @@ ios/App/build/
 ios/build/
 .DS_Store
 .claude/
+ios/App/App/public/
