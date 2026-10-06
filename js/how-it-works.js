@@ -1,7 +1,5 @@
-// "How Jaxx Guitar works": a short, visual tour of the technology, and the
-// tip jar (iPhone/iPad app only; tips unlock nothing).
+// "How Jaxx Guitar works": a short, visual tour of the technology.
 import { icon } from "./icons.js";
-import { renderTipJar } from "./tipjar.js";
 
 const TECH = [
   ["song", "Upload any song", "A music AI from Spotify, called Basic Pitch, runs right on your phone. It listens to your recording and writes down every note it hears. Then we turn those notes into chords and the easiest shapes to play on guitar."],
@@ -17,9 +15,7 @@ function renderHow(el) {
       <h2>How Jaxx Guitar works</h2>
       <p class="jg-note">Some amazing technology, packed into a free app.</p>
       <div class="jg-tech-grid">${TECH.map(([ic, t, d]) => `<div class="jg-tech-card">${icon(ic, 40)}<b>${t}</b><p>${d}</p></div>`).join("")}</div>
-      <div class="jg-tipjar-slot"></div>
     </div>`;
-  renderTipJar(el.querySelector(".jg-tipjar-slot"));
 }
 
 export { renderHow };

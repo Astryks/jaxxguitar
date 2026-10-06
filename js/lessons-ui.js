@@ -175,7 +175,7 @@ function showHome() {
         <span><b>Upload any song</b><span>and we'll find the chords for you</span></span>
         <span class="jg-home-upload-go">Upload</span>
       </button>
-      <button class="jg-home-how" data-home-how type="button">${icon("star", 18)} How it works &amp; support us</button>
+      <button class="jg-home-how" data-home-how type="button">${icon("star", 18)} How it works</button>
       <p class="jg-home-credit">Supported by the Astryks Group (<a href="https://astryks.com" target="_blank" rel="noopener">astryks.com</a>)</p>
     </div>`;
   panelEl.querySelector("[data-home-how]")?.addEventListener("click", () => window.dispatchEvent(new CustomEvent("jg-show", { detail: "how" })));

@@ -5,6 +5,5 @@ import Capacitor
 class JGBridgeViewController: CAPBridgeViewController {
     override open func capacitorDidLoad() {
         bridge?.registerPluginInstance(SongRecognizerPlugin())
-        bridge?.registerPluginInstance(TipJarPlugin())
     }
 }
