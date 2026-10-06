@@ -10,7 +10,9 @@
 let ctx = null;
 function getAudioContext() {
   if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
-  if (ctx.state === "suspended") ctx.resume();
+  // iOS also has an "interrupted" state (after a call, Siri, or switching
+  // apps) — resume from anything that isn't running.
+  if (ctx.state !== "running") ctx.resume?.().catch?.(() => {});
   return ctx;
 }
 
@@ -33,6 +35,7 @@ function unlockAudio() {
   if (c.state !== "running") c.resume?.();
   else ["touchend", "pointerdown", "keydown"].forEach((t) => window.removeEventListener(t, unlockAudio, true));
 }
+if (typeof document !== "undefined") document.addEventListener("visibilitychange", () => { if (!document.hidden) getAudioContext(); });
 if (typeof window !== "undefined") ["touchend", "pointerdown", "keydown"].forEach((t) => window.addEventListener(t, unlockAudio, true));
 
 const cache = new Map();
