@@ -119,7 +119,7 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 - Fun fact #2 (always second): "Who invented the guitar?" — evolved from the lute and vihuela; Antonio de Torres shaped the modern guitar in the 1850s–60s (bigger body, thinner top, fan bracing); his papier-mâché guitar; photos: Torres (public domain) and a Torres guitar at the Museu de la Música de Barcelona (CC BY-SA 3.0, credited).
 
 ## Where things stand (2026-10-07)
-- **TestFlight:** build 7 is the last one uploaded (Comfortably Numb, Creep, looping lesson). **Build 8** (Hayden Keys feedback adapted for guitar) is archived and ready, but the upload is blocked by Xcode's "Failed to Use Accounts" error. Re-sign in to Xcode (Settings → Accounts → remove and re-add the Apple ID), then upload build 8.
+- **TestFlight:** **build 8 uploaded** (2026-10-07: Hayden Keys feedback adapted for guitar, on top of build 7's Comfortably Numb, Creep and looping lesson).
 - **ShazamKit:** enabled for com.jaxxguitar.app (from build 6); the button says "Guess the song".
 - **App Store submission:** not submitted. Screenshots, content rights, age rating, App Privacy and review contact are still to do in App Store Connect.
 - **Sibling app:** Hayden Keys (piano) has the same changes (its build 24).
