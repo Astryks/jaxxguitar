@@ -298,3 +298,65 @@ details > summary::-webkit-details-marker { display: none; }
 .jg-up-rec-box { display: flex; gap: 12px; align-items: center; background: #fff; border: 2px solid var(--jg-accent-soft); border-radius: 16px; padding: 10px 12px; margin: 8px 0; }
 .jg-up-rec-box b { font-size: 1.15rem; }
 .jg-up-rec-art { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; }
+
+/* ===== Clean home: big tiles, one card, upload ===== */
+.jg-header { flex-direction: column !important; text-align: center; gap: 2px !important; }
+.jg-header .jg-logo { width: 64px; height: 64px; }
+.jg-level-chip { display: none !important; }
+.jg-tagline { font-weight: 600; }
+.jg-tabs { display: grid !important; grid-template-columns: repeat(4, 1fr); gap: 8px !important; max-width: 560px; margin: 8px auto 14px; padding: 0 12px !important; }
+.jg-tab { display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 84px !important; padding: 8px 4px !important;
+  border-radius: 18px !important; border: 2px solid var(--jg-border) !important; background: #fff !important; color: var(--jg-text) !important;
+  font-weight: 800; font-size: 0.92rem !important; box-shadow: 0 6px 14px rgba(107, 63, 31, 0.10); }
+.jg-tab-active { border-color: var(--jg-accent) !important; background: linear-gradient(160deg, #fff4e6, #fff) !important; box-shadow: 0 8px 20px rgba(196, 106, 31, 0.25); }
+.jg-home-clean { max-width: 560px; margin: 0 auto; padding: 0 16px; display: flex; flex-direction: column; gap: 14px; }
+.jg-hero-card { display: flex; align-items: center; gap: 14px; width: 100%; padding: 16px; border-radius: 24px; border: none; text-align: left; cursor: pointer;
+  background: linear-gradient(135deg, #fff1df, #e7f6f3); box-shadow: 0 10px 26px rgba(107, 63, 31, 0.14); }
+.jg-hero-card .jg-avatar { width: 110px; height: 110px; flex: 0 0 auto; }
+.jg-hero-card .jg-avatar img { width: 100%; height: 100%; object-fit: contain; }
+.jg-hero-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.jg-hero-kicker { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jg-accent); }
+.jg-hero-title { font-size: 1.35rem; font-weight: 900; color: var(--jg-text); }
+.jg-hero-bar { height: 8px; border-radius: 99px; background: #fff; overflow: hidden; }
+.jg-hero-bar > span { display: block; height: 100%; background: linear-gradient(90deg, var(--jg-accent), var(--jg-accent-2)); }
+.jg-hero-meta { display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--jg-text-dim); }
+.jg-hero-cta { align-self: flex-start; margin-top: 4px; padding: 10px 20px; border-radius: 999px; background: linear-gradient(135deg, var(--jg-accent), #e08a3c); color: #fff; font-weight: 900; font-size: 1.05rem; }
+.jg-home-upload { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 16px; border-radius: 20px; border: 2px dashed #e7c79f; background: #fff; text-align: left; cursor: pointer; }
+.jg-home-upload > span:nth-child(2) { flex: 1; display: flex; flex-direction: column; }
+.jg-home-upload b { font-size: 1.1rem; }
+.jg-home-upload > span:nth-child(2) > span { font-size: 0.9rem; color: var(--jg-text-dim); }
+.jg-home-upload-go { padding: 8px 14px; border-radius: 999px; background: var(--jg-accent-2); color: #fff; font-weight: 800; }
+.jg-footer-link { background: none; border: none; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; padding: 0; }
+/* Footer (privacy, credits) only on the About page, not the home screen */
+body[data-tab="practice"] .jg-footer, body[data-tab="tuner"] .jg-footer { display: none; }
+body[data-tab="lessons"] .jg-footer, body[data-tab="songs"] .jg-footer { display: none; }
+
+/* Song screen: cover art, key, chords by section */
+.jg-song-card { display: flex; gap: 14px; align-items: center; margin: 6px 0 10px; }
+.jg-song-art { flex: 0 0 auto; width: 92px; height: 92px; border-radius: 18px; overflow: hidden; display: grid; place-items: center; background: linear-gradient(135deg, var(--jg-accent), var(--jg-accent-2)); box-shadow: 0 6px 16px rgba(107, 63, 31, 0.2); }
+.jg-song-art span { color: #fff; font-weight: 900; font-size: 1.6rem; }
+.jg-song-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.jg-song-info { min-width: 0; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.jg-song-info h2 { margin: 0; font-size: 1.35rem; }
+.jg-song-info p { margin: 0; color: var(--jg-text-dim); }
+.jg-song-key { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: #fff1df; color: var(--jg-wood); font-weight: 800; font-size: 0.9rem; }
+.jg-song-prog { background: var(--jg-panel); border: 1px solid var(--jg-border); border-radius: 16px; padding: 10px 12px; margin-bottom: 10px; }
+.jg-song-prog-title { font-weight: 800; font-size: 0.85rem; color: var(--jg-accent); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+.jg-song-prog-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 10px; padding: 5px 0; border-top: 1px dashed var(--jg-border); }
+.jg-song-prog-row:first-of-type { border-top: none; }
+.jg-song-prog-row span { font-size: 0.85rem; color: var(--jg-text-dim); }
+.jg-song-prog-row b { display: flex; gap: 6px; flex-wrap: wrap; }
+.jg-song-prog-row i { font-style: normal; font-weight: 900; min-width: 34px; text-align: center; padding: 3px 8px; border-radius: 10px; background: #fff; border: 2px solid var(--jg-accent-soft); }
+.jg-icon, .hk-icon { vertical-align: -0.2em; }
+.jg-phone-note { display: flex; gap: 8px; align-items: flex-start; margin: 8px 0 0; padding: 8px 12px; border-radius: 14px; background: #fff7e0; border: 1px dashed #f2b630; font-size: 0.88rem; color: #5a4a2a; }
+/* Chord Ear Gym */
+.jg-gym-head { display: flex; gap: 10px; align-items: center; font-size: 0.95rem; }
+.jg-gym-head b { flex: 1; color: var(--jg-accent); }
+.jg-gym-ask { text-align: center; font-size: 1.3rem; font-weight: 900; margin: 10px 0; }
+.jg-gym-ask small { font-size: 0.85rem; font-weight: 600; color: var(--jg-text-dim); }
+.jg-gym-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.jg-gym-choice { padding: 16px 8px; border-radius: 16px; border: 3px solid var(--jg-border); background: #fff; font-size: 1.4rem; font-weight: 900; cursor: pointer; }
+.jg-gym-choice:disabled { opacity: 0.7; cursor: default; }
+.jg-gym-right { border-color: var(--jg-good) !important; background: #e6f7ea !important; opacity: 1 !important; }
+.jg-gym-wrong { border-color: #e4573d !important; background: #fde8e4 !important; opacity: 1 !important; }
+.jg-gym-reply { text-align: center; margin-top: 8px; }

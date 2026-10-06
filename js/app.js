@@ -1,3 +1,4 @@
+import { icon } from "./icons.js";
 // Jaxx Guitar entry point: tabs, the level chip, toasts and confetti.
 
 import { renderLessons } from "./lessons-ui.js";
@@ -26,8 +27,15 @@ function leave() {
   disableMic();
 }
 
+// Big home tiles: each tab gets one of our own icons.
+const TAB_ICONS = { lessons: "guitar", songs: "song", practice: "play", tuner: "tuner" };
+document.querySelectorAll(".jg-tab[data-tab]").forEach((b) => {
+  if (TAB_ICONS[b.dataset.tab]) b.innerHTML = `${icon(TAB_ICONS[b.dataset.tab], 34)}<span>${b.textContent.trim()}</span>`;
+});
+
 function show(tab) {
   leave();
+  document.body.dataset.tab = tab;
   document.querySelectorAll(".jg-tab").forEach((b) => b.classList.toggle("jg-tab-active", b.dataset.tab === tab));
   Object.entries(panels).forEach(([k, el]) => el.classList.toggle("jg-hidden", k !== tab));
   const el = panels[tab];
@@ -44,7 +52,7 @@ function show(tab) {
   try { localStorage.setItem("jg_tab", tab); } catch (e) { /* ignore */ }
 }
 
-document.querySelectorAll(".jg-tab").forEach((b) => b.addEventListener("click", () => show(b.dataset.tab)));
+document.querySelectorAll(".jg-tab, .jg-footer-link").forEach((b) => b.addEventListener("click", () => show(b.dataset.tab)));
 
 function drawLevel() {
   const l = getLevel();

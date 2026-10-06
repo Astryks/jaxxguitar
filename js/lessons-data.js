@@ -264,11 +264,14 @@ const BEGINNER = [
   {
     id: "lesson-1", title: "The 4 chords to play 100 songs", subtitle: "G, D, Em and C",
     pages: [
-      { html: `<h3>First: is your guitar in tune?</h3>
+      { html: `<h3>Welcome to Jaxx Guitar! 🎸</h3>
+        <p>In about <strong>a minute</strong> you'll learn <strong>4 chords</strong> that play <strong>100+ songs</strong>: <strong>G · D · Em · C</strong> 🎶</p>
+        <p>But bear with us while we cover the <strong>basics</strong> first. It'll only take a few seconds! Grab <strong>your guitar</strong> 🎸</p>
+        <h3>First: is your guitar in tune?</h3>
         <p>Before every practice, check your tuning — it takes a minute and makes everything sound right. Play each string with the tuner below; it moves to the next string on its own when one goes green. Already tuned? Tap <strong>Next</strong>.</p>`, tuner: true },
       { html: `<h3>Four chords play hundreds of songs.</h3>
         <p>"Let It Be", "Someone Like You", "I'm Yours", "With or Without You"… all built on the same 4-chord pattern. On guitar, the friendliest version is <strong>G – D – Em – C</strong>.</p>
-        <p class="jg-note">You may have heard them called "G, A, C, D" — the real four are <strong>G, D, Em and C</strong>. G, C and D are in there; the fourth one is E minor, not A.</p>`,
+`,
         diagrams: ["G", "D", "Em", "C"] },
       { html: `<h3>G major</h3><p>Middle finger on the 6th string, 3rd fret; index on the 5th string, 2nd fret; ring finger on the 1st string, 3rd fret. Strum all six strings.</p>`, shape: "G", diagrams: ["G"],
         practice: { items: strumItems(["G"]), bpm: 70, modes: ["listen"], label: "Hear G" } },
@@ -428,6 +431,35 @@ const BEGINNER = [
         <p>The <strong>12-bar blues</strong> in A: four bars of A7, two of D7, two of A7, then E7, D7, A7, E7. It's behind thousands of songs.</p>`,
         diagrams: ["A7", "D7", "E7"],
         practice: { items: strumItems(["A7", "A7", "A7", "A7", "D7", "D7", "A7", "A7", "E7", "D7", "A7", "E7"]), bpm: 92, modes: ["listen"], label: "12-bar blues in A" } },
+    ],
+  },
+  {
+    id: "lesson-genres", title: "Music has flavours: genres", subtitle: "Pop, rock, blues, jazz, reggae, classical",
+    pages: [
+      { html: `<h3>Same guitar, different flavours 🍦</h3>
+        <p>Styles of music are called <strong>genres</strong>: <strong>pop</strong>, <strong>rock</strong>, <strong>blues</strong>, <strong>jazz</strong>, <strong>reggae</strong>, <strong>classical</strong>, and many more like country and R&amp;B.</p>
+        <p>What changes is <strong>which chords</strong> they love and <strong>how you strum or pick</strong> them. Let's taste six.</p>` },
+      { html: `<h3>Pop: catchy chords, round and round</h3>
+        <p>Pop loves a short loop of 4 chords you can sing over. You already know the most famous one: <strong>G – D – Em – C</strong>, with the D · DU · UDU strum.</p>`,
+        diagrams: ["G", "D", "Em", "C"], practice: { items: strumItems(["G", "D", "Em", "C"], DDUUDU), bpm: 80, modes: ["listen", "wait"], label: "Pop: G D Em C" } },
+      { html: `<h3>Rock: big, strong chords</h3>
+        <p>Rock plays simple chords <strong>loud and driving</strong>, often with strong downstrums or power chords. A rock favourite: <strong>D – C – G</strong>, the chords of <em>Sweet Home Alabama</em> by Lynyrd Skynyrd.</p>`,
+        diagrams: ["D", "C", "G"], practice: { items: strumItems(["D", "C", "G", "G"], ["down", "down", "down", "down", "down", "down", "down", "down"]), bpm: 96, modes: ["listen", "wait"], label: "Rock: D C G, all downstrums" } },
+      { html: `<h3>Blues: the parent of rock and jazz</h3>
+        <p>The blues came from African American musicians in the southern United States in the late 1800s. The <strong>12-bar blues</strong> uses chords <strong>1, 4 and 5</strong> as 7th chords. In A: <strong>A7, D7, E7</strong>.</p>`,
+        diagrams: ["A7", "D7", "E7"], practice: { items: strumItems(["A7", "A7", "A7", "A7", "D7", "D7", "A7", "A7", "E7", "D7", "A7", "E7"]), bpm: 92, modes: ["listen"], label: "12-bar blues in A" } },
+      { html: `<h3>Jazz: rich chords and the famous 2 – 5 – 1</h3>
+        <p>Jazz grew out of the blues in <strong>New Orleans</strong> in the early 1900s. It loves rich 4-note chords and making things up as you go. Its most famous move is <strong>2 – 5 – 1</strong>: in C, <strong>Dm7 – G7 – Cmaj7</strong>. You'll hear it in <em>Autumn Leaves</em> and <em>Fly Me to the Moon</em>.</p>`,
+        diagrams: ["Dm7", "G7", "Cmaj7"], practice: { items: strumItems(["Dm7", "G7", "Cmaj7", "Cmaj7"]), bpm: 72, modes: ["listen", "wait"], label: "Jazz: Dm7 G7 Cmaj7" } },
+      { html: `<h3>Reggae: strum on the off-beat</h3>
+        <p>Reggae from Jamaica flips the strum: short, choppy chords on the <strong>"&amp;"</strong> between the beats, never on the beat. Bob Marley's <em>Three Little Birds</em> uses just <strong>A, D and E</strong>.</p>
+        <p class="jg-note">Count "1 & 2 & 3 & 4 &" and only strum (a quick upstroke) on each "&".</p>`,
+        diagrams: ["A", "D", "E"], practice: { items: strumItems(["A", "D", "A", "E"], [null, "up", null, "up", null, "up", null, "up"]), bpm: 76, modes: ["listen"], label: "Reggae: upstrokes on the off-beat" } },
+      { html: `<h3>Classical: fingers, not a pick</h3>
+        <p>Classical guitar is played with the <strong>fingers</strong>, picking the strings one at a time: a chord becomes a little melody. You'll learn it properly in the Fingerpicking and Classical guitar lessons.</p>
+        <h3>Which flavour is yours?</h3>
+        <p>Pick songs from the style you love most and you'll practise more. Find them in <strong>Songs</strong>, or upload any song in <strong>Practice</strong>.</p>`,
+        diagrams: ["Am"], practice: { items: () => [[4, 0], [3, 2], [2, 2], [1, 1], [0, 0], [1, 1], [2, 2], [3, 2]].map(([string, fret], i) => ({ string, fret, start: i * 0.5, dur: 0.5 })), bpm: 70, modes: ["listen"], label: "Am, one string at a time" } },
     ],
   },
 ];
@@ -807,6 +839,15 @@ const ADVANCED = [
           const run = [...AMIN_PENT].reverse();
           return run.map((n, i) => ({ string: n.string, fret: n.fret, start: i * 0.25, dur: 0.25 })).concat([{ string: 3, fret: 7, start: run.length * 0.25, dur: 2 }]);
         }, bpm: 70, modes: ["listen", "wait", "timed"], mic: true, label: "A fast pentatonic run (our own lick)", showTab: true } },
+    ],
+  },
+  {
+    id: "lesson-ear-gym", title: "Chord Ear Gym", subtitle: "Guess the chord by ear",
+    pages: [
+      { html: `<h3>Train your ears to name chords 🎧</h3>
+        <p>Great guitarists can hear a chord and know its name. That's how they play songs <strong>by ear</strong>.</p>
+        <p>3 rounds: <strong>happy or sad</strong>, then <strong>all 24 chords</strong> one by one, then chords played <strong>different ways</strong> (strummed, picked one string at a time, or higher up the neck), like in real songs.</p>`,
+        earGym: true },
     ],
   },
 ];

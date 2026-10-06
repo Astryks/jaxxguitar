@@ -105,3 +105,15 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 - Added Comfortably Numb (Pink Floyd, 1979): verse Bm A G Em Bm, chorus in D (D A D A C G D), song structure incl. both solo sections; solos not transcribed.
 - Added Creep (Radiohead, 1992): G B C Cm loop (I III IV iv), song structure, official video (Radiohead channel, oEmbed-verified).
 - New lesson "Looping: rhythm and lead" (after the minor pentatonic): rhythm vs lead with an Am G F G loop, with a friend (swap roles), on your own with the looping backing track, the loop pedal (Ed Sheeran: Boss RC-20XL first, later the custom "Chewie" rig by his tech Trevor Dawkins; NPR Tiny Desk video), and a beginner gear list (Ditto / RC-1 / RC-5 with Reverb prices, cables, amp, acoustic pickup, 9V power).
+
+## 2026-10-07 — iOS build 8 (Hayden Keys feedback, ported to guitar)
+- Clean home: tagline "Learn any song on the guitar for free!", four big tiles with our own icons (Lessons / Songs / Practice / Tuner; About moved to the footer), one Start/Continue card with Jaxx, and "Upload any song and we'll find the chords for you" (opens Practice → Upload). Level chip, quests, review and roadmap no longer on the home screen; footer only on About/Songs.
+- Song screen: album artwork (iTunes Search, cached; privacy updated), key, chords section by section, official video (same verified list as Hayden Keys), Play "Main part (4 chords)" / "Whole song" (structure transposed to the capo shapes).
+- Our own icons replace emoji in the practice controls (Listen / Wait for me / Play in time, Loop, Beat, Microphone) and the Practice/Upload screen; "Guess the song" without the Shazam name.
+- Microphone wording everywhere (hint, Info.plist, privacy): "only to hear your guitar strings, nothing else".
+- Upload disclaimer: same wording as Hayden Keys.
+- Lesson 1 opens with: "In about a minute you'll learn 4 chords that play 100+ songs… bear with us while we cover the basics… Grab your guitar". Removed the "G, A, C, D" note.
+- Chord pages: "I know it's hard to play a chord on the app… tap the notes one at a time; the real practice is on your guitar: press all the strings and strum them together."
+- New lesson "Music has flavours: genres" (after 7th chords): pop (G D Em C), rock (D C G, Sweet Home Alabama), blues (12-bar A7 D7 E7), jazz (2-5-1 Dm7 G7 Cmaj7), reggae (off-beat upstrokes, Three Little Birds A D E), classical (fingerpicking).
+- New final lesson "Chord Ear Gym": happy or sad, all 24 chords with 4 choices, then chords played different ways (strummed / picked / higher up); wrong answers compare both chords; shape shown on the fretboard.
+- Fun fact #2 (always second): "Who invented the guitar?" — evolved from the lute and vihuela; Antonio de Torres shaped the modern guitar in the 1850s–60s (bigger body, thinner top, fan bracing); his papier-mâché guitar; photos: Torres (public domain) and a Torres guitar at the Museu de la Música de Barcelona (CC BY-SA 3.0, credited).

@@ -27,7 +27,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Jaxx Guitar listens through your microphone only when you turn on the tuner or Wait for me / Play in time practice, to hear which note you played on your guitar. It all happens on your device; audio is never recorded, stored, or sent anywhere.</string>
+	<string>Jaxx Guitar uses your microphone only to hear your guitar strings, nothing else: when you use the tuner, Wait for me or Play in time. It works out which notes you played on your device. Nothing is recorded, saved or sent anywhere.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

@@ -12,9 +12,10 @@ import { createGuitarPlayer } from "./guitar-player.js";
 import { enableMic, disableMic, micOn } from "./input-hub.js";
 import { getAudioContext } from "./guitar-audio.js";
 import { playBeat } from "./drums.js";
+import { icon } from "./icons.js";
 import { starsFor, recordStars, awardXp, completeQuest } from "./storage.js";
 
-const MODE_LABELS = { listen: "▶ Listen", wait: "⏸ Wait for me", timed: "⏱ Play in time" };
+const MODE_LABELS = { listen: ["play", "Listen"], wait: ["hand", "Wait for me"], timed: ["tuner", "Play in time"] };
 
 // An instrument: highway on top of a fretboard. Returns { fb, hw, el }.
 function mountInstrument(container, { frets = 12, highway = true } = {}) {
@@ -40,14 +41,14 @@ function createPracticeBox(host, inst, opts) {
   host.innerHTML = `
     <div class="jg-card jg-practice">
       <div class="jg-row"><strong>${opts.label || "Practice"}</strong> <span class="jg-stars jg-pb-stars"></span></div>
-      <div class="jg-row jg-pb-modes">${modes.map((m) => `<button class="jg-pill" data-mode="${m}">${MODE_LABELS[m]}</button>`).join("")}</div>
+      <div class="jg-row jg-pb-modes">${modes.map((m) => `<button class="jg-pill" data-mode="${m}">${icon(MODE_LABELS[m][0], 16)} ${MODE_LABELS[m][1]}</button>`).join("")}</div>
       <div class="jg-row">
         <span class="jg-label">Speed</span>
         ${[0.5, 0.75, 1].map((s) => `<button class="jg-pill" data-speed="${s}">${Math.round(s * 100)}%</button>`).join("")}
         <span class="jg-label" style="margin-left:8px">${opts.bpm || 80} BPM</span>
-        <button class="jg-pill jg-pb-loop">🔁 Loop</button>
-        <button class="jg-pill jg-pb-drums">🥁 Beat</button>
-        ${opts.mic || modes.includes("wait") ? '<button class="jg-pill jg-pb-mic">🎤 Microphone</button>' : ""}
+        <button class="jg-pill jg-pb-loop">${icon("loop", 16)} Loop</button>
+        <button class="jg-pill jg-pb-drums">${icon("drum", 16)} Beat</button>
+        ${opts.mic || modes.includes("wait") ? `<button class="jg-pill jg-pb-mic">${icon("mic", 16)} Microphone</button>` : ""}
       </div>
       <p class="jg-note jg-pb-hint"></p>
       ${opts.showTab ? '<div class="jg-tab-wrap jg-pb-tab"></div>' : ""}
@@ -70,7 +71,7 @@ function createPracticeBox(host, inst, opts) {
     const mic = $(".jg-pb-mic");
     if (mic) {
       mic.classList.toggle("jg-pill-active", micOn());
-      mic.textContent = micOn() ? "🎤 Listening" : "🎤 Microphone";
+      mic.innerHTML = `${icon("mic", 16)} ${micOn() ? "Listening" : "Microphone"}`;
     }
     hint.textContent =
       mode === "listen" ? "Watch the falling notes land on the fretboard and listen. Shapes show finger numbers (1 = index … 4 = pinky)."
@@ -78,7 +79,7 @@ function createPracticeBox(host, inst, opts) {
         ? "Strum each chord on your guitar — it moves on when the microphone hears a note of that chord. (Or tap one of the lit notes.)"
         : "Play each note on your guitar — it waits until it hears it. Turn the microphone on, or tap the lit note.")
       : "Play each note as it lands. Notes keep falling — each one counts within a quarter second.";
-    if (mode !== "listen" && !micOn()) hint.textContent += " 🎤 Turn on the microphone to play on your real guitar.";
+    if (mode !== "listen" && !micOn()) hint.textContent += " Turn on the microphone to play on your real guitar. We'll use your phone's microphone only to hear your guitar strings, nothing else.";
   }
 
   function drawTab(current = -1) {

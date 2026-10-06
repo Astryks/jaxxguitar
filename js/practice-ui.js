@@ -1,3 +1,4 @@
+import { icon } from "./icons.js";
 // Practice tab: build a chord loop, drill a scale, a metronome with tap
 // tempo, and "upload a song" — the app works out the chords from your
 // own recording and shows the guitar shapes in time with it.
@@ -36,11 +37,11 @@ function renderPractice(panel) {
   panel.innerHTML = `
     <div class="jg-row">
       <img class="jg-inline-mascot" src="assets/mascot/running-guitar.webp" alt="">
-      <button class="jg-pill jg-pill-active" data-sec="chords">🎸 Chord loop</button>
-      <button class="jg-pill" data-sec="scales">🎼 Scales</button>
-      <button class="jg-pill" data-sec="library">📖 All chords</button>
-      <button class="jg-pill" data-sec="metronome">⏱ Metronome</button>
-      <button class="jg-pill" data-sec="upload">📁 Upload a song</button>
+      <button class="jg-pill jg-pill-active" data-sec="chords">${icon("guitar", 16)} Chord loop</button>
+      <button class="jg-pill" data-sec="scales">${icon("song", 16)} Scales</button>
+      <button class="jg-pill" data-sec="library">${icon("star", 16)} All chords</button>
+      <button class="jg-pill" data-sec="metronome">${icon("tuner", 16)} Metronome</button>
+      <button class="jg-pill" data-sec="upload">${icon("folder", 16)} Upload a song</button>
     </div>
     <div class="jg-sec"></div>
     <div class="jg-instrument-host"></div>
@@ -204,10 +205,10 @@ function renderPractice(panel) {
   function uploadSection() {
     sec.innerHTML = `
       <div class="jg-card">
-        <h3 style="margin:4px 0">🎸 Upload any song and we'll find the chords for you!</h3>
+        <h3 style="margin:4px 0">${icon("folder", 26)} Upload any song and we'll find the chords for you!</h3>
         <p>Pick a song from your phone (a few seconds is enough). We'll show the guitar shapes in time with the music.</p>
-        <label class="jg-upload-pick">📂 Choose a song<input type="file" accept="audio/*,video/*" class="jg-file jg-upload-input"></label>
-        <p class="jg-upload-fine">(Jaxx Guitar is for entertainment and learning only. We don't support copying songs from YouTube or other links without the artist's permission. This feature is here so you can learn the songs you love, and support the artists who create beautiful things in our world. It all runs on your device; nothing is uploaded.)</p>
+        <label class="jg-upload-pick">${icon("folder", 22)} Choose a song<input type="file" accept="audio/*,video/*" class="jg-file jg-upload-input"></label>
+        <p class="jg-upload-fine">(Jaxx Guitar is for entertainment and learning only. We've added this feature for you to record any song from your phone and upload it, only for the purpose of learning the songs you love and support the artists who create beautiful things in this world. The real fun begins when you get inspired and create your own original music! Our model runs on your device only, we don't store any data.)</p>
         <p class="jg-status jg-note"></p>
       </div>
       <div class="jg-up-result"></div>`;
@@ -274,7 +275,7 @@ function renderPractice(panel) {
     // ...everything else below the fretboard.
     below.innerHTML = `
       <details class="jg-upload-settings">
-        <summary>⚙️ Customise: capo, sound, chord shapes, guess the song</summary>
+        <summary>${icon("gear", 20)} Customise: capo, sound, chord shapes, guess the song</summary>
         <div class="jg-row">
           ${capo.capo ? `<button class="jg-pill ${useCapo ? "jg-pill-active" : ""}" data-capo="1">Capo ${capo.capo} (easier shapes)</button><button class="jg-pill ${useCapo ? "" : "jg-pill-active"}" data-capo="0">No capo</button>` : ""}
         </div>
@@ -283,8 +284,8 @@ function renderPractice(panel) {
           <button class="jg-pill" data-snd="guitar">Guitar only</button>
           <button class="jg-pill" data-snd="both">Guitar + song</button></div>
         <div class="jg-diagram-row jg-up-dg"></div>
-        ${canGuessSongs() ? '<div class="jg-row"><button class="jg-btn jg-up-guess">🔎 Guess the song (Shazam)</button></div><div class="jg-up-rec"></div>' : ""}
-        ${matches.length ? `<div class="jg-up-match"><b>🔎 These songs use the same chords:</b><div class="jg-row">${matches.slice(0, 6).map((m) => `<button class="jg-btn jg-btn-small" data-song="${esc(m.title)}">${esc(m.title)} <span class="jg-label">· ${esc(m.artist)}</span></button>`).join("")}</div><small class="jg-note">Lots of songs share chords, so this is a hint. Tap one to learn the whole song.</small></div>` : ""}
+        ${canGuessSongs() ? '<div class="jg-row"><button class="jg-btn jg-up-guess">${icon("search", 18)} Guess the song</button></div><div class="jg-up-rec"></div>' : ""}
+        ${matches.length ? `<div class="jg-up-match"><b>${icon("song", 18)} These songs use the same chords:</b><div class="jg-row">${matches.slice(0, 6).map((m) => `<button class="jg-btn jg-btn-small" data-song="${esc(m.title)}">${esc(m.title)} <span class="jg-label">· ${esc(m.artist)}</span></button>`).join("")}</div><small class="jg-note">Lots of songs share chords, so this is a hint. Tap one to learn the whole song.</small></div>` : ""}
         <p class="jg-note">These chords are a best guess from the recording: simple major/minor versions. Trust your ears where they disagree.</p>
       </details>`;
     const audio = res.querySelector(".jg-up-audio");
@@ -337,11 +338,11 @@ function renderPractice(panel) {
         b.textContent = "🎧 Listening…";
         guessLastUpload().then((r) => {
           b.disabled = false;
-          b.textContent = "🔎 Guess the song (Shazam)";
-          if (!r || !r.found) { box.innerHTML = '<div class="jg-up-rec-box">🤔 Couldn\'t find this song. Try a clearer part of it.</div>'; return; }
+          b.innerHTML = `${icon("search", 18)} Guess the song`;
+          if (!r || !r.found) { box.innerHTML = '<div class="jg-up-rec-box">Couldn\'t find this song. Try a clearer part of it.</div>'; return; }
           const inLib = SONGS.find((s) => s.title.toLowerCase() === String(r.title).toLowerCase());
           box.innerHTML = `<div class="jg-up-rec-box">${r.artworkURL ? `<img src="${esc(r.artworkURL)}" alt="" class="jg-up-rec-art">` : ""}
-            <div><div>🎵 We think this is</div><b>${esc(r.title)}</b><div class="jg-label">${esc(r.artist)}</div>
+            <div><div>We think this is</div><b>${esc(r.title)}</b><div class="jg-label">${esc(r.artist)}</div>
             <div class="jg-row">${inLib ? `<button class="jg-btn jg-btn-small jg-btn-primary" data-song="${esc(inLib.title)}">Learn the whole song</button>` : ""}
             ${r.appleMusicURL ? `<a class="jg-btn jg-btn-small" href="${esc(r.appleMusicURL)}" target="_blank" rel="noopener">Open in Apple Music</a>` : ""}</div></div></div>`;
         });

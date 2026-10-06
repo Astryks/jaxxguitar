@@ -1,9 +1,12 @@
 // Songs tab: the library, filterable by level and searchable, each song
 // with its easiest capo and chord shapes, and a play-along.
 
-import { SONGS, getDifficulty } from "./songs-data.js";
+import { SONGS, SONG_STRUCTURES, getDifficulty } from "./songs-data.js";
 import { songPlan } from "./song-plan.js";
-import { chordShape, shapeMidis } from "./guitar-theory.js";
+import { chordShape, shapeMidis, transposeSymbol } from "./guitar-theory.js";
+import { videoHtml, wireVideos } from "./media.js";
+import { SONG_VIDEOS } from "./media-data.js";
+import { icon } from "./icons.js";
 import { chordDiagramSvg } from "./fretboard.js";
 import { strum } from "./guitar-audio.js";
 import { mountInstrument, createPracticeBox } from "./practice-widget.js";
@@ -61,6 +64,45 @@ function renderSongs(panel) {
   };
 }
 
+// Album artwork from Apple's public iTunes Search (only the song title and
+// artist are sent), cached on the device; initials if offline.
+const ART_KEY = "jg_song_art";
+const artCache = () => { try { return JSON.parse(localStorage.getItem(ART_KEY) || "{}"); } catch (e) { return {}; } };
+async function songArt(song) {
+  const id = `${song.title}|${song.artist}`;
+  if (artCache()[id]) return artCache()[id];
+  const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(`${song.title} ${song.artist}`)}&entity=song&limit=5&country=us`);
+  const data = await res.json();
+  const hit = (data.results || []).find((r) => r.artistName?.toLowerCase().includes(song.artist.split(/[ ,&(]/)[0].toLowerCase())) || data.results?.[0];
+  if (!hit?.artworkUrl100) return null;
+  const art = { img: hit.artworkUrl100.replace("100x100bb", "300x300bb"), url: hit.trackViewUrl || "" };
+  try { localStorage.setItem(ART_KEY, JSON.stringify({ ...artCache(), [id]: art })); } catch (e) { /* ignore */ }
+  return art;
+}
+// The song's chords section by section, neighbours with the same chords grouped.
+function progressionRows(song) {
+  const st = SONG_STRUCTURES[song.title];
+  if (!st) return [{ label: "Main part", chords: song.chords }];
+  const rows = [];
+  st.forEach((part) => {
+    const name = part.section.replace(/\s+\d+$/, "");
+    const last = rows[rows.length - 1];
+    if (last && last.chords.join() === part.chords.join()) { if (!last.names.includes(name)) last.names.push(name); }
+    else rows.push({ names: [name], chords: part.chords });
+  });
+  return rows.map((r) => ({ label: r.names.join(" · "), chords: r.chords }));
+}
+// Bar by bar, start to finish.
+function wholeSongChords(song) {
+  const out = [];
+  (SONG_STRUCTURES[song.title] || []).forEach((part) => {
+    const bars = part.bars || part.chords.length;
+    for (let i = 0; i < bars; i++) out.push(part.chords[i % part.chords.length]);
+  });
+  return out;
+}
+const initials = (name) => name.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+
 function openSong(panel, song) {
   const p = songPlan(song);
   const unique = [...new Set(p.shapes)];
@@ -70,22 +112,35 @@ function openSong(panel, song) {
     <div class="jg-lesson-player">
       <div class="jg-lesson-content">
         <button class="jg-exit">← All songs</button>
-        <h2 style="margin:4px 0">${esc(song.title)} <span class="jg-label">${esc(song.artist)}</span></h2>
-        <p>Key ${esc(song.key || "?")} · original chords <strong>${esc(song.chords.join(" – "))}</strong>${p.capo ? ` · <span class="jg-capo">capo ${p.capo} → play ${esc(p.shapes.join(" – "))}</span>` : ""}</p>
+        <div class="jg-song-card">
+          <a class="jg-song-art" id="jg-song-art"><span>${esc(initials(song.artist))}</span></a>
+          <div class="jg-song-info"><h2>${esc(song.title)}</h2><p>${esc(song.artist)}</p>
+            <span class="jg-song-key">${icon("guitar", 18)} Key of ${esc((song.key || "?").replace(/\s*\(.*\)/, ""))}</span>
+            ${p.capo ? `<span class="jg-capo">Capo ${p.capo}: play ${esc([...new Set(p.shapes)].join(" – "))}</span>` : ""}</div>
+        </div>
+        <div class="jg-song-prog"><div class="jg-song-prog-title">The chords in this song</div>
+          ${progressionRows(song).map((r) => `<div class="jg-song-prog-row"><span>${esc(r.label)}</span><b>${r.chords.map((c) => `<i>${esc(c)}</i>`).join("")}</b></div>`).join("")}
+        </div>
+        ${SONG_VIDEOS[song.title] ? videoHtml(SONG_VIDEOS[song.title]) : ""}
         <div class="jg-diagram-row">${unique.map((c) => `<button class="jg-btn jg-dg-btn" data-chord="${esc(c)}">${chordDiagramSvg(chordShape(c), c)}</button>`).join("")}</div>
         <div class="jg-row"><span class="jg-label">Practice tempo</span>${[60, 80, 100, 120].map((t) => `<button class="jg-pill ${t === bpm ? "jg-pill-active" : ""}" data-bpm="${t}">${t}</button>`).join("")}
           <span class="jg-label">Strum</span><button class="jg-pill jg-pill-active" data-pat="dduudu">D·DU·UDU</button><button class="jg-pill" data-pat="d">Downs</button></div>
+        <div class="jg-row"><span class="jg-label">Play</span><button class="jg-pill jg-pill-active" data-part="main">Main part (4 chords)</button>${SONG_STRUCTURES[song.title] ? `<button class="jg-pill" data-part="whole">Whole song</button>` : ""}</div>
         <div class="jg-practice-host"></div>
-        <div class="jg-row"><button class="jg-btn jg-learned">${getSavedSongs()[song.title]?.status === "completed" ? "✅ Learned" : "Mark as learned (+15 XP)"}</button></div>
+        <div class="jg-row"><button class="jg-btn jg-learned">${getSavedSongs()[song.title]?.status === "completed" ? `${icon("check", 18)} Learned` : "Mark as learned (+15 XP)"}</button></div>
       </div>
       <div class="jg-instrument-host"></div>
     </div>`;
   const inst = mountInstrument(panel.querySelector(".jg-instrument-host"));
   let pattern = DDUUDU;
+  let part = "main";
   let box = null;
+  // Whole song: the structure's chords, moved to the capo shapes.
+  const shapeFor = (c) => { const t = transposeSymbol(c, -(p.capo || 0)); return chordShape(t) ? t : (chordShape(c) ? c : null); };
   const mount = () => {
     if (box) box.destroy();
-    const items = () => chordTimeline(p.shapes.concat(p.shapes).map((c) => ({ chord: c, shape: chordShape(c) })), { beatsPerChord: 4, pattern });
+    const seq = part === "whole" ? wholeSongChords(song).map(shapeFor).filter(Boolean) : p.shapes.concat(p.shapes);
+    const items = () => chordTimeline(seq.map((c) => ({ chord: c, shape: chordShape(c) })), { beatsPerChord: 4, pattern });
     box = createPracticeBox(panel.querySelector(".jg-practice-host"), inst, { items, bpm, modes: ["listen", "wait"], label: "Play along", drums: true, key: `song:${song.title}`, restore: () => inst.fb.showShape(chordShape(p.shapes[0])) });
   };
   mount();
@@ -102,6 +157,18 @@ function openSong(panel, song) {
     panel.querySelectorAll("[data-bpm]").forEach((x) => x.classList.toggle("jg-pill-active", x === b));
     mount();
   }));
+  panel.querySelectorAll("[data-part]").forEach((b) => b.addEventListener("click", () => {
+    part = b.dataset.part;
+    panel.querySelectorAll("[data-part]").forEach((x) => x.classList.toggle("jg-pill-active", x === b));
+    mount();
+  }));
+  wireVideos(panel);
+  songArt(song).then((art) => {
+    const el = panel.querySelector("#jg-song-art");
+    if (!art || !el) return;
+    el.innerHTML = `<img src="${art.img}" alt="" />`;
+    if (art.url) { el.href = art.url; el.target = "_blank"; el.rel = "noopener"; }
+  }).catch(() => {});
   panel.querySelectorAll("[data-pat]").forEach((b) => b.addEventListener("click", () => {
     pattern = b.dataset.pat === "d" ? ["down", "down", "down", "down"] : DDUUDU;
     panel.querySelectorAll("[data-pat]").forEach((x) => x.classList.toggle("jg-pill-active", x === b));
@@ -109,7 +176,7 @@ function openSong(panel, song) {
   }));
   panel.querySelector(".jg-learned").addEventListener("click", (e) => {
     markSongStatus(song.title, "completed");
-    e.target.textContent = "✅ Learned";
+    e.currentTarget.innerHTML = `${icon("check", 18)} Learned`;
   });
 }
 

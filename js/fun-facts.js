@@ -7,6 +7,17 @@
 import { peopleHtml } from "./media.js";
 
 const FACTS = [
+  // Always the 2nd fact anyone sees (see nextFact).
+  {
+    id: "inventor",
+    photosFirst: true,
+    title: "Who invented the guitar? 🎸",
+    people: ["torres", "torres-guitar"],
+    text: `Nobody invented the guitar in one go! It grew over <strong>hundreds of years</strong> from older string instruments like the <strong>lute</strong> and Spain's <strong>vihuela</strong>. Early guitars were small, with pairs of strings, and quite quiet.<br><br>
+      The guitar you know was shaped by a Spanish carpenter-turned-guitar-maker, <strong>Antonio de Torres</strong>, in the <strong>1850s and 60s</strong>. He made the body <strong>bigger and rounder</strong>, the wooden top <strong>thinner</strong>, and glued a <strong>fan of thin wooden strips</strong> under the top to hold it strong while it wobbles. Result: a much <strong>louder, richer</strong> sound!<br><br>
+      To prove the <strong>top</strong> is what really makes the sound, he once built a guitar with its back and sides made of <strong>papier-mâché</strong> (paper and glue)… and it still sounded great! 📄🎶`,
+    footnote: "Torres lived from 1817 to 1892 in Almería, Spain. Almost every classical guitar today still follows his design, and players call him the father of the modern guitar.",
+  },
   {
     title: "A string by itself is really quiet!",
     text: `Pluck a guitar string and it wiggles back and forth super fast — but a string is so thin it can hardly push any air, so on its own you'd barely hear it. The magic is the <strong>wooden body</strong>. The string's wiggle travels through the <strong>bridge</strong> into the thin wooden <strong>top</strong> of the guitar, which wobbles like a <strong>trampoline</strong> or a speaker — and pushes LOTS of air. That's the sound!`,
@@ -83,6 +94,9 @@ function nextFact() {
   let seen = [];
   try { seen = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { /* ignore */ }
   let pool = FACTS.map((_, i) => i).filter((i) => !seen.includes(i));
+  const inventor = FACTS.findIndex((f) => f.id === "inventor");
+  if (seen.length === 0) pool = pool.filter((i) => i !== inventor);
+  else if (seen.length === 1 && !seen.includes(inventor)) pool = [inventor];
   if (!pool.length) {
     seen = [];
     pool = FACTS.map((_, i) => i);
@@ -103,8 +117,9 @@ function showFunFact(fact = nextFact()) {
       <img class="jg-funfact-img" src="assets/mascot/map-glasses.webp" alt="">
       <div class="jg-funfact-kicker">Did you know?</div>
       <h3>${fact.title}</h3>
+      ${fact.photosFirst ? peopleHtml(fact.people) : ""}
       <p>${fact.text}</p>
-      ${peopleHtml(fact.people)}
+      ${fact.photosFirst ? "" : peopleHtml(fact.people)}
       ${fact.footnote ? `<p class="jg-note">${fact.footnote}</p>` : ""}
       <button class="jg-btn jg-btn-primary jg-funfact-close">Cool! Keep going</button>
     </div>`;

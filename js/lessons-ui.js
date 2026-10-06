@@ -1,3 +1,4 @@
+import { icon } from "./icons.js";
 // Lessons tab: home (daily review, quests, next lesson), the roadmap,
 // and a generic lesson player that renders the page specs in
 // lessons-data.js. Song lessons ("Master a song") and the optional
@@ -104,6 +105,9 @@ function sections() {
 function allLessons() {
   return sections().flatMap((s) => s.lessons);
 }
+// Chord pages: the app can't strum for you; the real practice is on your guitar.
+const PHONE_NOTE = `<p class="jg-phone-note">${icon("guitar", 18)} I know it's hard to play a chord on the app! On your phone you can tap the notes one at a time. The real practice is on <strong>your guitar</strong>: there, press all the strings and strum them together.</p>`;
+
 function nextLesson() {
   return allLessons().find((l) => !l.pre && !l.world && !isLessonComplete(l.id)) || null;
 }
@@ -148,37 +152,38 @@ function showHome() {
   const freezes = getStreakFreezes();
   const total = allLessons().filter((l) => !l.world).length;
   const say = (pose, inner, extra = "") => `<div class="jg-say ${extra}">${mascot(pose)}<div class="jg-bubble">${inner}</div></div>`;
-  let boxes;
-  if (!done) {
-    // A brand-new learner sees one step at a time: a welcome, then one button.
-    boxes = say("happy-guitar", `<h3>Welcome to Jaxx Guitar! 🎸</h3>
-        <p>I'm Jaxx, and I'll be with you every step of the way. In about ${Math.floor(total / 10) * 10} short lessons you'll go from your very first chord to playing real songs. All it takes is a little practice — even 10 minutes a day!</p>`)
-      + say("strumming", `<h3>Fun fact: 4 chords play over 100 songs</h3>
-        <p>Let's learn those four chords right away.</p>
-        <button class="jg-btn jg-btn-primary" data-lesson="lesson-1">Start lesson</button>`);
-  } else if (nxt) {
-    boxes = say("happy-guitar", `<h3>Welcome back! 🎸</h3>
-        <p>Next up: <strong>${esc(nxt.title)}</strong></p>
-        <button class="jg-btn jg-btn-primary" data-lesson="${nxt.id}">Continue</button>`)
-      + (reviewDoneToday() ? "" : say("quill-scroll", `<h3>Your 2-minute review is ready</h3>
-        <p>A quick warm-up of what you've learned so far.</p>
-        <button class="jg-btn jg-open-review">Start review</button>`))
-      + `<div class="jg-quests">
-          <div class="jg-row"><strong>Today</strong><span class="jg-label">🔥 ${streak.count}-day streak${freezes ? ` · ❄️ ${freezes}` : ""}${goal.metToday ? " · daily goal ✓" : ""}</span></div>
-          ${quests.map((q) => `<div class="jg-quest ${q.done ? "jg-quest-done" : ""}">${q.done ? "✅" : "⬜"} ${q.text} <span class="jg-label">+10 XP</span></div>`).join("")}
-        </div>`
-      + `<button class="jg-btn jg-btn-small jg-funfact-open">🎸 Did you know? A guitar fun fact</button>`;
-  } else {
-    boxes = say("juggling-picks", `<h3>You've finished every lesson! 🎉</h3><p>Keep your streak going with the daily review, the songs, and the World songs.</p>`)
-      + (reviewDoneToday() ? "" : say("quill-scroll", `<h3>Your 2-minute review is ready</h3><button class="jg-btn jg-open-review">Start review</button>`));
-  }
+  // Home: one big card to start or continue, and "Upload any song". The
+  // roadmap, review and quests live in the lessons themselves.
+  const number = done + 1;
+  const pct = Math.round((100 * done) / Math.max(1, total));
+  const hero = nxt ? `
+    <button class="jg-hero-card" data-lesson="${nxt.id}">
+      ${mascot(done ? "happy-guitar" : "strumming")}
+      <span class="jg-hero-body">
+        <span class="jg-hero-kicker">${done ? `Lesson ${number} of ${total}` : "Start here"}</span>
+        <span class="jg-hero-title">${esc(done ? nxt.title : "4 chords, 100+ songs")}</span>
+        <span class="jg-hero-bar"><span style="width:${Math.max(3, pct)}%"></span></span>
+        ${streak.count ? `<span class="jg-hero-meta">${icon("flame", 16)} ${streak.count}-day streak</span>` : ""}
+        <span class="jg-hero-cta">${done ? "Continue ▶" : "Start now ▶"}</span>
+      </span>
+    </button>` : `<div class="jg-hero-card">${mascot("juggling-picks")}<span class="jg-hero-body"><span class="jg-hero-title">You've finished every lesson! 🎉</span></span></div>`;
   panelEl.innerHTML = `
-    <div class="jg-lessons-layout">
-      <div class="jg-lesson-main jg-home">
-        ${boxes}
-      </div>
-      <aside class="jg-lesson-sidebar"><div class="jg-roadmap"><h3>Roadmap</h3><div class="jg-roadmap-list">${roadmapHtml()}</div></div></aside>
+    <div class="jg-home-clean">
+      ${hero}
+      <button class="jg-home-upload" data-home-upload type="button">
+        ${icon("folder", 40)}
+        <span><b>Upload any song</b><span>and we'll find the chords for you</span></span>
+        <span class="jg-home-upload-go">Upload</span>
+      </button>
     </div>`;
+  panelEl.querySelector("[data-home-upload]")?.addEventListener("click", () => {
+    document.querySelector('.jg-tab[data-tab="practice"]')?.click();
+    setTimeout(() => {
+      const pill = [...document.querySelectorAll("#panel-practice button")].find((x) => /upload/i.test(x.textContent));
+      pill?.click();
+      setTimeout(() => document.querySelector('#panel-practice input[type="file"]')?.click(), 50);
+    }, 50);
+  });
   wireCommon();
 }
 
@@ -207,14 +212,14 @@ function openLesson(id, pageIndex = 0) {
   runCleanup();
   const page = lesson.pages[pageIndex];
   const last = pageIndex === lesson.pages.length - 1;
-  const needsBoard = page.shape || page.notes || page.practice || page.fretQuiz || page.caged || page.diagrams || page.changes;
+  const needsBoard = page.shape || page.notes || page.practice || page.fretQuiz || page.caged || page.diagrams || page.changes || page.earGym;
   panelEl.innerHTML = `
     <div class="jg-lessons-layout">
       <div class="jg-lesson-main jg-lesson-player">
         <div class="jg-lesson-content">
           <button class="jg-exit">← All lessons</button>
           <div class="jg-step">${esc(lesson.title)} · ${pageIndex + 1} of ${lesson.pages.length}</div>
-          <div class="jg-say">${mascot(MASCOT_BY_LESSON[lesson.id] || (lesson.world ? "singing-mic" : lesson.song ? "playing-guitar" : "happy-guitar"))}<div class="jg-bubble">${page.html || ""}${peopleHtml(page.people)}${videoHtml(page.video)}</div></div>
+          <div class="jg-say">${mascot(MASCOT_BY_LESSON[lesson.id] || (lesson.world ? "singing-mic" : lesson.song ? "playing-guitar" : "happy-guitar"))}<div class="jg-bubble">${page.html || ""}${page.shape ? PHONE_NOTE : ""}${peopleHtml(page.people)}${videoHtml(page.video)}</div></div>
           ${page.diagrams ? `<div class="jg-diagram-row">${page.diagrams.map((c, i) => { const d = diagramOf(c); return `<button class="jg-btn jg-dg-btn" data-dg="${i}" title="Show ${esc(d.name)} on the fretboard">${chordDiagramSvg(d.shape, d.name)}</button>`; }).join("")}</div><p class="jg-note">Tap a chord box to see it on the fretboard and hear it.</p>` : ""}
           ${page.tab ? `<div class="jg-tab-wrap">${tabSvg(page.tab.items, { beatsPerBar: page.tab.beatsPerBar, bars: page.tab.bars })}</div>` : ""}
           <div class="jg-extra"></div>
@@ -269,6 +274,7 @@ function openLesson(id, pageIndex = 0) {
     cleanup.push(() => t.destroy());
   }
   if (page.fretQuiz) fretQuiz(extra, inst, page.fretQuiz.count || 6, restore);
+  if (page.earGym) earGym(extra, inst);
   if (page.changes) changeDrill(extra, inst, page.changes);
   if (page.caged) cagedPicker(extra, inst);
 }
@@ -289,6 +295,99 @@ function finishScreen(lesson, nxt) {
 
 // --- Page widgets ---------------------------------------------------------------
 const NATURALS = new Set([0, 2, 4, 5, 7, 9, 11]);
+// Chord Ear Gym: listen and name the chord. Round 1 happy or sad, round 2
+// all 24 chords with 4 choices (one is always the same letter, other mood),
+// round 3 the chords played different ways: strummed, picked one string at
+// a time, or higher up. A wrong answer plays both chords to compare.
+function earGym(host, inst) {
+  const ROOTS = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+  const ALL = [...ROOTS, ...ROOTS.map((r) => r + "m")];
+  const nice = (c) => c.replace("#", "♯").replace(/^([A-G])b/, "$1♭");
+  const shuffle = (a) => a.map((v) => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map((x) => x[1]);
+  const STAGES = [
+    { id: "mood", title: "Round 1: Happy or sad?", chords: shuffle(ALL).slice(0, 8) },
+    { id: "name", title: "Round 2: Which chord?", chords: shuffle(ALL) },
+    { id: "ways", title: "Round 3: Played different ways", chords: shuffle(ALL).slice(0, 12) },
+  ];
+  let stage = 0, round = 0, streak = 0, best = 0, cur = null;
+  const scores = STAGES.map(() => 0);
+  const play = (c, how = "strum") => {
+    const midis = shapeMidis(chordShape(c));
+    if (how === "high") return strum(midis.map((m) => m + 12));
+    if (how === "pick") return midis.forEach((m, i) => setTimeout(() => strum([m]), i * 220));
+    strum(midis);
+  };
+  function options(c) {
+    const minor = c.endsWith("m");
+    const twin = minor ? c.slice(0, -1) : c + "m";
+    return shuffle([c, twin, ...shuffle(ALL.filter((x) => x !== c && x !== twin)).slice(0, 2)]);
+  }
+  function startStage() {
+    round = 0;
+    host.innerHTML = `<div class="jg-card jg-gym"><h3>${STAGES[stage].title}</h3><p>${STAGES[stage].chords.length} chords. Ready?</p><button class="jg-btn jg-btn-primary jg-gym-go">Start</button></div>`;
+    host.querySelector(".jg-gym-go").addEventListener("click", ask);
+  }
+  function ask() {
+    const st = STAGES[stage];
+    const c = st.chords[round];
+    cur = { c, how: st.id === "ways" ? ["strum", "pick", "high"][Math.floor(Math.random() * 3)] : "strum" };
+    const choices = st.id === "mood" ? [["major", "Happy (major)"], ["minor", "Sad (minor)"]] : options(c).map((x) => [x, nice(x)]);
+    inst.fb.show([]);
+    host.innerHTML = `<div class="jg-card jg-gym">
+      <div class="jg-gym-head"><b>${st.title}</b><span>${round + 1} / ${st.chords.length}</span><span>${icon("flame", 16)} ${streak}</span></div>
+      <p class="jg-gym-ask">${st.id === "mood" ? "Happy or sad?" : "Which chord is this?"}${st.id === "ways" ? `<br><small>(${({ strum: "strummed", pick: "picked one string at a time", high: "played higher up" })[cur.how]})</small>` : ""}</p>
+      <div class="jg-gym-choices">${choices.map(([v, l]) => `<button class="jg-gym-choice" data-v="${v}">${l}</button>`).join("")}</div>
+      <div class="jg-gym-reply"></div>
+      <div class="jg-row"><button class="jg-btn jg-gym-again">${icon("speaker", 18)} Play it again</button></div></div>`;
+    host.querySelector(".jg-gym-again").addEventListener("click", () => play(cur.c, cur.how));
+    host.querySelectorAll(".jg-gym-choice").forEach((b) => b.addEventListener("click", () => answer(b)));
+    setTimeout(() => play(cur.c, cur.how), 250);
+  }
+  function answer(btn) {
+    const st = STAGES[stage];
+    const right = st.id === "mood" ? (cur.c.endsWith("m") ? "minor" : "major") : cur.c;
+    host.querySelectorAll(".jg-gym-choice").forEach((b) => { b.disabled = true; if (b.dataset.v === right) b.classList.add("jg-gym-right"); });
+    inst.fb.showShape(chordShape(cur.c));
+    const reply = host.querySelector(".jg-gym-reply");
+    const last = round + 1 >= st.chords.length;
+    const nextBtn = `<button class="jg-btn jg-btn-primary jg-gym-next">${last ? "Finish round →" : "Next chord →"}</button>`;
+    if (btn.dataset.v === right) {
+      scores[stage]++; streak++; best = Math.max(best, streak);
+      reply.innerHTML = `<p class="jg-quiz-ok">Yes! ${nice(cur.c)}${streak >= 3 ? ` · ${icon("flame", 16)} ${streak} in a row!` : ""}</p>${nextBtn}`;
+      const t = setTimeout(next, 1400);
+      reply.querySelector(".jg-gym-next").addEventListener("click", () => { clearTimeout(t); next(); });
+    } else {
+      streak = 0;
+      btn.classList.add("jg-gym-wrong");
+      const picked = btn.dataset.v;
+      reply.innerHTML = `<p class="jg-quiz-bad">It was <b>${nice(cur.c)}</b> (${cur.c.endsWith("m") ? "sad, minor" : "happy, major"}).</p>
+        ${st.id === "mood" ? "" : `<div class="jg-row"><button class="jg-btn jg-gym-h1">${icon("speaker", 16)} ${nice(cur.c)}</button><button class="jg-btn jg-gym-h2">${icon("speaker", 16)} ${nice(picked)}</button></div>`}${nextBtn}`;
+      reply.querySelector(".jg-gym-h1")?.addEventListener("click", () => { inst.fb.showShape(chordShape(cur.c)); play(cur.c); });
+      reply.querySelector(".jg-gym-h2")?.addEventListener("click", () => { inst.fb.showShape(chordShape(picked)); play(picked); });
+      reply.querySelector(".jg-gym-next").addEventListener("click", next);
+      play(cur.c, cur.how);
+    }
+  }
+  function next() {
+    if (!host.isConnected) return;
+    round++;
+    if (round < STAGES[stage].chords.length) return ask();
+    const st = STAGES[stage];
+    const got = scores[stage];
+    stage++;
+    const done = stage >= STAGES.length;
+    host.innerHTML = `<div class="jg-card jg-gym"><h3>${st.title.split(":")[0]} done!</h3>
+      <p>You got <b>${got} of ${st.chords.length}</b> right. ${got / st.chords.length >= 0.8 ? "Amazing ears!" : got / st.chords.length >= 0.5 ? "Your ears are getting sharp!" : "Ears get better with practice!"}</p>
+      ${done ? `<p>Best streak: <b>${best}</b> in a row. Come back any time: a few minutes a day makes a big difference.</p>` : ""}
+      <div class="jg-row">${done ? `<button class="jg-btn jg-gym-replay">Play again</button>` : `<button class="jg-btn jg-gym-redo">Try that round again</button><button class="jg-btn jg-btn-primary jg-gym-on">Next round →</button>`}</div></div>`;
+    host.querySelector(".jg-gym-replay")?.addEventListener("click", () => { stage = 0; scores.fill(0); best = 0; streak = 0; startStage(); });
+    host.querySelector(".jg-gym-redo")?.addEventListener("click", () => { stage--; scores[stage] = 0; startStage(); });
+    host.querySelector(".jg-gym-on")?.addEventListener("click", startStage);
+    if (done) awardXp(10, "Chord Ear Gym");
+  }
+  startStage();
+}
+
 function fretQuiz(host, inst, count, restore) {
   let asked = 0;
   let right = 0;
