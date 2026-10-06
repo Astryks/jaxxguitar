@@ -6,6 +6,7 @@ import { renderSongs, leaveSongs } from "./songs-ui.js";
 import { renderPractice, leavePractice } from "./practice-ui.js";
 import { renderStringTuner } from "./tuner.js";
 import { renderAbout } from "./about.js";
+import { renderHow } from "./how-it-works.js";
 import { getLevel } from "./storage.js";
 import { disableMic } from "./input-hub.js";
 import { maybeShowFunFact, showFunFact } from "./fun-facts.js";
@@ -16,7 +17,10 @@ const panels = {
   practice: document.getElementById("panel-practice"),
   tuner: document.getElementById("panel-tuner"),
   about: document.getElementById("panel-about"),
+  how: document.getElementById("panel-how"),
 };
+// Pages without a tab tile (e.g. How it works) are opened by name.
+window.addEventListener("jg-show", (e) => show(e.detail));
 let tunerWidget = null;
 
 function leave() {
@@ -49,6 +53,7 @@ function show(tab) {
     tunerWidget = renderStringTuner(el.querySelector(".jg-tuner-host"));
   }
   if (tab === "about") renderAbout(el);
+  if (tab === "how") renderHow(el);
   try { localStorage.setItem("jg_tab", tab); } catch (e) { /* ignore */ }
 }
 
