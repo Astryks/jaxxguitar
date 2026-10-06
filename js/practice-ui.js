@@ -42,7 +42,7 @@ function renderPractice(panel) {
       <button class="jg-pill" data-sec="scales">${icon("song", 16)} Scales</button>
       <button class="jg-pill" data-sec="library">${icon("star", 16)} All chords</button>
       <button class="jg-pill" data-sec="metronome">${icon("tuner", 16)} Metronome</button>
-      <button class="jg-pill" data-sec="upload">${icon("folder", 16)} Upload a song</button>
+      <button class="jg-pill" data-sec="upload">${icon("cassette", 16)} Upload a song</button>
     </div>
     <div class="jg-sec"></div>
     <div class="jg-instrument-host"></div>
@@ -206,9 +206,9 @@ function renderPractice(panel) {
   function uploadSection() {
     sec.innerHTML = `
       <div class="jg-card">
-        <h3 style="margin:4px 0">${icon("folder", 26)} Upload any song and we'll find the chords for you!</h3>
+        <h3 style="margin:4px 0">${icon("cassette", 26)} Upload any song and we'll find the chords for you!</h3>
         <p>Pick a song from your phone (a few seconds is enough). We'll show the guitar shapes in time with the music.</p>
-        <label class="jg-upload-pick">${icon("folder", 22)} Choose a song<input type="file" accept="audio/*,video/*" class="jg-file jg-upload-input"></label>
+        <label class="jg-upload-pick">${icon("cassette", 22)} Choose a song<input type="file" accept="audio/*,video/*" class="jg-file jg-upload-input"></label>
         <p class="jg-upload-fine">(Jaxx Guitar is for entertainment and learning only. We've added this feature for you to record any song from your phone and upload it, only for the purpose of learning the songs you love and support the artists who create beautiful things in this world. The real fun begins when you get inspired and create your own original music! Our model runs on your device only, we don't store any data.)</p>
         <p class="jg-status jg-note"></p>
       </div>
