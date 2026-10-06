@@ -127,3 +127,10 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 ## Next up
 - After Hayden Keys and Jaxx Guitar: a **fitness app** and a **jiu jitsu app**.
 - More app ideas after those: **public speaking**, **singing**, **investing and markets**, and **dance**.
+
+## 2026-10-07 — iOS build 9
+- **Songs tab, Netflix-style:** genre rows stacked vertically, each scrolling sideways with album-cover cards (165/188 covers from iTunes Search, looked up at build time; letter tile otherwise); search and level filters kept; tapping a card opens the song and starts the play-along right away.
+- **Chord fact-check** (same corrections as Hayden Keys build 27) plus Comfortably Numb: the first solo is over the chorus chords (D A D A C G C G).
+- **Uploads:** 2 MB pieces to the native decoder; real error shown if it fails.
+- **Sound:** audio session re-activated on return to the app and kept on the loudspeaker after microphone use.
+- Upload card uses a drawn cassette icon.

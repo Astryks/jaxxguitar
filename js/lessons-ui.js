@@ -171,7 +171,7 @@ function showHome() {
     <div class="jg-home-clean">
       ${hero}
       <button class="jg-home-upload" data-home-upload type="button">
-        ${icon("folder", 40)}
+        ${icon("cassette", 44)}
         <span><b>Upload any song</b><span>and we'll find the chords for you</span></span>
         <span class="jg-home-upload-go">Upload</span>
       </button>

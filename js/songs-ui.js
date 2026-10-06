@@ -6,6 +6,7 @@ import { songPlan } from "./song-plan.js";
 import { chordShape, shapeMidis, transposeSymbol } from "./guitar-theory.js";
 import { videoHtml, wireVideos } from "./media.js";
 import { SONG_VIDEOS } from "./media-data.js";
+import { SONG_ART } from "./song-art-data.js";
 import { icon } from "./icons.js";
 import { chordDiagramSvg } from "./fretboard.js";
 import { strum } from "./guitar-audio.js";
@@ -16,10 +17,35 @@ import { chordTimeline } from "./guitar-player.js";
 const DDUUDU = ["down", null, "down", "up", null, "up", "down", "up"];
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
-let filter = { tier: "All", q: "", world: false };
+let filter = { tier: "All", q: "" };
 let cleanup = null;
 
 let lastPanel = null;
+// The library, Netflix-style: one row per genre, each scrolling sideways.
+const ROW_TESTS = {
+  "Around the world": (g) => /^World/.test(g),
+  "Christmas": (g) => /Christmas|Holiday/i.test(g),
+  "Jazz": (g) => /Jazz/i.test(g),
+  "Film & classical": (g) => /Classical|Film|Soundtrack|Contemporary Piano|Piano duet/i.test(g),
+  "Hip-hop": (g) => /Hip-Hop/i.test(g),
+  "R&B, soul & disco": (g) => /R&B|Soul|Funk|Disco/i.test(g),
+  "Reggae & Latin": (g) => /Reggae|Dancehall|Latin/i.test(g),
+  "Folk & country": (g) => /Folk|Country|Traditional|Hymn|Ukulele/i.test(g),
+  "Rock & alternative": (g) => /Rock|Britpop|Alternative|Indie|Blues|Metal|Grunge/i.test(g),
+  "Pop": () => true,
+};
+const ROW_ORDER = ["Popular right now", "Pop", "Rock & alternative", "Folk & country", "R&B, soul & disco", "Hip-hop", "Reggae & Latin", "Jazz", "Film & classical", "Christmas", "Around the world"];
+function libraryRows(q, tier) {
+  const byRank = (a, b) => (a.popularityRank || 999) - (b.popularityRank || 999);
+  const songs = SONGS.filter((s) => songPlan(s).playable)
+    .filter((s) => tier === "All" || getDifficulty(s) === tier)
+    .filter((s) => !q || s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q));
+  const rows = Object.fromEntries(ROW_ORDER.map((n) => [n, []]));
+  if (!q) rows["Popular right now"] = songs.filter((s) => !s.genre?.startsWith("World")).sort(byRank).slice(0, 12);
+  songs.forEach((s) => rows[Object.keys(ROW_TESTS).find((n) => ROW_TESTS[n](s.genre || ""))].push(s));
+  return ROW_ORDER.map((name) => ({ name, songs: name === "Popular right now" ? rows[name] : rows[name].sort(byRank) })).filter((r) => r.songs.length);
+}
+
 function renderSongs(panel) {
   lastPanel = panel;
   if (cleanup) { cleanup(); cleanup = null; }
@@ -29,29 +55,24 @@ function renderSongs(panel) {
     <div class="jg-row">
       <input class="jg-btn jg-song-q" type="search" placeholder="Search songs or artists" value="${esc(filter.q)}" style="flex:1 1 220px">
       ${tiers.map((t) => `<button class="jg-pill ${filter.tier === t ? "jg-pill-active" : ""}" data-tier="${t}">${t}</button>`).join("")}
-      <button class="jg-pill ${filter.world ? "jg-pill-active" : ""}" data-world>🌍 World songs</button>
     </div>
-    <div class="jg-say"><div class="jg-avatar"><img src="assets/mascot/music-scrolls.webp" alt=""></div><p class="jg-note" style="align-self:center">Chord names and progressions only — no lyrics. Every song shows the easiest way to play it, often with a capo.</p></div>
-    <div class="jg-song-grid"></div>`;
-  const grid = panel.querySelector(".jg-song-grid");
+    <div class="jg-lib"></div>`;
+  const lib = panel.querySelector(".jg-lib");
   function draw() {
-    const q = filter.q.toLowerCase();
-    const list = SONGS.filter((s) => Boolean(s.genre?.startsWith("World")) === filter.world)
-      .filter((s) => filter.tier === "All" || getDifficulty(s) === filter.tier)
-      .filter((s) => !q || s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q))
-      .sort((a, b) => (songPlan(b).playable - songPlan(a).playable) || (a.popularityRank || 999) - (b.popularityRank || 999));
-    grid.innerHTML = list.map((s) => {
-      const p = songPlan(s);
-      const st = saved[s.title]?.status;
-      return `<div class="jg-song">
-        <h3>${esc(s.title)} ${st === "completed" ? "✅" : ""}</h3>
-        <div class="jg-song-meta">${esc(s.artist)} · ${esc(s.key || "")}</div>
-        <div><span class="jg-badge">${getDifficulty(s)}</span>${s.confidence === "confirmed" ? '<span class="jg-badge jg-badge-ok">chords confirmed</span>' : '<span class="jg-badge jg-badge-warn">close version</span>'}${s.oneFiveSixFourMatch === "exact" ? '<span class="jg-badge">4-chord song</span>' : ""}</div>
-        ${p.playable
-          ? `<div class="jg-capo">${p.capo ? `Capo ${p.capo}: ` : "No capo: "}${[...new Set(p.shapes)].join(" ")}</div><button class="jg-btn jg-btn-small" data-song="${esc(s.title)}">Play along</button>`
-          : '<div class="jg-song-meta">Sources didn\'t agree enough to chart this one yet.</div>'}
-      </div>`;
-    }).join("") || '<p class="jg-note">No songs match.</p>';
+    const rows = libraryRows(filter.q.toLowerCase(), filter.tier);
+    lib.innerHTML = rows.map((row) => `
+      <section class="jg-lib-row"><h3>${esc(row.name)}</h3>
+        <div class="jg-lib-scroll">${row.songs.map((s) => {
+          const art = SONG_ART[`${s.title}|${s.artist}`];
+          return `<button class="jg-lib-card" data-song="${esc(s.title)}" aria-label="${esc(s.title)} by ${esc(s.artist)}">
+            <span class="jg-lib-art">${art ? `<img src="${art.img}" alt="" loading="lazy" />` : `<span class="jg-lib-initials">${esc(s.title.slice(0, 1))}</span>`}
+              ${saved[s.title]?.status === "completed" ? `<span class="jg-lib-tag">${icon("check", 14)} Learned</span>` : ""}
+              <span class="jg-lib-play">${icon("play", 34)}</span></span>
+            <span class="jg-lib-title">${esc(s.title)}</span>
+            <span class="jg-lib-artist">${esc(s.artist)}</span>
+          </button>`;
+        }).join("")}</div>
+      </section>`).join("") || '<p class="jg-note">No songs match.</p>';
   }
   draw();
   panel.querySelector(".jg-song-q").addEventListener("input", (e) => { filter.q = e.target.value; draw(); });
@@ -59,8 +80,8 @@ function renderSongs(panel) {
     const b = e.target.closest("button");
     if (!b) return;
     if (b.dataset.tier) { filter.tier = b.dataset.tier; renderSongs(panel); }
-    else if (b.hasAttribute("data-world")) { filter.world = !filter.world; renderSongs(panel); }
-    else if (b.dataset.song) openSong(panel, SONGS.find((s) => s.title === b.dataset.song));
+    // Tap a song: the play-along opens and starts right away.
+    else if (b.dataset.song) openSong(panel, SONGS.find((s) => s.title === b.dataset.song), { autoplay: true });
   };
 }
 
@@ -70,6 +91,7 @@ const ART_KEY = "jg_song_art";
 const artCache = () => { try { return JSON.parse(localStorage.getItem(ART_KEY) || "{}"); } catch (e) { return {}; } };
 async function songArt(song) {
   const id = `${song.title}|${song.artist}`;
+  if (SONG_ART[id]) return SONG_ART[id];
   if (artCache()[id]) return artCache()[id];
   const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(`${song.title} ${song.artist}`)}&entity=song&limit=5&country=us`);
   const data = await res.json();
@@ -103,7 +125,7 @@ function wholeSongChords(song) {
 }
 const initials = (name) => name.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
-function openSong(panel, song) {
+function openSong(panel, song, { autoplay = false } = {}) {
   const p = songPlan(song);
   const unique = [...new Set(p.shapes)];
   let bpm = 80;
@@ -145,6 +167,7 @@ function openSong(panel, song) {
   };
   mount();
   inst.fb.showShape(chordShape(p.shapes[0]));
+  if (autoplay) setTimeout(() => panel.querySelector(".jg-pb-go")?.click(), 400);
   cleanup = () => { box && box.destroy(); inst.hw.destroy(); };
   panel.querySelector(".jg-exit").addEventListener("click", () => renderSongs(panel));
   panel.querySelectorAll(".jg-dg-btn").forEach((b) => b.addEventListener("click", () => {
