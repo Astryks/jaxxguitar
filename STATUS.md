@@ -117,3 +117,13 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 - New lesson "Music has flavours: genres" (after 7th chords): pop (G D Em C), rock (D C G, Sweet Home Alabama), blues (12-bar A7 D7 E7), jazz (2-5-1 Dm7 G7 Cmaj7), reggae (off-beat upstrokes, Three Little Birds A D E), classical (fingerpicking).
 - New final lesson "Chord Ear Gym": happy or sad, all 24 chords with 4 choices, then chords played different ways (strummed / picked / higher up); wrong answers compare both chords; shape shown on the fretboard.
 - Fun fact #2 (always second): "Who invented the guitar?" — evolved from the lute and vihuela; Antonio de Torres shaped the modern guitar in the 1850s–60s (bigger body, thinner top, fan bracing); his papier-mâché guitar; photos: Torres (public domain) and a Torres guitar at the Museu de la Música de Barcelona (CC BY-SA 3.0, credited).
+
+## Where things stand (2026-10-07)
+- **TestFlight:** build 7 is the last one uploaded (Comfortably Numb, Creep, looping lesson). **Build 8** (Hayden Keys feedback adapted for guitar) is archived and ready, but the upload is blocked by Xcode's "Failed to Use Accounts" error. Re-sign in to Xcode (Settings → Accounts → remove and re-add the Apple ID), then upload build 8.
+- **ShazamKit:** enabled for com.jaxxguitar.app (from build 6); the button says "Guess the song".
+- **App Store submission:** not submitted. Screenshots, content rights, age rating, App Privacy and review contact are still to do in App Store Connect.
+- **Sibling app:** Hayden Keys (piano) has the same changes (its build 24).
+
+## Next up
+- After Hayden Keys and Jaxx Guitar: a **fitness app** and a **jiu jitsu app**.
+- More app ideas after those: **public speaking**, **singing**, **investing and markets**, and **dance**.
