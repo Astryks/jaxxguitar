@@ -49,6 +49,8 @@ Freely licensed images from Wikimedia Commons, resized to small WebP portraits (
 | Andrés Segovia | Erling Mandelmann | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Andr%C3%A9s_Segovia_(1963)_by_Erling_Mandelmann.jpg |
 | Slash (musician) | Kreepin Deth | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Slash_live_in_London_2022_(Cropped_-_upright).jpg |
 | Francisco Tárrega | Unknown | Public domain | https://commons.wikimedia.org/wiki/File:Francisco_tarrega_retrato.jpg |
+| Prince | Unknown author (1988 promotional photo) | Public domain | https://commons.wikimedia.org/wiki/File:Prince_promo_picture_(1988;_cropped_and_retouched).png |
+| George Harrison | John Kelly | Public domain | https://commons.wikimedia.org/wiki/File:George-wa-portrait.jpg |
 
 ## Videos
 

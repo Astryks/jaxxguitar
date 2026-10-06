@@ -26,6 +26,7 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 | ✅ | Intermediate: scales | pentatonic, major, natural/harmonic minor, "How to practise scales", modes (Advanced) |
 | ✅ | Learning all chords | `lesson-all-chords` + **Practice → All chords** (12 roots × 10 chord types, every one validated) |
 | ✅ | Solos: November Rain, Hotel California (taught via chords, scales and techniques; no copyrighted transcriptions) | `lesson-hotel`, `lesson-november` |
+| ✅ | Advanced: Prince's solo in While My Guitar Gently Weeps | `lesson-wmggw`: the 2004 Hall of Fame story, the lament-bass chords, A minor pentatonic + Dorian/harmonic-minor colour notes, an original fast run; photos of Prince and George Harrison; official Rock Hall video. Also in the Songs library. |
 | ✅ | Stairway to Heaven at intermediate level | `lesson-stairway` + Songs library |
 | ✅ | Countries and styles: classical/Spanish guitar, fingerpicking technique | `lesson-classical` (p-i-m-a, rest vs free stroke, *Romance*, which is public domain) |
 | ✅ | Godfather tune and its really fast picking | `lesson-world` → tremolo picking on an original melody (the Godfather theme is copyrighted, so it's described, not printed) |
@@ -40,6 +41,8 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 | ✅ | Gamification: XP, levels, 3 daily quests, stars, streak + freezes, 2-minute daily review | `storage.js`, `daily-review.js` |
 | ✅ | Random "Did you know?" facts between lessons (kid-friendly) | `fun-facts.js` |
 | ✅ | Celebration = tiny musical notes falling from the sky | `app.js` `confetti()` |
+| ✅ | Home: one step at a time (welcome box, then a fun fact with a single Start lesson button); no 1-5-6-4 jargon | |
+| ✅ | Open chords vs barre chords, and the baby F (plus Fmaj7) early in Beginner | `lesson-open-barre` |
 | ✅ | Mascot: Jaxx the kitten (top hat, green vest), a different pose per lesson and screen | `assets/mascot/*.webp` (23 poses) |
 | ✅ | Animated mascots: sways while talking, bops while music plays, hops on celebrate, wiggles on fun facts | CSS, respects reduced-motion |
 | ✅ | App icon from the mascot | `assets/icons/`, iOS AppIcon |

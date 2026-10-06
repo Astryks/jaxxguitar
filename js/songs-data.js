@@ -54,6 +54,21 @@ import { WORLD_SONGS, WORLD_LANGUAGES, WORLD_ALSO } from "./world-songs.js";
 
 const SONGS = [
   {
+    title: "While My Guitar Gently Weeps",
+    artist: "The Beatles",
+    genre: "Rock",
+    popularityRank: 121,
+    year: 1968,
+    key: "A minor",
+    chords: ["Am", "Am/G", "Am/F#", "F", "Am", "G", "D", "E"],
+    degreeSequence: "i with a descending bass (A–G–F#–F), then i – bVII – IV – V",
+    confidence: "confirmed",
+    oneFiveSixFourMatch: false,
+    difficulty: "Advanced",
+    notes:
+      "George Harrison's song from the White Album (1968). The intro/verse is Am, Am/G, Am/F#, F, Am, G, D, E — a 'lament' bass walking down from A; the chorus moves to A major. Taught in the Advanced 'Solo study: Prince & While My Guitar Gently Weeps' lesson. No transcription of any solo is included.",
+  },
+  {
     title: "Stairway to Heaven",
     artist: "Led Zeppelin",
     genre: "Rock",

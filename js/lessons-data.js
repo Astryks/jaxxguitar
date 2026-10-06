@@ -724,6 +724,42 @@ const ADVANCED = [
         practice: { items: scaleItems(scaleBox(9, [0, 2, 3, 5, 7, 9, 10], 5)), bpm: 72, modes: ["listen", "wait"], mic: true, label: "A Dorian", showTab: true } },
     ],
   },
+  {
+    id: "lesson-wmggw", title: "Solo study: Prince & While My Guitar Gently Weeps", subtitle: "The 2004 Hall of Fame solo",
+    pages: [
+      { html: `<h3>The most famous guitar solo at a tribute show</h3>
+        <p><strong>George Harrison</strong> wrote "While My Guitar Gently Weeps" for the Beatles' White Album in 1968. His friend <strong>Eric Clapton</strong> played the original lead guitar on the record.</p>
+        <p>In March 2004, Harrison was inducted into the Rock and Roll Hall of Fame. Tom Petty, Jeff Lynne, Steve Winwood and George's son Dhani played the song, and <strong>Prince</strong> stepped up for the ending: a blazing three-minute solo. He leaned back so far he fell off the stage into the crowd (a stagehand pushed him back up!), kept playing, and finished by tossing his guitar high into the air and walking off. It's one of the most-watched live guitar moments ever.</p>
+        <p class="jg-note">The song and the solo are copyrighted, so we won't copy them note for note. You'll learn what the solo is built from: the chords, the scale, and Prince's techniques.</p>`,
+        people: ["prince", "george-harrison"], video: "prince-wmggw" },
+      { html: `<h3>The chords: a bass line that cries</h3>
+        <p>The song keeps an <strong>A minor</strong> chord on top while the bass walks down: <strong>A → G → F# → F</strong>. Then it climbs back with <strong>Am – G – D – E</strong>. That falling bass is what makes it sound like it's weeping.</p>
+        <p><strong>Am – Am/G – Am/F# – F – Am – G – D – E</strong></p>`,
+        diagrams: ["Am", "Am/G", "Am/F#", "F", "G", "D", "E"],
+        practice: { items: strumItems(["Am", "Am/G", "Am/F#", "F", "Am", "G", "D", "E"], DDUUDU), bpm: 76, modes: ["listen", "wait"], label: "The verse chords", drums: true } },
+      { html: `<h3>The scale: A minor pentatonic, plus two magic notes</h3>
+        <p>Most of a solo over this song lives in the <strong>A minor pentatonic</strong> box at the 5th fret, the very first scale you learned. Great soloists add colour by aiming for the notes of each chord as it goes by:</p>
+        <ul>
+          <li>Over <strong>D</strong>, the note <strong>F#</strong> (7th fret on the B string, or 4th fret on the D string) sounds sweet. That's the <strong>Dorian</strong> sound.</li>
+          <li>Over <strong>E</strong>, the note <strong>G#</strong> (6th fret on the D string, or 9th fret on the B string) makes it dramatic. That's the <strong>harmonic minor</strong> sound.</li>
+        </ul>
+        <p>Below is A Dorian in 5th position (pentatonic + B and F#). Practice it up and down.</p>`,
+        notes: scaleBox(9, [0, 2, 3, 5, 7, 9, 10], 5).map((n) => ({ string: n.string, fret: n.fret, tone: n.root ? "root" : undefined, label: String(n.fret) })),
+        practice: { items: scaleItems(scaleBox(9, [0, 2, 3, 5, 7, 9, 10], 5)), bpm: 80, modes: ["listen", "wait", "timed"], mic: true, label: "A Dorian, 5th position", showTab: true } },
+      { html: `<h3>Play like Prince: bends, vibrato and fast runs</h3>
+        <ul>
+          <li><strong>Long bends with wide vibrato</strong>: bend a note up a whole step, hold it, and shake it so it sings over the whole bar.</li>
+          <li><strong>Fast pentatonic runs</strong> that rush down the box, then a long held note to land.</li>
+          <li><strong>Dynamics</strong>: play some phrases quietly and some loud. The contrast is what makes a solo exciting.</li>
+        </ul>
+        <p>Here's our own fast run down the A minor pentatonic box (not Prince's notes). Start slow with Wait for me, then speed up.</p>`,
+        notes: AMIN_PENT.map((n) => ({ string: n.string, fret: n.fret, tone: n.root ? "root" : undefined, label: String(n.fret) })),
+        practice: { items: () => {
+          const run = [...AMIN_PENT].reverse();
+          return run.map((n, i) => ({ string: n.string, fret: n.fret, start: i * 0.25, dur: 0.25 })).concat([{ string: 3, fret: 7, start: run.length * 0.25, dur: 2 }]);
+        }, bpm: 70, modes: ["listen", "wait", "timed"], mic: true, label: "A fast pentatonic run (our own lick)", showTab: true } },
+    ],
+  },
 ];
 
 export { PRE, BEGINNER, INTERMEDIATE, ADVANCED, shapes, strumItems };

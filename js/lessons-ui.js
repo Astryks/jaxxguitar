@@ -25,7 +25,7 @@ const MASCOT_BY_LESSON = {
   "lesson-pentatonic": "sheet-music-jump", "lesson-major-scale": "music-scrolls", "lesson-techniques": "tangled-strings",
   "lesson-minor-scales": "music-scrolls", "lesson-hotel": "singing-stage", "lesson-november": "singing-stage",
   "lesson-fingerpicking": "playing-guitar", "lesson-stairway": "playing-guitar", "lesson-caged": "map-glasses",
-  "lesson-greensleeves": "cello", "lesson-modes": "big-pen",
+  "lesson-greensleeves": "cello", "lesson-modes": "big-pen", "lesson-wmggw": "singing-stage",
 };
 function mascot(name, alt = "Jaxx the kitten", extra = "") {
   return `<div class="jg-avatar ${extra}"><img src="assets/mascot/${name}.webp" alt="${alt}" loading="lazy"></div>`;

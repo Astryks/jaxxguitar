@@ -164,6 +164,22 @@ const PEOPLE = {
   "pageUrl": "https://commons.wikimedia.org/wiki/File:Ali_Farka_Toure.jpg",
   "file": "Ali Farka Toure.jpg",
   "img": "assets/people/ali-farka-toure.webp"
+ },
+ "prince": {
+  "person": "Prince",
+  "artist": "Unknown author (1988 promotional photo)",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "pageUrl": "https://commons.wikimedia.org/wiki/File:Prince_promo_picture_(1988;_cropped_and_retouched).png",
+  "img": "assets/people/prince.webp"
+ },
+ "george-harrison": {
+  "person": "George Harrison",
+  "artist": "John Kelly",
+  "license": "Public domain",
+  "licenseUrl": "",
+  "pageUrl": "https://commons.wikimedia.org/wiki/File:George-wa-portrait.jpg",
+  "img": "assets/people/george-harrison.webp"
  }
 };
 const VIDEOS = {
@@ -236,6 +252,11 @@ const VIDEOS = {
   "id": "PtsFibqgGzo",
   "title": "See How the D-28 is Handmade",
   "author_name": "Martin Guitar"
+ },
+ "prince-wmggw": {
+  "id": "6SFNW5F8K9Y",
+  "title": "Prince, Tom Petty, Steve Winwood, & More \"While My Guitar Gently Weeps\" | Rock Hall 2004 Induction",
+  "author_name": "Rock & Roll Hall of Fame"
  }
 };
 export { PEOPLE, VIDEOS };
