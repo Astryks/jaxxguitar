@@ -106,7 +106,7 @@ function allLessons() {
   return sections().flatMap((s) => s.lessons);
 }
 // Chord pages: the app can't strum for you; the real practice is on your guitar.
-const PHONE_NOTE = `<p class="jg-phone-note">${icon("guitar", 18)} I know it's hard to play a chord on the app! On your phone you can tap the notes one at a time. The real practice is on <strong>your guitar</strong>: there, press all the strings and strum them together.</p>`;
+const PHONE_NOTE = `<p class="jg-phone-note">${icon("guitar", 18)}<span>I know it's hard to play a chord on the app! On your phone you can tap the notes one at a time. The real practice is on <strong>your guitar</strong>: there, press all the strings and strum them together.</span></p>`;
 
 function nextLesson() {
   return allLessons().find((l) => !l.pre && !l.world && !isLessonComplete(l.id)) || null;
@@ -175,6 +175,7 @@ function showHome() {
         <span><b>Upload any song</b><span>and we'll find the chords for you</span></span>
         <span class="jg-home-upload-go">Upload</span>
       </button>
+      <p class="jg-home-credit">Supported by the Astryks Group (<a href="https://astryks.com" target="_blank" rel="noopener">astryks.com</a>)</p>
     </div>`;
   panelEl.querySelector("[data-home-upload]")?.addEventListener("click", () => {
     document.querySelector('.jg-tab[data-tab="practice"]')?.click();

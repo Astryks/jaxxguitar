@@ -135,3 +135,4 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 - **Sound:** audio session re-activated on return to the app and kept on the loudspeaker after microphone use.
 - Upload card uses a drawn cassette icon.
 - Build 10: a note played while iOS has the audio engine paused now waits for it to wake up instead of being lost.
+- Build 11: "Supported by the Astryks Group (astryks.com)" at the bottom of the home page; phone note on chord pages fixed (it wrapped into columns). App Store: 12 new screenshots (iPhone 6.9", iPad 13") in ios/screenshots/app-store/; listing, App Privacy, review notes and content rights updated in ios/APP_STORE_LISTING.md.
