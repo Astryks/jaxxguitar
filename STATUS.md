@@ -134,3 +134,4 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 - **Uploads:** 2 MB pieces to the native decoder; real error shown if it fails.
 - **Sound:** audio session re-activated on return to the app and kept on the loudspeaker after microphone use.
 - Upload card uses a drawn cassette icon.
+- Build 10: a note played while iOS has the audio engine paused now waits for it to wake up instead of being lost.

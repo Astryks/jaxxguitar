@@ -74,7 +74,17 @@ function pluckBuffer(midi, seconds = 2.6) {
   return buf;
 }
 
-function playNote(midi, { delay = 0, duration = 2.4, gain = 0.32 } = {}) {
+function playNote(midi, opts = {}) {
+  // iOS can hand back a paused audio engine for a moment; a note scheduled
+  // then is never heard, so wait for it to wake up and play the note then.
+  const ctx0 = getAudioContext();
+  if (ctx0.state !== "running" && !opts._retried) {
+    ctx0.resume?.().then(() => playNote(midi, { ...opts, _retried: true })).catch(() => playNote(midi, { ...opts, _retried: true }));
+    return;
+  }
+  return playNoteNow(midi, opts);
+}
+function playNoteNow(midi, { delay = 0, duration = 2.4, gain = 0.32 } = {}) {
   const c = getAudioContext();
   const src = c.createBufferSource();
   src.buffer = pluckBuffer(midi);
