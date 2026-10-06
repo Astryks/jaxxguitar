@@ -69,6 +69,21 @@ const SONGS = [
       "George Harrison's song from the White Album (1968). The intro/verse is Am, Am/G, Am/F#, F, Am, G, D, E — a 'lament' bass walking down from A; the chorus moves to A major. Taught in the Advanced 'Solo study: Prince & While My Guitar Gently Weeps' lesson. No transcription of any solo is included.",
   },
   {
+    title: "Comfortably Numb",
+    artist: "Pink Floyd",
+    genre: "Rock",
+    popularityRank: 122,
+    year: 1979,
+    key: "B minor (chorus in D major)",
+    chords: ["Bm", "A", "G", "Em", "D", "C"],
+    degreeSequence: "Verse: i – bVII – bVI – iv – i (Bm A G Em Bm) · Chorus in D: I – V – I – V – bVII – IV – I (D A D A C G D)",
+    confidence: "confirmed",
+    oneFiveSixFourMatch: false,
+    difficulty: "Intermediate",
+    notes:
+      "From The Wall (1979). The verses are in B minor (Bm, A, G, Em, Bm); the chorus lifts into D major (D, A, D, A, C, G, D). David Gilmour's two famous guitar solos are played over the verse chords. The chords are taught here; the solos are not transcribed.",
+  },
+  {
     title: "Stairway to Heaven",
     artist: "Led Zeppelin",
     genre: "Rock",
@@ -2086,6 +2101,15 @@ const ONE_FIVE_SIX_FOUR_SONGS = SONGS.filter((s) => s.oneFiveSixFourMatch && !s.
 // Songs NOT in this map fall back to the existing simple-loop Practice
 // view using their top-level `chords` array, looped indefinitely.
 const SONG_STRUCTURES = {
+  "Comfortably Numb": [
+    { section: "Intro", chords: ["Bm"], bars: 2 },
+    { section: "Verse 1", chords: ["Bm", "A", "G", "Em", "Bm"], bars: 10 },
+    { section: "Chorus 1", chords: ["D", "A", "D", "A", "C", "G", "D"], bars: 14 },
+    { section: "Solo 1", chords: ["Bm", "A", "G", "Em", "Bm"], bars: 10 },
+    { section: "Verse 2", chords: ["Bm", "A", "G", "Em", "Bm"], bars: 10 },
+    { section: "Chorus 2", chords: ["D", "A", "D", "A", "C", "G", "D"], bars: 14 },
+    { section: "Outro solo", chords: ["Bm", "A", "G", "Em", "Bm"], bars: 20 },
+  ],
   "Let It Be": [
     { section: "Intro", chords: ["C", "G", "Am", "F"], bars: 4 },
     { section: "Verse 1", chords: ["C", "G", "Am", "F", "C", "G", "F", "C"], bars: 8 },

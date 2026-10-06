@@ -100,3 +100,6 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 ## 2026-10-06 — iOS build 6
 - ShazamKit now enabled for com.jaxxguitar.app (new provisioning profile).
 - Uploads decode natively on iPhone (AVFoundation, any format iOS plays incl. videos), web decoder as fallback.
+
+## 2026-10-07 — iOS build 7
+- Added Comfortably Numb (Pink Floyd, 1979): verse Bm A G Em Bm, chorus in D (D A D A C G D), song structure incl. both solo sections; solos not transcribed.
