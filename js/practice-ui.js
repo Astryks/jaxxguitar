@@ -7,7 +7,10 @@ import { chordDiagramSvg } from "./fretboard.js";
 import { strum, click, getAudioContext } from "./guitar-audio.js";
 import { mountInstrument, createPracticeBox } from "./practice-widget.js";
 import { chordTimeline } from "./guitar-player.js";
-import { transcribeFile, estimateBeat, simplifyToChords } from "./transcribe.js";
+import { transcribeFile, estimateBeat, simplifyToChords, guessLastUpload, canGuessSongs } from "./transcribe.js";
+import { SONGS } from "./songs-data.js";
+import { parseChordSymbol } from "./chord-utils.js";
+import { openSongByTitle } from "./songs-ui.js";
 
 const CHORDS = ["G", "C", "D", "Em", "Am", "E", "A", "Dm", "F", "Bm", "E7", "A7", "D7", "G7", "B7", "Cmaj7", "Am7", "Em7", "Dsus4", "Asus2", "E5", "A5"];
 const PATTERNS = {
@@ -40,7 +43,8 @@ function renderPractice(panel) {
       <button class="jg-pill" data-sec="upload">📁 Upload a song</button>
     </div>
     <div class="jg-sec"></div>
-    <div class="jg-instrument-host"></div>`;
+    <div class="jg-instrument-host"></div>
+    <div class="jg-below"></div>`;
   const sec = panel.querySelector(".jg-sec");
   const inst = mountInstrument(panel.querySelector(".jg-instrument-host"), { frets: 15 });
   cleanup.push(() => inst.hw.destroy());
@@ -56,6 +60,7 @@ function renderPractice(panel) {
     stopUpload = null;
     inst.fb.clear();
     inst.hw.render(0, []);
+    panel.querySelector(".jg-below").innerHTML = "";
   };
   cleanup.push(clearSec);
 
@@ -199,8 +204,10 @@ function renderPractice(panel) {
   function uploadSection() {
     sec.innerHTML = `
       <div class="jg-card">
-        <p><strong>Upload a song you have</strong> (mp3, m4a, wav, or a video). Jaxx Guitar listens to it <em>on your device</em> — nothing is uploaded anywhere — and works out the chords, then shows the guitar shape for each one in time with the music.</p>
-        <input type="file" accept="audio/*,video/*" class="jg-file">
+        <h3 style="margin:4px 0">🎸 Upload any song and we'll find the chords for you!</h3>
+        <p>Pick a song from your phone (a few seconds is enough). We'll show the guitar shapes in time with the music.</p>
+        <label class="jg-upload-pick">📂 Choose a song<input type="file" accept="audio/*,video/*" class="jg-file jg-upload-input"></label>
+        <p class="jg-upload-fine">(Jaxx Guitar is for entertainment and learning only. We don't support copying songs from YouTube or other links without the artist's permission. This feature is here so you can learn the songs you love, and support the artists who create beautiful things in our world. It all runs on your device; nothing is uploaded.)</p>
         <p class="jg-status jg-note"></p>
       </div>
       <div class="jg-up-result"></div>`;
@@ -212,7 +219,8 @@ function renderPractice(panel) {
         const notes = await transcribeFile(file, (t) => { status.textContent = t; });
         const hw = notes.map((n) => ({ midi: n.pitchMidi ?? n.midi, time: n.startTimeSeconds ?? n.time, duration: n.durationSeconds ?? n.duration }));
         const beat = estimateBeat(hw);
-        const win = beat ? beat.beatSec * 2 : 1;
+        // Slow songs can change chord every beat; faster ones every 2 beats.
+        const win = beat ? (beat.beatSec >= 0.75 ? beat.beatSec : beat.beatSec * 2) : 1;
         const chords = [];
         simplifyToChords(hw, { windowSec: win, offsetSec: beat ? beat.offsetSec : 0 }).forEach((n) => {
           if (!chords.length || chords[chords.length - 1].time !== n.time) chords.push({ chord: n.chord, time: n.time, end: n.time + n.duration });
@@ -227,38 +235,73 @@ function renderPractice(panel) {
     });
   }
 
+  // Songs in the library whose chord loop (in any key) matches what we heard.
+  function loopShape(chs) {
+    const parsed = chs.map((c) => parseChordSymbol(c)).filter(Boolean);
+    return parsed.map((p, i) => {
+      const next = parsed[(i + 1) % parsed.length];
+      const minor = p.intervals.includes(3) && !p.intervals.includes(4);
+      return `${minor ? "m" : "M"}${(next.root - p.root + 12) % 12}`;
+    });
+  }
+  function sameChordSongs(chords) {
+    const seq = [];
+    chords.forEach((c) => { if (seq[seq.length - 1] !== c.chord) seq.push(c.chord); });
+    if (seq.length < 3) return [];
+    const heard = loopShape(seq).join(",");
+    return SONGS.filter((song) => {
+      const ch = (song.chords || []).filter((c) => /^[A-G]/.test(c)).map((c) => c.replace(/\/.*$/, "").replace(/maj7$/, "").replace(/m7$/, "m").replace(/(7|sus\d|add9|6)$/, ""));
+      if (ch.length < 3) return false;
+      const loop = loopShape(ch);
+      for (let r = 0; r < loop.length; r++) if (heard.includes(loop.slice(r).concat(loop.slice(0, r)).join(","))) return true;
+      return false;
+    }).sort((a, b) => (b.confidence === "confirmed") - (a.confidence === "confirmed") || (a.popularityRank || 999) - (b.popularityRank || 999));
+  }
+
   function showUpload(file, chords, capo, beat) {
     const res = sec.querySelector(".jg-up-result");
+    const below = panel.querySelector(".jg-below");
     const unique = [...new Set(chords.map((c) => c.chord))];
     let useCapo = capo.capo > 0;
     const shapeFor = (c) => (useCapo ? capo.map[c] : c);
+    const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+    const matches = sameChordSongs(chords);
+    // Play first, right above the fretboard...
     res.innerHTML = `
-      <div class="jg-card">
-        <p class="jg-note">These chords are a best guess from the recording — simple major/minor versions. Trust your ears where they disagree.</p>
+      <button class="jg-upload-bigplay jg-up-play">▶ Play</button>
+      <div class="jg-big jg-up-now"></div>
+      <audio class="jg-up-audio" preload="auto"></audio>`;
+    // ...everything else below the fretboard.
+    below.innerHTML = `
+      <details class="jg-upload-settings">
+        <summary>⚙️ Customise: capo, sound, chord shapes, guess the song</summary>
         <div class="jg-row">
           ${capo.capo ? `<button class="jg-pill ${useCapo ? "jg-pill-active" : ""}" data-capo="1">Capo ${capo.capo} (easier shapes)</button><button class="jg-pill ${useCapo ? "" : "jg-pill-active"}" data-capo="0">No capo</button>` : ""}
         </div>
-        <div class="jg-diagram-row jg-up-dg"></div>
         <div class="jg-row"><span class="jg-label">Sound</span>
-          <button class="jg-pill jg-pill-active" data-snd="song">Original</button>
+          <button class="jg-pill jg-pill-active" data-snd="song">Original song</button>
           <button class="jg-pill" data-snd="guitar">Guitar only</button>
-          <button class="jg-pill" data-snd="both">Guitar + song</button>
-          <button class="jg-btn jg-btn-primary jg-up-play">▶ Play</button></div>
-        <div class="jg-big jg-up-now"></div>
-        <audio class="jg-up-audio" preload="auto"></audio>
-      </div>`;
+          <button class="jg-pill" data-snd="both">Guitar + song</button></div>
+        <div class="jg-diagram-row jg-up-dg"></div>
+        ${canGuessSongs() ? '<div class="jg-row"><button class="jg-btn jg-up-guess">🔎 Guess the song (Shazam)</button></div><div class="jg-up-rec"></div>' : ""}
+        ${matches.length ? `<div class="jg-up-match"><b>🔎 These songs use the same chords:</b><div class="jg-row">${matches.slice(0, 6).map((m) => `<button class="jg-btn jg-btn-small" data-song="${esc(m.title)}">${esc(m.title)} <span class="jg-label">· ${esc(m.artist)}</span></button>`).join("")}</div><small class="jg-note">Lots of songs share chords, so this is a hint. Tap one to learn the whole song.</small></div>` : ""}
+        <p class="jg-note">These chords are a best guess from the recording: simple major/minor versions. Trust your ears where they disagree.</p>
+      </details>`;
     const audio = res.querySelector(".jg-up-audio");
+    const playBtn = res.querySelector(".jg-up-play");
+    setTimeout(() => playBtn.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
     const url = URL.createObjectURL(file);
     audio.src = url;
     let snd = "song";
     let raf = null;
     let lastIdx = -1;
-    const drawDg = () => { res.querySelector(".jg-up-dg").innerHTML = unique.map((c) => chordDiagramSvg(chordShape(shapeFor(c)), shapeFor(c) + (useCapo ? ` (${c})` : ""))).join(""); };
+    const drawDg = () => { below.querySelector(".jg-up-dg").innerHTML = unique.map((c) => chordDiagramSvg(chordShape(shapeFor(c)), shapeFor(c) + (useCapo ? ` (${c})` : ""))).join(""); };
     drawDg();
-    const notes = chords.flatMap((c) => {
+    const notesFor = () => chords.flatMap((c) => {
       const sh = chordShape(shapeFor(c.chord));
       return sh ? sh.frets.map((f, s) => (f >= 0 ? { string: s, fret: f, time: c.time, duration: Math.max(0.2, c.end - c.time - 0.05) } : null)).filter(Boolean) : [];
     });
+    let notes = notesFor();
     const tick = () => {
       const t = audio.currentTime;
       const idx = chords.findIndex((c) => t >= c.time && t < c.end);
@@ -272,21 +315,38 @@ function renderPractice(panel) {
           if (snd !== "song" && sh && !audio.paused) strum(shapeMidis(sh), { duration: Math.min(3, c.end - c.time) });
         }
       }
-      inst.hw.render(t, notes.map((n) => ({ ...n })), { chordLabel: "" });
+      inst.hw.render(t, notes, { chordLabel: "" });
       raf = requestAnimationFrame(tick);
     };
     const setVolume = () => { audio.volume = snd === "guitar" ? 0 : snd === "both" ? 0.6 : 1; audio.muted = snd === "guitar"; };
     setVolume();
-    res.addEventListener("click", (e) => {
+    audio.addEventListener("ended", () => { playBtn.textContent = "▶ Play"; });
+    playBtn.addEventListener("click", () => {
+      if (audio.paused) { getAudioContext().resume?.(); audio.play(); playBtn.textContent = "⏸ Pause"; if (!raf) tick(); }
+      else { audio.pause(); playBtn.textContent = "▶ Play"; }
+    });
+    below.onclick = (e) => {
       const b = e.target.closest("button");
       if (!b) return;
-      if (b.dataset.capo !== undefined) { useCapo = b.dataset.capo === "1"; res.querySelectorAll("[data-capo]").forEach((x) => x.classList.toggle("jg-pill-active", x === b)); drawDg(); lastIdx = -1; }
-      if (b.dataset.snd) { snd = b.dataset.snd; res.querySelectorAll("[data-snd]").forEach((x) => x.classList.toggle("jg-pill-active", x === b)); setVolume(); }
-      if (b.classList.contains("jg-up-play")) {
-        if (audio.paused) { getAudioContext().resume?.(); audio.play(); b.textContent = "⏸ Pause"; if (!raf) tick(); }
-        else { audio.pause(); b.textContent = "▶ Play"; }
+      if (b.dataset.capo !== undefined) { useCapo = b.dataset.capo === "1"; below.querySelectorAll("[data-capo]").forEach((x) => x.classList.toggle("jg-pill-active", x === b)); drawDg(); notes = notesFor(); lastIdx = -1; }
+      if (b.dataset.snd) { snd = b.dataset.snd; below.querySelectorAll("[data-snd]").forEach((x) => x.classList.toggle("jg-pill-active", x === b)); setVolume(); }
+      if (b.dataset.song) openSongByTitle(b.dataset.song);
+      if (b.classList.contains("jg-up-guess")) {
+        const box = below.querySelector(".jg-up-rec");
+        b.disabled = true;
+        b.textContent = "🎧 Listening…";
+        guessLastUpload().then((r) => {
+          b.disabled = false;
+          b.textContent = "🔎 Guess the song (Shazam)";
+          if (!r || !r.found) { box.innerHTML = '<div class="jg-up-rec-box">🤔 Couldn\'t find this song. Try a clearer part of it.</div>'; return; }
+          const inLib = SONGS.find((s) => s.title.toLowerCase() === String(r.title).toLowerCase());
+          box.innerHTML = `<div class="jg-up-rec-box">${r.artworkURL ? `<img src="${esc(r.artworkURL)}" alt="" class="jg-up-rec-art">` : ""}
+            <div><div>🎵 We think this is</div><b>${esc(r.title)}</b><div class="jg-label">${esc(r.artist)}</div>
+            <div class="jg-row">${inLib ? `<button class="jg-btn jg-btn-small jg-btn-primary" data-song="${esc(inLib.title)}">Learn the whole song</button>` : ""}
+            ${r.appleMusicURL ? `<a class="jg-btn jg-btn-small" href="${esc(r.appleMusicURL)}" target="_blank" rel="noopener">Open in Apple Music</a>` : ""}</div></div></div>`;
+        });
       }
-    });
+    };
     stopUpload = () => { audio.pause(); if (raf) cancelAnimationFrame(raf); raf = null; URL.revokeObjectURL(url); };
   }
 

@@ -78,3 +78,21 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 - Screenshots are checked on desktop, landscape phone and portrait phone.
 - `npm run check` validates every chord shape: notes in the chord, root and 3rd present, correct bass.
 - App Store screenshots: serve on :8766, then run `node ios/screenshots/shoot.mjs`.
+
+## 2026-10-07: upload, Guess the song (ShazamKit), song fixes
+- **Upload:**
+  - **Heading:** "Upload any song and we'll find the chords for you!" with a big 📂 Choose a song button, and the disclaimer as small bracketed text.
+  - **Layout:** a big ▶ Play right above the fretboard, then chord shapes falling onto it in time.
+  - **Settings in "⚙️ Customise" below the fretboard:** capo, sound (original / guitar / both), chord diagrams, Guess the song, and songs with the same chords.
+  - **Chord timing:** follows the tempo, 1 beat per chord on slow songs and 2 on fast ones.
+- **🔎 Guess the song (iPhone/iPad app):**
+  - **How it works:** the same ShazamKit native plugin as Hayden Keys (`SongRecognizerPlugin.swift`, registered in `JGBridgeViewController.swift`). Opt-in button; shows "We think this is…" with Open in Apple Music and Learn the whole song.
+  - **Privacy policy:** updated.
+  - **⬜ Owner:** enable the ShazamKit App Service for **com.jaxxguitar.app** (developer.apple.com → Identifiers → com.jaxxguitar.app → App Services → ShazamKit → Save).
+- **"These songs use the same chords":** the heard loop is compared with the library in any key; tap one to open it in Songs.
+- **Song data fixes (shared with Hayden Keys):**
+  - Viva La Vida, Just the Way You Are, Hey Soul Sister and Shallow corrected.
+  - Can You Feel the Love Tonight and Mr. Brightside marked as close versions.
+  - Let It Be and Perfect chorus chords fixed.
+  - Teaching-key labels like "G major (original recording in Ab major)".
+- **iOS build 5.**

@@ -285,3 +285,16 @@ details > summary::-webkit-details-marker { display: none; }
 .jg-home .jg-say { margin-bottom: 14px; }
 .jg-home .jg-bubble { max-width: 620px; }
 .jg-home .jg-funfact-open { margin-top: 6px; }
+
+/* Upload: big Play above the fretboard, settings below it */
+.jg-upload-input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.jg-upload-pick { display: inline-block; margin: 6px 0; padding: 14px 24px; border-radius: 999px; font-size: 1.15rem; font-weight: 800; color: #fff; cursor: pointer; background: linear-gradient(135deg, var(--jg-accent), #e08a3c); box-shadow: 0 6px 16px rgba(196, 106, 31, 0.3); position: relative; }
+.jg-upload-fine { font-size: 0.72rem; line-height: 1.35; color: var(--jg-text-dim); margin: 6px 0 0; }
+.jg-upload-bigplay { display: block; width: 100%; margin: 10px 0 6px; min-height: 60px; font-size: 1.4rem; font-weight: 800; border: none; border-radius: 16px; color: #fff; cursor: pointer; background: linear-gradient(135deg, var(--jg-accent), var(--jg-accent-2)); box-shadow: 0 6px 16px rgba(196, 106, 31, 0.3); }
+.jg-upload-settings { margin: 10px 0; border: 1px solid var(--jg-border); border-radius: 14px; background: var(--jg-panel); padding: 4px 12px; }
+.jg-upload-settings > summary { cursor: pointer; font-weight: 700; padding: 10px 0; list-style: none; }
+.jg-upload-settings > summary::-webkit-details-marker { display: none; }
+.jg-up-match { background: var(--jg-accent-soft); border-radius: 12px; padding: 8px 10px; margin: 8px 0; }
+.jg-up-rec-box { display: flex; gap: 12px; align-items: center; background: #fff; border: 2px solid var(--jg-accent-soft); border-radius: 16px; padding: 10px 12px; margin: 8px 0; }
+.jg-up-rec-box b { font-size: 1.15rem; }
+.jg-up-rec-art { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; }

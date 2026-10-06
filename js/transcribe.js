@@ -176,6 +176,51 @@ function captureViaMediaElement(file, ctx, onStatus) {
   });
 }
 
+// ----- "Which song is this?" (iPhone/iPad app only, Apple's ShazamKit) -----
+// Sends ~12 seconds of mono 16-bit audio to the app's native SongRecognizer
+// plugin, which makes a ShazamKit fingerprint and asks Apple's catalog.
+// Runs in the background only when a song is uploaded; the website skips it.
+let lastRecognition = null;
+let lastDecoded = null;
+async function recognizeSong(decoded) {
+  const cap = window.Capacitor;
+  if (!cap?.isNativePlatform?.()) return null;
+  const plugin = cap.registerPlugin ? cap.registerPlugin("SongRecognizer") : cap.Plugins?.SongRecognizer;
+  if (!plugin) return null;
+  let buf = decoded;
+  if (![44100, 48000].includes(buf.sampleRate)) {
+    const off = new OfflineAudioContext(1, Math.ceil(buf.duration * 44100), 44100);
+    const src = off.createBufferSource();
+    src.buffer = buf;
+    src.connect(off.destination);
+    src.start(0);
+    buf = await off.startRendering();
+  }
+  const rate = buf.sampleRate;
+  const ch = [...Array(buf.numberOfChannels).keys()].map((c) => buf.getChannelData(c));
+  // Skip leading silence, then take up to 12 seconds.
+  let start = 0;
+  while (start < ch[0].length && Math.abs(ch[0][start]) < 0.01) start++;
+  const len = Math.min(ch[0].length - start, rate * 12);
+  if (len < rate * 3) return null;
+  const pcm = new Int16Array(len);
+  for (let i = 0; i < len; i++) {
+    let v = 0;
+    for (const c of ch) v += c[start + i];
+    v /= ch.length;
+    pcm[i] = Math.max(-32768, Math.min(32767, Math.round(v * 32767)));
+  }
+  const bytes = new Uint8Array(pcm.buffer);
+  let bin = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  try {
+    return await plugin.match({ pcm16: btoa(bin), sampleRate: rate });
+  } catch (e) {
+    console.warn("Jaxx Guitar: song recognition failed", e);
+    return null;
+  }
+}
+
 async function transcribeFile(file, onStatus = () => {}) {
   let audioBuffer;
   const audioCtx = getAudioContext();
@@ -188,6 +233,7 @@ async function transcribeFile(file, onStatus = () => {}) {
       onStatus("This file needs to be played through once to read its audio — listening now (it stays silent)...");
       decoded = await captureViaMediaElement(file, audioCtx, onStatus);
     }
+    lastDecoded = decoded;
     onStatus(`Resampling from ${decoded.sampleRate} Hz / ${decoded.numberOfChannels}ch to 22050 Hz mono...`);
     audioBuffer = await resampleToMono22050(decoded);
   } catch (err) {
@@ -369,4 +415,10 @@ function formatClock(sec) {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
 
-export { transcribeFile, estimateBeat, simplifyToChords };
+// Guess the song from the last upload (iPhone/iPad app only; null on the web).
+function guessLastUpload() {
+  return lastDecoded ? recognizeSong(lastDecoded) : Promise.resolve(null);
+}
+const canGuessSongs = () => Boolean(window.Capacitor?.isNativePlatform?.());
+
+export { transcribeFile, estimateBeat, simplifyToChords, guessLastUpload, canGuessSongs };

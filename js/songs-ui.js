@@ -16,7 +16,9 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&l
 let filter = { tier: "All", q: "", world: false };
 let cleanup = null;
 
+let lastPanel = null;
 function renderSongs(panel) {
+  lastPanel = panel;
   if (cleanup) { cleanup(); cleanup = null; }
   const saved = getSavedSongs();
   const tiers = ["All", "Beginner", "Intermediate", "Advanced"];
@@ -115,4 +117,13 @@ function leaveSongs() {
   if (cleanup) { cleanup(); cleanup = null; }
 }
 
-export { renderSongs, leaveSongs };
+// Used by "songs with the same chords" and "Guess the song" in Practice.
+function openSongByTitle(title) {
+  const song = SONGS.find((s) => s.title.toLowerCase() === String(title).toLowerCase());
+  if (!song) return false;
+  document.querySelector('.jg-tab[data-tab="songs"]')?.click();
+  setTimeout(() => lastPanel && openSong(lastPanel, song), 50);
+  return true;
+}
+
+export { renderSongs, leaveSongs, openSongByTitle };
