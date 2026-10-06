@@ -96,3 +96,7 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
   - Let It Be and Perfect chorus chords fixed.
   - Teaching-key labels like "G major (original recording in Ab major)".
 - **iOS build 5.**
+
+## 2026-10-06 — iOS build 6
+- ShazamKit now enabled for com.jaxxguitar.app (new provisioning profile).
+- Uploads decode natively on iPhone (AVFoundation, any format iOS plays incl. videos), web decoder as fallback.
