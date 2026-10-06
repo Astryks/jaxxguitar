@@ -29,6 +29,31 @@ const melody = (notes, beats = 1) => () => notes.map(([string, fret, len], i, ar
   start: arr.slice(0, i).reduce((a, n) => a + (n[2] || beats), 0),
 }));
 
+
+// Looping lesson: the loop pedal and the gear (facts from Boss's own
+// history and loop-pedal guides, Guitar.com, Reverb; prices are Reverb's).
+const LOOP_PEDAL_PAGE = { html: `<h3>Be your own band: the loop pedal.</h3>
+  <p>A <strong>loop pedal</strong> (looper) records what you play and plays it straight back, again and again. Record your chords, and while they repeat, play lead on top. Add more layers (a bass line, a tap on the guitar body for a drum) and you sound like a whole band.</p>
+  <p><strong>Ed Sheeran</strong> is famous for this. His first looper was a <strong>Boss RC-20XL</strong>, which Boss says put "a teenage Ed Sheeran on his road to the stadium league". Later his guitar tech Trevor Dawkins built him a custom looping rig called <strong>Chewie</strong>, which he played on huge tours. Watch him build songs layer by layer:</p>
+  <p><strong>How most one-button loopers work:</strong></p>
+  <ol>
+    <li>Tap once: <strong>record</strong>. Play your chords (Am G F G).</li>
+    <li>Tap again at the end of the bar: it <strong>plays your loop</strong> over and over.</li>
+    <li>Tap again: <strong>add a layer</strong> on top (overdub). Tap to stop adding.</li>
+    <li>Tap twice quickly: <strong>stop</strong>.</li>
+  </ol>
+  <p class="jg-note">The hardest part is tapping exactly on the beat, so the loop doesn't hiccup. Count "1, 2, 3, 4" and tap right on the next "1".</p>`, video: "ed-sheeran-looping" };
+const LOOP_GEAR_PAGE = { html: `<h3>What you need to start looping</h3>
+  <ul>
+    <li><strong>A simple looper pedal.</strong> One button is all you need. Good first ones: the <strong>TC Electronic Ditto Looper</strong> (about $66–100) or the <strong>Boss RC-1</strong> (about $79–120). Want more later? The <strong>Boss RC-5</strong> (about $199) saves your loops.</li>
+    <li><strong>Two instrument cables</strong> (1/4" jack): guitar → looper, and looper → amp. If you have other pedals, the looper goes <strong>last</strong>, just before the amp.</li>
+    <li><strong>An amp or speaker.</strong> The looper makes no sound on its own. Electric guitar: a guitar amp. Acoustic: an acoustic amp or a PA speaker.</li>
+    <li><strong>An acoustic needs a pickup</strong> to plug in (an "acoustic-electric" guitar has one built in). No pickup? Use a microphone into a looper that has a mic input.</li>
+    <li><strong>Power:</strong> most loopers use a 9V power adapter (the Boss RC-1 can also run on a 9V battery). An adapter is more reliable.</li>
+  </ul>
+  <p class="jg-note">Into singing and beatboxing too? Tabletop "loop stations" like the Boss RC-505mkII have microphone inputs and several tracks, but start with a simple pedal first.</p>
+  <p>No pedal yet? No problem: practise with a friend, or with the backing loop in this lesson.</p>` };
+
 const AMIN_PENT = scaleBox(9, SCALES.minorPentatonic, 5);
 const BMIN_PENT = scaleBox(11, SCALES.minorPentatonic, 7);
 const GMAJ = scaleBox(7, SCALES.major, 2);
@@ -419,6 +444,30 @@ const INTERMEDIATE = [
       { html: `<h3>The same box, anywhere.</h3>
         <p>Slide the whole shape so your index starts on a different root and it's the pentatonic of that key — at the 7th fret it's <strong>B minor</strong> (you'll use that for the Hotel California and November Rain lessons).</p>`,
         notes: BMIN_PENT.map((n) => ({ string: n.string, fret: n.fret, tone: n.root ? "root" : undefined, label: String(n.fret) })) },
+    ],
+  },
+  {
+    id: "lesson-looping", title: "Looping: rhythm and lead", subtitle: "With a friend, or with a loop pedal",
+    pages: [
+      { html: `<h3>Two jobs in every band: rhythm and lead.</h3>
+        <p><strong>Rhythm</strong> plays the chords over and over: the loop that holds the song together. <strong>Lead</strong> plays single notes on top: the melody or the solo.</p>
+        <p>Now that you know chords <em>and</em> the minor pentatonic, you can do both. Here's the loop we'll use, in A minor: <strong>Am → G → F → G</strong>, one bar each.</p>`,
+        diagrams: ["Am", "G", "F", "G"],
+        practice: { items: strumItems(["Am", "G", "F", "G"], DDUUDU), bpm: 80, modes: ["listen"], label: "The loop: Am G F G (tap Loop to keep it going)" } },
+      { html: `<h3>With a friend: one plays rhythm, one plays lead.</h3>
+        <ol>
+          <li><strong>Friend 1 (rhythm)</strong> strums Am → G → F → G again and again, steady, not too loud.</li>
+          <li><strong>Friend 2 (lead)</strong> plays notes from the A minor pentatonic box (5th fret), any order, any rhythm. Every note in the box fits.</li>
+          <li>After a few rounds, <strong>swap</strong>.</li>
+        </ol>
+        <p>Tips for lead: start on an <strong>A</strong> (the root), leave gaps, and repeat little ideas. Simple sounds better than fast.</p>`,
+        notes: AMIN_PENT.map((n) => ({ string: n.string, fret: n.fret, tone: n.root ? "root" : undefined, label: String(n.fret) })) },
+      { html: `<h3>On your own: let the app be your rhythm player.</h3>
+        <p>Play the loop below and tap <strong>Loop</strong> so it keeps going. Then improvise with the A minor pentatonic over it.</p>
+        <p>When you get bored of A minor, slide the box to the 7th fret and the loop up two frets (Bm → A → G → A): same idea, new key.</p>`,
+        practice: { items: strumItems(["Am", "G", "F", "G", "Am", "G", "F", "G"], DDUUDU), bpm: 80, modes: ["listen"], label: "Backing loop: Am G F G" } },
+      LOOP_PEDAL_PAGE,
+      LOOP_GEAR_PAGE,
     ],
   },
   {

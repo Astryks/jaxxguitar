@@ -104,3 +104,4 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 ## 2026-10-07 — iOS build 7
 - Added Comfortably Numb (Pink Floyd, 1979): verse Bm A G Em Bm, chorus in D (D A D A C G D), song structure incl. both solo sections; solos not transcribed.
 - Added Creep (Radiohead, 1992): G B C Cm loop (I III IV iv), song structure, official video (Radiohead channel, oEmbed-verified).
+- New lesson "Looping: rhythm and lead" (after the minor pentatonic): rhythm vs lead with an Am G F G loop, with a friend (swap roles), on your own with the looping backing track, the loop pedal (Ed Sheeran: Boss RC-20XL first, later the custom "Chewie" rig by his tech Trevor Dawkins; NPR Tiny Desk video), and a beginner gear list (Ditto / RC-1 / RC-5 with Reverb prices, cables, amp, acoustic pickup, 9V power).

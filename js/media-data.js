@@ -258,6 +258,7 @@ const VIDEOS = {
   "title": "Prince, Tom Petty, Steve Winwood, & More \"While My Guitar Gently Weeps\" | Rock Hall 2004 Induction",
   "author_name": "Rock & Roll Hall of Fame"
  },
- "creep": {"id": "XFkzRNyygfk", "title": "Radiohead - Creep", "author_name": "Radiohead"}
+ "creep": {"id": "XFkzRNyygfk", "title": "Radiohead - Creep", "author_name": "Radiohead"},
+ "ed-sheeran-looping": {"id": "Q2CW9TZ81wo", "title": "Ed Sheeran: Tiny Desk Concert", "author_name": "NPR Music"}
 };
 export { PEOPLE, VIDEOS };
