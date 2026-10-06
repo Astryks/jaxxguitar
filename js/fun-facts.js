@@ -1,3 +1,4 @@
+import { kittenSvg } from "./kitten.js";
 // "Did you know?" — a quirky guitar fact, written for young learners,
 // that pops up at random between lessons (about half the time a lesson
 // is finished): how a guitar is built, why it rings, and legendary
@@ -114,7 +115,7 @@ function showFunFact(fact = nextFact()) {
   card.setAttribute("aria-label", "Did you know?");
   card.innerHTML = `
     <div class="jg-funfact-card">
-      <img class="jg-funfact-img" src="assets/mascot/map-glasses.webp" alt="">
+      <div class="jg-funfact-img">${kittenSvg("think")}</div>
       <div class="jg-funfact-kicker">Did you know?</div>
       <h3>${fact.title}</h3>
       ${fact.photosFirst ? peopleHtml(fact.people) : ""}

@@ -99,6 +99,17 @@ const PRE = [
           <li><strong>Electric?</strong> Plug it in and wiggle the knobs and the cable — crackles mean repairs.</li>
         </ul>
         <p class="jg-note">Old strings are fine to start — a fresh set costs about $5–10 and makes any guitar sound better. Grab a few picks, and a capo when you can.</p>` },
+      { html: `<h3>Going electric? Keep it simple 🎸⚡</h3>
+        <p>An <strong>acoustic</strong> makes its own sound: just pick it up and play. An <strong>electric</strong> is quiet on its own; it plugs into an amp (or headphones), and its lighter strings are easier to press.</p>
+        <p>What you need for an electric:</p>
+        <ul>
+          <li><strong>The guitar</strong>: a starter like a Squier Sonic Stratocaster is about $200–250.</li>
+          <li><strong>A small practice amp</strong> (about $80–150), <strong>or</strong> a headphone amp that plugs straight into the guitar (about $70–130) so you can practise silently.</li>
+          <li><strong>A cable</strong> (about $20–30), a <strong>clip-on tuner</strong> (about $18–38), a few <strong>picks</strong> and a <strong>strap</strong>.</li>
+        </ul>
+        <p class="jg-note">Tip: a <strong>starter pack</strong> (guitar, amp, cable, strap, picks, tuner and bag in one box) is often the easiest way to buy everything at once. Prices from Sweetwater, 2026.</p>` },
+      { html: `<h3>Now that you have your guitar, let's make sure it's in tune 🎵</h3>
+        <p>Tap a string to <strong>hear</strong> how it should sound. Then tap <strong>Start listening</strong> and play that string on your guitar: the needle shows if it's too low or too high and tells you to <strong>tighten</strong> or <strong>loosen</strong> the peg, until it turns <strong>green</strong>. Then it moves on to the next string by itself.</p>`, tuner: true },
 
     ],
   },
@@ -260,9 +271,41 @@ const PRE = [
   },
 ];
 
+
+// ===== Simple cards for the beginner lessons (see js/cards.js) =====
+const LESSON1_CARDS = [
+  { say: `Welcome to Jaxx Guitar! 🎸<br>In about <b>a minute</b> you'll learn <b>4 chords</b> that play <b>100+ songs</b>: <b>G · D · Em · C</b> 🎶<br>But <b>bear</b> 🐻 with us while we cover the <b>basics</b> first. It only takes a few seconds!<br><br>Grab <b>your guitar</b> (the real one!) 🎸`, want: { tap: "I've got my guitar! 🎸" }, done: "Let's get you in tune! 🎵" },
+  { say: `Quick <b>tuning check</b> before every practice 🎵<br>Tap a string to <b>hear</b> how it should sound. Then tap <b>Start listening</b> and play that string: the needle shows if it's too low or too high, and tells you to <b>tighten</b> or <b>loosen</b> the peg until it goes <b>green</b>.`, want: { tuner: true }, done: "In tune and ready! 🎉" },
+  { say: `This is the <b>fretboard</b> 👇<br>The <b>6 strings</b> run along the neck. The thin metal bars across it are the <b>frets</b>.<br>Fretboards are long (around 20 frets!), but today we only need the first <b>3 frets</b>, near the end with the tuning pegs.`,
+    more: [["Which way round is the picture?", "Exactly like <b>tab</b>: the <b>thickest string</b> is at the <b>bottom</b> of the picture. On your guitar, it's the one closest to your chin 😺"], ["What's fret 1?", "The space just after the end of the neck (by the tuning pegs). Fret 2 is the next space, and so on. You press <b>between</b> the metal bars, not on them."]],
+    show: { notes: [{ string: 0, fret: 1, label: "1" }, { string: 0, fret: 2, label: "2" }, { string: 0, fret: 3, label: "3" }] }, want: { tap: "Got it 👍" }, done: "Strings along, frets across! 👍" },
+  { say: `Strings have <b>numbers</b>: the <b>thickest</b> is string <b>6</b>, the thinnest is string <b>1</b>.<br>Tap the <b>thickest string</b> (6th, low E).`, show: {}, want: { string: 0 }, done: "That's the 6th string, the low E! 🎉" },
+  { say: `Now <b>press a fret</b>: on the <b>6th string</b>, press <b>fret 3</b>.<br>Use your fingertip, just <b>behind</b> the metal bar.`, show: {}, want: { pos: [{ string: 0, fret: 3 }] },
+    tip: `How hard? Only <b>just hard enough</b> that the buzz stops. Pressing harder doesn't sound better, it just tires your hand. On a real guitar it gets easier every day 💪`, done: "That's a G note! 🎵" },
+  { say: `Your first chord: <b>E minor</b> (Em), the easiest one! 😺<br>Two fingers: <b>2</b> and <b>3</b>, both on <b>fret 2</b>.<br>Place them one at a time, then strum all 6 strings.`, show: {}, want: { chord: "Em" }, done: "Em! A soft, sad sound 🥲" },
+  { say: `Now <b>G</b> 🎸<br>Three fingers. Finger numbers: <b>1</b> = index, <b>2</b> = middle, <b>3</b> = ring.`, show: {}, want: { chord: "G" }, done: "G! Big and happy 😀" },
+  { say: `Now <b>C</b> 🎸<br>Arch your fingers so the open strings ring.<br>Don't strum the thickest string (the ✕).`, show: {}, want: { chord: "C" }, done: "C! 🎉" },
+  { say: `Last one: <b>D</b> 🎸<br>Only the <b>4 thinnest</b> strings. Skip the two thick ones (the ✕s).`, show: {}, want: { chord: "D" }, done: "D! You know 4 chords! 💥" },
+  { say: `Quick quiz! 🧠<br>Which chord uses only <b>two fingers</b>?`, want: { choice: "Em", options: ["G", "Em", "C"] }, done: "Yes! Em is the easy one 😺" },
+  { say: `<b>Boom!</b> Now the loop: <b>G → D → Em → C</b> 🔁<br>That's the pattern behind 100+ songs. Tap <b>Start</b> and watch the notes arrive at the frets. <b>Wait for me</b> waits until you play each chord (on screen, or your guitar with the microphone).`, want: { practice: { items: strumItems(["G", "D", "Em", "C", "G", "D", "Em", "C"]), bpm: 70, modes: ["listen", "wait"], label: "G – D – Em – C" }, ok: "I played the loop! ✓" }, done: "That's the loop in 100+ songs! 🏆" },
+];
+const STRUM_CARDS = [
+  { say: `Time to <b>strum</b>! 🎸<br>Hold the pick between your <b>thumb</b> and the side of your <b>index finger</b>, with just the tip showing.<br>Strum from the <b>wrist</b>, loose, like shaking water off your hand.`, want: { tap: "Got it 👍" }, done: "Loose wrist, happy strum 😺" },
+  { say: `How hard should you strum? <b>Gently!</b><br>Loud comes from a <b>relaxed swing</b>, not from pushing. Just like pressing frets: soft or strong changes the <b>feeling</b> of the song.`,
+    more: [["What does a downstrum hit?", "<b>Down</b> (towards the floor) hits more of the thick strings, so it's a bit stronger. <b>Up</b> is lighter and just catches the thin strings."]], want: { tap: "I'll strum gently 🎵" }, done: "Gentle and relaxed 👍" },
+  { say: `Count <b>1 & 2 & 3 & 4 &</b> 🔢<br>Your hand goes <b>down</b> on every number and <b>up</b> on every "&", all the time, like a pendulum.<br>The most-used pattern: <b>D · D U · U D U</b>. Tap Start and strum along!`, want: { practice: { items: strumItems(["G", "G", "C", "C"], ["down", null, "down", "up", null, "up", "down", "up"]), bpm: 70, modes: ["listen"], label: "D · D U · U D U" }, ok: "I strummed along! ✓" }, done: "That's the strum in so many songs! 🎉" },
+  { say: `Quick quiz! 🧠<br>In <b>D · D U · U D U</b>, what happens on beat <b>3</b>?`, want: { choice: "Miss it (hand still moves)", options: ["Strum down", "Miss it (hand still moves)"] }, done: "Yes! The hand keeps moving, it just misses the strings 👍" },
+];
+const CHANGES_CARDS = [
+  { say: `Changing chords without stopping 🔁<br>The trick: look for a <b>finger that can stay</b>. Play <b>C</b> first.`, show: {}, want: { chord: "C" }, done: "C ready! 😺" },
+  { say: `Now change to <b>A minor (Am)</b>.<br>Your fingers <b>1</b> and <b>2</b> <b>don't move at all</b>! Only finger <b>3</b> hops to another string. That's an <b>anchor</b> ⚓`, show: { shape: "C" }, want: { chord: "Am" }, done: "Am! Two fingers stayed put ⚓" },
+  { say: `The <b>one-minute drill</b> ⏱️<br>Strum one chord, switch, strum the other. How many clean changes in 60 seconds? Try to beat it tomorrow!`, show: {}, want: { changes: ["G", "C"], ok: "Done ✓" }, done: "That's how you get smooth! 🏆" },
+];
+
 const BEGINNER = [
   {
     id: "lesson-1", title: "The 4 chords to play 100 songs", subtitle: "G, D, Em and C",
+    cards: LESSON1_CARDS,
     pages: [
       { html: `<h3>Welcome to Jaxx Guitar! 🎸</h3>
         <p>In about <strong>a minute</strong> you'll learn <strong>4 chords</strong> that play <strong>100+ songs</strong>: <strong>G · D · Em · C</strong> 🎶</p>
@@ -289,6 +332,7 @@ const BEGINNER = [
   },
   {
     id: "lesson-strum", title: "Strumming and rhythm", subtitle: "Down, up, and the classic pattern",
+    cards: STRUM_CARDS,
     pages: [
       { html: `<h3>Hold the pick and strum from the wrist.</h3>
         <p>Pinch the pick between your thumb and the side of your index finger, with just the tip showing. Strum with a loose wrist, like shaking water off your hand — not a stiff arm.</p>
@@ -312,6 +356,7 @@ const BEGINNER = [
   },
   {
     id: "lesson-changes", title: "Changing chords without stopping", subtitle: "Anchor fingers and one-minute changes",
+    cards: CHANGES_CARDS,
     pages: [
       { html: `<h3>Look for the finger that can stay.</h3>
         <p>From <strong>C</strong> to <strong>Am</strong>, your index (2nd string, 1st fret) and middle finger (4th string, 2nd fret) <strong>don't move at all</strong> — only your ring finger hops from the 5th string to the 3rd string. That's an "anchor".</p>
@@ -525,6 +570,16 @@ const INTERMEDIATE = [
           <li><strong>Make music:</strong> finish by improvising a little over a chord loop — that's what scales are for!</li>
         </ol>
         <p class="jg-note">The Practice tab has every scale in every key and position, with Wait for me and Play in time.</p>` },
+      { html: `<h3>Too fast for your fingers? Easy tricks 🐾</h3>
+        <ul>
+          <li><strong>Slow first:</strong> start with a metronome at about 60 BPM. Only go 5–10 BPM faster once it's clean. Speed comes from clean, not from rushing.</li>
+          <li><strong>Down, up, down, up:</strong> alternate your pick, even when you change strings. No wasted movements.</li>
+          <li><strong>Stay close:</strong> keep your fingers a few millimetres above the strings, and the pick only just past the string.</li>
+          <li><strong>Bursts:</strong> play just 3–4 notes fast, rest, repeat. Short bursts build speed without tiring your hand.</li>
+          <li><strong>Hammer-ons and pull-offs:</strong> let your fretting fingers sound some notes so you don't have to pick every one. Runs get smooth and fast.</li>
+          <li><strong>One finger per fret:</strong> in the pentatonic box, each finger owns one fret, so your hand never has to think.</li>
+        </ul>
+        <p class="jg-note">Tips from JustinGuitar and Guitar World.</p>` },
       { html: `<h3>Try it: A minor pentatonic in groups of three</h3>
         <p>Each group starts one note higher: notes 1-2-3, then 2-3-4, then 3-4-5… Use alternate picking and Wait for me first.</p>`,
         notes: AMIN_PENT.map((n) => ({ string: n.string, fret: n.fret, tone: n.root ? "root" : undefined, label: String(n.fret) })),
@@ -701,6 +756,21 @@ const INTERMEDIATE = [
         </ul>
         <p>Keep your wrist slightly arched and still; the movement comes from the finger joints. Pluck from the fingertip, not the whole hand.</p>
         <p class="jg-note">Listen to the famous "tremolo" piece <em>Recuerdos de la Alhambra</em> (Tárrega, 1896) — the melody is one note plucked by a-m-i in a super-fast blur, with the thumb playing the bass.</p>`, video: "recuerdos" },
+      { html: `<h3>Spanish plucking feels hard? Easy tricks 🐾</h3>
+        <p>Like the <strong>baby F</strong> for barre chords, there are easy ways in:</p>
+        <ul>
+          <li><strong>Thumb first:</strong> play only the bass strings with your thumb (p) and get a steady beat. Then add index and middle (i, m) on the thin strings.</li>
+          <li><strong>Rest stroke:</strong> after plucking, let your finger land and rest on the next string. It stops your finger wandering and gives a full, strong tone.</li>
+          <li><strong>Plant your fingers:</strong> touch each finger to its string before you play it, so your hand stays in place.</li>
+          <li><strong>Easy flamenco strum (rasgueado):</strong> rest your thumb by the sound hole, curl your index finger in, then <strong>flick it out</strong> down across the strings. That one flick already sounds Spanish!</li>
+          <li><strong>Slow, with a metronome</strong>, before trying the fast four-finger rolls.</li>
+        </ul>
+        <p class="jg-note">Tips from Fender, Classical Guitar Corner and Guitar World.</p>` },
+      { html: `<h3>Next song to practise: "Bamboléo" 💃</h3>
+        <p>A famous Spanish-style rumba by the <strong>Gipsy Kings</strong> (1987), full of flamenco strumming. Listen to the guitars!</p>
+        <p>It's in <strong>F♯ minor</strong> and swings between <strong>F♯m</strong> and <strong>C♯7</strong>, with <strong>Bm</strong> and <strong>D</strong> in the chorus.</p>
+        <p><strong>Easy way:</strong> put a <strong>capo on fret 2</strong> and play the shapes <strong>Em, B7, Am, C</strong>. It sounds just like the record. Try your new flick strum on it!</p>`,
+        diagrams: ["Em", "B7", "Am", "C"], video: "bamboleo" },
       { html: `<h3>Romance — "Spanish Romance" (traditional, public domain)</h3>
         <p>Nobody knows for sure who wrote this famous piece — that's why it's called <em>Romance anónimo</em>. It's in 3/4 time: each beat is three notes — the <strong>melody on the high e string</strong> (finger a, a rest stroke if you like), then the open <strong>B</strong> (m) and <strong>G</strong> (i) strings, with the <strong>low E</strong> bass (p) at the start of each bar. Here are the first four bars over E minor:</p>`,
         video: "romance",
@@ -725,7 +795,8 @@ const INTERMEDIATE = [
     pages: [
       { html: `<h3>🇪🇸 Flamenco: the fastest strumming you'll ever see</h3>
         <p>Flamenco comes from Andalusia in southern Spain. Its guitarists — like the legendary <strong>Paco de Lucía</strong> — play with fingers and nails, tap on the guitar's body, and use the <strong>rasgueado</strong>: flicking the fingers out one after another across the strings — little finger, ring, middle, index — so fast it sounds like a drum roll.</p>
-        <p>The classic flamenco chord walk is the <strong>Andalusian cadence</strong>: <strong>Am – G – F – E</strong>, falling step by step to that dramatic E chord. Below: a 4-finger rasgueado burst on each chord, then strums. Practise slowly; flamenco players spend years on this!</p>`,
+        <p>The classic flamenco chord walk is the <strong>Andalusian cadence</strong>: <strong>Am – G – F – E</strong>, falling step by step to that dramatic E chord. Below: a 4-finger rasgueado burst on each chord, then strums. Practise slowly; flamenco players spend years on this!</p>
+        <p><strong>Next song to practise:</strong> "Bamboléo" by the Gipsy Kings. Find it in <strong>Songs</strong> (capo 2, shapes Em B7 Am C), with the official video.</p>`,
         people: ["paco-de-lucia"], video: "flamenco",
         diagrams: ["Am", "G", "F", "E"],
         practice: { items: () => chordTimeline(shapes(["Am", "G", "F", "E", "Am", "G", "F", "E"]), { beatsPerChord: 4, pattern: ["down", "down", "down", "down", "down", null, "up", null, "down", "down", "down", "down", "down", null, "up", null] }), bpm: 70, modes: ["listen", "wait"], label: "Andalusian cadence with rasgueado" } },

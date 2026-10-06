@@ -1,3 +1,4 @@
+import { icon } from "./icons.js";
 // Per-string guitar tuner: pick a string (or let it follow whichever
 // string you play), hear a reference tone, and watch the needle — it
 // turns green within ±8 cents, about what a clip-on tuner shows as "in".
@@ -22,7 +23,7 @@ function renderStringTuner(container) {
   container.innerHTML = `
     <div class="jg-tuner-strings">${STRINGS.map((s, i) => `<button class="jg-btn jg-tuner-string" data-s="${i}">${s.name}</button>`).join("")}</div>
     <p class="jg-tuner-msg jg-tn-which"></p>
-    <div class="jg-row" style="justify-content:center"><button class="jg-btn jg-btn-small jg-tn-ref">🔊 Hear the note</button></div>
+    <div class="jg-row" style="justify-content:center"><button class="jg-btn jg-btn-small jg-tn-ref">${icon("speaker", 18)} Hear this string</button></div>
     <div class="jg-tn-widget" style="display:flex;justify-content:center"></div>
     <p class="jg-note" style="text-align:center">Tip: tune <em>up</em> to the note — if you're sharp, go a little below and come back up. It holds its tuning better.</p>`;
   const which = container.querySelector(".jg-tn-which");
@@ -54,7 +55,10 @@ function renderStringTuner(container) {
   container.addEventListener("click", (e) => {
     const b = e.target.closest("button");
     if (!b) return;
-    if (b.dataset.s !== undefined) select(Number(b.dataset.s), Boolean(container.querySelector(".hk-tuner-display[style*='flex']")));
+    if (b.dataset.s !== undefined) {
+      select(Number(b.dataset.s), Boolean(container.querySelector(".hk-tuner-display[style*='flex']")));
+      playNote(TUNING[current], { duration: 2.5, gain: 0.4 }); // hear the string you picked
+    }
     if (b.classList.contains("jg-tn-ref")) playNote(TUNING[current], { duration: 2.5, gain: 0.4 });
   });
   select(0);

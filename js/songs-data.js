@@ -99,6 +99,21 @@ const SONGS = [
       "Radiohead's first single (1992, on the album Pablo Honey, 1993). The whole song loops G - B - C - Cm. The B major is a 'borrowed' chord, and the last chord turns C major into C minor by lowering one note (E to E flat), which gives the song its sad, aching sound.",
   },
   {
+    title: "Bamboléo",
+    artist: "Gipsy Kings",
+    genre: "Latin / Flamenco",
+    popularityRank: 124,
+    year: 1987,
+    key: "F# minor (easy: capo 2, Em shapes)",
+    chords: ["F#m", "C#7", "Bm", "D"],
+    degreeSequence: "i - V7 (verse); iv and VI in the chorus",
+    confidence: "close version",
+    oneFiveSixFourMatch: false,
+    difficulty: "Intermediate",
+    notes:
+      "Rumba flamenca. The verses swing between F#m and C#7; the chorus adds Bm and D (exact chorus order varies between charts). Easiest with a capo on fret 2 and the shapes Em, B7, Am, C. Taught in the Classical guitar lesson.",
+  },
+  {
     title: "Stairway to Heaven",
     artist: "Led Zeppelin",
     genre: "Rock",

@@ -15,6 +15,8 @@ import { WORLD_LANGUAGES } from "./songs-data.js";
 import { isLessonComplete, markLessonComplete, markSongStatus, getQuests, getStreak, getDailyGoal, awardXp, getStreakFreezes } from "./storage.js";
 import { openDailyReview, reviewDoneToday } from "./daily-review.js";
 import { peopleHtml, videoHtml, wireVideos } from "./media.js";
+import { runCards } from "./cards.js";
+import { kittenSvg, nextTrick } from "./kitten.js";
 
 // Jaxx the kitten — a different pose for each kind of moment.
 const MASCOT_BY_LESSON = {
@@ -28,8 +30,10 @@ const MASCOT_BY_LESSON = {
   "lesson-fingerpicking": "playing-guitar", "lesson-stairway": "playing-guitar", "lesson-caged": "map-glasses",
   "lesson-greensleeves": "cello", "lesson-modes": "big-pen", "lesson-wmggw": "singing-stage",
 };
+const POSE_OF = {"happy-guitar": "idle", "strumming": "play", "playing-guitar": "play", "running-guitar": "rockout", "juggling-picks": "cheer", "singing-mic": "sing", "singing-stage": "sing", "tangled-strings": "tangled", "quill-scroll": "think", "map-glasses": "think", "music-scrolls": "think", "sheet-music-jump": "jump", "keyhole": "think", "wrenches": "think", "top-hat-shelf": "idle", "cello": "play", "big-pen": "think", "painter": "idle", "sleeping-guitar": "sleep", "sleep-in-hat": "sleep", "teacup-books": "idle", "trumpet": "sing", "chef": "fish"};
+// Jaxx is drawn live (js/kitten.js); the old picture names pick a pose.
 function mascot(name, alt = "Jaxx the kitten", extra = "") {
-  return `<div class="jg-avatar ${extra}"><img src="assets/mascot/${name}.webp" alt="${alt}" loading="lazy"></div>`;
+  return `<div class="jg-avatar ${extra}">${kittenSvg(POSE_OF[name] || "idle", { label: alt })}</div>`;
 }
 
 const DDUUDU = ["down", null, "down", "up", null, "up", "down", "up"];
@@ -213,6 +217,21 @@ function openLesson(id, pageIndex = 0) {
   const lesson = allLessons().find((l) => l.id === id);
   if (!lesson) return showHome();
   runCleanup();
+  // Beginner lessons are simple cards (js/cards.js).
+  if (lesson.cards) {
+    const stop = runCards(panelEl, lesson, {
+      start: pageIndex,
+      onExit: showHome,
+      changeDrill,
+      onFinish: () => {
+        markLessonComplete(lesson.id);
+        runCleanup();
+        finishScreen(lesson, nextLesson());
+      },
+    });
+    cleanup.push(stop);
+    return;
+  }
   const page = lesson.pages[pageIndex];
   const last = pageIndex === lesson.pages.length - 1;
   const needsBoard = page.shape || page.notes || page.practice || page.fretQuiz || page.caged || page.diagrams || page.changes || page.earGym;
@@ -284,7 +303,7 @@ function openLesson(id, pageIndex = 0) {
 
 function finishScreen(lesson, nxt) {
   panelEl.innerHTML = `
-    <div class="jg-say">${mascot("juggling-picks", "Jaxx celebrating", "jg-mascot-celebrate")}<div class="jg-bubble">
+    <div class="jg-say"><div class="jg-avatar jg-mascot-celebrate">${kittenSvg(nextTrick("yay"), { label: "Jaxx celebrating" })}</div><div class="jg-bubble">
       <h3>Lesson complete: ${esc(lesson.title)}</h3>
       <p>Nice work! ${lesson.song ? "Song added to your learned list." : ""}</p>
       <div class="jg-row">
