@@ -257,6 +257,7 @@ const VIDEOS = {
   "id": "6SFNW5F8K9Y",
   "title": "Prince, Tom Petty, Steve Winwood, & More \"While My Guitar Gently Weeps\" | Rock Hall 2004 Induction",
   "author_name": "Rock & Roll Hall of Fame"
- }
+ },
+ "creep": {"id": "XFkzRNyygfk", "title": "Radiohead - Creep", "author_name": "Radiohead"}
 };
 export { PEOPLE, VIDEOS };

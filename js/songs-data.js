@@ -84,6 +84,21 @@ const SONGS = [
       "From The Wall (1979). The verses are in B minor (Bm, A, G, Em, Bm); the chorus lifts into D major (D, A, D, A, C, G, D). David Gilmour's two famous guitar solos are played over the verse chords. The chords are taught here; the solos are not transcribed.",
   },
   {
+    title: "Creep",
+    artist: "Radiohead",
+    genre: "Alternative/Rock",
+    popularityRank: 123,
+    year: 1992,
+    key: "G major",
+    chords: ["G", "B", "C", "Cm"],
+    degreeSequence: "I - III - IV - iv",
+    confidence: "confirmed",
+    oneFiveSixFourMatch: false,
+    difficulty: "Beginner",
+    notes:
+      "Radiohead's first single (1992, on the album Pablo Honey, 1993). The whole song loops G - B - C - Cm. The B major is a 'borrowed' chord, and the last chord turns C major into C minor by lowering one note (E to E flat), which gives the song its sad, aching sound.",
+  },
+  {
     title: "Stairway to Heaven",
     artist: "Led Zeppelin",
     genre: "Rock",
@@ -2101,6 +2116,16 @@ const ONE_FIVE_SIX_FOUR_SONGS = SONGS.filter((s) => s.oneFiveSixFourMatch && !s.
 // Songs NOT in this map fall back to the existing simple-loop Practice
 // view using their top-level `chords` array, looped indefinitely.
 const SONG_STRUCTURES = {
+  "Creep": [
+    { section: "Intro", chords: ["G", "B", "C", "Cm"], bars: 4 },
+    { section: "Verse 1", chords: ["G", "B", "C", "Cm"], bars: 8 },
+    { section: "Chorus 1", chords: ["G", "B", "C", "Cm"], bars: 8 },
+    { section: "Verse 2", chords: ["G", "B", "C", "Cm"], bars: 8 },
+    { section: "Chorus 2", chords: ["G", "B", "C", "Cm"], bars: 8 },
+    { section: "Bridge", chords: ["G", "B", "C", "Cm"], bars: 8 },
+    { section: "Chorus 3", chords: ["G", "B", "C", "Cm"], bars: 8 },
+    { section: "Outro", chords: ["G", "B", "C", "Cm"], bars: 4 },
+  ],
   "Comfortably Numb": [
     { section: "Intro", chords: ["Bm"], bars: 2 },
     { section: "Verse 1", chords: ["Bm", "A", "G", "Em", "Bm"], bars: 10 },

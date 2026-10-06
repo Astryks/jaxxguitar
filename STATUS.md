@@ -103,3 +103,4 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 
 ## 2026-10-07 — iOS build 7
 - Added Comfortably Numb (Pink Floyd, 1979): verse Bm A G Em Bm, chorus in D (D A D A C G D), song structure incl. both solo sections; solos not transcribed.
+- Added Creep (Radiohead, 1992): G B C Cm loop (I III IV iv), song structure, official video (Radiohead channel, oEmbed-verified).
