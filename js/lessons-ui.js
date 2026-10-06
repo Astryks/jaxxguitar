@@ -19,7 +19,7 @@ import { peopleHtml, videoHtml, wireVideos } from "./media.js";
 const MASCOT_BY_LESSON = {
   "p-guitar": "keyhole", "p-parts": "map-glasses", "p-howitworks": "wrenches", "p-strings": "tangled-strings",
   "p-fretboard": "top-hat-shelf", "p-press": "strumming", "lesson-1": "happy-guitar", "lesson-strum": "strumming",
-  "lesson-changes": "running-guitar", "lesson-minor": "playing-guitar", "lesson-more": "playing-guitar",
+  "lesson-changes": "running-guitar", "lesson-minor": "playing-guitar", "lesson-more": "playing-guitar", "lesson-open-barre": "strumming",
   "lesson-lespaul": "singing-stage", "lesson-capo": "strumming", "lesson-tab": "quill-scroll", "lesson-power": "running-guitar",
   "lesson-redspecial": "wrenches", "lesson-barre": "strumming", "lesson-sevenths": "singing-mic",
   "lesson-pentatonic": "sheet-music-jump", "lesson-major-scale": "music-scrolls", "lesson-techniques": "tangled-strings",
@@ -51,9 +51,9 @@ function songLesson(song, { tier, world = false } = {}) {
     pages: [
       {
         html: `<h3>${esc(song.title)} — ${esc(song.artist)}</h3>
-          <p>Key: <strong>${esc(song.key || "?")}</strong>${song.year ? ` · ${song.year}` : ""}. The main loop: <strong>${esc(song.chords.join(" – "))}</strong>${song.degreeSequence ? ` (${esc(song.degreeSequence)})` : ""}.</p>
+          <p>Key: <strong>${esc(song.key || "?")}</strong>${song.year ? ` · ${song.year}` : ""}. The main loop: <strong>${esc(song.chords.join(" – "))}</strong>.</p>
           ${capoLine}
-          ${barre.length ? `<p class="jg-note">${barre.join(", ")} ${barre.length === 1 ? "is a barre chord" : "are barre chords"} — see the Barre chords lesson, or play just the top 4 strings for now.</p>` : ""}
+          ${barre.length ? `<p class="jg-note">${barre.join(", ")} ${barre.length === 1 ? "is a barre chord" : "are barre chords"} — see the Barre chords lesson, or play just the top 4 strings for now${barre.includes("F") ? " (for F, use the baby F from the Open chords, barre chords lesson)" : ""}.</p>` : ""}
           ${song.confidence === "needs-verification" ? '<p class="jg-note">Sources didn\'t fully agree on this one\'s chords — treat it as a close version, and trust your ears.</p>' : ""}
           <p class="jg-note">This is the song's main repeating loop, not a full chart — no lyrics are included. Play the original alongside to hear how it fits.</p>`,
         diagrams: unique,
@@ -146,25 +146,36 @@ function showHome() {
   const quests = getQuests();
   const done = allLessons().filter((l) => isLessonComplete(l.id)).length;
   const freezes = getStreakFreezes();
+  const total = allLessons().filter((l) => !l.world).length;
+  const say = (pose, inner, extra = "") => `<div class="jg-say ${extra}">${mascot(pose)}<div class="jg-bubble">${inner}</div></div>`;
+  let boxes;
+  if (!done) {
+    // A brand-new learner sees one step at a time: a welcome, then one button.
+    boxes = say("happy-guitar", `<h3>Welcome to Jaxx Guitar! 🎸</h3>
+        <p>I'm Jaxx, and I'll be with you every step of the way. In about ${Math.floor(total / 10) * 10} short lessons you'll go from your very first chord to playing real songs. All it takes is a little practice — even 10 minutes a day!</p>`)
+      + say("strumming", `<h3>Fun fact: 4 chords play over 100 songs</h3>
+        <p>Let's learn those four chords right away.</p>
+        <button class="jg-btn jg-btn-primary" data-lesson="lesson-1">Start lesson</button>`);
+  } else if (nxt) {
+    boxes = say("happy-guitar", `<h3>Welcome back! 🎸</h3>
+        <p>Next up: <strong>${esc(nxt.title)}</strong></p>
+        <button class="jg-btn jg-btn-primary" data-lesson="${nxt.id}">Continue</button>`)
+      + (reviewDoneToday() ? "" : say("quill-scroll", `<h3>Your 2-minute review is ready</h3>
+        <p>A quick warm-up of what you've learned so far.</p>
+        <button class="jg-btn jg-open-review">Start review</button>`))
+      + `<div class="jg-quests">
+          <div class="jg-row"><strong>Today</strong><span class="jg-label">🔥 ${streak.count}-day streak${freezes ? ` · ❄️ ${freezes}` : ""}${goal.metToday ? " · daily goal ✓" : ""}</span></div>
+          ${quests.map((q) => `<div class="jg-quest ${q.done ? "jg-quest-done" : ""}">${q.done ? "✅" : "⬜"} ${q.text} <span class="jg-label">+10 XP</span></div>`).join("")}
+        </div>`
+      + `<button class="jg-btn jg-btn-small jg-funfact-open">🎸 Did you know? A guitar fun fact</button>`;
+  } else {
+    boxes = say("juggling-picks", `<h3>You've finished every lesson! 🎉</h3><p>Keep your streak going with the daily review, the songs, and the World songs.</p>`)
+      + (reviewDoneToday() ? "" : say("quill-scroll", `<h3>Your 2-minute review is ready</h3><button class="jg-btn jg-open-review">Start review</button>`));
+  }
   panelEl.innerHTML = `
     <div class="jg-lessons-layout">
-      <div class="jg-lesson-main">
-        ${reviewDoneToday() ? "" : '<button class="jg-review-banner jg-open-review">🧠 Your 2-minute daily review is ready — tap to start</button>'}
-        <div class="jg-say">${mascot(nxt ? "happy-guitar" : "juggling-picks")}<div class="jg-bubble">
-          ${nxt ? `<h3>${done ? "Welcome back!" : "Welcome to Jaxx Guitar!"}</h3>
-            <p>${done ? "Up next:" : "Start here — in your first lesson you'll learn the four chords behind hundreds of songs."}</p>
-            <p><strong>${esc(nxt.title)}</strong><span class="jg-sub">${esc(nxt.subtitle || "")}</span></p>
-            <button class="jg-btn jg-btn-primary" data-lesson="${nxt.id}">${done ? "Continue" : "Start Lesson 1"}</button>
-            ${done ? "" : '<button class="jg-btn" data-lesson="p-guitar">New to guitar? Start with the basics</button>'}`
-            : "<h3>You've finished every lesson! 🎉</h3><p>Keep your streak going with the daily review, the song library, and the World songs.</p>"}
-        </div></div>
-        <div class="jg-quests">
-          <div class="jg-row"><strong>Today</strong>
-            <span class="jg-label">🔥 ${streak.count}-day streak${freezes ? ` · ❄️ ${freezes}` : ""} · daily goal ${goal.metToday ? "✓ met" : "— finish 1 lesson or song"}</span></div>
-          ${quests.map((q) => `<div class="jg-quest ${q.done ? "jg-quest-done" : ""}">${q.done ? "✅" : "⬜"} ${q.text} <span class="jg-label">+10 XP</span></div>`).join("")}
-          <button class="jg-btn jg-btn-small jg-funfact-open" style="margin-top:6px">🎸 Did you know? — a guitar fun fact</button>
-        </div>
-        <p class="jg-note">${done} of ${allLessons().filter((l) => !l.world).length} lessons done. Lessons are a guide, not a gate — open any of them from the roadmap.</p>
+      <div class="jg-lesson-main jg-home">
+        ${boxes}
       </div>
       <aside class="jg-lesson-sidebar"><div class="jg-roadmap"><h3>Roadmap</h3><div class="jg-roadmap-list">${roadmapHtml()}</div></div></aside>
     </div>`;
@@ -180,6 +191,8 @@ function wireCommon() {
 }
 
 // --- Lesson player -------------------------------------------------------------
+// A diagram is a chord symbol ("G") or a custom shape { name, frets, fingers, barre } (e.g. the baby F).
+const diagramOf = (c) => (typeof c === "string" ? { name: c, shape: chordShape(c) } : { name: c.name, shape: c });
 // Called from outside the Lessons tab too (e.g. a song's lesson): make
 // sure the Lessons tab is the one showing first.
 function ensureLessonsTab() {
@@ -202,7 +215,7 @@ function openLesson(id, pageIndex = 0) {
           <button class="jg-exit">← All lessons</button>
           <div class="jg-step">${esc(lesson.title)} · ${pageIndex + 1} of ${lesson.pages.length}</div>
           <div class="jg-say">${mascot(MASCOT_BY_LESSON[lesson.id] || (lesson.world ? "singing-mic" : lesson.song ? "playing-guitar" : "happy-guitar"))}<div class="jg-bubble">${page.html || ""}${peopleHtml(page.people)}${videoHtml(page.video)}</div></div>
-          ${page.diagrams ? `<div class="jg-diagram-row">${page.diagrams.map((c) => `<button class="jg-btn jg-dg-btn" data-chord="${esc(c)}" title="Show ${esc(c)} on the fretboard">${chordDiagramSvg(chordShape(c), c)}</button>`).join("")}</div><p class="jg-note">Tap a chord box to see it on the fretboard and hear it.</p>` : ""}
+          ${page.diagrams ? `<div class="jg-diagram-row">${page.diagrams.map((c, i) => { const d = diagramOf(c); return `<button class="jg-btn jg-dg-btn" data-dg="${i}" title="Show ${esc(d.name)} on the fretboard">${chordDiagramSvg(d.shape, d.name)}</button>`; }).join("")}</div><p class="jg-note">Tap a chord box to see it on the fretboard and hear it.</p>` : ""}
           ${page.tab ? `<div class="jg-tab-wrap">${tabSvg(page.tab.items, { beatsPerBar: page.tab.beatsPerBar, bars: page.tab.bars })}</div>` : ""}
           <div class="jg-extra"></div>
           <div class="jg-instrument-host"></div>
@@ -242,7 +255,7 @@ function openLesson(id, pageIndex = 0) {
     restore();
   }
   panelEl.querySelectorAll(".jg-dg-btn").forEach((b) => b.addEventListener("click", () => {
-    const sh = chordShape(b.dataset.chord);
+    const sh = diagramOf(page.diagrams[Number(b.dataset.dg)]).shape;
     inst.fb.showShape(sh);
     strum(shapeMidis(sh), { direction: "down" });
   }));

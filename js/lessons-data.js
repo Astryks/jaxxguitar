@@ -237,13 +237,13 @@ const PRE = [
 
 const BEGINNER = [
   {
-    id: "lesson-1", title: "The 4 chords to play 100 songs", subtitle: "G, D, Em, C — the 1-5-6-4",
+    id: "lesson-1", title: "The 4 chords to play 100 songs", subtitle: "G, D, Em and C",
     pages: [
       { html: `<h3>First: is your guitar in tune?</h3>
         <p>Before every practice, check your tuning — it takes a minute and makes everything sound right. Play each string with the tuner below; it moves to the next string on its own when one goes green. Already tuned? Tap <strong>Next</strong>.</p>`, tuner: true },
       { html: `<h3>Four chords play hundreds of songs.</h3>
         <p>"Let It Be", "Someone Like You", "I'm Yours", "With or Without You"… all built on the same 4-chord pattern. On guitar, the friendliest version is <strong>G – D – Em – C</strong>.</p>
-        <p class="jg-note">You may have heard the famous four as "G, A, C, D" — the real pattern is <strong>G, D, Em and C</strong> (the 1st, 5th, 6th and 4th chords of the key of G, which is why it's called "1-5-6-4"). G-C-D are in there; the fourth chord is E minor, not A.</p>`,
+        <p class="jg-note">You may have heard them called "G, A, C, D" — the real four are <strong>G, D, Em and C</strong>. G, C and D are in there; the fourth one is E minor, not A.</p>`,
         diagrams: ["G", "D", "Em", "C"] },
       { html: `<h3>G major</h3><p>Middle finger on the 6th string, 3rd fret; index on the 5th string, 2nd fret; ring finger on the 1st string, 3rd fret. Strum all six strings.</p>`, shape: "G", diagrams: ["G"],
         practice: { items: strumItems(["G"]), bpm: 70, modes: ["listen"], label: "Hear G" } },
@@ -312,6 +312,27 @@ const BEGINNER = [
     ],
   },
   {
+    id: "lesson-open-barre", title: "Open chords, barre chords and the baby F", subtitle: "Why F is tricky, and an easy way in",
+    pages: [
+      { html: `<h3>Two kinds of chords</h3>
+        <p><strong>Open chords</strong> use some strings you don't press at all ("open" strings), and they live right by the nut. G, C, D, Em, Am, E, A and Dm are all open chords. They're the easiest, and they ring out bright and full.</p>
+        <p><strong>Barre chords</strong> ("bar" chords) have no open strings. Your index finger lies flat across several strings, like a moving nut, and the other fingers make a shape in front of it. Because there are no open strings, you can slide the same shape up and down the neck to play any chord. They take more strength, so they come a little later.</p>`,
+        diagrams: ["C", "F"] },
+      { html: `<h3>F: the chord everyone finds tricky</h3>
+        <p>The full F chord is a barre chord, and it's the one that makes most beginners groan. That's completely normal! Here are two easier stepping stones:</p>
+        <ol>
+          <li><strong>Fmaj7</strong>: no barre at all. Same as the baby F but leave the thin e string open. It sounds dreamy and works in lots of songs where F is written.</li>
+          <li><strong>The baby F</strong>: your index finger presses just the <strong>top two strings</strong> at the 1st fret (a tiny barre), middle finger on the G string at fret 2, ring finger on the D string at fret 3. Strum only the top four strings.</li>
+        </ol>
+        <p>Use the baby F in songs now; the full F comes in the Barre chords lesson, once your fingers are stronger.</p>`,
+        diagrams: [{ name: "Fmaj7", frets: [-1, -1, 3, 2, 1, 0], fingers: [0, 0, 3, 2, 1, 0] }, { name: "F (baby)", frets: [-1, -1, 3, 2, 1, 1], fingers: [0, 0, 3, 2, 1, 1], barre: 1 }, "F"] },
+      { html: `<h3>Try it in a song pattern</h3>
+        <p><strong>C – G – Am – F</strong> is one of the most-used chord loops in pop music. Play it with the baby F. Start with Listen, then Wait for me.</p>`,
+        diagrams: ["C", "G", "Am", { name: "F (baby)", frets: [-1, -1, 3, 2, 1, 1], fingers: [0, 0, 3, 2, 1, 1], barre: 1 }],
+        practice: { items: () => chordTimeline([["C", chordShape("C")], ["G", chordShape("G")], ["Am", chordShape("Am")], ["F", { frets: [-1, -1, 3, 2, 1, 1], fingers: [0, 0, 3, 2, 1, 1], barre: 1 }]].concat([["C", chordShape("C")], ["G", chordShape("G")], ["Am", chordShape("Am")], ["F", { frets: [-1, -1, 3, 2, 1, 1], fingers: [0, 0, 3, 2, 1, 1], barre: 1 }]]).map(([chord, shape]) => ({ chord, shape })), { beatsPerChord: 4, pattern: ["down", "down", "down", "down"] }), bpm: 70, modes: ["listen", "wait"], label: "C – G – Am – baby F" } },
+    ],
+  },
+  {
     id: "lesson-lespaul", fun: true, title: "Just for fun: the teenager who needed to be heard", subtitle: "Les Paul",
     pages: [
       { html: `<h3>Too quiet for the crowd</h3>
@@ -366,7 +387,7 @@ const BEGINNER = [
     pages: [
       { html: `<h3>Your index finger becomes the nut.</h3>
         <p>Lay your index finger flat across all the strings at one fret (a <strong>barre</strong>), and make an E-shape or A-shape chord with your other fingers in front of it.</p>
-        <p><strong>F</strong> is the E-shape at the 1st fret. <strong>Bm</strong> is the A-minor shape at the 2nd fret. Tips: roll your index slightly onto its bony side, keep your elbow in, and press just enough.</p>`,
+        <p>Remember the baby F? Now it's time for the full one. <strong>F</strong> is the E-shape at the 1st fret. <strong>Bm</strong> is the A-minor shape at the 2nd fret. Tips: roll your index slightly onto its bony side, keep your elbow in, and press just enough.</p>`,
         diagrams: ["F", "Bm"], shape: "F" },
       { html: `<h3>Movable: slide the shape, change the chord.</h3>
         <p>The E-shape barre with its root on the 6th string: 1st fret = F, 3rd = G, 5th = A, 7th = B, 8th = C. The A-shape with its root on the 5th string: 2nd = B, 3rd = C, 5th = D, 7th = E. That's every major and minor chord, anywhere.</p>`,

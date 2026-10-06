@@ -282,3 +282,6 @@ details > summary::-webkit-details-marker { display: none; }
 .jg-video { margin: 10px 0 4px; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
 .jg-video-frame { position: relative; width: min(560px, 100%); aspect-ratio: 16 / 9; }
 .jg-video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 10px; }
+.jg-home .jg-say { margin-bottom: 14px; }
+.jg-home .jg-bubble { max-width: 620px; }
+.jg-home .jg-funfact-open { margin-top: 6px; }
