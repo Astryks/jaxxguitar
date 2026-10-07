@@ -23,7 +23,7 @@ let cleanup = null;
 let lastPanel = null;
 // The library, Netflix-style: one row per genre, each scrolling sideways.
 const ROW_TESTS = {
-  "Around the world": (g) => /^World/.test(g),
+  "International": (g) => /^World/.test(g),
   "Christmas": (g) => /Christmas|Holiday/i.test(g),
   "Jazz": (g) => /Jazz/i.test(g),
   "Film & classical": (g) => /Classical|Film|Soundtrack|Contemporary Piano|Piano duet/i.test(g),
@@ -34,16 +34,19 @@ const ROW_TESTS = {
   "Rock & alternative": (g) => /Rock|Britpop|Alternative|Indie|Blues|Metal|Grunge/i.test(g),
   "Pop": () => true,
 };
-const ROW_ORDER = ["Popular right now", "Pop", "Rock & alternative", "Folk & country", "R&B, soul & disco", "Hip-hop", "Reggae & Latin", "Jazz", "Film & classical", "Christmas", "Around the world"];
+const KARAOKE = ["Sweet Caroline", "Bohemian Rhapsody", "Don't Stop Believin'", "I Want It That Way", "Dancing Queen", "Mr. Brightside", "I Will Survive", "Wonderwall", "Piano Man", "Man! I Feel Like a Woman!", "Total Eclipse of the Heart", "Take On Me", "Like a Prayer", "Valerie", "Before He Cheats", "Tennessee Whiskey", "Angels", "My Way", "Africa", "Lose Control"];
+const ROW_ORDER = ["Popular right now", "Karaoke anthems", "Pop", "Rock & alternative", "Folk & country", "R&B, soul & disco", "Hip-hop", "Reggae & Latin", "Jazz", "Film & classical", "Christmas", "International"];
 function libraryRows(q, tier) {
   const byRank = (a, b) => (a.popularityRank || 999) - (b.popularityRank || 999);
   const songs = SONGS.filter((s) => songPlan(s).playable)
     .filter((s) => tier === "All" || getDifficulty(s) === tier)
     .filter((s) => !q || s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q));
   const rows = Object.fromEntries(ROW_ORDER.map((n) => [n, []]));
+  // (Karaoke anthems is filled from its own list below.)
   if (!q) rows["Popular right now"] = songs.filter((s) => !s.genre?.startsWith("World")).sort(byRank).slice(0, 12);
+  if (!q) rows["Karaoke anthems"] = KARAOKE.map((t) => songs.find((s) => s.title === t)).filter(Boolean);
   songs.forEach((s) => rows[Object.keys(ROW_TESTS).find((n) => ROW_TESTS[n](s.genre || ""))].push(s));
-  return ROW_ORDER.map((name) => ({ name, songs: name === "Popular right now" ? rows[name] : rows[name].sort(byRank) })).filter((r) => r.songs.length);
+  return ROW_ORDER.map((name) => ({ name, songs: ["Popular right now", "Karaoke anthems"].includes(name) ? rows[name] : rows[name].sort(byRank) })).filter((r) => r.songs.length);
 }
 
 function renderSongs(panel) {
