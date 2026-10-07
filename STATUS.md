@@ -10,17 +10,26 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 
 **Jaxx Guitar**, repo https://github.com/Astryks/jaxxguitar, site https://jaxxguitar.com, bundle `com.jaxxguitar.app` (App Store Connect app ID 6819445036). Sibling app: Hayden Keys (https://github.com/Astryks/haydenkeys).
 
-**What's done (full history below):** pre-lessons (get a guitar → electric gear → tune it with the string tuner), Lesson 1 / Strumming / Changing chords as simple kitten cards, all the curriculum in the table below, animated orange kitten Jaxx with his guitar, falling-notes fretboard with Listen / Wait for me / Play in time, upload a song → chords, Guess the song (ShazamKit), Netflix-style song library (270 songs, incl. a new **Metal** row and International / Karaoke anthems) with album art, Main part / Whole song and the official YouTube video, How it works page, Astryks credit, App Store screenshots and listing text.
+**What's done (full history below):** pre-lessons (get a guitar → electric gear → tune it with the string tuner), Lesson 1 / Strumming / Changing chords as simple chat cards, all the curriculum in the table below, Jaxx the beagle puppy plus music scenes and legendary guitars (the home card shows the November Rain cliff scene), Tip jar with a donor thank-you, teacher and inspiration videos, falling-notes fretboard with Listen / Wait for me / Play in time, upload a song → chords, Guess the song (ShazamKit), Netflix-style song library (270 songs, incl. a new **Metal** row and International / Karaoke anthems) with album art, Main part / Whole song and the official YouTube video, How it works page, Astryks credit, App Store screenshots and listing text.
 
-**Latest build:** 18 uploaded; build 19 is ready to archive (see the 2026-10-07 late section at the bottom: re-checked songs, solo cards, the beagle and music scenes). **Not submitted to App Review yet.**
+**Latest build:** 20, uploaded to TestFlight (the "Team" group gets every build automatically). **Submitted to App Review 2026-10-07** with the three tips; status Waiting for Review. Release is manual. App ID 6819445036.
 
-### Next steps (in order)
-1. **Submitted for App Review 2026-10-07** (see the last section). Watch App Store Connect for messages; release manually after approval.
-2. **Test on a phone:** Wait for me with the microphone, Guess the song with a real recording, Main/Whole song on a few new songs, landscape player.
-3. **App Store version page (owner, signed in):** select the latest build, upload screenshots from `ios/screenshots/app-store/`, paste text from `ios/APP_STORE_LISTING.md`, Age Rating, App Privacy ("Data Not Collected") → Publish, Content Rights, App Review contact + notes. **Submit for Review only when the owner says so.**
-4. Data clean-up: 15 older songs still have a placeholder instead of chords ("insufficient agreement…" - e.g. Wildest Dreams, Happy, Africa, Bohemian Rhapsody, Misty, Stella by Starlight, November Rain, Still D.R.E.). They rely on their notes/song map; research proper chords or hide them.
-5. Tip jar is back (owner asked 2026-10-07): create the three tip In-App Purchases in App Store Connect (see the Tip jar section at the bottom). Left-handed fretboard (Jaxx) is done.
-6. Next apps after Hayden Keys and Jaxx Guitar: fitness, jiu jitsu, then public speaking, singing, investing & markets, dance.
+**Business (checked 2026-10-07):** Free and Paid Apps Agreements active until 18 Aug 2027, bank account active (paid in AUD), tax forms (ABN/GST, W-8BEN) active. Nothing to do here; tips can be paid out once approved.
+
+### Next steps (to do, in order)
+1. **Wait for App Review** (usually 1-3 days; Apple emails). If Apple sends a question or rejection, open it in App Store Connect and paste it to Claude to draft the reply and fix.
+2. **Release:** after approval, App Store Connect > Jaxx Guitar > the 1.0 version > **Release this version** (release is set to manual on purpose).
+3. **Google Search Console** (owner, about 10 minutes):
+   1. Go to search.google.com/search-console, **Add property** > **URL prefix** > `https://jaxxguitar.com`.
+   2. Choose the **HTML tag** method, copy the `<meta name="google-site-verification" ...>` line and give it to Claude, who adds it to `index.html` and pushes.
+   3. Click **Verify** once the site has redeployed (a few minutes).
+   4. **Sitemaps** > enter `sitemap.xml` > Submit.
+4. **Bing Webmaster Tools** (optional, also covers Yahoo and DuckDuckGo): bing.com/webmasters > **Import from Google Search Console**.
+5. **Apple Search Ads** (optional, costs money, owner's decision): plan in `ios/SEARCH_ADS_PLAN.md` (suggested start US$5-10 a day on "learn guitar" style keywords). Sign up at searchads.apple.com, then Claude can set up the campaigns.
+6. **Test on a real phone** from TestFlight: Wait for me with the microphone, Guess the song with a real recording, a tip in the sandbox (TestFlight purchases are free) to see the thank-you animation, landscape player.
+7. **After launch:** watch ratings and reviews; update promotional text any time (no review needed); the What's New text for 1.0.1 is in `ios/APP_STORE_LISTING.md`.
+8. **Known gaps (later):** Wait for me could use chord detection for chords; more original licks per solo study.
+9. Next apps after Hayden Keys and Jaxx Guitar: fitness, jiu jitsu, then public speaking, singing, investing and markets, dance.
 
 ### How to build and upload (both apps)
 ```
@@ -74,7 +83,7 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
 | ✅ | Celebration = tiny musical notes falling from the sky | `app.js` `confetti()` |
 | ✅ | Home: one step at a time (welcome box, then a fun fact with a single Start lesson button); no 1-5-6-4 jargon | |
 | ✅ | Open chords vs barre chords, and the baby F (plus Fmaj7) early in Beginner | `lesson-open-barre` |
-| ✅ | Mascot: Jaxx the kitten (top hat, green vest), a different pose per lesson and screen | `assets/mascot/*.webp` (23 poses) |
+| ✅ | Mascot: Jaxx the beagle puppy (was a kitten), shown on about 1 card in 6; music scenes and legendary guitars on the rest | `assets/mascot/*.webp` (23 poses) |
 | ✅ | Animated mascots: sways while talking, bops while music plays, hops on celebrate, wiggles on fun facts | CSS, respects reduced-motion |
 | ✅ | App icon from the mascot | `assets/icons/`, iOS AppIcon |
 | ✅ | Not locked to landscape; works in portrait (the fretboard scrolls sideways); dismissible rotate tip | |
