@@ -208,3 +208,46 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
    - **Submit only when the owner says so.**
 6. **Guitar solos:** add "Solo" cards (the scale and fret position each solo uses, plus original practice licks; no copied lead lines) for the top guitar songs: Metallica, Stairway, Sweet Child O' Mine, Comfortably Numb and others.
 7. Play-along isn't synced to the YouTube video timing (the chords play at the app's tempo). Possible future feature.
+
+## 📝 Owner feedback on Jaxx lessons (2026-10-07), to do when we have credits
+Not started. Notes only; nothing changed yet.
+
+**Home**
+- [ ] Show just the cat first (a splash), then the home screen, like Hayden Keys.
+
+**Tuning**
+- [ ] Draw a guitar's strings/headstock in the tuner so users can see which string is E A D G B e.
+- [ ] Tuning radar never matches the owner's real guitar. Check the pitch detection (frequencies E2 82.4, A2 110, D3 146.8, G3 196, B3 246.9, E4 329.6 Hz; octave errors; mic sample rate; play-and-record session).
+
+**Lesson 1: fretboard pictures (card 3/11 etc.)**
+- [ ] Fretboard is upside down. For a right-handed player looking down, the thickest low E (nearest the chin) should be on **top** and the thin high e on the bottom. Fix every fretboard/chord picture.
+- [ ] Show the whole guitar (or its end/body) so users see how to hold it. Say it's drawn right-handed (left hand on frets, right hand strums) but hold it however is comfortable.
+- [ ] The "fret 1" label appears on top; put fret numbers along the bottom so the flow is smooth.
+
+**Lesson 1: card 4/11**
+- [ ] Wording: strings are named by letters (E A D G B e); frets have numbers. Fix "strings have numbers" (string numbers 6→1 can be a side note).
+- [ ] Card counter: show the progress across the whole course (e.g. 4/185, the total number of cards), not 4/11, so it feels like a game to finish. On the lessons list, show the card number where each lesson starts (e.g. 17/185).
+- [ ] "Microphone isn't available" still shows on cards. Fix it (check cards.js enableMic and the play-and-record audio session in the iOS app; test on a real phone).
+
+**Chords (Em, G, C, D…)**
+- [ ] Too fast. Make it "Let's learn the G chord". After the strum, keep it on screen ("That's the G chord") and let users tap **Next chord**.
+- [ ] Show how to place the fingers: a picture of a real hand, an embedded official/teacher YouTube video, or our own animation.
+- [ ] F / barre chords: tips for pressing a barre (press near the fret, roll the index finger, thumb behind the neck, check each string rings). Research what expert teachers recommend; add the tips later in the course.
+- [ ] Custom-draw all chord diagrams: low E on top, high e on the bottom, pressed frets in our colour (minor-chords page diagrams are confusing).
+- [ ] The E vs Em / A vs Am comparison works really well. Show **all** the chords in that style on the next card.
+
+**Card 11/11: changing chords**
+- [ ] Show how to switch quickly: human videos or animations of the fingers moving between chords (anchor fingers, pivot, lift together).
+- [ ] The looping practice doesn't work. Remove Wait for me / speed etc. here; just Play, looping.
+- [ ] End of Lesson 1: play 3 popular, fun songs that use those 4 chords (G D Em C).
+
+**Lesson 2: strumming**
+- [ ] No pick? Teach strumming with fingers (picture or animation).
+- [ ] Card 3/4 (D DU UDU): don't show speed/loop. The falling "tetris" blocks don't work for guitar (they're a piano idea). Instead, light up the chord's frets in one colour and animate the strum pattern (↓ ↓↑ ↑↓↑ arrows moving with the beat).
+- [ ] The quiz "what happens on beat 3?" is confusing. Rewrite it.
+- [ ] The 1-minute challenge doesn't recognise the owner's guitar. Fix chord recognition from the mic.
+
+**Everywhere**
+- [ ] Highlighted text: replace the orange with a pastel light blue that's still dark enough to read.
+- [ ] Don't show the roadmap under lessons (confusing).
+- [ ] End **every** lesson with 3 songs to learn, one card per song with its official video embedded.
