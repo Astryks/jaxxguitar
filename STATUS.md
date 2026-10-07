@@ -283,3 +283,5 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 **App icon:** Jaxx in his truck (all web sizes + iOS AppIcon).
 
 **Other:** HTTPS now enforced on jaxxguitar.com (the certificate had never been issued; re-adding the custom domain fixed it). Service worker caches every app file.
+
+**Tested 2026-10-07 (late):** every lesson (67) opened, stepped Next/Back and closed, and every library song (270) opened with Whole song played and Main part: 0 page errors. `npm run check` 139 chords, 0 problems; `npm run test:pitch` 99% of frames within 10 cents, 0 octave errors; `npm run test:chords` 133/136 strum changes counted.
