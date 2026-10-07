@@ -7,7 +7,9 @@
     "build:www": "sh scripts/build-www.sh",
     "cap:sync": "sh scripts/build-www.sh && cap sync ios",
     "cap:open:ios": "cap open ios",
-    "check": "node scripts/check-shapes.mjs"
+    "check": "node scripts/check-shapes.mjs",
+    "test:pitch": "node scripts/test-pitch.mjs",
+    "test:chords": "node scripts/test-chords.mjs"
   },
   "license": "ISC",
   "dependencies": {

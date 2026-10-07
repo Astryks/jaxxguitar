@@ -139,7 +139,7 @@ const PRE = [
           <li><strong>Body</strong> — on an acoustic it's hollow with a <strong>sound hole</strong>; on an electric it's usually solid with <strong>pickups</strong> (magnets that "hear" the strings) plus volume and tone knobs.</li>
           <li><strong>Bridge</strong> — where the strings are anchored on the body.</li>
         </ul>
-        <p>Below is your fretboard, the way it looks when you glance down at your guitar: nut on the left, thinnest string on top.</p>` },
+        <p>Below is your fretboard, the way it looks when you glance down at your guitar: nut on the left, and the thickest string (low E, nearest your chin) on top.</p>` },
     ],
   },
   {
@@ -181,7 +181,7 @@ const PRE = [
       { html: `<h3>Six strings, thickest to thinnest: E A D G B E.</h3>
         <p>A popular way to remember it: <strong>E</strong>ddie <strong>A</strong>te <strong>D</strong>ynamite, <strong>G</strong>ood <strong>B</strong>ye <strong>E</strong>ddie.</p>
         <p>Guitarists number them backwards: the <strong>thickest</strong> (lowest-sounding) string is the <strong>6th</strong>, the thinnest (highest) is the <strong>1st</strong>. Both outside strings are E — two octaves apart.</p>
-        <p class="jg-note">On the fretboard below, the thin high e string is on top — the same order as guitar tab.</p>`,
+        <p class="jg-note">On the fretboard below, the thick low E string is on top: the way you see your guitar looking down at it. (Tab, which comes later, is written the other way up.)</p>`,
         notes: [0, 1, 2, 3, 4, 5].map((s) => ({ string: s, fret: 0, label: STRING_NAMES[s] })) },
       { html: `<h3>Tune up — every time you play.</h3>
         <p>Strings drift out of tune all the time. Tap <strong>Start listening</strong>, pick a string, then play it and turn its peg slowly: the meter turns <strong>green</strong> when it's in tune. Too low? Tighten. Too high? Loosen a little, then come back up.</p>`, tuner: true },
@@ -273,116 +273,107 @@ const PRE = [
 
 
 // ===== Simple cards for the beginner lessons (see js/cards.js) =====
+// Owner feedback 2026-10: slower chords ("Let's learn the G chord", then it
+// stays on screen until Next chord), the fingers shown landing one by one,
+// all the chords side by side, how to switch, a plain looping Play, and
+// every lesson ends with 3 songs (added by lesson-songs.js).
 const LESSON1_CARDS = [
-  { say: `Welcome to Jaxx Guitar! 🎸<br>In about <b>a minute</b> you'll learn <b>4 chords</b> that play <b>100+ songs</b>: <b>G · D · Em · C</b> 🎶<br>But <b>bear</b> 🐻 with us while we cover the <b>basics</b> first. It only takes a few seconds!<br><br>Grab <b>your guitar</b> (the real one!) 🎸`, want: { tap: "I've got my guitar! 🎸" }, done: "Let's get you in tune! 🎵" },
-  { say: `Quick <b>tuning check</b> before every practice 🎵<br>Tap a string to <b>hear</b> how it should sound. Then tap <b>Start listening</b> and play that string: the needle shows if it's too low or too high, and tells you to <b>tighten</b> or <b>loosen</b> the peg until it goes <b>green</b>.`, want: { tuner: true }, done: "In tune and ready! 🎉" },
-  { say: `This is the <b>fretboard</b> 👇<br>The <b>6 strings</b> run along the neck. The thin metal bars across it are the <b>frets</b>.<br>Fretboards are long (around 20 frets!), but today we only need the first <b>3 frets</b>, near the end with the tuning pegs.`,
-    more: [["Which way round is the picture?", "Exactly like <b>tab</b>: the <b>thickest string</b> is at the <b>bottom</b> of the picture. On your guitar, it's the one closest to your chin 😺"], ["What's fret 1?", "The space just after the end of the neck (by the tuning pegs). Fret 2 is the next space, and so on. You press <b>between</b> the metal bars, not on them."]],
-    show: { notes: [{ string: 0, fret: 1, label: "1" }, { string: 0, fret: 2, label: "2" }, { string: 0, fret: 3, label: "3" }] }, want: { tap: "Got it 👍" }, done: "Strings along, frets across! 👍" },
-  { say: `Strings have <b>numbers</b>: the <b>thickest</b> is string <b>6</b>, the thinnest is string <b>1</b>.<br>Tap the <b>thickest string</b> (6th, low E).`, show: {}, want: { string: 0 }, done: "That's the 6th string, the low E! 🎉" },
-  { say: `Now <b>press a fret</b>: on the <b>6th string</b>, press <b>fret 3</b>.<br>Use your fingertip, just <b>behind</b> the metal bar.`, show: {}, want: { pos: [{ string: 0, fret: 3 }] },
+  { say: `Welcome to Jaxx Guitar! 🎸<br>Soon you'll know <b>4 chords</b> that play <b>100+ songs</b>: <b>G · D · Em · C</b> 🎶<br>But <b>bear</b> 🐻 with us while we cover the <b>basics</b> first. It only takes a minute!<br><br>Grab <b>your guitar</b> (the real one!) 🎸`, want: { tap: "I've got my guitar! 🎸" }, done: "Let's get you in tune! 🎵" },
+  { say: `Quick <b>tuning check</b> before every practice 🎵<br>Tap a peg to <b>hear</b> how that string should sound. Then tap <b>Start listening</b> and play it: the needle shows if it's too low or too high, and tells you to <b>tighten</b> or <b>loosen</b> the peg until it goes <b>green</b>.`, want: { tuner: true }, done: "In tune and ready! 🎉" },
+  { say: `This is how you hold it 👇<br>Your <b>left hand</b> presses the strings on the <b>neck</b>. Your <b>right hand</b> strums over the <b>sound hole</b>.<br>We draw it for <b>right-handed</b> players, but hold it however feels comfortable for you 😺`,
+    more: [["I'm left-handed!", "Lots of lefties play this way round, and some flip it. Try both and pick what feels natural. There's a lesson on it in <b>Before you start</b>."]],
+    show: { guitar: true }, want: { tap: "Got it 👍" }, done: "Neck on the left, strum on the right! 👍" },
+  { say: `Now let's zoom in on the <b>neck</b> 👇<br>The <b>6 strings</b> run along it. The thin metal bars across it are the <b>frets</b>.<br>It's drawn the way you see it <b>looking down</b> at your guitar: the <b>thickest</b> string (nearest your chin) is on <b>top</b>.`,
+    more: [["What are the numbers at the bottom?", "The <b>fret numbers</b>. Fret 1 is the space next to the end of the neck (by the tuning pegs), then fret 2, and so on. Today we only need frets <b>1, 2 and 3</b> 👆"], ["Where do I press?", "In the <b>space between</b> the metal bars, just behind a bar. Never right on top of it."]],
+    show: { frets: [1, 2, 3] }, want: { tap: "Got it 👍" }, done: "Strings along, frets across! 👍" },
+  { say: `Strings are named with <b>letters</b>: <b>E A D G B e</b>, from the thickest to the thinnest. (Frets are the ones with <b>numbers</b>.)<br>Tap the <b>thickest string</b>: the <b>low E</b>, on top.`,
+    more: [["Why two E strings?", "The thickest and the thinnest are both <b>E</b>, two octaves apart. We write the thin one as a small <b>e</b> so you can tell them apart."], ["Do strings have numbers too?", "Yes, as a side note: guitarists also count them <b>6</b> (thickest) down to <b>1</b> (thinnest). You'll see both."]],
+    show: {}, want: { string: 0 }, done: "That's the low E string! 🎉" },
+  { say: `Now <b>press a fret</b>: on the <b>low E</b> string, press <b>fret 3</b>.<br>Use your fingertip, just <b>behind</b> the metal bar.`, show: { frets: [3] }, want: { pos: [{ string: 0, fret: 3 }] },
     tip: `How hard? Only <b>just hard enough</b> that the buzz stops. Pressing harder doesn't sound better, it just tires your hand. On a real guitar it gets easier every day 💪`, done: "That's a G note! 🎵" },
-  { say: `Your first chord: <b>E minor</b> (Em), the easiest one! 😺<br>Two fingers: <b>2</b> and <b>3</b>, both on <b>fret 2</b>.<br>Place them one at a time, then strum all 6 strings.`, show: {}, want: { chord: "Em" }, done: "Em! A soft, sad sound 🥲" },
-  { say: `Now <b>G</b> 🎸<br>Three fingers. Finger numbers: <b>1</b> = index, <b>2</b> = middle, <b>3</b> = ring.`, show: {}, want: { chord: "G" }, done: "G! Big and happy 😀" },
-  { say: `Now <b>C</b> 🎸<br>Arch your fingers so the open strings ring.<br>Don't strum the thickest string (the ✕).`, show: {}, want: { chord: "C" }, done: "C! 🎉" },
-  { say: `Last one: <b>D</b> 🎸<br>Only the <b>4 thinnest</b> strings. Skip the two thick ones (the ✕s).`, show: {}, want: { chord: "D" }, done: "D! You know 4 chords! 💥" },
+  { say: `Let's learn your first chord: <b>E minor</b> (Em), the easiest one! 😺<br>Watch the fingers land, then place them yourself and strum all 6 strings.<br><small>Finger numbers: <b>1</b> index · <b>2</b> middle · <b>3</b> ring · <b>4</b> pinky</small>`, show: {}, want: { chord: "Em" }, done: "That's the <b>Em</b> chord! A soft, sad sound 🥲" },
+  { say: `Let's learn the <b>G</b> chord 🎸<br>Three fingers this time. Watch where they go first.`, show: {}, want: { chord: "G" }, done: "That's the <b>G</b> chord! Big and happy 😀" },
+  { say: `Let's learn the <b>C</b> chord 🎸<br>Arch your fingers so the open strings ring.<br>Don't strum the thickest string (the ✕).`, show: {}, want: { chord: "C" }, done: "That's the <b>C</b> chord! 🎉" },
+  { say: `Last one! Let's learn the <b>D</b> chord 🎸<br>Strum only the <b>4 thinnest</b> strings. Skip the two thick ones (the ✕s).`, show: {}, want: { chord: "D" }, next: "Next →", done: "That's the <b>D</b> chord! You know 4 chords! 💥" },
+  { say: `Here are your <b>4 chords</b> side by side 👀<br>Tap each one to see it on the fretboard and hear it.`, want: { compare: ["G", "D", "Em", "C"], note: "Spot it: <b>G</b> and <b>C</b> both use your ring finger on fret 3, and <b>Em</b> only needs two fingers." }, done: "4 chords, 100+ songs! 🎶" },
   { say: `Quick quiz! 🧠<br>Which chord uses only <b>two fingers</b>?`, want: { choice: "Em", options: ["G", "Em", "C"] }, done: "Yes! Em is the easy one 😺" },
-  { say: `<b>Boom!</b> Now the loop: <b>G → D → Em → C</b> 🔁<br>That's the pattern behind 100+ songs. Tap <b>Start</b> and watch the notes arrive at the frets. <b>Wait for me</b> waits until you play each chord (on screen, or your guitar with the microphone).`, want: { practice: { items: strumItems(["G", "D", "Em", "C", "G", "D", "Em", "C"]), bpm: 70, modes: ["listen", "wait"], label: "G – D – Em – C" }, ok: "I played the loop! ✓" }, done: "That's the loop in 100+ songs! 🏆" },
+  { say: `How do guitarists <b>switch chords</b> so fast? 🤔<br>Watch the fingers move. Some <b>stay</b>, the rest <b>move together</b>. Tap a pair to see it.`, show: {}, want: { morph: [["G", "Em"], ["Em", "C"], ["C", "D"], ["D", "G"]] }, done: "Anchor, pivot, lift together! ⚓" },
+  { say: `<b>Boom!</b> Now the loop: <b>G → D → Em → C</b> 🔁<br>That's the pattern behind 100+ songs. Tap <b>Play</b>: it keeps looping, so strum along on your guitar, one strum on each arrow. Switch when the chord changes.`, show: {}, want: { loop: { chords: ["G", "D", "Em", "C"], bpm: 66, label: "G – D – Em – C" }, ok: "I played the loop! ✓" }, done: "That's the loop in 100+ songs! 🏆" },
+];
+const SONGS_QUIZ_CARDS = [
+  { say: `Quiz time! 🧠<br>Which of these songs can you play with <b>G, D, Em and C</b>?<br><small>(Some need a <b>capo</b>, a clip that moves the same shapes higher. More on that later!)</small>`,
+    want: { allCorrect: "<b>Correct!</b> In fact, <b>all of them</b> use these chords! 🤯", options: ["I'm Yours (Jason Mraz)", "Someone Like You (Adele)", "Stand By Me (Ben E. King)", "Zombie (The Cranberries)"] }, done: "4 chords, so many songs! 🎉" },
+  { say: `Your turn to explore! 🔎<br><b>Search online</b> for "songs with G D Em C" and see what other songs you can play with these chords!<br>You can also look in the <b>Songs</b> tab: every song shows its easy chords.`, want: { tap: "I'll look! 🔎" }, done: "Happy hunting! 🎶" },
 ];
 const STRUM_CARDS = [
-  { say: `Time to <b>strum</b>! 🎸<br>Hold the pick between your <b>thumb</b> and the side of your <b>index finger</b>, with just the tip showing.<br>Strum from the <b>wrist</b>, loose, like shaking water off your hand.`, want: { tap: "Got it 👍" }, done: "Loose wrist, happy strum 😺" },
-  { say: `How hard should you strum? <b>Gently!</b><br>Loud comes from a <b>relaxed swing</b>, not from pushing. Just like pressing frets: soft or strong changes the <b>feeling</b> of the song.`,
+  { say: `Time to <b>strum</b>! 🎸<br>No pick? No problem! Use your <b>finger</b>:<br>⬇️ <b>Down:</b> brush the strings with the <b>back of your index fingernail</b>, like flicking a crumb off the table.<br>⬆️ <b>Up:</b> brush back up with the soft <b>pad</b> of the same finger (or your thumb).`,
+    more: [["What if I have a pick?", "Hold it between your <b>thumb</b> and the side of your <b>index finger</b>, with just the tip showing. Same down and up movement."]],
+    show: { fingerStrum: true }, want: { tap: "Got it 👍" }, done: "Loose wrist, happy strum 😺" },
+  { say: `How hard should you strum? <b>Gently!</b><br>Loud comes from a <b>relaxed swing</b> from the wrist, not from pushing. Like shaking water off your hand.`,
     more: [["What does a downstrum hit?", "<b>Down</b> (towards the floor) hits more of the thick strings, so it's a bit stronger. <b>Up</b> is lighter and just catches the thin strings."]], want: { tap: "I'll strum gently 🎵" }, done: "Gentle and relaxed 👍" },
-  { say: `Count <b>1 & 2 & 3 & 4 &</b> 🔢<br>Your hand goes <b>down</b> on every number and <b>up</b> on every "&", all the time, like a pendulum.<br>The most-used pattern: <b>D · D U · U D U</b>. Tap Start and strum along!`, want: { practice: { items: strumItems(["G", "G", "C", "C"], ["down", null, "down", "up", null, "up", "down", "up"]), bpm: 70, modes: ["listen"], label: "D · D U · U D U" }, ok: "I strummed along! ✓" }, done: "That's the strum in so many songs! 🎉" },
-  { say: `Quick quiz! 🧠<br>In <b>D · D U · U D U</b>, what happens on beat <b>3</b>?`, want: { choice: "Miss it (hand still moves)", options: ["Strum down", "Miss it (hand still moves)"] }, done: "Yes! The hand keeps moving, it just misses the strings 👍" },
+  { say: `Count <b>1 & 2 & 3 & 4 &</b> 🔢<br>Your hand goes <b>down</b> on every number and <b>up</b> on every "&", all the time, like a pendulum.<br>The most-used pattern: <b>D · D U · U D U</b>. Tap <b>Play</b> and strum along on your G chord, one strum per big arrow!`, show: {},
+    want: { strum: { chords: ["G"], pattern: ["down", null, "down", "up", null, "up", "down", "up"], bpm: 66, label: "D · D U · U D U" }, ok: "I strummed along! ✓" }, done: "That's the strum in so many songs! 🎉" },
+  { say: `Quick quiz! 🧠<br>In <b>D · D U · U D U</b> there are two gaps (the faded arrows). What does your hand do in a gap?`,
+    want: { choice: "It keeps swinging but misses the strings", options: ["It stops and waits", "It keeps swinging but misses the strings"], wrong: "Not quite! Your hand never stops. It swings past the strings without touching them 🙈" }, done: "Yes! Keep the hand moving like a pendulum, just miss the strings 👍" },
+  { say: `Now strum the pattern while you change chords: <b>G</b> then <b>C</b> 🔁<br>Tap <b>Play</b> and keep that hand swinging.`, show: {},
+    want: { strum: { chords: ["G", "C"], pattern: ["down", null, "down", "up", null, "up", "down", "up"], bpm: 66, label: "G and C" }, ok: "I did it! ✓" }, done: "Rhythm and chords together! 🏆" },
 ];
 const CHANGES_CARDS = [
-  { say: `Changing chords without stopping 🔁<br>The trick: look for a <b>finger that can stay</b>. Play <b>C</b> first.`, show: {}, want: { chord: "C" }, done: "C ready! 😺" },
-  { say: `Now change to <b>A minor (Am)</b>.<br>Your fingers <b>1</b> and <b>2</b> <b>don't move at all</b>! Only finger <b>3</b> hops to another string. That's an <b>anchor</b> ⚓`, show: { shape: "C" }, want: { chord: "Am" }, done: "Am! Two fingers stayed put ⚓" },
-  { say: `The <b>one-minute drill</b> ⏱️<br>Strum one chord, switch, strum the other. How many clean changes in 60 seconds? Try to beat it tomorrow!`, show: {}, want: { changes: ["G", "C"], ok: "Done ✓" }, done: "That's how you get smooth! 🏆" },
+  { say: `Changing chords without stopping 🔁<br>Watch <b>C</b> turn into <b>A minor (Am)</b>: fingers <b>1</b> and <b>2</b> <b>don't move at all</b> (the rings). Only finger <b>3</b> hops to another string. That's an <b>anchor</b> ⚓`, show: {}, want: { morph: [["C", "Am"], ["G", "C"], ["Em", "Am"]] }, done: "Anchor fingers save time! ⚓" },
+  { say: `Your turn: play <b>C</b> first.`, show: {}, want: { chord: "C" }, next: "Next →", done: "C ready! 😺" },
+  { say: `Now change to <b>Am</b>. Keep fingers 1 and 2 down and move only finger 3!`, show: { shape: "C" }, want: { chord: "Am" }, next: "Next →", done: "That's <b>Am</b>! Two fingers stayed put ⚓" },
+  { say: `The <b>one-minute challenge</b> ⏱️<br>Strum one chord, switch, strum the other. How many clean changes in 60 seconds? Turn on the <b>microphone</b> and Jaxx counts them for you. Try to beat it tomorrow!`, show: {}, want: { changes: ["G", "C"], ok: "Done ✓" }, done: "That's how you get smooth! 🏆" },
 ];
+const OPEN_CARDS = [
+  { say: `Ready for <b>more chords</b>? 🎸<br>With <b>A, E, Am and Dm</b> (plus the 4 you know) you can play loads more songs.<br>These are all <b>open chords</b>: some strings ring without being pressed.`, want: { tap: "Let's go! 🎸" }, done: "Here we go! 🎵" },
+  { say: `Let's learn the <b>E</b> chord 🎸<br>Strum all 6 strings. It looks like Em with one more finger!`, show: {}, want: { chord: "E" }, done: "That's the <b>E</b> chord! 🎉" },
+  { say: `<b>E</b> vs <b>Em</b>: just <b>one finger</b> different! 👀<br>Lift finger <b>1</b> and happy E becomes sad Em. Tap each to hear it.`, want: { compare: ["E", "Em"], note: "That one note decides <b>happy</b> (major) or <b>sad</b> (minor)." }, done: "One finger, a whole new mood! 🎭" },
+  { say: `Let's learn the <b>A</b> chord 🎸<br>Three fingers squeeze into fret 2. Skip the thickest string (✕).`, show: {}, want: { chord: "A" }, done: "That's the <b>A</b> chord! 🎉" },
+  { say: `Let's learn the <b>A minor</b> (Am) chord 🎸<br>Same shape as E, moved down one string!`, show: {}, want: { chord: "Am" }, done: "That's the <b>Am</b> chord! 🥲" },
+  { say: `<b>A</b> vs <b>Am</b>: one finger again! 👀<br>Tap each to hear happy and sad.`, want: { compare: ["A", "Am"], note: "In A, three fingers sit on fret 2. In Am, one of them drops back to fret 1 on the B string." }, done: "Happy, sad, happy, sad! 🎭" },
+  { say: `Let's learn the <b>D minor</b> (Dm) chord 🎸<br>A little triangle on the thin strings. Strum only the 4 thinnest.`, show: {}, want: { chord: "Dm" }, next: "Next →", done: "That's the <b>Dm</b> chord! 🎉" },
+  { say: `All <b>8 open chords</b> you know, side by side 👀<br>Tap any one to see it and hear it.`, want: { compare: ["G", "D", "Em", "C", "E", "A", "Am", "Dm"], note: "Happy (major): <b>G D C E A</b>. Sad (minor, with an m): <b>Em Am Dm</b>." }, done: "8 chords! That's a lot of songs 🎶" },
+  { say: `Now a loop with the new chords: <b>Am → Dm → E → Am</b> 🔁<br>Tap <b>Play</b> and strum along.`, show: {}, want: { loop: { chords: ["Am", "Dm", "E", "Am"], bpm: 66, label: "Am – Dm – E – Am" }, ok: "I played it! ✓" }, done: "Spooky and cool! 🏆" },
+];
+
+const CREEP = {
+  G: { name: "G (barre, fret 3)", frets: [3, 5, 5, 4, 3, 3], fingers: [1, 3, 4, 2, 1, 1], barre: 3 },
+  B: { name: "B (barre, fret 2)", frets: [-1, 2, 4, 4, 4, 2], fingers: [0, 1, 2, 3, 4, 1], barre: 2 },
+  C: { name: "C (barre, fret 3)", frets: [-1, 3, 5, 5, 5, 3], fingers: [0, 1, 2, 3, 4, 1], barre: 3 },
+  Cm: { name: "Cm (barre, fret 3)", frets: [-1, 3, 5, 5, 4, 3], fingers: [0, 1, 3, 4, 2, 1], barre: 3 },
+};
+const creepItems = () => chordTimeline(["G", "G", "B", "B", "C", "C", "Cm", "Cm"].map((c) => ({ chord: c, shape: CREEP[c] })), { beatsPerChord: 4, pattern: ["down", "down", "down", "down"] });
 
 const BEGINNER = [
   {
-    id: "lesson-1", title: "The 4 chords to play 100 songs", subtitle: "G, D, Em and C",
+    id: "lesson-1", title: "The 4 chords to play 100 songs", subtitle: "G, D, Em and C, then 3 songs",
     cards: LESSON1_CARDS,
-    pages: [
-      { html: `<h3>Welcome to Jaxx Guitar! 🎸</h3>
-        <p>In about <strong>a minute</strong> you'll learn <strong>4 chords</strong> that play <strong>100+ songs</strong>: <strong>G · D · Em · C</strong> 🎶</p>
-        <p>But bear with us while we cover the <strong>basics</strong> first. It'll only take a few seconds! Grab <strong>your guitar</strong> 🎸</p>
-        <h3>First: is your guitar in tune?</h3>
-        <p>Before every practice, check your tuning — it takes a minute and makes everything sound right. Play each string with the tuner below; it moves to the next string on its own when one goes green. Already tuned? Tap <strong>Next</strong>.</p>`, tuner: true },
-      { html: `<h3>Four chords play hundreds of songs.</h3>
-        <p>"Let It Be", "Someone Like You", "I'm Yours", "With or Without You"… all built on the same 4-chord pattern. On guitar, the friendliest version is <strong>G – D – Em – C</strong>.</p>
-`,
-        diagrams: ["G", "D", "Em", "C"] },
-      { html: `<h3>G major</h3><p>Middle finger on the 6th string, 3rd fret; index on the 5th string, 2nd fret; ring finger on the 1st string, 3rd fret. Strum all six strings.</p>`, shape: "G", diagrams: ["G"],
-        practice: { items: strumItems(["G"]), bpm: 70, modes: ["listen"], label: "Hear G" } },
-      { html: `<h3>D major</h3><p>Only the top four strings: index on the 3rd string 2nd fret, middle on the 1st string 2nd fret, ring on the 2nd string 3rd fret. <strong>Don't strum the two low strings</strong> (the ×s).</p>`, shape: "D", diagrams: ["D"],
-        practice: { items: strumItems(["D"]), bpm: 70, modes: ["listen"], label: "Hear D" } },
-      { html: `<h3>E minor — the easiest chord on guitar</h3><p>Two fingers: middle on the 5th string 2nd fret, ring on the 4th string 2nd fret. Strum all six. The little "m" means <strong>minor</strong> — a softer, sadder sound.</p>`, shape: "Em", diagrams: ["Em"],
-        practice: { items: strumItems(["Em"]), bpm: 70, modes: ["listen"], label: "Hear Em" } },
-      { html: `<h3>C major</h3><p>Ring finger on the 5th string 3rd fret, middle on the 4th string 2nd fret, index on the 2nd string 1st fret. Skip the low E string. Arch your fingers so the open strings ring.</p>`, shape: "C", diagrams: ["C"],
-        practice: { items: strumItems(["C"]), bpm: 70, modes: ["listen"], label: "Hear C" } },
-      { html: `<h3>Now the whole pattern: G – D – Em – C</h3>
-        <p>One strum per beat, four beats per chord. Watch the falling notes; the app strums along. Then switch to <strong>Wait for me</strong> — it moves on each time it hears you strum the chord.</p>`,
-        diagrams: ["G", "D", "Em", "C"],
-        practice: { items: strumItems(["G", "D", "Em", "C", "G", "D", "Em", "C"]), bpm: 70, modes: ["listen", "wait"], label: "G – D – Em – C" } },
-    ],
+    songs: ["Take Me Home, Country Roads", "Perfect", "Amazing Grace"],
+    pages: [],
   },
   {
-    id: "lesson-strum", title: "Strumming and rhythm", subtitle: "Down, up, and the classic pattern",
+    id: "lesson-songs-quiz", title: "Which songs use these chords?", subtitle: "A quiz where every answer is right",
+    cards: SONGS_QUIZ_CARDS,
+    songs: ["I'm Yours", "Someone Like You", "Stand By Me"],
+    pages: [],
+  },
+  {
+    id: "lesson-strum", title: "Strumming and rhythm", subtitle: "With your fingers or a pick",
     cards: STRUM_CARDS,
-    pages: [
-      { html: `<h3>Hold the pick and strum from the wrist.</h3>
-        <p>Pinch the pick between your thumb and the side of your index finger, with just the tip showing. Strum with a loose wrist, like shaking water off your hand — not a stiff arm.</p>
-        <p><strong>Downstrums</strong> go toward the floor (thick strings first); <strong>upstrums</strong> come back up and usually just catch the thinner strings.</p>` },
-      { html: `<h3>How hard should you strum?</h3>
-        <p>Much more gently than you'd think! Loud comes from <strong>speed and a relaxed swing</strong>, not from pushing hard.</p>
-        <ul>
-          <li>Hold the pick <strong>loosely</strong> — just firm enough that it doesn't fall. A tight grip makes it catch and clack on the strings.</li>
-          <li>Let only the <strong>tip</strong> of the pick brush the strings, and let it flex a little as it passes.</li>
-          <li><strong>Downstrums</strong> hit more of the thick strings, so they're naturally a bit stronger; <strong>upstrums</strong> are lighter and usually just catch the top three or four strings.</li>
-          <li>Move from the <strong>wrist</strong> (like shaking water off your hand), not the whole arm or shoulder.</li>
-          <li>Strings rattling or a harsh clang? Strum softer. Chord sounds thin? Make sure you're catching all the strings it uses.</li>
-        </ul>
-        <p class="jg-note">Fretting hand: press each string just behind the fret with your fingertip — only hard enough for the buzz to stop (see "How to press a fret" in Before you start). Pressing harder than that just tires your hand.</p>` },
-      { html: `<h3>Count "1 & 2 & 3 & 4 &"</h3>
-        <p>Your hand moves down on every number and up on every "&" — all the time, like a pendulum — even when it doesn't touch the strings. That steady motion is the secret to good rhythm.</p>
-        <p>The most-used pattern in pop and folk: <span class="jg-strum">D · D U · U D U</span> (down on 1, down on 2, up on "&", miss 3, up on "&", down on 4, up on "&").</p>`,
-        diagrams: ["G"],
-        practice: { items: strumItems(["G", "G", "C", "C"], DDUUDU), bpm: 70, modes: ["listen"], label: "D · D U · U D U on G and C" } },
-    ],
+    songs: ["Brown Eyed Girl", "Ocean Eyes", "Sweet Caroline"],
+    pages: [],
   },
   {
-    id: "lesson-changes", title: "Changing chords without stopping", subtitle: "Anchor fingers and one-minute changes",
+    id: "lesson-changes", title: "Changing chords without stopping", subtitle: "Anchor fingers and the one-minute challenge",
     cards: CHANGES_CARDS,
-    pages: [
-      { html: `<h3>Look for the finger that can stay.</h3>
-        <p>From <strong>C</strong> to <strong>Am</strong>, your index (2nd string, 1st fret) and middle finger (4th string, 2nd fret) <strong>don't move at all</strong> — only your ring finger hops from the 5th string to the 3rd string. That's an "anchor".</p>
-        <p>Even when no finger can stay, move all fingers together as one shape, and look at where they're going, not where they've been.</p>`, diagrams: ["C", "Am"] },
-      { html: `<h3>The one-minute change drill</h3>
-        <p>Strum one chord, switch, strum the other — as many clean changes as you can in 60 seconds. Count them, and try to beat your score tomorrow. It's one of the fastest ways to get smooth.</p>`, changes: ["G", "C"] },
-    ],
+    songs: ["Knockin' on Heaven's Door", "Let Her Go", "Say You Won't Let Go"],
+    pages: [],
   },
   {
-    id: "lesson-minor", title: "Major or minor? One finger", subtitle: "E vs Em, A vs Am",
-    pages: [
-      { html: `<h3>Hear the difference, see the difference.</h3>
-        <p><strong>E major</strong> and <strong>E minor</strong> differ by a single finger: lift your index off the 3rd string's 1st fret and E becomes Em. Same for <strong>A → Am</strong>: one finger moves from the 2nd fret to the 1st on the B string.</p>
-        <p>That one note is the chord's <strong>third</strong> — the note that decides happy (major) or sad (minor).</p>`,
-        diagrams: ["E", "Em", "A", "Am"],
-        practice: { items: strumItems(["E", "Em", "A", "Am"]), bpm: 66, modes: ["listen", "wait"], label: "E – Em – A – Am" } },
-    ],
-  },
-  {
-    id: "lesson-more", title: "Four more chords: A, E, Am, Dm", subtitle: "More songs unlocked",
-    pages: [
-      { html: `<h3>With these, most beginner songs are open to you.</h3>
-        <p><strong>A</strong> squeezes three fingers onto the 2nd fret; <strong>Dm</strong> is like a small triangle on the top strings. Practise each, then the loop below.</p>`,
-        diagrams: ["A", "E", "Am", "Dm"],
-        practice: { items: strumItems(["Am", "Dm", "E", "Am", "C", "G", "Am", "Am"]), bpm: 70, modes: ["listen", "wait"], label: "Am – Dm – E – Am – C – G – Am" } },
-    ],
+    id: "lesson-open-chords", title: "More open chords: E, A, Am, Dm", subtitle: "Happy or sad? One finger",
+    cards: OPEN_CARDS,
+    songs: ["Riptide", "Last Christmas"],
+    pages: [],
   },
   {
     id: "lesson-open-barre", title: "Open chords, barre chords and the baby F", subtitle: "Why F is tricky, and an easy way in",
@@ -395,7 +386,7 @@ const BEGINNER = [
         <p>The full F chord is a barre chord, and it's the one that makes most beginners groan. That's completely normal! Here are two easier stepping stones:</p>
         <ol>
           <li><strong>Fmaj7</strong>: no barre at all. Same as the baby F but leave the thin e string open. It sounds dreamy and works in lots of songs where F is written.</li>
-          <li><strong>The baby F</strong>: your index finger presses just the <strong>top two strings</strong> at the 1st fret (a tiny barre), middle finger on the G string at fret 2, ring finger on the D string at fret 3. Strum only the top four strings.</li>
+          <li><strong>The baby F</strong>: your index finger presses just the <strong>2 thinnest strings</strong> at the 1st fret (a tiny barre), middle finger on the G string at fret 2, ring finger on the D string at fret 3. Strum only the 4 thinnest strings.</li>
         </ol>
         <p>Use the baby F in songs now; the full F comes in the Barre chords lesson, once your fingers are stronger.</p>`,
         diagrams: [{ name: "Fmaj7", frets: [-1, -1, 3, 2, 1, 0], fingers: [0, 0, 3, 2, 1, 0] }, { name: "F (baby)", frets: [-1, -1, 3, 2, 1, 1], fingers: [0, 0, 3, 2, 1, 1], barre: 1 }, "F"] },
@@ -429,7 +420,7 @@ const BEGINNER = [
     id: "lesson-tab", title: "Reading tab — and your first melodies", subtitle: "Single notes with the microphone",
     pages: [
       { html: `<h3>Tab = a picture of the strings.</h3>
-        <p>Six lines are the six strings — the <strong>top line is the thin high e string</strong>, the bottom line is the low E. A number tells you which fret to press on that string; 0 means play it open. Read left to right.</p>`,
+        <p>Six lines are the six strings: the <strong>top line is the thin high e string</strong>, the bottom line is the low E. (That's upside down compared with our fretboard pictures: tab is written as if you tipped the guitar up to face you.) A number tells you which fret to press on that string; 0 means play it open. Read left to right.</p>`,
         tab: { items: melody([[5, 0], [5, 1], [5, 3], [4, 0], [4, 1], [4, 3]])(), beatsPerBar: 6, bars: 1 } },
       { html: `<h3>Ode to Joy (Beethoven, 1824 — public domain)</h3>
         <p>All on the B and high e strings. Try <strong>Wait for me</strong> with the <strong>microphone</strong> on — play each note on your guitar and the music waits until it hears it.</p>`,
@@ -456,55 +447,108 @@ const BEGINNER = [
     ],
   },
   {
-    id: "lesson-barre", title: "Barre chords: F and Bm", subtitle: "One shape, every chord",
+    id: "lesson-barre", title: "Barre chords: one shape, every chord", subtitle: "A B C D E F G up and down the neck",
     pages: [
       { html: `<h3>Your index finger becomes the nut.</h3>
-        <p>Lay your index finger flat across all the strings at one fret (a <strong>barre</strong>), and make an E-shape or A-shape chord with your other fingers in front of it.</p>
-        <p>Remember the baby F? Now it's time for the full one. <strong>F</strong> is the E-shape at the 1st fret. <strong>Bm</strong> is the A-minor shape at the 2nd fret. Tips: roll your index slightly onto its bony side, keep your elbow in, and press just enough.</p>`,
-        diagrams: ["F", "Bm"], shape: "F" },
-      { html: `<h3>Movable: slide the shape, change the chord.</h3>
-        <p>The E-shape barre with its root on the 6th string: 1st fret = F, 3rd = G, 5th = A, 7th = B, 8th = C. The A-shape with its root on the 5th string: 2nd = B, 3rd = C, 5th = D, 7th = E. That's every major and minor chord, anywhere.</p>`,
-        diagrams: ["F", "G#m", "Bb", "C#m", "Bm", "F#"],
-        practice: { items: strumItems(["F", "C", "G", "Am", "F", "C", "G", "C"]), bpm: 66, modes: ["listen", "wait"], label: "F – C – G – Am" } },
+        <p>Lay your index finger flat across all six strings at one fret (a <strong>barre</strong>), and make the <strong>E</strong> chord shape with your other three fingers just in front of it. At the 1st fret, that's <strong>F</strong>.</p>
+        <h3>Barre tips that really help</h3>
+        <ul>
+          <li><strong>Close to the fret:</strong> put the barre just behind the metal fret, not in the middle of the space. Much less pressure needed.</li>
+          <li><strong>Roll the index finger</strong> a little onto its bony side (towards the headstock). The hard edge presses better than the soft middle.</li>
+          <li><strong>Thumb behind the neck</strong>, roughly behind your middle finger, not hooked over the top.</li>
+          <li><strong>Pull, don't squeeze:</strong> let the weight of your arm pull back gently, so your hand doesn't have to clamp hard.</li>
+          <li><strong>Check each string:</strong> pick them one at a time. A dead string usually sits in a crease of your finger: move the barre slightly up or down.</li>
+          <li><strong>Little and often:</strong> a few minutes a day. It takes most people a few weeks, and that's normal! Use the baby F meanwhile.</li>
+        </ul>`,
+        diagrams: ["F"], shape: "F" },
+      { html: `<h3>One shape, every chord 🤯</h3>
+        <p>Here's the magic: slide that <strong>same shape</strong> up the neck and it plays a new chord. The note under your barre on the <strong>thickest string</strong> is the chord's name.</p>
+        <p>Tap a letter to see where the shape goes for <strong>A B C D E F G</strong>, and switch between major (happy) and minor (sad: lift your middle finger).</p>`,
+        barreMover: true },
+      { html: `<h3>The other barre shape: from Am</h3>
+        <p>Barre at the 2nd fret and make the <strong>Am</strong> shape in front of it: that's <strong>Bm</strong>. This shape takes its name from the <strong>A string</strong> (the 2nd thickest). Slide it to fret 3 for Cm, fret 5 for Dm.</p>`,
+        diagrams: ["Bm"], shape: "Bm",
+        practice: { items: strumItems(["G", "Bm", "C", "D"]), bpm: 66, modes: ["listen", "wait"], label: "G – Bm – C – D" } },
     ],
+    songs: ["Love Story", "Count on Me", "Summer of '69"],
   },
   {
-    id: "lesson-sevenths", title: "7th chords and the 12-bar blues", subtitle: "The bluesy sound",
+    id: "lesson-creep", title: "Song study: Creep", subtitle: "Radiohead, 1992. Four barre chords",
     pages: [
-      { html: `<h3>Add a note, get the blues.</h3>
-        <p>A <strong>7th chord</strong> adds a fourth note that makes the chord want to move on. The open ones — A7, D7, E7 — are the sound of the blues.</p>
-        <p>The <strong>12-bar blues</strong> in A: four bars of A7, two of D7, two of A7, then E7, D7, A7, E7. It's behind thousands of songs.</p>`,
-        diagrams: ["A7", "D7", "E7"],
-        practice: { items: strumItems(["A7", "A7", "A7", "A7", "D7", "D7", "A7", "A7", "E7", "D7", "A7", "E7"]), bpm: 92, modes: ["listen"], label: "12-bar blues in A" } },
+      { html: `<h3>Creep, by Radiohead</h3>
+        <p>A huge 90s rock song, and a perfect first <strong>barre-chord song</strong>: the same <strong>4 chords</strong> loop the whole way through: <strong>G – B – C – Cm</strong>, each for one bar (4 beats).</p>
+        <p>All four are barre shapes: <strong>G</strong> is the E-shape at fret 3, <strong>B</strong> is the A-shape at fret 2, <strong>C</strong> is the A-shape at fret 3, and <strong>Cm</strong> is the A-minor shape at fret 3. Going from C to Cm, only one finger moves!</p>
+        <p class="jg-note">Too hard for now? Strum just the 4 thinnest strings of each shape while your barre finger gets stronger. We only teach the chords here, no lyrics or tab.</p>`,
+        diagrams: [CREEP.G, CREEP.B, CREEP.C, CREEP.Cm], video: "creep" },
+      { html: `<h3>Play along: G – B – C – Cm</h3>
+        <p>Four strums per chord. Listen first, then try <strong>Wait for me</strong>. Listen out for the loud, crunchy strums the guitarist adds before the chorus!</p>`,
+        diagrams: [CREEP.G, CREEP.B, CREEP.C, CREEP.Cm],
+        practice: { items: creepItems, bpm: 92, modes: ["listen", "wait"], label: "Creep: G – B – C – Cm", drums: true } },
     ],
+    chords: ["Bm", "F"],
   },
   {
-    id: "lesson-genres", title: "Music has flavours: genres", subtitle: "Pop, rock, blues, jazz, reggae, classical",
+    id: "lesson-genres", title: "Music has flavours: genres", subtitle: "Pop, rock, blues, jazz, reggae, flamenco, classical",
     pages: [
       { html: `<h3>Same guitar, different flavours 🍦</h3>
-        <p>Styles of music are called <strong>genres</strong>: <strong>pop</strong>, <strong>rock</strong>, <strong>blues</strong>, <strong>jazz</strong>, <strong>reggae</strong>, <strong>classical</strong>, and many more like country and R&amp;B.</p>
-        <p>What changes is <strong>which chords</strong> they love and <strong>how you strum or pick</strong> them. Let's taste six.</p>` },
+        <p>Styles of music are called <strong>genres</strong>: <strong>pop</strong>, <strong>rock</strong>, <strong>blues</strong>, <strong>jazz</strong>, <strong>reggae</strong>, <strong>flamenco</strong>, <strong>classical</strong>, and many more like country and R&amp;B.</p>
+        <p>What changes is <strong>which chords</strong> they love and <strong>how you strum or pick</strong> them. Let's taste each one, and learn a song from it straight away!</p>` },
       { html: `<h3>Pop: catchy chords, round and round</h3>
         <p>Pop loves a short loop of 4 chords you can sing over. You already know the most famous one: <strong>G – D – Em – C</strong>, with the D · DU · UDU strum.</p>`,
         diagrams: ["G", "D", "Em", "C"], practice: { items: strumItems(["G", "D", "Em", "C"], DDUUDU), bpm: 80, modes: ["listen", "wait"], label: "Pop: G D Em C" } },
+      { html: `<h3>A pop song to learn</h3><p>Four chords, a happy strum, and a big singalong chorus.</p>`, song: "Hey Soul Sister" },
       { html: `<h3>Rock: big, strong chords</h3>
-        <p>Rock plays simple chords <strong>loud and driving</strong>, often with strong downstrums or power chords. A rock favourite: <strong>D – C – G</strong>, the chords of <em>Sweet Home Alabama</em> by Lynyrd Skynyrd.</p>`,
+        <p>Rock plays simple chords <strong>loud and driving</strong>, often with strong downstrums or power chords. A rock favourite: <strong>D – C – G</strong>.</p>`,
         diagrams: ["D", "C", "G"], practice: { items: strumItems(["D", "C", "G", "G"], ["down", "down", "down", "down", "down", "down", "down", "down"]), bpm: 96, modes: ["listen", "wait"], label: "Rock: D C G, all downstrums" } },
+      { html: `<h3>A rock song to learn</h3><p>The same <strong>D – C – G</strong> you just played!</p>`, song: "Sweet Child O' Mine" },
       { html: `<h3>Blues: the parent of rock and jazz</h3>
         <p>The blues came from African American musicians in the southern United States in the late 1800s. The <strong>12-bar blues</strong> uses chords <strong>1, 4 and 5</strong> as 7th chords. In A: <strong>A7, D7, E7</strong>.</p>`,
         diagrams: ["A7", "D7", "E7"], practice: { items: strumItems(["A7", "A7", "A7", "A7", "D7", "D7", "A7", "A7", "E7", "D7", "A7", "E7"]), bpm: 92, modes: ["listen"], label: "12-bar blues in A" } },
+      { html: `<h3>A blues to learn</h3><p>Thelonious Monk's <em>Blue Monk</em> is a 12-bar blues: the same 1, 4, 5 pattern you just played.</p>`, song: "Blue Monk" },
       { html: `<h3>Jazz: rich chords and the famous 2 – 5 – 1</h3>
-        <p>Jazz grew out of the blues in <strong>New Orleans</strong> in the early 1900s. It loves rich 4-note chords and making things up as you go. Its most famous move is <strong>2 – 5 – 1</strong>: in C, <strong>Dm7 – G7 – Cmaj7</strong>. You'll hear it in <em>Autumn Leaves</em> and <em>Fly Me to the Moon</em>.</p>`,
+        <p>Jazz grew out of the blues in <strong>New Orleans</strong> in the early 1900s. It loves rich 4-note chords and making things up as you go. Its most famous move is <strong>2 – 5 – 1</strong>: in C, <strong>Dm7 – G7 – Cmaj7</strong>.</p>`,
         diagrams: ["Dm7", "G7", "Cmaj7"], practice: { items: strumItems(["Dm7", "G7", "Cmaj7", "Cmaj7"]), bpm: 72, modes: ["listen", "wait"], label: "Jazz: Dm7 G7 Cmaj7" } },
+      { html: `<h3>A jazz song to learn</h3><p>Listen for the 2 – 5 – 1 moves all through it.</p>`, song: "Fly Me to the Moon" },
       { html: `<h3>Reggae: strum on the off-beat</h3>
-        <p>Reggae from Jamaica flips the strum: short, choppy chords on the <strong>"&amp;"</strong> between the beats, never on the beat. Bob Marley's <em>Three Little Birds</em> uses just <strong>A, D and E</strong>.</p>
+        <p>Reggae from Jamaica flips the strum: short, choppy chords on the <strong>"&amp;"</strong> between the beats, never on the beat.</p>
         <p class="jg-note">Count "1 & 2 & 3 & 4 &" and only strum (a quick upstroke) on each "&".</p>`,
         diagrams: ["A", "D", "E"], practice: { items: strumItems(["A", "D", "A", "E"], [null, "up", null, "up", null, "up", null, "up"]), bpm: 76, modes: ["listen"], label: "Reggae: upstrokes on the off-beat" } },
+      { html: `<h3>A reggae song to learn</h3><p>Bob Marley's happiest song, with just <strong>A, D and E</strong>.</p>`, song: "Three Little Birds" },
+      { html: `<h3>Flamenco: Spanish fire</h3>
+        <p>Flamenco comes from Andalusia in the south of Spain. Its signature sound walks down <strong>Am – G – F – E</strong>, with fast finger flicks called <strong>rasgueado</strong>. Use the baby F!</p>`,
+        diagrams: ["Am", "G", { name: "F (baby)", frets: [-1, -1, 3, 2, 1, 1], fingers: [0, 0, 3, 2, 1, 1], barre: 1 }, "E"] },
+      { html: `<h3>A flamenco-pop song to learn</h3><p>The Gipsy Kings mix flamenco guitar with pop.</p>`, song: "Bamboléo" },
       { html: `<h3>Classical: fingers, not a pick</h3>
-        <p>Classical guitar is played with the <strong>fingers</strong>, picking the strings one at a time: a chord becomes a little melody. You'll learn it properly in the Fingerpicking and Classical guitar lessons.</p>
-        <h3>Which flavour is yours?</h3>
-        <p>Pick songs from the style you love most and you'll practise more. Find them in <strong>Songs</strong>, or upload any song in <strong>Practice</strong>.</p>`,
+        <p>Classical guitar is played with the <strong>fingers</strong>, picking the strings one at a time: a chord becomes a little melody. You'll learn it properly in the Fingerpicking and Classical guitar lessons.</p>`,
         diagrams: ["Am"], practice: { items: () => [[4, 0], [3, 2], [2, 2], [1, 1], [0, 0], [1, 1], [2, 2], [3, 2]].map(([string, fret], i) => ({ string, fret, start: i * 0.5, dur: 0.5 })), bpm: 70, modes: ["listen"], label: "Am, one string at a time" } },
+      { html: `<h3>A classical piece to learn</h3><p>Beethoven's famous tune. Pick the chords one string at a time.</p>`, song: "Für Elise" },
+      { html: `<h3>Which flavour is yours?</h3>
+        <p>Pick songs from the style you love most and you'll practise more. Find them in <strong>Songs</strong>, or upload any song in <strong>Practice</strong>.</p>` },
+    ],
+  },
+  {
+    id: "lesson-sevenths", title: "Jargon alert! Extra chords", subtitle: "7ths, sus, add9 and maj7",
+    pages: [
+      { html: `<h3>Jargon alert! 🚨</h3>
+        <p>You <strong>don't really need these</strong> for easier songs. But here are some other chords you'll see in songbooks, so the names don't scare you:</p>
+        <ul>
+          <li><strong>7</strong> (A7, D7, E7): adds a note that makes the chord want to move on. The sound of the blues.</li>
+          <li><strong>maj7</strong> (Cmaj7, Fmaj7): soft and dreamy.</li>
+          <li><strong>sus2 / sus4</strong> (Dsus2, Dsus4, Asus4): "suspended", the happy-or-sad note is swapped out, so it sounds open and waiting.</li>
+          <li><strong>add9</strong> (Cadd9): the chord plus a sparkly extra note.</li>
+        </ul>
+        <p>Most of them are an open chord you know, with <strong>one finger added or moved</strong>. Tap each to hear it.</p>`,
+        diagrams: ["A7", "D7", "E7", "Cmaj7", "Fmaj7", "Dsus2", "Dsus4", "Asus4", "Cadd9"] },
+      { html: `<h3>The 12-bar blues</h3>
+        <p>The <strong>12-bar blues</strong> in A: four bars of A7, two of D7, two of A7, then E7, D7, A7, E7. It's behind thousands of songs.</p>`,
+        diagrams: ["A7", "D7", "E7"],
+        practice: { items: strumItems(["A7", "A7", "A7", "A7", "D7", "D7", "A7", "A7", "E7", "D7", "A7", "E7"]), bpm: 92, modes: ["listen"], label: "12-bar blues in A" } },
+      { html: `<h3>A song full of jargon chords: Wonderwall</h3>
+        <p>Oasis's <em>Wonderwall</em> (1995), with a capo on fret 2, loops <strong>Em7 – G – Dsus4 – A7sus4</strong>. Big names, but look: your ring and pinky stay on the 3rd fret of the two thinnest strings the <strong>whole time</strong>, and only the other fingers move. Strum D · D U · U D U.</p>
+        <p class="jg-note">Chords only, no lyrics or tab.</p>`,
+        diagrams: ["Em7", "G", "Dsus4", "A7sus4"],
+        practice: { items: strumItems(["Em7", "G", "Dsus4", "A7sus4", "Em7", "G", "Dsus4", "A7sus4"], DDUUDU), bpm: 87, modes: ["listen", "wait"], label: "Wonderwall loop" } },
+      { html: `<h3>Wonderwall: the song</h3>`, song: "Wonderwall" },
     ],
   },
 ];

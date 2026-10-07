@@ -1,21 +1,15 @@
-// Monophonic pitch detection — normalized autocorrelation with parabolic
-// interpolation. Reused, unmodified in its core algorithm, from the
-// Dawsons project's `website/js/pitch.js` (same author/org, MIT-style
-// "do what you want with your own code" reuse — not a third-party
-// dependency). That version already fixed a harmonic-misdetection bug
-// (picking a subharmonic/overtone instead of the true fundamental) by
-// scanning from the shortest lag upward and taking the *first* local
-// peak that clears the correlation threshold, rather than the global
-// max. See THIRD_PARTY_NOTICES.md for provenance.
-//
-// This file adds a thin "live" wrapper around the original frame-based
-// detector so it can run continuously against a Web Audio
-// AnalyserNode/ScriptProcessor for note detection (shared with sibling app Hayden Keys)
-// flow (listening to a single played note, not a melody).
+// Monophonic pitch detection for the tuner and "Wait for me".
+// Originally the normalised-autocorrelation detector from the Dawsons
+// project (same author/org; see THIRD_PARTY_NOTICES.md). In 2026-10 the
+// core was replaced with YIN (see detectPitchInFrame) because the old
+// method made octave errors on real guitars. The live wrapper runs the
+// detector on the microphone about 30 times a second.
 
 const MIN_FREQ = 70; // below the low E string (82 Hz), even tuned down a step
 const MAX_FREQ = 1200;
-const CORRELATION_THRESHOLD = 0.35;
+const YIN_THRESHOLD = 0.15; // first dip below this is the fundamental
+const YIN_FALLBACK = 0.25; // otherwise accept the deepest dip if it's this clear
+const MIN_RMS = 0.0025; // quiet phone mics (no auto gain) still pass a plucked string
 
 function midiFromFreq(freq) {
   return 69 + 12 * Math.log2(freq / 440);
@@ -25,79 +19,128 @@ function freqFromMidi(midi) {
   return 440 * Math.pow(2, (midi - 69) / 12);
 }
 
-// Estimates one frame's fundamental frequency via normalized
-// autocorrelation, or null if no confident pitch is found.
+// One frame's fundamental frequency, or null if no confident pitch.
+//
+// 2026-10 rewrite for real guitars: the old "first autocorrelation peak
+// above 0.35" read a low E as E3 (an octave up) whenever the 2nd harmonic
+// was strong, which is normal for a guitar heard through a phone mic (the
+// mic hardly hears 82 Hz, so the overtones dominate). This is the YIN
+// method (de Cheveigné & Kawahara, 2002): the cumulative-mean-normalised
+// difference function only dips near zero at the true period (at half the
+// period the odd harmonics don't cancel), with parabolic interpolation for
+// sub-sample accuracy. The sample rate always comes from the audio
+// context (44.1 or 48 kHz), never assumed.
 function detectPitchInFrame(frame, sampleRate) {
-  const minLag = Math.floor(sampleRate / MAX_FREQ);
-  const maxLag = Math.min(frame.length - 1, Math.ceil(sampleRate / MIN_FREQ));
-  if (maxLag <= minLag) return null;
+  const minLag = Math.max(2, Math.floor(sampleRate / MAX_FREQ));
+  const maxLag = Math.ceil(sampleRate / MIN_FREQ);
+  const W = Math.min(frame.length - maxLag - 2, Math.max(512, Math.round(sampleRate * 0.024)));
+  if (W < 256) return null;
 
-  let rootMeanSquare = 0;
-  for (let i = 0; i < frame.length; i++) rootMeanSquare += frame[i] * frame[i];
-  rootMeanSquare = Math.sqrt(rootMeanSquare / frame.length);
-  if (rootMeanSquare < 0.01) return null; // silence/noise floor
+  let energy = 0;
+  for (let i = 0; i < W + maxLag; i++) energy += frame[i] * frame[i];
+  const rms = Math.sqrt(energy / (W + maxLag));
+  if (rms < MIN_RMS) return null; // silence / noise floor
 
-  const correlations = new Array(maxLag - minLag + 1);
-  for (let lag = minLag; lag <= maxLag; lag++) {
+  const d = new Float32Array(maxLag + 2);
+  for (let lag = 1; lag <= maxLag + 1; lag++) {
     let sum = 0;
-    let normA = 0;
-    let normB = 0;
-    for (let i = 0; i + lag < frame.length; i++) {
-      sum += frame[i] * frame[i + lag];
-      normA += frame[i] * frame[i];
-      normB += frame[i + lag] * frame[i + lag];
+    for (let i = 0; i < W; i++) {
+      const diff = frame[i] - frame[i + lag];
+      sum += diff * diff;
     }
-    const denom = Math.sqrt(normA * normB);
-    correlations[lag - minLag] = denom > 0 ? sum / denom : 0;
+    d[lag] = sum;
   }
-
-  // First local peak clearing the threshold, scanning from the
-  // shortest lag upward — avoids locking onto a harmonic/subharmonic
-  // of the true fundamental (the bug documented in Dawsons' STATUS.md).
-  for (let i = 1; i < correlations.length - 1; i++) {
-    if (
-      correlations[i] >= CORRELATION_THRESHOLD &&
-      correlations[i] >= correlations[i - 1] &&
-      correlations[i] >= correlations[i + 1]
-    ) {
-      return sampleRate / refineLag(correlations, i, minLag);
+  // Cumulative mean normalised difference.
+  const cmnd = new Float32Array(maxLag + 2);
+  cmnd[0] = 1;
+  let running = 0;
+  for (let lag = 1; lag <= maxLag + 1; lag++) {
+    running += d[lag];
+    cmnd[lag] = running > 0 ? (d[lag] * lag) / running : 1;
+  }
+  let tau = -1;
+  for (let lag = minLag; lag <= maxLag; lag++) {
+    if (cmnd[lag] < YIN_THRESHOLD) {
+      while (lag + 1 <= maxLag && cmnd[lag + 1] < cmnd[lag]) lag++;
+      tau = lag;
+      break;
     }
   }
-
-  let bestIndex = 0;
-  for (let i = 1; i < correlations.length; i++) {
-    if (correlations[i] > correlations[bestIndex]) bestIndex = i;
+  if (tau < 0) {
+    let best = minLag;
+    for (let lag = minLag; lag <= maxLag; lag++) if (cmnd[lag] < cmnd[best]) best = lag;
+    if (cmnd[best] > YIN_FALLBACK) return null;
+    tau = best;
   }
-  if (correlations[bestIndex] < CORRELATION_THRESHOLD) return null;
-  return sampleRate / (minLag + bestIndex);
+  // Parabolic interpolation around the dip.
+  let t = tau;
+  if (tau > 1 && tau < maxLag + 1) {
+    const y0 = cmnd[tau - 1];
+    const y1 = cmnd[tau];
+    const y2 = cmnd[tau + 1];
+    const denom = y0 - 2 * y1 + y2;
+    if (Math.abs(denom) > 1e-12) t = tau + (0.5 * (y0 - y2)) / denom;
+  }
+  return sampleRate / t;
 }
 
-function refineLag(correlations, index, minLag) {
-  if (index <= 0 || index + 1 >= correlations.length) return minLag + index;
-  const y0 = correlations[index - 1];
-  const y1 = correlations[index];
-  const y2 = correlations[index + 1];
-  const denom = 2 * (2 * y1 - y2 - y0);
-  if (Math.abs(denom) < 1e-9) return minLag + index;
-  return minLag + index + (y2 - y0) / denom;
+// Microphone with the phone's voice processing switched OFF: echo
+// cancellation, noise suppression and auto gain are made for speech and
+// treat a held guitar note as "noise" to remove, which is a big reason
+// the tuner never settled on a real guitar.
+const MIC_CONSTRAINTS = { audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 } };
+
+function micUnavailableReason() {
+  if (typeof window !== "undefined" && window.isSecureContext === false) return "the page isn't secure (it needs https)";
+  if (typeof navigator === "undefined" || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return "this browser can't use the microphone";
+  return null;
+}
+
+// Asks for the microphone. In the iOS app the sound plays in "playback"
+// mode (so it's heard with the ringer switch on silent), and iOS refuses
+// the microphone in that mode; listening needs "play and record", which
+// still plays out loud. Switch first, give WebKit a moment to apply it,
+// and retry once (the first request can fail while the switch happens).
+async function openMicStream() {
+  const reason = micUnavailableReason();
+  if (reason) throw new Error(reason);
+  try { if (navigator.audioSession) navigator.audioSession.type = "play-and-record"; } catch (e) { /* older Safari */ }
+  const ask = async (c) => {
+    try { return await navigator.mediaDevices.getUserMedia(c); } catch (e) {
+      // Some devices reject the processing switches; plain audio still works.
+      if (e && (e.name === "OverconstrainedError" || e.name === "TypeError")) return navigator.mediaDevices.getUserMedia({ audio: true });
+      throw e;
+    }
+  };
+  try {
+    return await ask(MIC_CONSTRAINTS);
+  } catch (e) {
+    if (e && (e.name === "NotAllowedError" || e.name === "SecurityError")) throw e;
+    await new Promise((r) => setTimeout(r, 250));
+    return ask(MIC_CONSTRAINTS);
+  }
+}
+
+function friendlyMicError(err) {
+  const n = err && err.name;
+  if (n === "NotAllowedError" || n === "SecurityError") return "the microphone permission is turned off (allow it in Settings, then try again)";
+  if (n === "NotFoundError") return "no microphone was found";
+  if (n === "NotReadableError") return "another app is using the microphone";
+  return (err && err.message) || "unknown error";
 }
 
 // --- Live wrapper for live listening -----
 
 // Wraps getUserMedia + an AnalyserNode and calls `onPitch({freq, midi,
-// note, cents})` repeatedly while listening, or `onPitch(null)` when no
-// confident pitch is present in the current frame. Returns a `stop()`
-// function to release the mic.
-async function startLivePitchDetection(onPitch, { fftSize = 2048 } = {}) {
-  // The sound is set to "playback" (so it plays with the ringer on silent),
-  // and iOS refuses the microphone in that mode. Listening needs "play and
-  // record", which still plays out loud.
-  try { if (navigator.audioSession) navigator.audioSession.type = "play-and-record"; } catch (e) { /* older Safari */ }
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+// noteMidi, cents})` about 30 times a second while listening, or
+// `onPitch(null)` when no confident pitch is present. Readings are
+// smoothed with a median of the last 5 frames (one stray octave or
+// pick-noise frame can't flick the result). Returns `stop()`.
+async function startLivePitchDetection(onPitch, { fftSize = 4096 } = {}) {
+  const stream = await openMicStream();
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  // Item 56: created after the permission prompt, i.e. outside the tap
-  // that started this — WebKit (Safari / the iOS app) can then hand
-  // back a suspended context whose analyser only ever reads silence.
+  // Created after the permission prompt, i.e. outside the tap that started
+  // this: WebKit can hand back a suspended context that only reads silence.
   if (audioCtx.state === "suspended") await audioCtx.resume().catch(() => {});
   const source = audioCtx.createMediaStreamSource(stream);
   const analyser = audioCtx.createAnalyser();
@@ -106,25 +149,33 @@ async function startLivePitchDetection(onPitch, { fftSize = 2048 } = {}) {
 
   const buffer = new Float32Array(analyser.fftSize);
   let running = true;
+  const recent = [];
+  let misses = 0;
 
   function tick() {
     if (!running) return;
     analyser.getFloatTimeDomainData(buffer);
     const freq = detectPitchInFrame(buffer, audioCtx.sampleRate);
     if (freq) {
-      const midi = midiFromFreq(freq);
+      misses = 0;
+      recent.push(midiFromFreq(freq));
+      if (recent.length > 5) recent.shift();
+      const sorted = [...recent].sort((x, y) => x - y);
+      const midi = sorted[Math.floor(sorted.length / 2)];
       const rounded = Math.round(midi);
       const cents = Math.round((midi - rounded) * 100);
-      onPitch({ freq, midi, noteMidi: rounded, cents });
+      onPitch({ freq: freqFromMidi(midi), midi, noteMidi: rounded, cents });
     } else {
+      if (++misses >= 2) recent.length = 0;
       onPitch(null);
     }
-    requestAnimationFrame(tick);
   }
+  const timer = setInterval(tick, 33);
   tick();
 
   return function stop() {
     running = false;
+    clearInterval(timer);
     stream.getTracks().forEach((t) => t.stop());
     try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) { /* older Safari */ }
     source.disconnect();
@@ -195,7 +246,7 @@ function createTunerWidget(container, targetMidi, { label = "Tune this note", on
     root.classList.remove("hk-tuner-matched");
     display.style.display = "flex";
     toggleBtn.textContent = "Stop listening";
-    readout.textContent = `Listening — play ${name} on your guitar.`;
+    readout.textContent = `Listening - play ${name} on your guitar.`;
     needle.style.transform = "translateX(-50%) rotate(0deg)";
     needle.className = "hk-tuner-needle";
     try {
@@ -211,10 +262,16 @@ function createTunerWidget(container, targetMidi, { label = "Tune this note", on
           inTuneSince = null;
           if (!matched) {
             heard.innerHTML = "&nbsp;";
-            readout.textContent = `Listening — play ${name} on your guitar.`;
+            readout.textContent = `Listening - play ${name} on your guitar.`;
           }
           return;
         }
+        // A guitar string can't be an octave out of tune: a reading 1 or 2
+        // octaves off (the mic catching an overtone) is the right string.
+        let midiHeard = result.midi;
+        const oct = Math.round((midiHeard - targetMidi) / 12);
+        if (oct !== 0 && Math.abs(midiHeard - targetMidi - 12 * oct) < 1.5) midiHeard -= 12 * oct;
+        result = { ...result, midi: midiHeard, noteMidi: Math.round(midiHeard), cents: Math.round((midiHeard - Math.round(midiHeard)) * 100) };
         const diffSemitones = result.midi - targetMidi;
         // Needle swings ±1 semitone (100 cents) either side, like a tuner.
         const clampedCents = Math.max(-100, Math.min(100, diffSemitones * 100));
@@ -232,7 +289,7 @@ function createTunerWidget(container, targetMidi, { label = "Tune this note", on
             readout.textContent = `✓ That's ${name}! (${result.freq.toFixed(1)} Hz)`;
             if (onMatch) onMatch(result);
           } else if (!matched) {
-            readout.textContent = "That's it — hold it…";
+            readout.textContent = "That's it - hold it…";
           }
           return;
         }
@@ -240,18 +297,18 @@ function createTunerWidget(container, targetMidi, { label = "Tune this note", on
         if (matched) return; // stay green; the needle keeps moving for info
         needle.className = "hk-tuner-needle hk-tuner-off";
         if (Math.abs(keysAway) === 12 || Math.abs(keysAway) === 24) {
-          readout.textContent = `Right note name, wrong octave (${Math.abs(keysAway) / 12} octave${Math.abs(keysAway) === 24 ? "s" : ""} too ${keysAway > 0 ? "high" : "low"}) — check you're playing the right string.`;
+          readout.textContent = `Right note name, wrong octave (${Math.abs(keysAway) / 12} octave${Math.abs(keysAway) === 24 ? "s" : ""} too ${keysAway > 0 ? "high" : "low"}) - check you're playing the right string.`;
         } else if (keysAway !== 0) {
           const n = Math.abs(keysAway);
-          readout.textContent = `${n} half-step${n === 1 ? "" : "s"} too ${keysAway > 0 ? "high — loosen the string a little" : "low — tighten the string a little"}.`;
+          readout.textContent = `${n} half-step${n === 1 ? "" : "s"} too ${keysAway > 0 ? "high - loosen the string a little" : "low - tighten the string a little"}.`;
         } else {
-          readout.textContent = `Almost — a little ${result.cents > 0 ? "sharp: loosen very slightly" : "flat: tighten very slightly"}.`;
+          readout.textContent = `Almost - a little ${result.cents > 0 ? "sharp: loosen very slightly" : "flat: tighten very slightly"}.`;
         }
       });
       if (!toggleBtn.isConnected || !display.isConnected) stop();
       else stopListening = stop;
     } catch (err) {
-      readout.textContent = `Microphone access failed (${err.message}).`;
+      readout.textContent = `Microphone access failed: ${friendlyMicError(err)}.`;
       toggleBtn.textContent = label;
     }
   }
@@ -286,6 +343,8 @@ function createTunerWidget(container, targetMidi, { label = "Tune this note", on
 
 export {
   detectPitchInFrame,
+  openMicStream,
+  friendlyMicError,
   startLivePitchDetection,
   midiFromFreq,
   freqFromMidi,

@@ -1,7 +1,8 @@
 // Falling-notes view for guitar: notes drop onto the fretboard below, in
 // the column of the fret to play. Each fret column has six thin lanes, one
 // per string, colored like that string on the fretboard, so chords and
-// notes on different strings at the same fret never overlap. A note's
+// notes on different strings at the same fret never overlap. Lanes run
+// thickest (low E, the top string on the fretboard) to thinnest, left to right. A note's
 // block is as long as the note; it lands on the hit line (the top of the
 // fretboard) exactly when it should be played.
 
@@ -39,7 +40,7 @@ function renderFretHighway(container, fb, { lookaheadSec = 2.4 } = {}) {
       if (bottom <= 0) continue;
       const colW = fb.widthFrac(n.fret) * w;
       const laneW = colW / 6;
-      const x = fb.xFrac(n.fret) * w - colW / 2 + (5 - n.string) * laneW;
+      const x = fb.xFrac(n.fret) * w - colW / 2 + n.string * laneW; // thickest (low E) lane on the left, like the strings top to bottom
       ctx.globalAlpha = n.ghost ? 0.3 : n.time <= now ? 1 : 0.88;
       ctx.fillStyle = fb.stringColor(n.string);
       ctx.fillRect(x + 1, top, Math.max(3, laneW - 2), Math.max(6 * dpr, bottom - top));

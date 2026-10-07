@@ -1,4 +1,4 @@
-import { kittenSvg } from "./kitten.js";
+import { puppySvg, nextPuppyScene } from "./puppy.js";
 import { icon } from "./icons.js";
 // Practice tab: build a chord loop, drill a scale, a metronome with tap
 // tempo, and "upload a song" — the app works out the chords from your
@@ -37,7 +37,7 @@ function renderPractice(panel) {
   const st = { chords: ["G", "D", "Em", "C"], pattern: "D·DU·UDU", bpm: 80, root: 9, scale: "minorPentatonic", pos: 5, section: "chords" };
   panel.innerHTML = `
     <div class="jg-row">
-      <div class="jg-inline-mascot">${kittenSvg("rockout")}</div>
+      <div class="jg-inline-mascot">${puppySvg("rockout")}</div>
       <button class="jg-pill jg-pill-active" data-sec="chords">${icon("guitar", 16)} Chord loop</button>
       <button class="jg-pill" data-sec="scales">${icon("song", 16)} Scales</button>
       <button class="jg-pill" data-sec="library">${icon("star", 16)} All chords</button>

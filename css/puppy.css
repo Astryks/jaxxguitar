@@ -1,0 +1,313 @@
+/* ===== Jaxx the puppy and his pickup truck (js/puppy.js) =====
+   Calm by default (breathing, blinking, ear flops, tail wag); big moves
+   play once or twice, then settle. The truck scenes loop gently. */
+.jp-puppy { display: block; width: 100%; height: 100%; overflow: visible; }
+.jp-puppy .jp-fur { fill: #e9b35f; }
+.jp-puppy .jp-cream { fill: #fff1d9; }
+.jp-puppy .jp-patch { fill: #c98a3e; opacity: 0.55; }
+.jp-puppy .jp-ear-fur { fill: #9c5b2a; }
+.jp-puppy .jp-toe { stroke: #b9823f; stroke-width: 2.6; stroke-linecap: round; fill: none; }
+.jp-puppy .jp-tail { stroke: #e9b35f; stroke-width: 16; }
+.jp-puppy .jp-eye { fill: #fff; }
+.jp-puppy .jp-pupil { fill: #2a2a3a; }
+.jp-puppy .jp-line { fill: none; stroke: #2a2a3a; stroke-width: 4.5; stroke-linecap: round; }
+.jp-puppy .jp-thin { stroke-width: 3; }
+.jp-puppy .jp-nose { fill: #2a2a3a; }
+.jp-puppy .jp-tongue { fill: #f27a93; }
+.jp-puppy .jp-cheek { fill: #f7a1bf; opacity: 0.45; }
+.jp-puppy .jp-bandana path { fill: #e04848; }
+.jp-puppy .jp-gbody { fill: #8a5a33; }
+.jp-puppy .jp-gtop { fill: #f0c27b; }
+.jp-puppy .jp-hole { fill: #3a2614; }
+.jp-puppy .jp-neck { fill: #6b3f1f; }
+.jp-puppy .jp-head-stock, .jp-puppy .jp-bridge { fill: #4a2b14; }
+.jp-puppy .jp-gstrings { stroke: #fff6e0; stroke-width: 1; }
+.jp-puppy .jp-sweat { fill: #8fd0f5; }
+.jp-puppy .jp-sparkles path { fill: #f5c542; }
+.jp-puppy .jp-notes text, .jp-puppy .jp-zzz text { font: 800 22px system-ui, sans-serif; fill: #2f8f83; }
+.jp-puppy .jp-zzz text { fill: #4a9bc9; font-size: 18px; }
+.jp-puppy .jp-shout { font: 900 19px system-ui, sans-serif; fill: #c46a1f; }
+.jp-puppy .jp-ugh { fill: #8a8399; font-size: 16px; }
+/* The truck */
+.jp-puppy .jp-paint { fill: #e5484d; }
+.jp-puppy .jp-trim { fill: #b8343a; }
+.jp-puppy .jp-window { fill: #bfe6f7; }
+.jp-puppy .jp-puffs circle { fill: #dfe3e8; opacity: 0; }
+.jp-puppy .jp-road, .jp-puppy .jp-dash { stroke: #c9b79a; stroke-width: 4; stroke-linecap: round; }
+.jp-puppy .jp-dash { stroke-dasharray: 26 18; }
+
+.jp-puppy g, .jp-puppy text { transform-box: fill-box; }
+.jp-puppy .jp-arm-l { transform-box: view-box; transform-origin: 57px 142px; }
+.jp-puppy .jp-arm-r { transform-box: view-box; transform-origin: 143px 142px; }
+.jp-puppy .jp-head { transform-box: view-box; transform-origin: 100px 150px; }
+.jp-puppy .jp-tail { transform-box: view-box; transform-origin: 142px 190px; }
+.jp-puppy .jp-ear-l { transform-origin: 70% 5%; }
+.jp-puppy .jp-ear-r { transform-origin: 30% 5%; }
+.jp-puppy .jp-all, .jp-puppy .jp-live { transform-box: view-box; transform-origin: 100px 214px; }
+.jp-puppy .jp-eyes, .jp-puppy .jp-shout { transform-origin: 50% 50%; }
+.jp-puppy .jp-guitar { transform-box: view-box; transform-origin: 100px 170px; }
+/* Truck scenes: where the pup sits (in the bed, or at the wheel). */
+.jp-scene .jp-actor { transform-box: view-box; transform-origin: 0 0; transform: translate(152px, 28px) scale(0.55); }
+.jp-scene .jp-actor.jp-at-wheel { transform: translate(62px, 50px) scale(0.42); }
+.jp-scene .jp-inner { transform-origin: 50% 50%; }
+.jp-scene .jp-show-sparkles { opacity: 0; }
+
+/* Resting poses */
+.jp-cheer .jp-arm-l, .jp-jump .jp-arm-l { transform: rotate(150deg); } .jp-cheer .jp-arm-r, .jp-jump .jp-arm-r { transform: rotate(-150deg); }
+.jp-think .jp-head { transform: rotate(-7deg); }
+.jp-oops .jp-arm-l { transform: rotate(30deg); }
+.jp-spin .jp-arm-l { transform: rotate(90deg); } .jp-spin .jp-arm-r { transform: rotate(-90deg); }
+.jp-yarn .jp-arm-r { transform: rotate(-40deg); }
+.jp-fish .jp-arm-l { transform: rotate(-35deg); } .jp-fish .jp-arm-r { transform: rotate(35deg); }
+.jp-tangled .jp-arm-l { transform: rotate(40deg); } .jp-tangled .jp-arm-r { transform: rotate(-40deg); }
+.jp-drive .jp-arm-l { transform: rotate(-60deg); } .jp-drive .jp-arm-r { transform: rotate(60deg); }
+.jp-rockout .jp-guitar { transform: rotate(-18deg) translateY(-6px); }
+.jp-puppy .jp-shout:not(.jp-ugh) { opacity: 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .jp-puppy .jp-live { animation: jp-breathe 3.6s ease-in-out infinite; }
+  .jp-puppy .jp-eyes { animation: jp-blink 5s infinite; }
+  .jp-puppy .jp-look { animation: jp-glance 8s ease-in-out infinite; }
+  .jp-puppy .jp-tail { animation: jp-wag 0.5s ease-in-out infinite alternate; }
+  .jp-puppy .jp-ear-l { animation: jp-flop-l 4.5s ease-in-out infinite; }
+  .jp-puppy .jp-ear-r { animation: jp-flop-r 4.5s ease-in-out 0.3s infinite; }
+  .jp-puppy .jp-tongue { animation: jp-pant 0.6s ease-in-out infinite alternate; transform-origin: 50% 0; }
+  .jp-wave .jp-arm-r { animation: jp-wave 2.2s ease-in-out 1; }
+  .jp-play .jp-strum-paw, .jp-scene .jp-strum-paw { animation: jp-strum 0.42s ease-in-out infinite; }
+  .jp-play .jp-notes text, .jp-sing .jp-notes text, .jp-rockout .jp-notes text, .jp-truck .jp-notes text { animation: jp-float 1.8s ease-out infinite; }
+  .jp-puppy .jp-notes text:nth-child(2) { animation-delay: 0.9s; }
+  .jp-sleep .jp-zzz text { animation: jp-float 2.4s ease-out infinite; }
+  .jp-sleep .jp-zzz text:nth-child(2) { animation-delay: 0.8s; } .jp-sleep .jp-zzz text:nth-child(3) { animation-delay: 1.6s; }
+  .jp-sleep .jp-tail, .jp-sleep .jp-tongue { animation: none; }
+  .jp-oops .jp-all { animation: jp-shake 0.5s ease-in-out 2; }
+  .jp-puppy .jp-sweat { animation: jp-drip 1.4s ease-in 3 forwards; }
+  .jp-cheer .jp-all, .jp-spin .jp-all { animation: jp-spin 0.75s cubic-bezier(.3,.7,.4,1) 1; }
+  .jp-cheer .jp-sparkles, .jp-jump .jp-sparkles { animation: jp-sparkle 1.4s ease-out 1 forwards; }
+  .jp-jump .jp-all { animation: jp-leap 0.9s cubic-bezier(.3,.7,.4,1) 2; }
+  .jp-rockout .jp-all { animation: jp-headbang 0.4s ease-in-out 6; }
+  .jp-rockout .jp-shout, .jp-fish .jp-shout { animation: jp-pop 1.6s ease-out 1 forwards; }
+  .jp-yarn .jp-ball { animation: jp-bounce 0.6s ease-in-out infinite alternate; }
+  .jp-fish .jp-head { animation: jp-chomp 0.35s ease-in-out 4; }
+  .jp-tangled .jp-all { animation: jp-wobble 1.2s ease-in-out 2; }
+
+  /* In the truck bed: strumming while the truck idles and puffs. */
+  .jp-truck .jp-truck, .jp-show .jp-truck { animation: jp-idle 0.5s ease-in-out infinite alternate; }
+  .jp-scene .jp-puffs circle { animation: jp-puff 1.6s ease-out infinite; }
+  .jp-scene .jp-puffs circle:nth-child(2) { animation-delay: 0.5s; } .jp-scene .jp-puffs circle:nth-child(3) { animation-delay: 1s; }
+
+  /* Driving: wheels turn, the road rolls by, the truck bobs. */
+  .jp-drive .jp-spokes { animation: jp-roll 0.5s linear infinite; }
+  .jp-drive .jp-dash { animation: jp-road 0.5s linear infinite; }
+  .jp-drive .jp-driving { animation: jp-idle 0.3s ease-in-out infinite alternate; }
+
+  /* The show (12 s loop): hops out of the truck, lands, spins, bounces the
+     ball, plays guitar on the ground, hops back in and strums in the bed. */
+  .jp-show .jp-actor { animation: jp-hop-out-in 12s ease-in-out infinite; }
+  .jp-show .jp-inner { animation: jp-tricks 12s ease-in-out infinite; }
+  .jp-show .jp-show-ball { animation: jp-ball 12s ease-in-out infinite; }
+  .jp-show .jp-show-sparkles { animation: jp-show-sparkle 12s ease-out infinite; }
+  .jp-show .jp-notes text { animation: jp-show-notes 12s ease-out infinite; }
+}
+
+@keyframes jp-breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.02, 0.985); } }
+@keyframes jp-blink { 0%, 46%, 50%, 100% { transform: scaleY(1); } 48% { transform: scaleY(0.1); } }
+@keyframes jp-glance { 0%, 30%, 100% { transform: translateX(0); } 40%, 55% { transform: translateX(-3px); } 65%, 80% { transform: translateX(3px); } }
+@keyframes jp-wag { from { transform: rotate(-14deg); } to { transform: rotate(16deg); } }
+@keyframes jp-flop-l { 0%, 70%, 100% { transform: rotate(0); } 78% { transform: rotate(10deg); } 86% { transform: rotate(-4deg); } }
+@keyframes jp-flop-r { 0%, 70%, 100% { transform: rotate(0); } 78% { transform: rotate(-10deg); } 86% { transform: rotate(4deg); } }
+@keyframes jp-pant { from { transform: scaleY(1); } to { transform: scaleY(1.18); } }
+@keyframes jp-wave { 0%, 100% { transform: rotate(0); } 20%, 60% { transform: rotate(-150deg); } 40%, 80% { transform: rotate(-120deg); } }
+@keyframes jp-strum { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-4px, 10px); } }
+@keyframes jp-float { 0% { opacity: 0; transform: translateY(8px); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(-26px); } }
+@keyframes jp-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px) rotate(-3deg); } 75% { transform: translateX(6px) rotate(3deg); } }
+@keyframes jp-drip { 0% { opacity: 0; transform: translateY(-6px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }
+@keyframes jp-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+@keyframes jp-sparkle { 0% { opacity: 0; transform: scale(0.4); } 40% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0; transform: scale(1); } }
+@keyframes jp-leap { 0%, 100% { transform: translateY(0) scale(1, 1); } 15% { transform: translateY(4px) scale(1.06, 0.92); } 50% { transform: translateY(-34px) scale(0.97, 1.04); } 85% { transform: translateY(2px) scale(1.04, 0.95); } }
+@keyframes jp-headbang { 0%, 100% { transform: rotate(0) translateY(0); } 50% { transform: rotate(-5deg) translateY(-10px); } }
+@keyframes jp-pop { 0% { opacity: 0; transform: scale(0.4); } 25% { opacity: 1; transform: scale(1.15); } 80% { opacity: 1; transform: scale(1); } 100% { opacity: 0; } }
+@keyframes jp-bounce { from { transform: translateY(0); } to { transform: translateY(-26px); } }
+@keyframes jp-chomp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px) rotate(2deg); } }
+@keyframes jp-wobble { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
+@keyframes jp-idle { from { transform: translateY(0); } to { transform: translateY(1.5px); } }
+@keyframes jp-puff { 0% { opacity: 0; transform: translate(0, 0) scale(0.5); } 30% { opacity: 0.9; } 100% { opacity: 0; transform: translate(26px, -16px) scale(1.4); } }
+@keyframes jp-roll { to { transform: rotate(360deg); } }
+@keyframes jp-road { to { stroke-dashoffset: 44; } }
+@keyframes jp-hop-out-in {
+  0%, 16% { transform: translate(152px, 28px) scale(0.55); }
+  22% { transform: translate(222px, -36px) scale(0.55); }
+  28% { transform: translate(284px, 104px) scale(0.55); }
+  30% { transform: translate(284px, 112px) scale(0.6, 0.5); }
+  33%, 72% { transform: translate(284px, 104px) scale(0.55); }
+  74% { transform: translate(284px, 110px) scale(0.6, 0.5); }
+  80% { transform: translate(222px, -36px) scale(0.55); }
+  86% { transform: translate(152px, 28px) scale(0.55); }
+  88% { transform: translate(152px, 34px) scale(0.6, 0.5); }
+  90%, 100% { transform: translate(152px, 28px) scale(0.55); }
+}
+@keyframes jp-tricks {
+  0%, 36% { transform: rotate(0) translateY(0); }
+  44% { transform: rotate(360deg) translateY(0); }
+  45%, 48% { transform: rotate(360deg) translateY(0); }
+  51% { transform: rotate(360deg) translateY(-40px); }
+  54%, 100% { transform: rotate(360deg) translateY(0); }
+}
+@keyframes jp-ball {
+  0%, 46% { transform: translate(0, 0); }
+  50% { transform: translate(-8px, -60px); }
+  54% { transform: translate(-14px, 0); }
+  58% { transform: translate(-18px, -22px); }
+  62%, 90% { transform: translate(-20px, 0); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes jp-show-sparkle { 0%, 28% { opacity: 0; transform: scale(0.4); } 32% { opacity: 1; transform: scale(1.1); } 38%, 100% { opacity: 0; transform: scale(1); } }
+@keyframes jp-show-notes { 0%, 4% { opacity: 0; transform: translateY(8px); } 9% { opacity: 1; } 15% { opacity: 0; transform: translateY(-26px); } 56% { opacity: 0; transform: translateY(8px); } 61% { opacity: 1; } 68%, 100% { opacity: 0; transform: translateY(-26px); } }
+
+/* Header logo: the pup in his truck. */
+.jg-logo .jp-scene { width: 100%; height: 100%; }
+
+/* ===== Depth and cute details ===== */
+.jp-puppy .jp-fur { fill: url(#jp-gr-fur); stroke: #c58a3e; stroke-width: 1.4; }
+.jp-puppy .jp-cream { fill: url(#jp-gr-cream); }
+.jp-puppy .jp-ear-fur { fill: url(#jp-gr-ear); stroke: #6b3a18; stroke-width: 1.2; }
+.jp-puppy .jp-paint { fill: url(#jp-gr-paint); }
+.jp-puppy .jp-window { fill: url(#jp-gr-glass); }
+.jp-puppy .jp-shadow { fill: #3a2414; opacity: 0.14; }
+.jp-puppy .jp-fluff { fill: none; stroke: #fff; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.jp-puppy .jp-bean { fill: #f4a6b8; }
+.jp-puppy .jp-tuft { fill: none; stroke: #c58a3e; stroke-width: 2.5; stroke-linecap: round; }
+.jp-puppy .jp-eye { stroke: #2a2a3a; stroke-width: 1; }
+.jp-puppy .jp-tail { stroke: #e3a952; }
+.jp-puppy .jp-wheel > circle:first-child { stroke: #111; stroke-width: 2; }
+
+/* ===== Extra scenes ===== */
+.jp-puppy .jp-grass { stroke: #7cc47f; stroke-width: 6; stroke-linecap: round; }
+.jp-puppy .jp-splash circle, .jp-puppy .jp-flick circle { fill: #8fd0f5; opacity: 0; }
+.jp-puppy .jp-cloud ellipse { fill: #cfd6e2; }
+.jp-puppy .jp-drop { stroke: #6fb6e6; stroke-width: 2.4; stroke-linecap: round; }
+.jp-puppy .jp-snow circle { fill: #fff; stroke: #dfe7ef; stroke-width: 0.8; }
+.jp-scene .jp-hopper { transform: translate(40px, 104px) scale(0.55); }
+.jp-scene .jp-shaker, .jp-scene .jp-center { transform: translate(145px, 98px) scale(0.6); }
+.jp-scene { overflow: hidden; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Christmas tree ride: driving along in the snow. */
+  .jp-xmas .jp-spokes { animation: jp-roll 0.5s linear infinite; }
+  .jp-xmas .jp-dash { animation: jp-road 0.5s linear infinite; }
+  .jp-xmas .jp-driving { animation: jp-idle 0.3s ease-in-out infinite alternate; }
+  .jp-xmas .jp-snow circle { animation: jp-snow 4s linear infinite; }
+  .jp-xmas .jp-snow circle:nth-child(2n) { animation-duration: 5.5s; animation-delay: -2s; }
+  .jp-xmas .jp-xtree { animation: jp-sway 0.6s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+  /* Water: hops over the stream and back, with a splash. */
+  .jp-water .jp-hopper { animation: jp-stream 5s ease-in-out infinite; }
+  .jp-water .jp-splash circle { animation: jp-splash 5s ease-out infinite; }
+  .jp-water .jp-ripple { animation: jp-ripple 1.6s ease-in-out infinite alternate; }
+  /* Rain: drops fall, he shakes his fur, water flicks off. */
+  .jp-rain .jp-drop { animation: jp-fall 0.9s linear infinite; }
+  .jp-rain .jp-inner { animation: jp-shake-fur 3s ease-in-out infinite; }
+  .jp-rain .jp-flick circle { animation: jp-flick 3s ease-out infinite; }
+  .jp-rain .jp-ear-l, .jp-rain .jp-ear-r { animation: jp-ear-shake 3s ease-in-out infinite; }
+  /* Bone jam: strumming with a bone in his mouth. */
+  .jp-bonejam .jp-strum-paw { animation: jp-strum 0.42s ease-in-out infinite; }
+  .jp-bonejam .jp-notes text { animation: jp-float 1.8s ease-out infinite; }
+  .jp-bonejam .jp-notes text:nth-child(2) { animation-delay: 0.6s; } .jp-bonejam .jp-notes text:nth-child(3) { animation-delay: 1.2s; }
+  .jp-bonejam .jp-bone-mouth { animation: jp-chomp 0.9s ease-in-out infinite; }
+}
+@keyframes jp-snow { from { transform: translateY(-20px); } to { transform: translate(-30px, 260px); } }
+@keyframes jp-sway { from { transform: rotate(-2deg); } to { transform: rotate(2deg); } }
+@keyframes jp-stream {
+  0%, 10% { transform: translate(40px, 104px) scale(0.55); }
+  14% { transform: translate(40px, 110px) scale(0.6, 0.5); }
+  30% { transform: translate(145px, 10px) scale(0.55); }
+  44% { transform: translate(258px, 104px) scale(0.55); }
+  46% { transform: translate(258px, 110px) scale(0.6, 0.5); }
+  48%, 60% { transform: translate(258px, 104px) scale(0.55); }
+  64% { transform: translate(258px, 110px) scale(0.6, 0.5); }
+  80% { transform: translate(145px, 10px) scale(0.55); }
+  94% { transform: translate(40px, 104px) scale(0.55); }
+  96% { transform: translate(40px, 110px) scale(0.6, 0.5); }
+  100% { transform: translate(40px, 104px) scale(0.55); }
+}
+@keyframes jp-splash { 0%, 28% { opacity: 0; transform: translateY(0); } 31% { opacity: 1; } 40%, 76% { opacity: 0; transform: translateY(-16px); } 79% { opacity: 1; transform: translateY(0); } 88%, 100% { opacity: 0; transform: translateY(-16px); } }
+@keyframes jp-ripple { from { transform: translateX(-4px); } to { transform: translateX(4px); } }
+@keyframes jp-fall { from { transform: translateY(-20px); } to { transform: translateY(230px); } }
+@keyframes jp-shake-fur { 0%, 40%, 100% { transform: rotate(0) scale(1); } 44% { transform: rotate(-9deg) scale(1.05); } 48% { transform: rotate(9deg) scale(1.07); } 52% { transform: rotate(-9deg) scale(1.07); } 56% { transform: rotate(9deg) scale(1.05); } 60% { transform: rotate(0) scale(1.08, 1.02); } 70% { transform: scale(1); } }
+@keyframes jp-flick { 0%, 42% { opacity: 0; transform: translate(0, 0); } 48% { opacity: 1; } 64%, 100% { opacity: 0; transform: translate(0, -20px) scale(1.4); } }
+@keyframes jp-ear-shake { 0%, 40%, 62%, 100% { transform: rotate(0); } 46% { transform: rotate(25deg); } 52% { transform: rotate(-25deg); } 58% { transform: rotate(15deg); } }
+
+/* ===== Realistic look (v2) ===== */
+.jp-puppy .jp-fur { stroke: none; }
+.jp-puppy .jp-ear-fur { stroke: none; }
+.jp-puppy .jp-chest { fill: url(#jp-gr-snout); opacity: 0.85; }
+.jp-puppy .jp-blaze { fill: #f6d9a8; opacity: 0.55; }
+.jp-puppy .jp-snout { fill: url(#jp-gr-snout); }
+.jp-puppy .jp-snout-shade { fill: none; stroke: #c8925a; stroke-width: 1.2; opacity: 0.5; }
+.jp-puppy .jp-whisker-dots circle { fill: #8a5a2a; }
+.jp-puppy .jp-nose { fill: #1d1512; }
+.jp-puppy .jp-mouth { fill: none; stroke: #4a2c1c; stroke-width: 2; stroke-linecap: round; }
+.jp-puppy .jp-tongue { fill: #e9798f; }
+.jp-puppy .jp-eye { fill: #fffaf2; stroke: #3a2010; stroke-width: 1.4; }
+.jp-puppy .jp-lid { fill: none; stroke: #2a160a; stroke-width: 2.2; stroke-linecap: round; }
+.jp-puppy .jp-brow { fill: none; stroke: #b7782f; stroke-width: 3; stroke-linecap: round; opacity: 0.7; }
+.jp-puppy .jp-ear-lines, .jp-puppy .jp-feather { fill: none; stroke: #8d5420; stroke-width: 1.3; opacity: 0.55; stroke-linecap: round; }
+.jp-puppy .jp-tail { stroke: #d39a52; stroke-width: 14; }
+.jp-puppy .jp-tail-feather { stroke: #f0cf98; stroke-width: 4; stroke-linecap: round; opacity: 0.7; }
+.jp-puppy .jp-ao { fill: url(#jp-gr-ao); }
+.jp-puppy .jp-rim { fill: none; stroke: #fff; stroke-width: 2.4; opacity: 0.35; stroke-linecap: round; }
+.jp-puppy .jp-toe { stroke: #9c6a30; stroke-width: 1.6; }
+.jp-puppy .jp-fluff { stroke: #fff6e6; stroke-width: 2; opacity: 0.8; }
+.jp-puppy .jp-patch, .jp-puppy .jp-cheek, .jp-puppy .jp-bean, .jp-puppy .jp-tuft { display: none; }
+.jp-puppy .jp-ear-l { transform-origin: 70% 4%; } .jp-puppy .jp-ear-r { transform-origin: 30% 4%; }
+
+/* ===== Play once, then wait for the next move =====
+   Big actions run once and stop where they end; what keeps going is quiet
+   and natural: breathing, blinks, glances, ear flicks, a slow tail wag,
+   a curious head tilt and a sniff now and then. No waving. */
+@media (prefers-reduced-motion: no-preference) {
+  .jp-show .jp-actor, .jp-show .jp-inner, .jp-show .jp-show-ball, .jp-show .jp-show-sparkles, .jp-show .jp-notes text,
+  .jp-water .jp-hopper, .jp-water .jp-splash circle, .jp-rain .jp-inner, .jp-rain .jp-flick circle, .jp-rain .jp-ear-l, .jp-rain .jp-ear-r {
+    animation-iteration-count: 1 !important; animation-fill-mode: forwards !important;
+  }
+  .jp-rain .jp-drop { animation-iteration-count: 6; }
+  .jp-puppy .jp-tail { animation: jp-wag-slow 1.6s ease-in-out infinite; }
+  .jp-puppy .jp-head { animation: jp-wait-head 9s ease-in-out 3s infinite; }
+  .jp-puppy .jp-nose { animation: jp-sniff 9s ease-in-out 5s infinite; transform-box: fill-box; transform-origin: 50% 50%; }
+  .jp-wave .jp-arm-r { animation: none; }
+  .jp-wave .jp-head { animation: jp-tilt 2.4s ease-in-out 1, jp-wait-head 9s ease-in-out 3s infinite; }
+}
+@keyframes jp-wag-slow { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(10deg); } }
+@keyframes jp-wait-head { 0%, 70%, 100% { transform: rotate(0); } 76%, 86% { transform: rotate(-9deg); } 92% { transform: rotate(3deg); } }
+@keyframes jp-tilt { 0%, 100% { transform: rotate(0); } 30%, 70% { transform: rotate(-12deg); } }
+@keyframes jp-sniff { 0%, 80%, 100% { transform: scale(1); } 83%, 89% { transform: scale(1.08, 0.94); } 86%, 92% { transform: scale(1); } }
+
+/* ===== v3: smaller pup in the bigger, realistic truck ===== */
+.jp-scene .jp-actor { transform: translate(231px, 67px) scale(0.36); }
+.jp-scene .jp-actor.jp-at-wheel { transform: translate(130px, 77px) scale(0.3); }
+.jp-scene .jp-hopper { transform: translate(40px, 104px) scale(0.55); }
+.jp-scene .jp-shaker, .jp-scene .jp-center { transform: translate(145px, 98px) scale(0.6); }
+.jp-puppy .jp-spoke { stroke: #7d8894; stroke-width: 3.2; stroke-linecap: round; }
+.jp-puppy .jp-paint { fill: url(#jp-gr-paint); }
+.jp-puppy .jp-window { fill: url(#jp-gr-glass); }
+@keyframes jp-hop-out-in {
+  0%, 16% { transform: translate(231px, 67px) scale(0.36); }
+  22% { transform: translate(290px, 6px) scale(0.36); }
+  28% { transform: translate(328px, 145px) scale(0.36); }
+  30% { transform: translate(328px, 150px) scale(0.4, 0.32); }
+  33%, 72% { transform: translate(328px, 145px) scale(0.36); }
+  74% { transform: translate(328px, 150px) scale(0.4, 0.32); }
+  80% { transform: translate(290px, 6px) scale(0.36); }
+  86% { transform: translate(231px, 67px) scale(0.36); }
+  88% { transform: translate(231px, 71px) scale(0.4, 0.32); }
+  90%, 100% { transform: translate(231px, 67px) scale(0.36); }
+}
+.jp-puppy .jp-brow { opacity: 0.4; stroke-width: 2.4; } .jp-puppy .jp-eye { stroke-width: 1; }
+
+/* ===== Beagle coat ===== */
+.jp-puppy .jp-white { fill: url(#jp-gr-white); }
+.jp-puppy .jp-black { fill: url(#jp-gr-black); }
+.jp-puppy .jp-tail { stroke: #b3712f; stroke-width: 13; }
+.jp-puppy .jp-tail-tip { stroke: #faf6f0; stroke-width: 12; }
+.jp-puppy .jp-strands { stroke: #f1d4ac; stroke-width: 1.1; opacity: 0.5; fill: none; stroke-linecap: round; }
+.jp-puppy .jp-ear-lines { stroke: #4a2810; opacity: 0.45; }
+.jp-puppy .jp-chest, .jp-puppy .jp-blaze, .jp-puppy .jp-snout { display: none; }
+.jp-puppy .jp-toe { stroke: #b9ab98; }

@@ -1,4 +1,4 @@
-import { kittenSvg } from "./kitten.js";
+import { puppySvg, nextPuppyScene } from "./puppy.js";
 import { icon } from "./icons.js";
 // Jaxx Guitar entry point: tabs, the level chip, toasts and confetti.
 
@@ -11,6 +11,7 @@ import { renderHow } from "./how-it-works.js";
 import { getLevel } from "./storage.js";
 import { disableMic } from "./input-hub.js";
 import { maybeShowFunFact, showFunFact } from "./fun-facts.js";
+import { showIntro } from "./intro.js";
 
 const panels = {
   lessons: document.getElementById("panel-lessons"),
@@ -32,8 +33,9 @@ function leave() {
   disableMic();
 }
 
-const logo = document.getElementById("jg-logo-kitten");
-if (logo) logo.innerHTML = kittenSvg("idle", { label: "Jaxx Guitar" });
+// The logo: Jaxx the puppy in his pickup truck (js/puppy.js).
+const logo = document.getElementById("jg-logo-puppy");
+if (logo) logo.innerHTML = puppySvg("truck", { label: "Jaxx Guitar" });
 // Big home tiles: each tab gets one of our own icons.
 const TAB_ICONS = { lessons: "guitar", songs: "song", practice: "play", tuner: "tuner" };
 document.querySelectorAll(".jg-tab[data-tab]").forEach((b) => {
@@ -50,7 +52,7 @@ function show(tab) {
   if (tab === "songs") renderSongs(el);
   if (tab === "practice") renderPractice(el);
   if (tab === "tuner") {
-    el.innerHTML = `<div class="jg-card"><div class="jg-hero-mascot">${kittenSvg("tangled")}</div><h2 style="margin:4px 0">Tune your guitar</h2>
+    el.innerHTML = `<div class="jg-card"><div class="jg-hero-mascot">${puppySvg("tangled")}</div><h2 style="margin:4px 0">Tune your guitar</h2>
       <p>Standard tuning, thickest to thinnest: <strong>E A D G B E</strong>. Pick a string, tap <em>Start listening</em> and play it — turn the peg until the meter goes green. It moves on to the next string by itself.</p>
       <div class="jg-tuner-host"></div></div>`;
     tunerWidget = renderStringTuner(el.querySelector(".jg-tuner-host"));
@@ -119,6 +121,10 @@ document.addEventListener("click", (e) => {
 });
 
 drawLevel();
+// Splash first (just Jaxx), then the home screen underneath.
+let started = false;
+try { started = Object.keys(localStorage).some((k) => k.startsWith("jg_")); } catch (e) { /* ignore */ }
+showIntro({ started });
 let startTab = "lessons";
 try { startTab = localStorage.getItem("jg_tab") || "lessons"; } catch (e) { /* ignore */ }
 show(panels[startTab] ? startTab : "lessons");

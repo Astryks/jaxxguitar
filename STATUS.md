@@ -12,7 +12,7 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 
 **What's done (full history below):** pre-lessons (get a guitar → electric gear → tune it with the string tuner), Lesson 1 / Strumming / Changing chords as simple kitten cards, all the curriculum in the table below, animated orange kitten Jaxx with his guitar, falling-notes fretboard with Listen / Wait for me / Play in time, upload a song → chords, Guess the song (ShazamKit), Netflix-style song library (270 songs, incl. a new **Metal** row and International / Karaoke anthems) with album art, Main part / Whole song and the official YouTube video, How it works page, Astryks credit, App Store screenshots and listing text.
 
-**Latest build:** 18 (see bottom). **Not submitted to App Review yet.**
+**Latest build:** 18 uploaded; build 19 is ready to archive (see the 2026-10-07 late section at the bottom: re-checked songs, solo cards, the beagle and music scenes). **Not submitted to App Review yet.**
 
 ### Next steps (in order)
 1. **TestFlight:** check the latest build appears in App Store Connect → TestFlight (processing takes 5–30 min; Apple emails if a build fails processing). Add it to the internal tester group and install on the phone.
@@ -209,58 +209,77 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
 6. **Guitar solos:** add "Solo" cards (the scale and fret position each solo uses, plus original practice licks; no copied lead lines) for the top guitar songs: Metallica, Stairway, Sweet Child O' Mine, Comfortably Numb and others.
 7. Play-along isn't synced to the YouTube video timing (the chords play at the app's tempo). Possible future feature.
 
-## 📝 Owner feedback on Jaxx lessons (2026-10-07), to do when we have credits
-Not started. Notes only; nothing changed yet.
+## 📝 Owner feedback on Jaxx lessons (2026-10-07)
+Done 2026-10-07 (not yet in a TestFlight build). Tested in headless Chrome: every lesson clicked through card by card / page by page with 0 page errors, at desktop and 375px phone width.
 
 **Home**
-- [ ] Show just the cat first (a splash), then the home screen, like Hayden Keys.
+- [x] Show just the cat first (a splash), then the home screen, like Hayden Keys. New `js/intro.js`: Jaxx, the name and one button (tap anywhere also closes it), shown each time the app opens.
 
 **Tuning**
-- [ ] Draw a guitar's strings/headstock in the tuner so users can see which string is E A D G B e.
-- [ ] Tuning radar never matches the owner's real guitar. Check the pitch detection (frequencies E2 82.4, A2 110, D3 146.8, G3 196, B3 246.9, E4 329.6 Hz; octave errors; mic sample rate; play-and-record session).
+- [x] Draw a guitar's strings/headstock in the tuner. `headstockSvg()` in new `js/guitar-art.js`: 3+3 pegs labelled E A D G B e, strings running to the nut (low E on top), the string being tuned glows and goes green when in tune; tap a peg to pick it and hear it.
+- [x] Tuning radar never matches a real guitar. `js/pitch.js` rewritten: YIN instead of "first autocorrelation peak" (the old one read the low E an octave up whenever the 2nd harmonic was strong), the phone's voice processing switched off (echo cancellation, noise suppression and auto gain treat a held note as noise), a lower input gate, median smoothing over 5 frames, ~30 readings a second, sample rate always from the audio context, and the tuner treats a reading 1-2 octaves off as the right string. Test: `npm run test:pitch` (Karplus-Strong plucks and a "phone mic" signal with a weak fundamental and a strong 2nd harmonic, at 44.1 and 48 kHz, -20..+20 cents): 99% of frames within 10 cents, 0 octave errors (the old detector: 47%, 182 octave errors). ⬜ Still to check on a real phone.
 
-**Lesson 1: fretboard pictures (card 3/11 etc.)**
-- [ ] Fretboard is upside down. For a right-handed player looking down, the thickest low E (nearest the chin) should be on **top** and the thin high e on the bottom. Fix every fretboard/chord picture.
-- [ ] Show the whole guitar (or its end/body) so users see how to hold it. Say it's drawn right-handed (left hand on frets, right hand strums) but hold it however is comfortable.
-- [ ] The "fret 1" label appears on top; put fret numbers along the bottom so the flow is smooth.
+**Lesson 1: fretboard pictures**
+- [x] Fretboard flipped everywhere: low E on top, high e at the bottom (`js/fretboard.js` fretboard and chord diagrams, so lessons, cards, Songs, Practice, daily review and the tuner pictures all follow; highway lanes in `fret-highway.js` go thickest to thinnest). Lesson text that said "like tab / thin string on top" updated (tab itself stays standard notation, with a note).
+- [x] Whole guitar picture (`guitarSvg()`): new card 3 in Lesson 1, "drawn for right-handed players… hold it however feels comfortable", plus a left-handed tip.
+- [x] Fret numbers along the bottom, bigger; the card highlights frets 1-3 instead of putting "1 2 3" dots on a string.
 
-**Lesson 1: card 4/11**
-- [ ] Wording: strings are named by letters (E A D G B e); frets have numbers. Fix "strings have numbers" (string numbers 6→1 can be a side note).
-- [ ] Card counter: show the progress across the whole course (e.g. 4/185, the total number of cards), not 4/11, so it feels like a game to finish. On the lessons list, show the card number where each lesson starts (e.g. 17/185).
-- [ ] "Microphone isn't available" still shows on cards. Fix it (check cards.js enableMic and the play-and-record audio session in the iOS app; test on a real phone).
+**Lesson 1: card 4**
+- [x] Wording: "Strings are named with letters: E A D G B e… (Frets are the ones with numbers.)"; string numbers 6→1 moved to a "Do strings have numbers too?" side note.
+- [x] Course-wide card counter (e.g. 4/260) on cards and page lessons; the home page has an "All lessons" list with the card each lesson starts on, and the Continue card shows it too. Counts the main course from Lesson 1 (Before you start and World songs are optional and count on their own).
+- [x] "Microphone isn't available": the real bug was in `cards.js`: after `await enableMic()` the click event's `currentTarget` is null, so updating the button threw and the catch showed that message even though the mic had started. Fixed, plus: a clear reason when it really fails (permission off, no mic, in use), and `openMicStream()` switches the iOS audio session to play-and-record first and retries once. ⬜ Still to test on a real phone.
 
 **Chords (Em, G, C, D…)**
-- [ ] Too fast. Make it "Let's learn the G chord". After the strum, keep it on screen ("That's the G chord") and let users tap **Next chord**.
-- [ ] Show how to place the fingers: a picture of a real hand, an embedded official/teacher YouTube video, or our own animation.
-- [ ] F / barre chords: tips for pressing a barre (press near the fret, roll the index finger, thumb behind the neck, check each string rings). Research what expert teachers recommend; add the tips later in the course.
-- [ ] Custom-draw all chord diagrams: low E on top, high e on the bottom, pressed frets in our colour (minor-chords page diagrams are confusing).
-- [ ] The E vs Em / A vs Am comparison works really well. Show **all** the chords in that style on the next card.
+- [x] Slower: "Let's learn the G chord" → watch the fingers land → place them → strum → it stays on screen ("That's the G chord!") with "Strum it again" and **Next chord**; no auto-advance.
+- [x] Finger placement: our own animation (`placeFingers()` in fretboard.js): each finger drops in with its name ("1 = index"), index first. (No new teacher videos: the web search budget was used up, so I didn't add unverified ones.)
+- [x] Barre tips in the Barre chords lesson: close to the fret, roll the index onto its bony side, thumb behind the neck, pull with arm weight instead of squeezing, check each string, little and often (the standard advice from guitar teachers).
+- [x] Chord diagrams custom-drawn in the fretboard orientation: low E on top, fret numbers at the bottom, ×/○ before the nut, pressed frets in the app's amber.
+- [x] All chords in the comparison style: new `compare` cards (Lesson 1: all 4 side by side; Open chords: E vs Em, A vs Am, then all 8). Tap one to see it on the fretboard and hear it.
 
-**Card 11/11: changing chords**
-- [ ] Show how to switch quickly: human videos or animations of the fingers moving between chords (anchor fingers, pivot, lift together).
-- [ ] The looping practice doesn't work. Remove Wait for me / speed etc. here; just Play, looping.
-- [ ] End of Lesson 1: play 3 popular, fun songs that use those 4 chords (G D Em C).
+**Card 11: changing chords**
+- [x] How to switch: our own animation (`morph()`): fingers slide from one chord to the next, anchors get a ring, the rest lift and move together; tips for anchor, pivot, lift together, look ahead. In Lesson 1 (G→Em, Em→C, C→D, D→G) and Changing chords (C→Am…).
+- [x] Loop card: no Wait for me / speed / loop toggles; one Play that keeps looping (new `js/strum-loop.js`, scheduled on the audio clock) until Stop.
+- [x] End of Lesson 1: 3 songs with G D Em C (Take Me Home Country Roads, Perfect, Amazing Grace), one card each with the official video.
 
 **Lesson 2: strumming**
-- [ ] No pick? Teach strumming with fingers (picture or animation).
-- [ ] Card 3/4 (D DU UDU): don't show speed/loop. The falling "tetris" blocks don't work for guitar (they're a piano idea). Instead, light up the chord's frets in one colour and animate the strum pattern (↓ ↓↑ ↑↓↑ arrows moving with the beat).
-- [ ] The quiz "what happens on beat 3?" is confusing. Rewrite it.
-- [ ] The 1-minute challenge doesn't recognise the owner's guitar. Fix chord recognition from the mic.
+- [x] Finger strumming (no pick): first card, with an animated finger (nail down, pad up); the pick grip is a side note.
+- [x] Strum-pattern card: no falling blocks, speed or loop. The chord's frets are lit in one colour and arrows ↓ ↓↑ ↑↓↑ light up with the beat ("1 & 2 & 3 & 4 &"), gaps faded. A second card does the same while changing G → C.
+- [x] Quiz rewritten: "What does your hand do in a gap?" → "It keeps swinging but misses the strings".
+- [x] 1-minute challenge recognises the guitar: new `js/chord-detect.js` (chroma from the FFT, templates from the real chord shapes with overtones, cosine match, strum detection, and the old chord still ringing is subtracted). "Count my strums (microphone)" counts each switch by itself; tapping still works. Test: `npm run test:chords` (synthesized strums: random string loudness, missed strings, up/down strums, phone-mic tilt, noise, previous chord ringing): two-chord choice 96%, any of 8 open chords 91%; end-to-end one-minute challenge counted 133 of 136 real changes (incl. strumming each chord twice). ⬜ Still to test with a real guitar.
 
 **Everywhere**
-- [ ] Highlighted text: replace the orange with a pastel light blue that's still dark enough to read.
-- [ ] Don't show the roadmap under lessons (confusing).
-- [ ] End **every** lesson with 3 songs to learn, one card per song with its official video embedded.
+- [x] Highlighted text: pastel light blue highlighter (#e3f2fd) with blue text #2a6fb0 (contrast 4.6:1 on the highlight, 5.3:1 on white).
+- [x] Roadmap removed from under/next to lessons (the list now lives on the home page under "All lessons").
+- [x] Every lesson ends with 3 songs (new `js/lesson-songs.js`): one card/page per song with chords, capo (and "no capo? same shapes"), diagrams, the official video and "Play along in Songs". Named per lesson where it matters, otherwise picked from songs playable with the chords taught so far, most popular first, no repeats, kid-friendly, official channels only. All 107 videos used re-checked with YouTube oEmbed today. Not added to the optional Before-you-start / World songs lessons, or to "Master: <song>" lessons (they already are a song).
 
-## 📝 Owner feedback: restructure the Jaxx course (2026-10-07), to do when we have credits
-Not started. Notes only; nothing changed yet.
+## 📝 Owner feedback: restructure the Jaxx course (2026-10-07)
+Done 2026-10-07. Principle: every new set of chords is followed straight away by songs.
 
-Principle: **too many chords, not enough songs.** Every new set of chords is followed straight away by songs that use them.
+- [x] **Lesson 1:** G D Em C, then 3 songs (Country Roads, Perfect, Amazing Grace).
+- [x] **Quiz after Lesson 1** (new lesson "Which songs use these chords?"): I'm Yours, Someone Like You, Stand By Me, Zombie (all well-known G D Em C songs, some with a capo, cross-checked with songs-data.js); any answer: "Correct! In fact, all of them use these chords!", then "Search online…", then 3 of them as songs.
+- [x] **Next:** Strumming and Changing chords (each with 3 songs), then new "More open chords: E, A, Am, Dm" (cards, with E vs Em / A vs Am and all 8 side by side) + 3 songs. Replaces the old lesson-minor and lesson-more.
+- [x] **Barre chords:** "one shape, every chord": tap A B C D E F G (major/minor) and the E-shape barre moves up the neck on the fretboard; the Am-shape (Bm); tips; 3 songs.
+- [x] **Creep** (Radiohead): G B C Cm as barre shapes, play-along, official video; chords only.
+- [x] **Genres:** pop → Hey Soul Sister, rock → Sweet Child O' Mine, blues → Blue Monk (12-bar), jazz → Fly Me to the Moon, reggae → Three Little Birds, flamenco (new) → Bamboléo, classical → Für Elise; each with its official video.
+- [x] **Jargon alert! Extra chords:** 7ths, maj7, sus2/sus4, add9 explained in one line each, the 12-bar blues, then Wonderwall (Em7 G Dsus4 A7sus4) taught and its song card.
 
-- [ ] **Lesson 1:** learn the 4 major chords (G D Em C), then **learn 3 songs** with them (official videos, one card per song).
-- [ ] **Quiz after Lesson 1:** "Which other songs use these chords?" Every option is a real song that uses those 4 chords (research and verify online), and **every answer is correct**: "Correct! In fact, all of them use these chords!" Then: "Search online and see what other songs you can play with these chords!"
-- [ ] **Next lesson:** introduce the other open chords, then play **3 songs** that use the new chords.
-- [ ] **Then barre chords:** show how one shape plays A B C D E F G chords up and down the neck.
-- [ ] **Then teach Creep by Radiohead** (barre-chord song; chords only, no lyrics/tab).
-- [ ] **Then genres** (jazz, blues, rock, reggae, flamenco…): after **each** genre, teach one song from that genre, with YouTube videos of the song and the artist.
-- [ ] **Extra chords (7ths, sus, add9, etc.):** "Jargon alert! You don't really need these for easier songs, but here are some other chords". Then show a song that uses them and teach it.
+**Notes for the other engineer (files I didn't edit):** the songs data changed under me while I worked (Shallow, Zombie, Someone Like You etc. now have slash/7th chords), so the lesson song picks are validated at runtime. Creep appears twice in SONGS (Alternative Rock and Alternative/Rock). Wait for me in `guitar-player.js` still matches a chord by "any one note of it"; it could use `startChordListening()` / `matchChord()` from `js/chord-detect.js` for real chord recognition.
+
+
+## 2026-10-07 (late): song re-check, solos, beagle, music scenes
+
+**Song data (shared with Hayden Keys, `js/song-verified.js`):** all songs re-researched against the original recordings (key at concert pitch, tuning, tempo, every section incl. every guitar solo with the chords underneath), applied on top of songs-data.js. 8 already right, 204 corrected, 59 "our best guide". Whole song now loops each section's chords for its real length at the record's tempo (new `js/song-map.js`; "real speed" tempo pill), tuned-down songs show "tune down a half step" and use the right shapes, power chords (E5) parse as root + fifth, colour chords the fretboard can't draw are simplified. New song: Something Just Like This (The Chainsmokers & Coldplay). Duplicate Creep entry removed.
+
+**Guitar solos:** every song with a solo shows a "The guitar solo" card: the chords under it, the scale/position to use, tips, and two of our own practice licks in that scale (tab + play button, `js/solo-licks.js`; no copied lead lines).
+
+**Mascot: Jaxx is a beagle puppy** (tan head, long ears, white blaze, black saddle, red bandana) who drives a red pickup truck (`js/puppy.js`, `css/puppy.css`): the logo is Jaxx in the truck bed, the splash is his show (hops out of the truck, tricks, plays, hops back in). Drawn with 3D lighting (SVG light filters), fur texture and a realistic truck.
+
+**Card animations (`js/scenes.js`, `css/scenes.css`):** one animation per card, dealt from a shuffled deck so none repeats until all have shown (remembered in localStorage):
+- Music things: boombox (speakers thump, EQ dances), cassette ("Jaxx's mixtape", reels turn), Walkman-style player with headphones, electric-strings close-up (a pick strums, strings shimmer), a rock concert (lights sweep, band rocks, crowd bounces, confetti), kid-friendly metal stage (amp stack, fog, lightning, Randy Rhoads' polka-dot V).
+- Legendary guitars on a museum stand with a fact caption: Hendrix's Woodstock Strat, Brian May's Red Special, Van Halen's Frankenstrat, Willie Nelson's Trigger, B.B. King's Lucille, Elvis's leather-covered acoustic, Kurt Cobain's Mustang, Les Paul's The Log, Randy Rhoads' polka-dot V. Facts checked on Wikipedia; museum locations we couldn't confirm are left off the plaque.
+- Slash's November Rain solo, kid-friendly: a top-hatted guitarist by a lone white church in the New Mexico desert. (The "threw his Les Paul off a cliff" story is a myth; the church was real and moved there for the video.)
+- The beagle appears in about 1 card in 6. Lessons about metal get the metal stage; lessons naming a legend get that guitar.
+
+**App icon:** Jaxx in his truck (all web sizes + iOS AppIcon).
+
+**Other:** HTTPS now enforced on jaxxguitar.com (the certificate had never been issued; re-adding the custom domain fixed it). Service worker caches every app file.

@@ -6,10 +6,21 @@
 import { SONGS, getDifficulty } from "./songs-data.js";
 import { chordShape, suggestCapo, transposeSymbol } from "./guitar-theory.js";
 
+// Bands that tune down (e.g. half a step) play shapes that sound lower:
+// the shape for a song chord is the chord moved UP by that many semitones.
+function tuningOffset(song) {
+  const t = String(song.tuning || "").toLowerCase();
+  if (/half[ -]step down|eb standard|e♭ standard/.test(t)) return 1;
+  if (/whole[ -]step down|d standard|full step down/.test(t)) return 2;
+  if (/drop c#|c# standard/.test(t)) return 3;
+  return 0;
+}
+
 const cache = new Map();
 function songPlan(song) {
   if (cache.has(song.title)) return cache.get(song.title);
-  const chords = (song.chords || []).filter((c) => /^[A-G]/.test(c) && c.length <= 10);
+  const down = tuningOffset(song);
+  const chords = (song.chords || []).filter((c) => /^[A-G]/.test(c) && c.length <= 10).map((c) => (down ? transposeSymbol(c, down) : c));
   let plan = { playable: false, capo: 0, chords, shapes: [], map: {} };
   if (chords.length && chords.length === song.chords.length) {
     const best = suggestCapo(chords);
@@ -34,4 +45,4 @@ function songsByTier(tier, { world = false } = {}) {
     .sort((a, b) => (a.popularityRank || 999) - (b.popularityRank || 999));
 }
 
-export { songPlan, playableSongs, songsByTier };
+export { songPlan, playableSongs, songsByTier, tuningOffset };

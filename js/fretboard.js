@@ -1,12 +1,14 @@
 // Fretboard, chord diagrams and tab for Jaxx Guitar.
 //
-// renderFretboard(): a horizontal fretboard the way you look down at
-// your own guitar in a lesson video — high e string on TOP (the same
-// order as tab), low E at the bottom, the nut on the left. Fret spacing
-// follows a real guitar's (each fret ~5.6% narrower than the last, the
-// 12th fret halfway to the bridge), squeezed a little so the first frets
-// aren't huge. Tapping a string at a fret plays it and reports the note
-// (input-hub), so every input path — screen, mic — works the same.
+// renderFretboard(): a horizontal fretboard the way a right-handed
+// player sees it looking down at their own guitar: the thickest low E
+// string (the one nearest your chin) on TOP, the thin high e at the
+// bottom, the nut on the left and the fret numbers along the bottom.
+// Fret spacing follows a real guitar's (each fret ~5.6% narrower than
+// the last, the 12th fret halfway to the bridge), squeezed a little so
+// the first frets aren't huge. Tapping a string at a fret plays it and
+// reports the note (input-hub), so every input path (screen, mic) works
+// the same.
 
 import { TUNING, STRING_NAMES, midiAt, noteName } from "./guitar-theory.js";
 import { playNote } from "./guitar-audio.js";
@@ -14,6 +16,8 @@ import { emitNoteOn } from "./input-hub.js";
 
 const STRING_COLORS = ["#e0625b", "#f0a24b", "#e8d24b", "#5bbf72", "#4fa3e0", "#9b78e0"]; // 6th → 1st
 const INLAYS = [3, 5, 7, 9, 15, 17];
+const FINGER_NAMES = { 1: "index", 2: "middle", 3: "ring", 4: "pinky" };
+const SVGNS = "http://www.w3.org/2000/svg";
 
 function fretX(n, frets) {
   // Real spacing 1 - 2^(-n/12), blended with linear so low frets aren't oversized.
@@ -22,36 +26,38 @@ function fretX(n, frets) {
   return 0.55 * r + 0.45 * (n / frets);
 }
 
-function renderFretboard(container, { frets = 12, height = 168 } = {}) {
+function renderFretboard(container, { frets = 12, height = 196 } = {}) {
   container.innerHTML = "";
   container.classList.add("jg-fretboard");
   const W = 1000;
   const H = height;
   const openW = 62; // string names, then the open/mute markers, left of the nut
-  const top = 14;
-  const bottom = H - 22;
-  const stringY = (s) => top + ((5 - s) * (bottom - top)) / 5; // s: 0 = low E (bottom)
+  const top = 26;
+  const bottom = H - 40; // room for the fret numbers along the bottom
+  const stringY = (s) => top + (s * (bottom - top)) / 5; // s: 0 = low E (TOP)
   const xOf = (f) => openW + fretX(f, frets) * (W - openW - 8);
   const center = (f) => (f === 0 ? openW - 20 : (xOf(f - 1) + xOf(f)) / 2);
 
   const parts = [];
-  parts.push(`<rect x="${openW}" y="${top - 8}" width="${W - openW - 8}" height="${bottom - top + 16}" rx="4" class="jg-wood"/>`);
-  for (let f = 1; f <= frets; f++) parts.push(`<line x1="${xOf(f)}" x2="${xOf(f)}" y1="${top - 8}" y2="${bottom + 8}" class="jg-fret"/>`);
-  parts.push(`<rect x="${openW - 5}" y="${top - 9}" width="7" height="${bottom - top + 18}" class="jg-nut"/>`);
+  parts.push(`<g class="jg-fret-hl"></g>`);
+  parts.push(`<rect x="${openW}" y="${top - 16}" width="${W - openW - 8}" height="${bottom - top + 32}" rx="4" class="jg-wood"/>`);
+  for (let f = 1; f <= frets; f++) parts.push(`<line x1="${xOf(f)}" x2="${xOf(f)}" y1="${top - 16}" y2="${bottom + 16}" class="jg-fret"/>`);
+  parts.push(`<rect x="${openW - 5}" y="${top - 17}" width="7" height="${bottom - top + 34}" class="jg-nut"/>`);
   INLAYS.filter((f) => f <= frets).forEach((f) => parts.push(`<circle cx="${center(f)}" cy="${(top + bottom) / 2}" r="6" class="jg-inlay"/>`));
   if (frets >= 12) {
     parts.push(`<circle cx="${center(12)}" cy="${(top + bottom) / 2 - 22}" r="6" class="jg-inlay"/>`);
     parts.push(`<circle cx="${center(12)}" cy="${(top + bottom) / 2 + 22}" r="6" class="jg-inlay"/>`);
   }
   for (let s = 0; s < 6; s++) {
-    parts.push(`<line x1="${openW}" x2="${W - 8}" y1="${stringY(s)}" y2="${stringY(s)}" class="jg-string" style="stroke-width:${3.2 - s * 0.4}"/>`);
-    parts.push(`<text x="4" y="${stringY(s) + 4}" class="jg-string-name">${STRING_NAMES[s]}</text>`);
+    parts.push(`<line x1="${openW}" x2="${W - 8}" y1="${stringY(s)}" y2="${stringY(s)}" class="jg-string" style="stroke-width:${3.4 - s * 0.45}"/>`);
+    parts.push(`<text x="4" y="${stringY(s) + 6}" class="jg-string-name">${STRING_NAMES[s]}</text>`);
   }
-  for (let f = 1; f <= frets; f++) parts.push(`<text x="${center(f)}" y="${H - 4}" class="jg-fret-num">${f}</text>`);
-  container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="jg-fretboard-svg" role="img" aria-label="Guitar fretboard"><g>${parts.join("")}</g><g class="jg-marks"></g><g class="jg-hits"></g></svg>`;
+  for (let f = 1; f <= frets; f++) parts.push(`<text x="${center(f)}" y="${H - 8}" class="jg-fret-num" data-fn="${f}">${f}</text>`);
+  container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="jg-fretboard-svg" role="img" aria-label="Guitar fretboard, low E string on top"><g>${parts.join("")}</g><g class="jg-marks"></g><g class="jg-hits"></g></svg>`;
   const svg = container.querySelector("svg");
   const marks = svg.querySelector(".jg-marks");
   const hits = svg.querySelector(".jg-hits");
+  const hl = svg.querySelector(".jg-fret-hl");
 
   // Invisible tap targets: one per string × fret (0 = open string)
   const hitParts = [];
@@ -78,7 +84,7 @@ function renderFretboard(container, { frets = 12, height = 168 } = {}) {
   });
 
   function flash(s, f) {
-    const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    const c = document.createElementNS(SVGNS, "circle");
     c.setAttribute("cx", center(f));
     c.setAttribute("cy", stringY(s));
     c.setAttribute("r", 11);
@@ -87,17 +93,33 @@ function renderFretboard(container, { frets = 12, height = 168 } = {}) {
     setTimeout(() => c.remove(), 350);
   }
 
+  // Shade whole fret spaces (e.g. "today we only need frets 1 to 3") and
+  // make their numbers along the bottom stand out.
+  function highlightFrets(list = []) {
+    hl.innerHTML = list.map((f) => `<rect x="${xOf(f - 1)}" y="${top - 20}" width="${xOf(f) - xOf(f - 1)}" height="${H - top + 20}" rx="6" class="jg-fret-hl-box"/>`).join("");
+    svg.querySelectorAll(".jg-fret-num").forEach((t) => t.classList.toggle("jg-fret-num-hl", list.includes(Number(t.dataset.fn))));
+  }
+
+  let anim = [];
+  const stopAnim = () => { anim.forEach((t) => clearTimeout(t)); anim = []; };
+
+  function barreRect(fret, strs, cls = "jg-barre") {
+    const ys = strs.map(stringY);
+    const y0 = Math.min(...ys);
+    const y1 = Math.max(...ys);
+    return `<rect x="${center(fret) - 10}" y="${y0 - 10}" width="20" height="${y1 - y0 + 20}" rx="10" class="${cls}"/>`;
+  }
+
   // positions: [{ string, fret, finger?, label?, tone? }]; tone:
-  // "root" | "note" | "ghost" | "good" | "bad". muted: string indexes (x).
-  function show(positions = [], { muted = [], barre = null } = {}) {
+  // "root" | "note" | "ghost" | "good" | "bad" | "lit". muted: string indexes (x).
+  function show(positions = [], { muted = [], barre = null, keep = false } = {}) {
+    if (!keep) stopAnim();
     const p = [];
     if (barre) {
       const strs = positions.filter((q) => q.fret === barre.fret).map((q) => q.string);
-      const lo = Math.min(...strs);
-      const hi = Math.max(...strs);
-      p.push(`<rect x="${center(barre.fret) - 9}" y="${stringY(hi) - 9}" width="18" height="${stringY(lo) - stringY(hi) + 18}" rx="9" class="jg-barre"/>`);
+      if (strs.length) p.push(barreRect(barre.fret, strs, barre.lit ? "jg-barre jg-barre-lit" : "jg-barre"));
     }
-    muted.forEach((s) => p.push(`<text x="${openW - 20}" y="${stringY(s) + 5}" class="jg-mute">×</text>`));
+    muted.forEach((s) => p.push(`<text x="${openW - 20}" y="${stringY(s) + 6}" class="jg-mute">×</text>`));
     positions.forEach((q) => {
       const x = center(q.fret);
       const y = stringY(q.string);
@@ -106,69 +128,155 @@ function renderFretboard(container, { frets = 12, height = 168 } = {}) {
         if (q.label) p.push(`<text x="${x}" y="${y + 4}" class="jg-dot-label jg-dot-label-dark">${q.label}</text>`);
         return;
       }
-      p.push(`<circle cx="${x}" cy="${y}" r="11" class="jg-dot ${q.tone ? "jg-" + q.tone : ""}" style="${q.tone ? "" : `fill:${STRING_COLORS[q.string]}`}"/>`);
+      p.push(`<circle cx="${x}" cy="${y}" r="12" class="jg-dot ${q.tone ? "jg-" + q.tone : ""} ${q.pop ? "jg-pop" : ""}" style="${q.tone ? "" : `fill:${STRING_COLORS[q.string]}`}"/>`);
       const lab = q.label ?? (q.finger ? String(q.finger) : "");
-      if (lab) p.push(`<text x="${x}" y="${y + 4}" class="jg-dot-label">${lab}</text>`);
+      if (lab) p.push(`<text x="${x}" y="${y + 4.5}" class="jg-dot-label ${q.pop ? "jg-pop" : ""}">${lab}</text>`);
     });
     marks.innerHTML = p.join("");
   }
 
-  // Show a chord shape ({frets, fingers, barre}) with finger numbers.
-  function showShape(shape, { labels = "fingers" } = {}) {
-    if (!shape) return show([]);
+  // Show a chord shape ({frets, fingers, barre}) with finger numbers, all
+  // pressed frets lit in one colour (the app's).
+  function shapeParts(shape, labels = "fingers") {
     const positions = [];
     const muted = [];
     shape.frets.forEach((f, s) => {
       if (f < 0) muted.push(s);
-      else positions.push({ string: s, fret: f, finger: labels === "fingers" ? shape.fingers?.[s] : null, label: labels === "notes" ? noteName(midiAt(s, f)) : undefined });
+      else positions.push({ string: s, fret: f, tone: f > 0 ? "lit" : undefined, finger: labels === "fingers" ? shape.fingers?.[s] : null, label: labels === "notes" ? noteName(midiAt(s, f)) : undefined });
     });
-    show(positions, { muted, barre: shape.barre ? { fret: shape.barre } : null });
+    return { positions, muted };
+  }
+  function showShape(shape, { labels = "fingers" } = {}) {
+    if (!shape) return show([]);
+    const { positions, muted } = shapeParts(shape, labels);
+    show(positions, { muted, barre: shape.barre ? { fret: shape.barre, lit: true } : null });
+  }
+
+  // Our own "how to place your fingers" animation: the fingers land one
+  // at a time (index first), each with its finger name, then the open
+  // strings light up. Calls onStep(finger, i) as each lands.
+  function placeFingers(shape, { stepMs = 900, loop = false, onStep } = {}) {
+    stopAnim();
+    if (!shape) return show([]);
+    const { positions, muted } = shapeParts(shape);
+    const pressed = positions.filter((q) => q.fret > 0);
+    const order = [...new Set(pressed.map((q) => q.finger || 1))].sort();
+    const run = () => {
+      show([], { muted, keep: true });
+      order.forEach((fg, i) => anim.push(setTimeout(() => {
+        const now = pressed.filter((q) => order.indexOf(q.finger || 1) <= i).map((q) => ({ ...q, pop: (q.finger || 1) === fg, label: q.finger ? String(q.finger) : "" }));
+        const isBarre = shape.barre && fg === 1;
+        show(now, { muted, keep: true, barre: shape.barre && order.indexOf(1) <= i ? { fret: shape.barre, lit: true } : null });
+        const q = pressed.find((x) => (x.finger || 1) === fg);
+        if (q) {
+          const t = document.createElementNS(SVGNS, "text");
+          t.setAttribute("x", center(q.fret) + 20);
+          t.setAttribute("y", stringY(q.string) - 14);
+          t.setAttribute("class", "jg-finger-tag");
+          t.textContent = `${fg} = ${FINGER_NAMES[fg] || "finger"}${isBarre ? " (flat across)" : ""}`;
+          marks.appendChild(t);
+        }
+        onStep?.(fg, i);
+      }, 300 + i * stepMs)));
+      anim.push(setTimeout(() => { show(positions, { muted, keep: true, barre: shape.barre ? { fret: shape.barre, lit: true } : null }); }, 300 + order.length * stepMs));
+      if (loop) anim.push(setTimeout(run, 300 + order.length * stepMs + 2200));
+    };
+    run();
+  }
+
+  // Our own "how to switch" animation: each finger slides from chord A to
+  // chord B. Fingers that don't move get an anchor ring; the others lift
+  // together, move as one shape, and land together. Loops until stopped.
+  function morph(a, b, { holdMs = 1300, moveMs = 700, onPhase } = {}) {
+    stopAnim();
+    const fingerPos = (shape) => {
+      const m = new Map();
+      shape.frets.forEach((f, s) => { const fg = shape.fingers?.[s]; if (f > 0 && fg && !m.has(fg)) m.set(fg, { string: s, fret: f }); });
+      return m;
+    };
+    const A = fingerPos(a);
+    const B = fingerPos(b);
+    const all = [...new Set([...A.keys(), ...B.keys()])].sort();
+    const same = (p, q) => p && q && p.string === q.string && p.fret === q.fret;
+    const mutes = (shape) => shape.frets.map((f, s) => (f < 0 ? `<text x="${openW - 20}" y="${stringY(s) + 6}" class="jg-mute">×</text>` : "")).join("");
+    marks.innerHTML = `<g class="jg-morph-mutes">${mutes(a)}</g>` + all.map((fg) => {
+      const p = A.get(fg) || B.get(fg);
+      const anchor = same(A.get(fg), B.get(fg));
+      return `<g class="jg-morph-f ${anchor ? "jg-morph-anchor" : ""}" data-fg="${fg}" style="transform:translate(${center(p.fret)}px,${stringY(p.string)}px);opacity:${A.get(fg) ? 1 : 0}">
+        ${anchor ? '<circle r="18" class="jg-anchor-ring"/>' : ""}<circle r="12" class="jg-dot jg-lit"/><text y="4.5" class="jg-dot-label">${fg}</text></g>`;
+    }).join("");
+    const groups = [...marks.querySelectorAll(".jg-morph-f")];
+    const go = (toB) => {
+      const src = toB ? A : B;
+      const dst = toB ? B : A;
+      marks.querySelector(".jg-morph-mutes").innerHTML = mutes(toB ? b : a);
+      groups.forEach((g) => {
+        const fg = Number(g.dataset.fg);
+        const p = dst.get(fg) || src.get(fg);
+        g.style.transition = `transform ${moveMs}ms ease-in-out, opacity ${moveMs}ms`;
+        g.classList.toggle("jg-morph-lift", !same(src.get(fg), dst.get(fg)));
+        g.style.transform = `translate(${center(p.fret)}px,${stringY(p.string)}px)`;
+        g.style.opacity = dst.get(fg) ? 1 : 0;
+      });
+      onPhase?.(toB ? "toB" : "toA");
+      anim.push(setTimeout(() => groups.forEach((g) => g.classList.remove("jg-morph-lift")), moveMs));
+      anim.push(setTimeout(() => go(!toB), moveMs + holdMs));
+    };
+    anim.push(setTimeout(() => go(true), holdMs));
   }
 
   return {
-    show, showShape, clear: () => show([]), onTap: (cb) => { tapHandler = cb; },
+    show, showShape, placeFingers, morph, highlightFrets, stopAnim, clear: () => show([]), onTap: (cb) => { tapHandler = cb; },
     xFrac: (f) => center(f) / W, widthFrac: (f) => (f === 0 ? openW : xOf(f) - xOf(f - 1)) / W,
     stringColor: (s) => STRING_COLORS[s], frets,
   };
 }
 
-// Classic vertical chord box (as in songbooks): strings left (low E) →
-// right (high e), nut at top, x/o above, dots with finger numbers.
+// Chord diagram, drawn the same way round as the fretboard (and as you see
+// your own guitar looking down): low E on top, high e at the bottom, the
+// nut on the left, fret numbers along the bottom, × / ○ before the nut,
+// pressed frets in the app's colour with finger numbers.
 function chordDiagramSvg(shape, name = "") {
   if (!shape) return `<div class="jg-diagram jg-diagram-empty">${name}</div>`;
   const used = shape.frets.filter((f) => f > 0);
   const minF = used.length ? Math.min(...used) : 1;
   const maxF = used.length ? Math.max(...used) : 1;
   const start = maxF <= 4 ? 1 : minF;
-  const rows = 4;
-  const w = 120;
-  const h = 150;
-  const x0 = 20;
-  const y0 = 36;
-  const dx = (w - 2 * x0) / 5;
-  const dy = (h - y0 - 14) / rows;
-  const p = [`<text x="${w / 2}" y="14" class="jg-dg-name">${name || shape.symbol || ""}</text>`];
-  for (let i = 0; i < 6; i++) p.push(`<line x1="${x0 + i * dx}" x2="${x0 + i * dx}" y1="${y0}" y2="${y0 + rows * dy}" class="jg-dg-line"/>`);
-  for (let r = 0; r <= rows; r++) p.push(`<line x1="${x0}" x2="${x0 + 5 * dx}" y1="${y0 + r * dy}" y2="${y0 + r * dy}" class="jg-dg-line ${r === 0 && start === 1 ? "jg-dg-nut" : ""}"/>`);
-  if (start > 1) p.push(`<text x="${x0 - 6}" y="${y0 + dy * 0.65}" class="jg-dg-fretno">${start}</text>`);
+  const cols = Math.max(4, maxF - start + 1);
+  const w = 168;
+  const h = 128;
+  const x0 = 40; // nut
+  const x1 = w - 8;
+  const y0 = 26;
+  const dy = 14;
+  const dx = (x1 - x0) / cols;
+  const sy = (s) => y0 + s * dy;
+  const p = [`<text x="${(x0 + x1) / 2}" y="16" class="jg-dg-name">${name || shape.symbol || ""}</text>`];
+  p.push(`<rect x="${x0}" y="${sy(0) - 4}" width="${x1 - x0}" height="${5 * dy + 8}" rx="3" class="jg-dg-wood"/>`);
+  for (let c = 0; c <= cols; c++) p.push(`<line x1="${x0 + c * dx}" x2="${x0 + c * dx}" y1="${sy(0) - 4}" y2="${sy(5) + 4}" class="jg-dg-line ${c === 0 && start === 1 ? "jg-dg-nut" : ""}"/>`);
+  for (let s = 0; s < 6; s++) {
+    p.push(`<line x1="${x0}" x2="${x1}" y1="${sy(s)}" y2="${sy(s)}" class="jg-dg-string" style="stroke-width:${1.9 - s * 0.2}"/>`);
+    p.push(`<text x="6" y="${sy(s) + 4}" class="jg-dg-sname">${STRING_NAMES[s]}</text>`);
+  }
+  for (let c = 0; c < cols; c++) p.push(`<text x="${x0 + (c + 0.5) * dx}" y="${h - 4}" class="jg-dg-fretno">${start + c}</text>`);
   if (shape.barre && shape.barre >= start) {
     const strs = shape.frets.map((f, i) => (f === shape.barre ? i : null)).filter((v) => v !== null);
     const lo = Math.min(...strs);
     const hi = Math.max(...strs);
-    const y = y0 + (shape.barre - start + 0.5) * dy;
-    p.push(`<rect x="${x0 + lo * dx - 6}" y="${y - 6}" width="${(hi - lo) * dx + 12}" height="12" rx="6" class="jg-dg-barre"/>`);
+    const x = x0 + (shape.barre - start + 0.5) * dx;
+    p.push(`<rect x="${x - 7}" y="${sy(lo) - 7}" width="14" height="${sy(hi) - sy(lo) + 14}" rx="7" class="jg-dg-barre"/>`);
   }
   shape.frets.forEach((f, i) => {
-    const x = x0 + i * dx;
-    if (f < 0) p.push(`<text x="${x}" y="${y0 - 8}" class="jg-dg-top">×</text>`);
-    else if (f === 0) p.push(`<circle cx="${x}" cy="${y0 - 12}" r="4.5" class="jg-dg-open"/>`);
+    const y = sy(i);
+    if (f < 0) p.push(`<text x="${x0 - 12}" y="${y + 4}" class="jg-dg-top">×</text>`);
+    else if (f === 0) p.push(`<circle cx="${x0 - 12}" cy="${y}" r="4.2" class="jg-dg-open"/>`);
     else {
-      const y = y0 + (f - start + 0.5) * dy;
-      p.push(`<circle cx="${x}" cy="${y}" r="8" class="jg-dg-dot"/>`);
-      if (shape.fingers?.[i]) p.push(`<text x="${x}" y="${y + 3.5}" class="jg-dg-finger">${shape.fingers[i]}</text>`);
+      const x = x0 + (f - start + 0.5) * dx;
+      p.push(`<circle cx="${x}" cy="${y}" r="6.6" class="jg-dg-dot"/>`);
+      if (shape.fingers?.[i]) p.push(`<text x="${x}" y="${y + 3.4}" class="jg-dg-finger">${shape.fingers[i]}</text>`);
     }
   });
-  return `<svg viewBox="0 0 ${w} ${h}" class="jg-diagram" role="img" aria-label="${name} chord diagram">${p.join("")}</svg>`;
+  return `<svg viewBox="0 0 ${w} ${h}" class="jg-diagram" role="img" aria-label="${name} chord diagram, low E string on top">${p.join("")}</svg>`;
 }
 
 // Tab: six lines (high e on top), fret numbers at their beat positions.
@@ -199,4 +307,4 @@ function tabSvg(events, { beatsPerBar = 4, bars = 1, current = new Set(), done =
   return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" class="jg-tabsvg">${p.join("")}</svg>`;
 }
 
-export { renderFretboard, chordDiagramSvg, tabSvg, STRING_COLORS, TUNING };
+export { renderFretboard, chordDiagramSvg, tabSvg, STRING_COLORS, TUNING, FINGER_NAMES };

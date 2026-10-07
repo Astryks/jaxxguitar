@@ -1,4 +1,4 @@
-import { kittenSvg } from "./kitten.js";
+import { puppySvg, nextPuppyScene } from "./puppy.js";
 // The 2-minute daily review: a quick mix of what you've already learned,
 // spaced so the things you miss come back sooner (a simple Leitner
 // system: right answers move an item up a box and push it further into
@@ -88,7 +88,7 @@ function openDailyReview(panel, { onClose }) {
   panel.innerHTML = `
     <div class="jg-lesson-player">
       <button class="jg-exit">← Back</button>
-      <div class="jg-row"><div class="jg-inline-mascot">${kittenSvg("think")}</div><strong>2-minute daily review</strong><span class="jg-label jg-dr-time">2:00</span><span class="jg-label jg-dr-score"></span></div>
+      <div class="jg-row"><div class="jg-inline-mascot">${puppySvg("think")}</div><strong>2-minute daily review</strong><span class="jg-label jg-dr-time">2:00</span><span class="jg-label jg-dr-score"></span></div>
       <div class="jg-card jg-dr-body"></div>
       <div class="jg-instrument-host"></div>
     </div>`;
@@ -114,7 +114,7 @@ function openDailyReview(panel, { onClose }) {
     completeQuest("review");
     awardXp(right * 2, "Daily review");
     recordDailyProgress();
-    body.innerHTML = `<div class="jg-hero-mascot">${kittenSvg("cheer")}</div><div class="jg-big">${right} / ${i}</div><p style="text-align:center">Review done for today — the ones you missed will come back sooner.</p>
+    body.innerHTML = `<div class="jg-hero-mascot">${puppySvg("cheer")}</div><div class="jg-big">${right} / ${i}</div><p style="text-align:center">Review done for today — the ones you missed will come back sooner.</p>
       <div class="jg-row" style="justify-content:center"><button class="jg-btn jg-btn-primary jg-dr-close">Back to lessons</button></div>`;
     body.querySelector(".jg-dr-close").addEventListener("click", onClose);
   }

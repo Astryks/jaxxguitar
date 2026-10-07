@@ -2,7 +2,11 @@
 // with its easiest capo and chord shapes, and a play-along.
 
 import { SONGS, SONG_STRUCTURES, APPROX_STRUCTURES, getDifficulty } from "./songs-data.js";
-import { songPlan } from "./song-plan.js";
+import { songPlan, tuningOffset } from "./song-plan.js";
+import { songSteps } from "./song-map.js";
+import { licksFor, lickMidis } from "./solo-licks.js";
+import { tabSvg } from "./fretboard.js";
+import { playNote } from "./guitar-audio.js";
 import { chordShape, shapeMidis, transposeSymbol } from "./guitar-theory.js";
 import { videoHtml, wireVideos } from "./media.js";
 import { SONG_VIDEOS } from "./media-data.js";
@@ -15,6 +19,8 @@ import { getSavedSongs, markSongStatus } from "./storage.js";
 import { chordTimeline } from "./guitar-player.js";
 
 const DDUUDU = ["down", null, "down", "up", null, "up", "down", "up"];
+// A chord held for two bars is listed once.
+const tidy = (cs) => cs.filter((c, i) => c !== cs[i - 1]);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
 let filter = { tier: "All", q: "" };
@@ -116,23 +122,37 @@ function progressionRows(song) {
     if (last && last.chords.join() === part.chords.join()) { if (!last.names.includes(name)) last.names.push(name); }
     else rows.push({ names: [name], chords: part.chords });
   });
-  return rows.map((r) => ({ label: r.names.join(" · "), chords: r.chords }));
+  return rows.map((r) => ({ label: r.names.join(" · "), chords: tidy(r.chords) }));
 }
-// Bar by bar, start to finish.
+// Start to finish: [{ chord, len }] with each section's pattern looping
+// until its bars are filled (song-map.js).
 function wholeSongChords(song) {
-  const out = [];
-  (SONG_STRUCTURES[song.title] || []).forEach((part) => {
-    const bars = part.bars || part.chords.length;
-    for (let i = 0; i < bars; i++) out.push(part.chords[i % part.chords.length]);
-  });
-  return out;
+  return songSteps(SONG_STRUCTURES[song.title]);
+}
+// "Tune down half a step" etc., so the shapes match the record.
+function tuningText(song) {
+  const down = tuningOffset(song);
+  if (!down) return /drop d/i.test(song.tuning || "") ? "Drop D tuning: low E string down to D" : "";
+  return down === 1 ? "To play along with the record, tune every string down half a step (E♭ A♭ D♭ G♭ B♭ e♭). The chord names below are the shapes you play." : `To play along with the record, tune every string down ${down === 2 ? "a whole step" : `${down} half steps`}. The chord names below are the shapes you play.`;
+}
+// Two of our own practice licks in the solo's scale (solo-licks.js).
+function soloLicksHtml(so, song) {
+  const box = licksFor(so.scale, { tuningDown: tuningOffset(song) });
+  if (!box) return "";
+  return `<div class="jg-licks"><span class="jg-label">Practice licks (our own, ${esc(box.label)})</span>
+    ${box.licks.map((l, i) => `<div class="jg-lick"><button class="jg-pill" data-lick="${esc(so.section)}|${i}">${icon("play", 16)} ${esc(l.name)}</button><div class="jg-lick-tab">${tabSvg(l.events, { beatsPerBar: 4, bars: Math.ceil(l.events.length / 8) })}</div></div>`).join("")}</div>`;
 }
 const initials = (name) => name.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
 function openSong(panel, song, { autoplay = false } = {}) {
   const p = songPlan(song);
   const unique = [...new Set(p.shapes)];
-  let bpm = 80;
+  const beatsPerBar = song.beatsPerBar || 4;
+  // The record's own tempo when we know it, slower practice tempos too.
+  const songBpm = song.bpm > 0 ? Math.round(song.bpm) : null;
+  let bpm = songBpm || 80;
+  const tempos = [...new Set([60, 80, 100, 120, songBpm].filter(Boolean))].sort((a, b) => a - b);
+  const tuneNote = tuningText(song);
   panel.onclick = null;
   panel.innerHTML = `
     <div class="jg-lesson-player">
@@ -142,14 +162,19 @@ function openSong(panel, song, { autoplay = false } = {}) {
           <a class="jg-song-art" id="jg-song-art"><span>${esc(initials(song.artist))}</span></a>
           <div class="jg-song-info"><h2>${esc(song.title)}</h2><p>${esc(song.artist)}</p>
             <span class="jg-song-key">${icon("guitar", 18)} Key of ${esc((song.key || "?").replace(/\s*\(.*\)/, ""))}</span>
-            ${p.capo ? `<span class="jg-capo">Capo ${p.capo}: play ${esc([...new Set(p.shapes)].join(" – "))}</span>` : ""}</div>
+            ${p.capo ? `<span class="jg-capo">Capo ${p.capo}: play ${esc([...new Set(p.shapes)].join(" – "))}</span>` : ""}
+            ${songBpm ? `<span class="jg-song-key">${icon("drum", 18)} ${songBpm} BPM${beatsPerBar !== 4 ? ` · ${beatsPerBar}/4` : ""}</span>` : ""}</div>
         </div>
+        ${tuneNote ? `<p class="jg-note">${icon("tuner", 18)} ${esc(tuneNote)}</p>` : ""}
         <div class="jg-song-prog"><div class="jg-song-prog-title">The chords in this song</div>
           ${progressionRows(song).map((r) => `<div class="jg-song-prog-row"><span>${esc(r.label)}</span><b>${r.chords.map((c) => `<i>${esc(c)}</i>`).join("")}</b></div>`).join("")}
         </div>
+        ${(song.solos || []).length ? `<div class="jg-solos"><div class="jg-song-prog-title">${icon("guitar", 18)} The guitar solo${song.solos.length > 1 ? "s" : ""}</div>
+          ${song.solos.map((so) => `<div class="jg-solo"><b>${esc(so.section)}</b>${so.chords ? `<span class="jg-solo-chords">Chords underneath: ${tidy(so.chords).map((c) => `<i>${esc(c)}</i>`).join("")}</span>` : ""}<span><b>Scale:</b> ${esc(so.scale)}</span>${so.tips ? `<span>${esc(so.tips)}</span>` : ""}${soloLicksHtml(so, song)}</div>`).join("")}
+          <p class="jg-note">Play "Whole song" to hear the solo's chords in place, then improvise over them with this scale.</p></div>` : ""}
         ${SONG_VIDEOS[song.title] ? videoHtml(SONG_VIDEOS[song.title]) : ""}
         <div class="jg-diagram-row">${unique.map((c) => `<button class="jg-btn jg-dg-btn" data-chord="${esc(c)}">${chordDiagramSvg(chordShape(c), c)}</button>`).join("")}</div>
-        <div class="jg-row"><span class="jg-label">Practice tempo</span>${[60, 80, 100, 120].map((t) => `<button class="jg-pill ${t === bpm ? "jg-pill-active" : ""}" data-bpm="${t}">${t}</button>`).join("")}
+        <div class="jg-row"><span class="jg-label">Practice tempo</span>${tempos.map((t) => `<button class="jg-pill ${t === bpm ? "jg-pill-active" : ""}" data-bpm="${t}">${t === songBpm ? `${t} (real speed)` : t}</button>`).join("")}
           <span class="jg-label">Strum</span><button class="jg-pill jg-pill-active" data-pat="dduudu">D·DU·UDU</button><button class="jg-pill" data-pat="d">Downs</button></div>
         <div class="jg-row"><span class="jg-label">Play</span><button class="jg-pill jg-pill-active" data-part="main">Main part (4 chords)</button>${SONG_STRUCTURES[song.title] ? `<button class="jg-pill" data-part="whole">Whole song${APPROX_STRUCTURES.has(song.title) ? " (our best guide)" : ""}</button>` : ""}</div>
         <div class="jg-practice-host"></div>
@@ -162,11 +187,20 @@ function openSong(panel, song, { autoplay = false } = {}) {
   let part = "main";
   let box = null;
   // Whole song: the structure's chords, moved to the capo shapes.
-  const shapeFor = (c) => { const t = transposeSymbol(c, -(p.capo || 0)); return chordShape(t) ? t : (chordShape(c) ? c : null); };
+  const down = tuningOffset(song);
+  // The capo shape for a song chord; a colour chord with no shape in that
+  // key (e.g. Abaug) falls back to its plain chord so no bar is skipped.
+  const shapeFor = (c) => {
+    const t = transposeSymbol(c, down - (p.capo || 0));
+    const plain = t.replace(/(7#5|aug)$/, (m) => (m === "aug" ? "" : "7")).replace(/^([A-G](?:#|b)?)(m?)(?:maj7|7|6|9|add9|sus2|sus4|dim7|7b5|m7b5)$/, "$1$2");
+    return [t, c, plain].find((x) => chordShape(x)) || null;
+  };
   const mount = () => {
     if (box) box.destroy();
-    const seq = part === "whole" ? wholeSongChords(song).map(shapeFor).filter(Boolean) : p.shapes.concat(p.shapes);
-    const items = () => chordTimeline(seq.map((c) => ({ chord: c, shape: chordShape(c) })), { beatsPerChord: 4, pattern });
+    const seq = part === "whole"
+      ? wholeSongChords(song).map(({ chord, len }) => ({ chord: shapeFor(chord), beats: len * beatsPerBar })).filter((x) => x.chord)
+      : p.shapes.concat(p.shapes).map((chord) => ({ chord, beats: beatsPerBar }));
+    const items = () => chordTimeline(seq.map(({ chord, beats }) => ({ chord, shape: chordShape(chord), beats })), { beatsPerChord: beatsPerBar, pattern });
     box = createPracticeBox(panel.querySelector(".jg-practice-host"), inst, { items, bpm, modes: ["listen", "wait"], label: "Play along", drums: true, key: `song:${song.title}`, restore: () => inst.fb.showShape(chordShape(p.shapes[0])) });
   };
   mount();
@@ -188,6 +222,14 @@ function openSong(panel, song, { autoplay = false } = {}) {
     part = b.dataset.part;
     panel.querySelectorAll("[data-part]").forEach((x) => x.classList.toggle("jg-pill-active", x === b));
     mount();
+  }));
+  panel.querySelectorAll("[data-lick]").forEach((b) => b.addEventListener("click", () => {
+    const [section, i] = b.dataset.lick.split("|");
+    const so = (song.solos || []).find((x) => x.section === section);
+    const lick = so && licksFor(so.scale, { tuningDown: tuningOffset(song) })?.licks[Number(i)];
+    if (!lick) return;
+    const beat = 60 / (bpm || 80);
+    lickMidis(lick.events).forEach((m, k) => playNote(m, { delay: lick.events[k].start * beat, duration: 0.9 }));
   }));
   wireVideos(panel);
   songArt(song).then((art) => {

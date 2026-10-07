@@ -1,0 +1,84 @@
+/* ===== Jaxx Guitar card scenes (js/scenes.js) ===== */
+.js-scene { display: block; width: 100%; height: 100%; overflow: hidden; }
+.js-scene .js-hand { font: italic 700 22px "Marker Felt", "Comic Sans MS", cursive; fill: #3a2a8a; }
+.js-scene .js-btn { font: 800 7px system-ui, sans-serif; fill: #3a3a42; text-anchor: middle; }
+.js-scene .js-brand { font: italic 800 10px system-ui, sans-serif; fill: #e9f2fb; }
+.js-scene .js-notes text { font: 800 24px system-ui, sans-serif; fill: #2f8f83; opacity: 0.9; }
+.js-scene .js-eq { fill: #3ddc84; }
+.js-scene .js-eq:nth-child(n+7) { fill: #f5c542; }
+.js-scene .js-reel, .js-scene .js-speaker, .js-scene .js-cone { transform-box: view-box; }
+.js-scene .js-plaque-t { font: 800 10.5px Georgia, serif; fill: #3a2a1a; }
+.js-scene .js-plaque { font: 600 9px system-ui, sans-serif; fill: #6b5a48; }
+.js-scene .js-script { font: italic 700 9px "Snell Roundhand", "Brush Script MT", cursive; fill: #f4efe2; }
+.js-scene .js-wind path { fill: none; stroke: #fff; stroke-width: 1.6; opacity: 0.4; stroke-linecap: round; }
+.js-scene .js-banner { font: 900 18px Impact, "Arial Black", system-ui, sans-serif; fill: #fff6e0; letter-spacing: 1px; }
+
+/* ===== Animations (all respect reduced motion) ===== */
+.js-scene .js-reel { transform-box: view-box; }
+.js-scene .js-eq, .js-scene .js-notes text, .js-scene .js-conf, .js-scene .js-fan, .js-scene .js-hand, .js-scene .js-str, .js-scene .js-pick,
+.js-scene .js-legend, .js-scene .js-player-guitar, .js-scene .js-wind path, .js-scene .js-bolt, .js-scene .js-fog, .js-scene .js-phones,
+.js-scene .js-vguitar, .js-scene .js-drums, .js-scene .js-band g, .js-scene .js-haze { transform-box: fill-box; }
+@media (prefers-reduced-motion: no-preference) {
+  .js-scene .js-reel { animation: js-spin 2.4s linear infinite; }
+  .js-s-boombox .js-reel, .js-s-walkman .js-reel { animation-duration: 1.6s; }
+  .js-scene .js-notes text { animation: js-float 2.6s ease-out infinite; }
+  .js-scene .js-notes text:nth-child(2) { animation-delay: 0.65s; } .js-scene .js-notes text:nth-child(3) { animation-delay: 1.3s; } .js-scene .js-notes text:nth-child(4) { animation-delay: 1.95s; }
+  .js-scene .js-led { animation: js-blink 1.2s steps(2) infinite; }
+  /* Boombox: speakers thump on the beat, EQ dances, the box bounces a touch */
+  .js-s-boombox .js-speaker { animation: js-thump 0.58s ease-out infinite; }
+  .js-s-boombox .js-eq { animation: js-eq 0.58s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+  .js-s-boombox .js-eq:nth-child(3n) { animation-duration: 0.43s; } .js-s-boombox .js-eq:nth-child(4n) { animation-duration: 0.71s; }
+  /* Cassette: reels turn, a soft gloss sweeps across */
+  .js-s-cassette .js-reel { animation-duration: 3.2s; }
+  /* Walkman: headphones bob to the music */
+  .js-s-walkman .js-phones { animation: js-bob 0.58s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+  /* Strings: the pick strums down, each string shimmers after it's hit */
+  .js-s-strings .js-pick { animation: js-strum 2.4s ease-in-out infinite; }
+  .js-s-strings .js-str { animation: js-vibrate 2.4s linear infinite; }
+  .js-s-strings .js-str-1 { animation-delay: 0.06s; } .js-s-strings .js-str-2 { animation-delay: 0.12s; } .js-s-strings .js-str-3 { animation-delay: 0.18s; } .js-s-strings .js-str-4 { animation-delay: 0.24s; } .js-s-strings .js-str-5 { animation-delay: 0.3s; }
+  /* Metal: lights sweep, cones pump, the bolt flashes, fog drifts */
+  .js-s-metal .js-beam-1 { animation: js-sweep 4s ease-in-out infinite alternate; transform-box: view-box; transform-origin: 80px 0; }
+  .js-s-metal .js-beam-2 { animation: js-sweep 4.6s ease-in-out infinite alternate-reverse; transform-box: view-box; transform-origin: 320px 0; }
+  .js-s-metal .js-cone, .js-s-concert .js-cone { animation: js-thump 0.45s ease-out infinite; transform-box: view-box; }
+  .js-s-metal .js-bolt { animation: js-flash 2.2s ease-in-out infinite; }
+  .js-s-metal .js-fog, .js-s-concert .js-haze { animation: js-drift 6s ease-in-out infinite alternate; }
+  .js-s-metal .js-vguitar { animation: js-sway 3s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+  /* Concert: beams sweep, crowd bounces, hands wave, confetti falls, the band rocks */
+  .js-s-concert .js-cbeam { animation: js-sweep 3.4s ease-in-out infinite alternate; transform-box: view-box; }
+  .js-s-concert .js-cb-2, .js-s-concert .js-cb-4 { animation-direction: alternate-reverse; animation-duration: 2.8s; }
+  .js-s-concert .js-cb-5 { animation: js-strobe 1.4s steps(2) infinite; }
+  .js-s-concert .js-fan { animation: js-jump 0.5s ease-in-out infinite alternate; transform-box: view-box; }
+  .js-s-concert .js-fan-1 { animation-delay: 0.12s; } .js-s-concert .js-fan-2 { animation-delay: 0.25s; } .js-s-concert .js-fan-3 { animation-delay: 0.37s; }
+  .js-s-concert .js-hand { animation: js-wave 0.5s ease-in-out infinite alternate; transform-origin: 0% 100%; }
+  .js-s-concert .js-conf { animation: js-confetti 3.4s linear infinite; }
+  .js-s-concert .js-guitarist { animation: js-rock 0.5s ease-in-out infinite alternate; transform-box: view-box; }
+  .js-s-concert .js-bassist { animation: js-rock 0.5s ease-in-out 0.25s infinite alternate; transform-box: view-box; }
+  .js-s-concert .js-cymbal { animation: js-crash 0.5s ease-out infinite; transform-box: view-box; }
+  .js-s-concert .js-cymbal-2 { animation-delay: 0.25s; }
+  /* Legends: the guitar turns gently on its stand while light glints across it */
+  .js-scene .js-legend { animation: js-turn 7s ease-in-out infinite; transform-origin: 50% 100%; }
+  /* Desert church solo: the player rocks, wind blows, sun sinks a little */
+  .js-s-cliff .js-player-guitar { animation: js-sway 0.6s ease-in-out infinite alternate; transform-origin: 30% 50%; }
+  .js-s-cliff .js-wind path { animation: js-gust 3s ease-in-out infinite; }
+  .js-s-cliff .js-wind path:nth-child(2) { animation-delay: 1.4s; }
+}
+@keyframes js-spin { to { transform: rotate(360deg); } }
+@keyframes js-float { 0% { opacity: 0; transform: translateY(10px) rotate(-6deg); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(-34px) rotate(8deg); } }
+@keyframes js-blink { 50% { opacity: 0.2; } }
+@keyframes js-thump { 0% { transform: scale(1.05); } 40%, 100% { transform: scale(1); } }
+@keyframes js-eq { from { transform: scaleY(0.35); } to { transform: scaleY(1.1); } }
+@keyframes js-bob { from { transform: translateY(0) rotate(-1deg); } to { transform: translateY(-5px) rotate(1deg); } }
+@keyframes js-strum { 0%, 60%, 100% { transform: translate(0, -70px); opacity: 0; } 8% { opacity: 1; transform: translate(0, -70px); } 22% { transform: translate(6px, 30px); opacity: 1; } 30% { opacity: 0; } }
+@keyframes js-vibrate { 0%, 8%, 60%, 100% { transform: translateY(0); filter: none; } 10%, 14%, 18%, 22% { transform: translateY(1.4px); filter: blur(0.6px); } 12%, 16%, 20%, 24% { transform: translateY(-1.4px); filter: blur(0.6px); } 34% { transform: translateY(0.4px); filter: blur(0.3px); } }
+@keyframes js-sweep { from { transform: rotate(-16deg); } to { transform: rotate(16deg); } }
+@keyframes js-flash { 0%, 70%, 100% { opacity: 1; filter: none; } 74%, 82% { opacity: 0.3; } 78%, 86% { opacity: 1; filter: drop-shadow(0 0 10px #ffd23f); } }
+@keyframes js-drift { from { transform: translateX(-12px); } to { transform: translateX(12px); } }
+@keyframes js-sway { from { transform: rotate(-2deg); } to { transform: rotate(2deg); } }
+@keyframes js-strobe { 0% { opacity: 0.15; } 100% { opacity: 0.6; } }
+@keyframes js-jump { from { transform: translateY(0); } to { transform: translateY(-6px); } }
+@keyframes js-wave { from { transform: rotate(-10deg); } to { transform: rotate(12deg); } }
+@keyframes js-confetti { 0% { transform: translateY(-20px) rotate(0); opacity: 0; } 8% { opacity: 1; } 100% { transform: translateY(260px) rotate(540deg); opacity: 0.9; } }
+@keyframes js-rock { from { transform: rotate(-4deg) translateY(0); } to { transform: rotate(4deg) translateY(-3px); } }
+@keyframes js-crash { 0% { transform: rotate(-8deg); } 60%, 100% { transform: rotate(0); } }
+@keyframes js-turn { 0%, 100% { transform: rotate(-1.4deg) scaleX(1); } 50% { transform: rotate(1.4deg) scaleX(0.97); } }
+@keyframes js-gust { 0% { transform: translateX(-30px); opacity: 0; } 30% { opacity: 0.6; } 100% { transform: translateX(60px); opacity: 0; } }

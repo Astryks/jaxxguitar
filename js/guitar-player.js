@@ -162,14 +162,18 @@ function createGuitarPlayer({ fb, highway, items, bpm = 80, mode = "listen", spe
 
 // Helpers to build timelines
 function chordTimeline(chordShapes, { beatsPerChord = 4, pattern = ["down"] } = {}) {
-  // pattern: strum directions per beat subdivision, e.g. D D U U D U over a bar
+  // pattern: strum directions over one bar, e.g. D D U U D U. Each item
+  // may carry its own length in beats (`beats`, e.g. 2 for half a bar);
+  // the pattern keeps running bar after bar while the chord is held.
   const items = [];
-  chordShapes.forEach(({ chord, shape }, c) => {
-    const step = beatsPerChord / pattern.length;
-    pattern.forEach((dir, k) => {
-      if (!dir) return;
-      items.push({ chord, shape, strum: dir, start: c * beatsPerChord + k * step, dur: step });
-    });
+  const step = 4 / pattern.length;
+  let at = 0;
+  chordShapes.forEach(({ chord, shape, beats = beatsPerChord }) => {
+    for (let k = 0; k * step < beats - 1e-9; k++) {
+      const dir = pattern[k % pattern.length];
+      if (dir) items.push({ chord, shape, strum: dir, start: at + k * step, dur: step });
+    }
+    at += beats;
   });
   return items;
 }

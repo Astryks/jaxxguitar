@@ -201,6 +201,7 @@ const PEOPLE = {
  }
 };
 const VIDEOS = {
+ "something-just-like-this": {"id": "FM7MFYoylVs", "title": "The Chainsmokers & Coldplay - Something Just Like This (Official Lyric Video)", "author_name": "ChainsmokersVEVO"},
  "les-paul": {
   "id": "FfkPaDmik10",
   "title": "Les Paul tours his Mahwah recording studio from an outtake of his documentary ‘Chasing Sound.’",
@@ -583,6 +584,7 @@ const SONG_VIDEOS = {
  "Yellow": "song-yellow",
  "The Night We Met": "song-the-night-we-met",
  "Closer": "song-closer",
+ "Something Just Like This": "something-just-like-this",
  "Riptide": "song-riptide",
  "Levitating": "song-levitating",
  "Lucid Dreams": "song-lucid-dreams",

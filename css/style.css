@@ -18,6 +18,8 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; touch-action: man
   --jg-bad: #c94a4a;
   --jg-purple: #7d5bc9;
   --jg-purple-soft: #ece4fb;
+  --jg-hl: #2a6fb0;          /* highlighted words: pastel-blue family, 4.6:1 or better on its own background */
+  --jg-hl-bg: #e3f2fd;       /* pastel light blue highlighter */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 * { box-sizing: border-box; }
@@ -69,8 +71,8 @@ main { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
 .jg-nut { fill: #f1ead9; }
 .jg-inlay { fill: #e9dcc2; opacity: 0.65; }
 .jg-string { stroke: #e9e2d0; }
-.jg-string-name { font-size: 13px; font-weight: bold; fill: var(--jg-text-dim); }
-.jg-fret-num { font-size: 11px; fill: var(--jg-text-dim); text-anchor: middle; }
+.jg-string-name { font-size: 17px; font-weight: bold; fill: var(--jg-text-dim); }
+.jg-fret-num { font-size: 15px; font-weight: 700; fill: var(--jg-text-dim); text-anchor: middle; }
 .jg-hit { fill: transparent; cursor: pointer; }
 .jg-dot { stroke: #fff; stroke-width: 2; }
 .jg-dot-label { font-size: 12px; font-weight: bold; fill: #fff; text-anchor: middle; pointer-events: none; }
@@ -89,17 +91,20 @@ main { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
 .jg-instrument { margin-top: 8px; }
 
 /* Chord diagrams */
-.jg-diagram { width: 108px; height: auto; display: inline-block; }
+.jg-diagram { width: 150px; height: auto; display: inline-block; }
 .jg-diagram-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
-.jg-dg-name { font-size: 15px; font-weight: bold; text-anchor: middle; fill: var(--jg-text); }
-.jg-dg-line { stroke: #6d5c47; stroke-width: 1.2; }
-.jg-dg-nut { stroke-width: 4; }
-.jg-dg-dot { fill: var(--jg-wood); }
-.jg-dg-finger { font-size: 10px; fill: #fff; text-anchor: middle; font-weight: bold; }
-.jg-dg-open { fill: none; stroke: #6d5c47; stroke-width: 1.4; }
-.jg-dg-top { font-size: 13px; text-anchor: middle; fill: var(--jg-bad); }
-.jg-dg-fretno { font-size: 11px; text-anchor: end; fill: var(--jg-text-dim); }
-.jg-dg-barre { fill: var(--jg-wood); }
+.jg-dg-name { font-size: 15px; font-weight: 800; text-anchor: middle; fill: var(--jg-text); }
+.jg-dg-wood { fill: #f6ead8; }
+.jg-dg-line { stroke: #b49a7a; stroke-width: 1.4; }
+.jg-dg-nut { stroke: #6d5c47; stroke-width: 4.5; }
+.jg-dg-string { stroke: #6d5c47; }
+.jg-dg-sname { font-size: 10px; font-weight: 700; fill: var(--jg-text-dim); }
+.jg-dg-dot { fill: var(--jg-accent); stroke: #fff; stroke-width: 1.2; }
+.jg-dg-finger { font-size: 9px; fill: #fff; text-anchor: middle; font-weight: bold; }
+.jg-dg-open { fill: #fff; stroke: var(--jg-accent-2); stroke-width: 1.6; }
+.jg-dg-top { font-size: 12px; font-weight: 700; text-anchor: middle; fill: var(--jg-bad); }
+.jg-dg-fretno { font-size: 11px; font-weight: 700; text-anchor: middle; fill: var(--jg-text-dim); }
+.jg-dg-barre { fill: var(--jg-accent); opacity: 0.9; }
 
 /* Tab */
 .jg-tab-wrap { overflow-x: auto; background: #fff; border: 1px solid var(--jg-border); border-radius: 10px; margin: 8px 0; }
@@ -524,7 +529,7 @@ body[data-tab="lessons"] .jg-footer, body[data-tab="songs"] .jg-footer { display
 .jg-cmsg { display: flex; align-items: flex-end; gap: 8px; animation: jg-card-in 0.25s ease-out; }
 .jg-cavatar { flex: 0 0 auto; width: 62px; height: 70px; }
 .jg-cbubble { background: #fff; border: 2px solid var(--jg-accent-soft); border-radius: 20px; border-bottom-left-radius: 6px; padding: 12px 16px; font-size: 1.08rem; line-height: 1.45; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); }
-.jg-cbubble b { color: var(--jg-accent); }
+.jg-cbubble b { color: var(--jg-hl); background: var(--jg-hl-bg); border-radius: 5px; padding: 0 3px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 .jg-cme { justify-content: flex-end; }
 .jg-cme .jg-cbubble { background: linear-gradient(135deg, #f2994a, var(--jg-accent)); color: #fff; border: none; border-radius: 20px 20px 6px 20px; }
 .jg-cmore { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; margin: 8px 0; }
@@ -538,7 +543,7 @@ body[data-tab="lessons"] .jg-footer, body[data-tab="songs"] .jg-footer { display
 .jg-card-extra { margin-top: 8px; }
 .jg-card-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 10px; }
 .jg-card-step { flex: 1 1 100%; text-align: center; font-size: 1.05rem; padding: 8px 10px; border-radius: 14px; background: #fff1df; }
-.jg-card-step b { color: var(--jg-accent); }
+.jg-card-step b { color: var(--jg-hl); }
 .jg-card-wrong { border-color: #e4573d !important; background: #fde8e4 !important; }
 .jg-card-next-auto { position: relative; overflow: hidden; }
 @media (max-width: 520px) { .jg-card-phone { margin-left: 0; } .jg-cavatar { width: 52px; height: 60px; } .jg-cbubble { font-size: 1rem; } }
@@ -549,3 +554,157 @@ body.jg-lesson-open main { padding-top: env(safe-area-inset-top, 0px); }
 div.jg-hero-mascot { width: 150px; height: 170px; margin: 0 auto; }
 div.jg-inline-mascot { width: 56px; height: 62px; flex: 0 0 auto; }
 div.jg-funfact-img { width: 110px; height: 124px; float: right; }
+
+/* Guitar solo guide on a song page: the chords under the solo and the scale to use. */
+.jg-solos { margin: 12px 0; padding: 12px 14px; border-radius: 14px; background: var(--jg-card, #fff); border: 1px solid rgba(0, 0, 0, 0.08); }
+.jg-solo { display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-top: 1px dashed rgba(0, 0, 0, 0.1); }
+.jg-solo:first-of-type { border-top: 0; }
+.jg-solo-chords i { font-style: normal; font-weight: 700; margin-right: 6px; }
+.jg-licks { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.jg-lick { display: flex; flex-direction: column; gap: 4px; }
+.jg-lick-tab { overflow-x: auto; }
+.jg-lick-tab svg { max-width: 100%; height: auto; }
+.jg-lick .jg-pill { align-self: flex-start; }
+
+/* ===== 2026-10 owner feedback ===== */
+/* Fretboard: lit chord frets in one colour, fret highlight, finger animation */
+.jg-lit { fill: var(--jg-accent) !important; }
+.jg-barre-lit { fill: var(--jg-accent); stroke: #fff; stroke-width: 2; opacity: 0.85; }
+.jg-fret-hl-box { fill: #e3f2fd; opacity: 0.95; }
+.jg-fret-num-hl { fill: var(--jg-hl); font-size: 18px; }
+.jg-finger-tag { font-size: 15px; font-weight: 800; fill: #fff; paint-order: stroke; stroke: var(--jg-wood); stroke-width: 4px; pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .jg-pop { animation: jg-pop-in 0.45s cubic-bezier(.2,1.5,.4,1); transform-box: fill-box; transform-origin: center; }
+  .jg-morph-lift .jg-dot { filter: drop-shadow(0 4px 3px rgba(0,0,0,0.35)); }
+}
+@keyframes jg-pop-in { from { transform: scale(0.2) translateY(-20px); opacity: 0; } to { transform: none; opacity: 1; } }
+.jg-anchor-ring { fill: none; stroke: #8fd3ff; stroke-width: 4; }
+.jg-morph-pills { justify-content: center; }
+.jg-morph-phase { text-align: center; min-height: 1.4em; margin: 4px 0; }
+.jg-switch-tips { margin: 6px 0 0; padding-left: 20px; line-height: 1.5; }
+
+/* Chord comparison row */
+.jg-compare { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.jg-compare-item { display: flex; flex-direction: column; align-items: center; gap: 2px; background: #fff; border: 2px solid var(--jg-border); border-radius: 14px; padding: 4px 4px 6px; cursor: pointer; color: var(--jg-text-dim); font-size: 0.8rem; }
+.jg-compare-item .jg-diagram { width: 140px; }
+.jg-compare-on { border-color: var(--jg-accent); box-shadow: 0 0 0 3px var(--jg-accent-soft); }
+.jg-compare-note { text-align: center; margin: 8px 0 0; }
+.jg-compare-note b { color: var(--jg-hl); }
+.jg-card-right { border-color: var(--jg-good) !important; background: #e3f6e9 !important; }
+
+/* Strum loop: arrows over the beat */
+.jg-strumloop { background: #fff; border: 1px solid var(--jg-border); border-radius: 16px; padding: 10px 12px; }
+.jg-sl-top { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.jg-sl-chord { font-size: 2rem; font-weight: 900; color: var(--jg-accent); min-width: 2.5em; text-align: center; }
+.jg-sl-seq { display: flex; gap: 6px; }
+.jg-sl-seq i { font-style: normal; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: var(--jg-bg-2); }
+.jg-sl-seq i.jg-sl-now { background: var(--jg-accent); color: #fff; }
+.jg-sl-row { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin: 8px 0 4px; }
+.jg-sl-slot { display: flex; flex-direction: column; align-items: center; border-radius: 12px; padding: 4px 0; background: var(--jg-bg); transition: background 0.08s, transform 0.08s; }
+.jg-sl-arrow { font-size: 2rem; line-height: 1.1; font-weight: 900; color: var(--jg-wood); }
+.jg-sl-miss .jg-sl-arrow { opacity: 0.18; }
+.jg-sl-count { font-size: 0.85rem; font-weight: 800; color: var(--jg-text-dim); }
+.jg-sl-on { background: #e3f2fd; transform: scale(1.06); }
+.jg-sl-on.jg-sl-down .jg-sl-arrow, .jg-sl-on.jg-sl-up .jg-sl-arrow { color: var(--jg-hl); }
+@media (prefers-reduced-motion: no-preference) {
+  .jg-sl-on.jg-sl-down .jg-sl-arrow { animation: jg-sl-down 0.25s ease-out; }
+  .jg-sl-on.jg-sl-up .jg-sl-arrow { animation: jg-sl-up 0.25s ease-out; }
+}
+@keyframes jg-sl-down { from { transform: translateY(-10px); } to { transform: none; } }
+@keyframes jg-sl-up { from { transform: translateY(10px); } to { transform: none; } }
+.jg-sl-legend { text-align: center; }
+.jg-sl-legend b { color: var(--jg-hl); }
+
+/* Song cards at the end of each lesson */
+.jg-songcard { background: #fff; border: 1px solid var(--jg-border); border-radius: 16px; padding: 10px 12px; margin-top: 8px; }
+.jg-songcard-head { display: flex; flex-direction: column; }
+.jg-songcard-head b { font-size: 1.3rem; color: var(--jg-wood); }
+.jg-songcard-n { font-size: 0.8rem; font-weight: 800; color: var(--jg-hl); text-transform: uppercase; letter-spacing: 0.5px; }
+.jg-songcard-how b { color: var(--jg-hl); }
+.jg-songcard-open { margin-top: 4px; }
+
+/* Whole guitar, headstock, finger strum */
+.jg-guitar-wrap, .jg-fingerstrum-wrap { background: #fff; border: 1px solid var(--jg-border); border-radius: 16px; padding: 6px; }
+.jg-guitar-art { display: block; width: 100%; height: auto; }
+.jg-ga-head { fill: #6b3f1f; } .jg-ga-peg { fill: #d9d2c4; stroke: #8a7a64; }
+.jg-ga-neck { fill: #6b3f1f; } .jg-ga-nut { fill: #f1ead9; } .jg-ga-fret { stroke: #d9d2c4; stroke-width: 1.5; }
+.jg-ga-body { stroke: #8a5a33; stroke-width: 2; } .jg-ga-hole { fill: #3a2414; stroke: #8a5a33; stroke-width: 4; }
+.jg-ga-bridge { fill: #4a2c16; } .jg-ga-string { stroke: #efe6d2; }
+.jg-ga-label text { font-size: 17px; font-weight: 800; fill: var(--jg-hl); text-anchor: middle; }
+.jg-ga-label .jg-ga-small { font-size: 13px; font-weight: 600; fill: var(--jg-text-dim); }
+.jg-ga-small { font-size: 12px; fill: var(--jg-text-dim); }
+.jg-ga-mid { text-anchor: middle; }
+.jg-ga-arrow { stroke: var(--jg-hl); stroke-width: 3; marker-end: none; }
+.jg-hs-wrap { max-width: 520px; margin: 0 auto; }
+.jg-headstock { display: block; width: 100%; height: auto; }
+.jg-hs-head { fill: #6b3f1f; } .jg-hs-neck { fill: #7a4a26; } .jg-hs-nut { fill: #f1ead9; } .jg-hs-fret { stroke: #d9d2c4; stroke-width: 2; }
+.jg-hs-string { fill: none; stroke: #d8cfbb; }
+.jg-hs-active { stroke: #8fd3ff; filter: drop-shadow(0 0 3px #8fd3ff); }
+.jg-hs-ok { stroke: var(--jg-good); filter: drop-shadow(0 0 3px var(--jg-good)); }
+.jg-hs-done { stroke: #9fd8ae; }
+.jg-hs-peg { cursor: pointer; }
+.jg-hs-peg circle { fill: #f3efe6; stroke: #8a7a64; stroke-width: 2; }
+.jg-hs-peg text { font-size: 16px; font-weight: 900; text-anchor: middle; fill: var(--jg-text); pointer-events: none; }
+.jg-hs-peg-active circle { fill: #e3f2fd; stroke: var(--jg-hl); stroke-width: 3; }
+.jg-hs-peg-done circle { fill: #e3f6e9; stroke: var(--jg-good); }
+.jg-hs-peg-ok circle { fill: var(--jg-good); } .jg-hs-peg-ok text { fill: #fff; }
+.jg-hs-name { font-size: 13px; font-weight: 800; fill: var(--jg-text-dim); }
+.jg-hs-name-active { fill: var(--jg-hl); }
+.jg-fingerstrum { display: block; width: 100%; max-width: 360px; height: auto; margin: 0 auto; overflow: hidden; }
+.jg-fs-string { stroke: #8a7a64; } .jg-fs-name { font-size: 12px; font-weight: 800; fill: var(--jg-text-dim); }
+.jg-fs-skin { fill: #f5c9a5; stroke: #c98d62; stroke-width: 2; } .jg-fs-nail { fill: #fff1e8; stroke: #d9a184; stroke-width: 1.5; }
+.jg-fs-dir { font-size: 15px; font-weight: 900; fill: var(--jg-hl); opacity: 0; }
+.jg-fs-hand { transform: translateY(20px); }
+@media (prefers-reduced-motion: no-preference) {
+  .jg-fs-hand { animation: jg-fs-move 1.6s ease-in-out infinite; }
+  .jg-fs-down { animation: jg-fs-down 1.6s linear infinite; }
+  .jg-fs-up { animation: jg-fs-up 1.6s linear infinite; }
+}
+@keyframes jg-fs-move { 0% { transform: translateY(20px); } 45% { transform: translateY(150px); } 55% { transform: translateY(150px); } 100% { transform: translateY(20px); } }
+@keyframes jg-fs-down { 0%, 45% { opacity: 1; } 46%, 100% { opacity: 0; } }
+@keyframes jg-fs-up { 0%, 54% { opacity: 0; } 55%, 99% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Home: the whole lesson list, with each lesson's first card number */
+.jg-all-lessons { max-width: 620px; margin: 10px auto 0; }
+.jg-all-lessons > summary { display: flex; align-items: center; justify-content: center; gap: 8px; list-style: none; cursor: pointer; }
+.jg-all-lessons .jg-roadmap-list { max-height: none; }
+.jg-node-text { flex: 1; }
+.jg-node-card { flex: 0 0 auto; font-size: 0.75rem; font-weight: 800; color: var(--jg-hl); background: var(--jg-hl-bg); border-radius: 999px; padding: 2px 8px; }
+.jg-cards-count { background: var(--jg-hl-bg); color: var(--jg-hl); }
+.jg-barre-mover .jg-bm-roots { justify-content: center; }
+.jg-bm-dg { display: flex; justify-content: center; }
+.jg-bm-say { text-align: center; }
+.jg-cd-heard { text-align: center; min-height: 1.3em; font-weight: 700; }
+
+/* Splash: just Jaxx first, then home (like Hayden Keys) */
+.jg-intro { position: fixed; inset: 0; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: calc(env(safe-area-inset-top, 0px) + 20px) 24px calc(env(safe-area-inset-bottom, 0px) + 24px); text-align: center; background: linear-gradient(160deg, #fbf4ea 0%, #f6d9b5 60%, #e3f2fd 100%); transition: opacity 0.35s, transform 0.35s; overflow: hidden; cursor: pointer; }
+.jg-intro-out { opacity: 0; transform: scale(1.04); pointer-events: none; }
+body.jg-intro-open { overflow: hidden; }
+.jg-intro-cat { width: min(260px, 62vw); height: min(260px, 62vw); }
+.jg-intro-cat svg { width: 100%; height: 100%; }
+.jg-intro-title { margin: 0; font-size: 2.6rem; font-weight: 900; color: var(--jg-wood); }
+.jg-intro-go { margin-top: 8px; min-width: 220px; min-height: 58px; border: none; border-radius: 999px; font-size: 1.3rem; font-weight: 900; color: #fff; cursor: pointer; background: linear-gradient(135deg, #f2994a, var(--jg-accent)); box-shadow: 0 10px 24px rgba(196, 106, 31, 0.35); }
+.jg-intro-notes span { position: absolute; font-size: 28px; color: var(--jg-accent); opacity: 0.45; }
+.jg-intro-notes span:nth-child(1) { left: 10%; } .jg-intro-notes span:nth-child(2) { left: 30%; color: var(--jg-hl); } .jg-intro-notes span:nth-child(3) { left: 55%; } .jg-intro-notes span:nth-child(4) { left: 75%; color: var(--jg-hl); } .jg-intro-notes span:nth-child(5) { left: 90%; }
+@media (prefers-reduced-motion: no-preference) {
+  .jg-intro-cat { animation: jg-pop-in 0.6s cubic-bezier(.2,1.4,.4,1); }
+  .jg-intro-notes span { animation: jg-intro-float 6s linear infinite; }
+  .jg-intro-notes span:nth-child(2) { animation-delay: 1.2s; } .jg-intro-notes span:nth-child(3) { animation-delay: 2.4s; } .jg-intro-notes span:nth-child(4) { animation-delay: 3.6s; } .jg-intro-notes span:nth-child(5) { animation-delay: 4.8s; }
+}
+@keyframes jg-intro-float { from { top: 105%; transform: rotate(-10deg); } to { top: -10%; transform: rotate(10deg); } }
+@media (orientation: landscape) and (max-height: 500px) { .jg-intro { flex-direction: row; flex-wrap: wrap; gap: 4px 24px; } .jg-intro-cat { width: 160px; height: 160px; } .jg-intro-title { font-size: 2rem; } }
+.jg-allcorrect { display: flex; flex-direction: column; gap: 8px; align-items: stretch; max-width: 420px; margin: 0 auto; }
+.jg-card-board { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+
+/* Jaxx the puppy: the logo is his truck, the splash is his show, and each
+   card shows one animation on its first message (css/puppy.css). */
+.jg-header .jg-logo, .jg-logo { width: 92px !important; height: 56px !important; }
+.jg-intro-scene { width: min(440px, 92vw) !important; height: auto !important; aspect-ratio: 400 / 240; }
+.jg-avatar-scene { width: 132px !important; height: 80px !important; }
+@media (max-width: 520px) { .jg-avatar-scene { width: 100px !important; height: 60px !important; } }
+/* Lesson pages with several messages: only the first shows Jaxx. */
+.jg-say ~ .jg-say .jg-avatar { display: none; }
+.jg-legend-fact { margin-top: 8px; padding: 8px 10px; border-radius: 10px; background: #fff6e0; font-size: 0.88rem; line-height: 1.35; }
+.jg-avatar-scene { border-radius: 12px; overflow: hidden; }
+.jg-avatar-scene { width: 180px !important; height: 108px !important; }
+@media (max-width: 520px) { .jg-avatar-scene { width: 132px !important; height: 80px !important; } }
