@@ -15,7 +15,7 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 **Latest build:** 18 uploaded; build 19 is ready to archive (see the 2026-10-07 late section at the bottom: re-checked songs, solo cards, the beagle and music scenes). **Not submitted to App Review yet.**
 
 ### Next steps (in order)
-1. **TestFlight:** check the latest build appears in App Store Connect → TestFlight (processing takes 5–30 min; Apple emails if a build fails processing). Add it to the internal tester group and install on the phone.
+1. **Submitted for App Review 2026-10-07** (see the last section). Watch App Store Connect for messages; release manually after approval.
 2. **Test on a phone:** Wait for me with the microphone, Guess the song with a real recording, Main/Whole song on a few new songs, landscape player.
 3. **App Store version page (owner, signed in):** select the latest build, upload screenshots from `ios/screenshots/app-store/`, paste text from `ios/APP_STORE_LISTING.md`, Age Rating, App Privacy ("Data Not Collected") → Publish, Content Rights, App Review contact + notes. **Submit for Review only when the owner says so.**
 4. Data clean-up: 15 older songs still have a placeholder instead of chords ("insufficient agreement…" - e.g. Wildest Dreams, Happy, Africa, Bohemian Rhapsody, Misty, Stella by Starlight, November Rain, Still D.R.E.). They rely on their notes/song map; research proper chords or hide them.
@@ -335,3 +335,10 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **Screenshots:** `ios/screenshots/app-store-v2/` (6 iPhone 6.9", 6 iPad 13"); Tip jar review screenshot in `ios/screenshots/review/tip-jar.png`.
 - **Tested (final):** all 270 library songs open, autoplay, Whole song and Main part all play: 0 problems. All lessons (387 cards/pages) stepped Next/Back/Close with sound checks: 0 errors, 0 broken buttons, no sound left playing. Every scene renders.
 - **TestFlight:** build 20 (tip jar, thank-you, cliff home, videos) archived 2026-10-07; upload waits for the owner to sign in to Xcode again (Settings > Accounts), then run the export step.
+
+## 2026-10-07 (late night): submitted for App Review
+- **Submitted 2026-10-07** (owner asked): version 1.0 with build 20 plus the three tips (Thank you US$1, Bravo US$5, Encore US$10) in one review submission. Status: **Waiting for Review**. Release is set to **manual**, so after approval nothing goes live until the owner presses Release.
+- **TestFlight:** build 20 uploaded and processed; the "Team" group gets every build automatically.
+- **Store page:** 6 iPhone 6.9" and 6 iPad 13" screenshots from `ios/screenshots/app-store-v2/` uploaded (English U.S.; Australia and UK listings use the same). Each tip has its review screenshot.
+- **Filled in:** App Review contact (same as the owner's other apps), review notes, Content Rights (uses third-party content: iTunes album art, YouTube embeds, chord progressions), App Privacy published as "Data Not Collected", export compliance (no non-exempt encryption).
+- **Still for the owner:** Paid Applications Agreement, tax and banking must be active before tips can be sold; watch for App Review messages in App Store Connect; press Release after approval; Google Search Console verification and sitemap.
