@@ -7,7 +7,7 @@
 // createStrumLoop(host, inst, { chords, pattern, bpm, beatsPerChord })
 //   pattern: 8 slots per bar (eighth notes): "down" | "up" | null
 
-import { getAudioContext, strum } from "./guitar-audio.js";
+import { getAudioContext, strum, stopAllSound } from "./guitar-audio.js";
 import { chordShape, shapeMidis } from "./guitar-theory.js";
 import { icon } from "./icons.js";
 
@@ -80,6 +80,7 @@ function createStrumLoop(host, inst, { chords = ["G"], pattern = DOWNS, bpm = 70
     host.querySelector(".jg-strumloop").classList.add("jg-sl-playing");
   }
   function stop() {
+    if (timer) stopAllSound();
     if (timer) clearInterval(timer);
     if (raf) cancelAnimationFrame(raf);
     timer = null; raf = null;

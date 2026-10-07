@@ -278,7 +278,7 @@ const SCALES = {
 };
 // Every note of the scale inside a 4-fret window starting at lowFret,
 // low E → high e, each note higher than the last (one pass up the neck in
-// position) — the standard "box" a guitarist learns.
+// position) - the standard "box" a guitarist learns.
 function scaleBox(rootPc, intervals, lowFret, width = 4) {
   const pcs = new Set(intervals.map((iv) => (rootPc + iv) % 12));
   const out = [];

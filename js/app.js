@@ -1,8 +1,10 @@
 import { puppySvg, nextPuppyScene } from "./puppy.js";
+import { guitarLogo } from "./scenes.js";
 import { icon } from "./icons.js";
 // Jaxx Guitar entry point: tabs, the level chip, toasts and confetti.
 
-import { renderLessons } from "./lessons-ui.js";
+import { renderLessons, leaveLessons } from "./lessons-ui.js";
+import { stopAllSound } from "./guitar-audio.js";
 import { renderSongs, leaveSongs } from "./songs-ui.js";
 import { renderPractice, leavePractice } from "./practice-ui.js";
 import { renderStringTuner } from "./tuner.js";
@@ -25,17 +27,21 @@ const panels = {
 window.addEventListener("jg-show", (e) => show(e.detail));
 let tunerWidget = null;
 
+// Leaving a tab: stop its loops, timers and microphone, and silence any
+// notes still ringing or scheduled.
 function leave() {
+  leaveLessons();
   leaveSongs();
   leavePractice();
   if (tunerWidget) tunerWidget.destroy();
   tunerWidget = null;
   disableMic();
+  stopAllSound();
 }
 
-// The logo: Jaxx the puppy in his pickup truck (js/puppy.js).
+// The logo: a sunburst guitar (js/scenes.js guitarLogo).
 const logo = document.getElementById("jg-logo-puppy");
-if (logo) logo.innerHTML = puppySvg("truck", { label: "Jaxx Guitar" });
+if (logo) logo.innerHTML = guitarLogo({ label: "Jaxx Guitar" });
 // Big home tiles: each tab gets one of our own icons.
 const TAB_ICONS = { lessons: "guitar", songs: "song", practice: "play", tuner: "tuner" };
 document.querySelectorAll(".jg-tab[data-tab]").forEach((b) => {
@@ -53,9 +59,9 @@ function show(tab) {
   if (tab === "practice") renderPractice(el);
   if (tab === "tuner") {
     el.innerHTML = `<div class="jg-card"><div class="jg-hero-mascot">${puppySvg("tangled")}</div><h2 style="margin:4px 0">Tune your guitar</h2>
-      <p>Standard tuning, thickest to thinnest: <strong>E A D G B E</strong>. Pick a string, tap <em>Start listening</em> and play it — turn the peg until the meter goes green. It moves on to the next string by itself.</p>
+      <p>Pick a string, tap <em>Start listening</em> and play it. Turn the peg until it goes green.</p>
       <div class="jg-tuner-host"></div></div>`;
-    tunerWidget = renderStringTuner(el.querySelector(".jg-tuner-host"));
+    tunerWidget = renderStringTuner(el.querySelector(".jg-tuner-host"), { tunings: true });
   }
   if (tab === "about") renderAbout(el);
   if (tab === "how") renderHow(el);

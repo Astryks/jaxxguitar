@@ -2,19 +2,19 @@
 // view from a timeline of notes and chords, and listens to every input
 // (fretboard taps, the microphone) through input-hub.js.
 //
-//   mode "listen" — the app plays it for you (sound + falling notes).
-//   mode "wait"   — the notes stop at the fretboard until you play them.
+//   mode "listen" - the app plays it for you (sound + falling notes).
+//   mode "wait"   - the notes stop at the fretboard until you play them.
 //                   Single notes must match exactly (the mic hears one note
 //                   at a time well). For a chord, the microphone can't
 //                   reliably pick out six strings at once, so wait mode
 //                   moves on when it hears any note that belongs to the
-//                   chord — a strum of the right shape — and says so.
-//   mode "timed"  — single notes only: the notes keep falling; each counts
+//                   chord - a strum of the right shape - and says so.
+//   mode "timed"  - single notes only: the notes keep falling; each counts
 //                   if played within ±0.25s. Scored at the end.
 //
 // Timeline items: { start, dur } in beats plus either
-//   { string, fret }            — a single note (string 0 = low E), or
-//   { chord: "G", shape, strum: "down"|"up" } — a strummed chord.
+//   { string, fret }            - a single note (string 0 = low E), or
+//   { chord: "G", shape, strum: "down"|"up" } - a strummed chord.
 
 import { onNoteOn } from "./input-hub.js";
 import { playNote, strum } from "./guitar-audio.js";
@@ -66,7 +66,7 @@ function createGuitarPlayer({ fb, highway, items, bpm = 80, mode = "listen", spe
         stats.right++;
         stats.combo++;
         stats.maxCombo = Math.max(stats.maxCombo, stats.combo);
-        // Played it before it landed: that's fine in wait mode — jump the
+        // Played it before it landed: that's fine in wait mode - jump the
         // music forward to it rather than ignoring the note.
         if (clock < e.t) clock = e.t;
         idx++;

@@ -1,4 +1,4 @@
-# Jaxx Guitar — status
+# Jaxx Guitar - status
 
 _Last updated 2026-10-07._ This file is the checklist of everything requested for Jaxx Guitar, so nothing gets missed. ✅ done · 🟡 in progress / waiting on something · ⬜ not started.
 
@@ -18,8 +18,8 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 1. **TestFlight:** check the latest build appears in App Store Connect → TestFlight (processing takes 5–30 min; Apple emails if a build fails processing). Add it to the internal tester group and install on the phone.
 2. **Test on a phone:** Wait for me with the microphone, Guess the song with a real recording, Main/Whole song on a few new songs, landscape player.
 3. **App Store version page (owner, signed in):** select the latest build, upload screenshots from `ios/screenshots/app-store/`, paste text from `ios/APP_STORE_LISTING.md`, Age Rating, App Privacy ("Data Not Collected") → Publish, Content Rights, App Review contact + notes. **Submit for Review only when the owner says so.**
-4. Data clean-up: 15 older songs still have a placeholder instead of chords ("insufficient agreement…" — e.g. Wildest Dreams, Happy, Africa, Bohemian Rhapsody, Misty, Stella by Starlight, November Rain, Still D.R.E.). They rely on their notes/song map; research proper chords or hide them.
-5. Later (not in v1): tip jar via Apple In-App Purchase (code existed in build 30/12, removed); left-handed fretboard (Jaxx).
+4. Data clean-up: 15 older songs still have a placeholder instead of chords ("insufficient agreement…" - e.g. Wildest Dreams, Happy, Africa, Bohemian Rhapsody, Misty, Stella by Starlight, November Rain, Still D.R.E.). They rely on their notes/song map; research proper chords or hide them.
+5. Tip jar is back (owner asked 2026-10-07): create the three tip In-App Purchases in App Store Connect (see the Tip jar section at the bottom). Left-handed fretboard (Jaxx) is done.
 6. Next apps after Hayden Keys and Jaxx Guitar: fitness, jiu jitsu, then public speaking, singing, investing & markets, dance.
 
 ### How to build and upload (both apps)
@@ -33,7 +33,7 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
 
 ### Rules we keep
 - Never print song lyrics or copyrighted melodies/tabs: chords, keys and song maps only. Videos are official uploads, verified with YouTube oEmbed.
-- No tip jar / payments in v1. Don't submit for review until the owner says so. The owner types all passwords.
+- Payments: only the optional Tip jar (Apple In-App Purchase, unlocks nothing, app only). Don't submit for review until the owner says so. The owner types all passwords.
 
 ---
 
@@ -128,16 +128,16 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
   - Teaching-key labels like "G major (original recording in Ab major)".
 - **iOS build 5.**
 
-## 2026-10-06 — iOS build 6
+## 2026-10-06 - iOS build 6
 - ShazamKit now enabled for com.jaxxguitar.app (new provisioning profile).
 - Uploads decode natively on iPhone (AVFoundation, any format iOS plays incl. videos), web decoder as fallback.
 
-## 2026-10-07 — iOS build 7
+## 2026-10-07 - iOS build 7
 - Added Comfortably Numb (Pink Floyd, 1979): verse Bm A G Em Bm, chorus in D (D A D A C G D), song structure incl. both solo sections; solos not transcribed.
 - Added Creep (Radiohead, 1992): G B C Cm loop (I III IV iv), song structure, official video (Radiohead channel, oEmbed-verified).
 - New lesson "Looping: rhythm and lead" (after the minor pentatonic): rhythm vs lead with an Am G F G loop, with a friend (swap roles), on your own with the looping backing track, the loop pedal (Ed Sheeran: Boss RC-20XL first, later the custom "Chewie" rig by his tech Trevor Dawkins; NPR Tiny Desk video), and a beginner gear list (Ditto / RC-1 / RC-5 with Reverb prices, cables, amp, acoustic pickup, 9V power).
 
-## 2026-10-07 — iOS build 8 (Hayden Keys feedback, ported to guitar)
+## 2026-10-07 - iOS build 8 (Hayden Keys feedback, ported to guitar)
 - Clean home: tagline "Learn any song on the guitar for free!", four big tiles with our own icons (Lessons / Songs / Practice / Tuner; About moved to the footer), one Start/Continue card with Jaxx, and "Upload any song and we'll find the chords for you" (opens Practice → Upload). Level chip, quests, review and roadmap no longer on the home screen; footer only on About/Songs.
 - Song screen: album artwork (iTunes Search, cached; privacy updated), key, chords section by section, official video (same verified list as Hayden Keys), Play "Main part (4 chords)" / "Whole song" (structure transposed to the capo shapes).
 - Our own icons replace emoji in the practice controls (Listen / Wait for me / Play in time, Loop, Beat, Microphone) and the Practice/Upload screen; "Guess the song" without the Shazam name.
@@ -147,7 +147,7 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
 - Chord pages: "I know it's hard to play a chord on the app… tap the notes one at a time; the real practice is on your guitar: press all the strings and strum them together."
 - New lesson "Music has flavours: genres" (after 7th chords): pop (G D Em C), rock (D C G, Sweet Home Alabama), blues (12-bar A7 D7 E7), jazz (2-5-1 Dm7 G7 Cmaj7), reggae (off-beat upstrokes, Three Little Birds A D E), classical (fingerpicking).
 - New final lesson "Chord Ear Gym": happy or sad, all 24 chords with 4 choices, then chords played different ways (strummed / picked / higher up); wrong answers compare both chords; shape shown on the fretboard.
-- Fun fact #2 (always second): "Who invented the guitar?" — evolved from the lute and vihuela; Antonio de Torres shaped the modern guitar in the 1850s–60s (bigger body, thinner top, fan bracing); his papier-mâché guitar; photos: Torres (public domain) and a Torres guitar at the Museu de la Música de Barcelona (CC BY-SA 3.0, credited).
+- Fun fact #2 (always second): "Who invented the guitar?" - evolved from the lute and vihuela; Antonio de Torres shaped the modern guitar in the 1850s–60s (bigger body, thinner top, fan bracing); his papier-mâché guitar; photos: Torres (public domain) and a Torres guitar at the Museu de la Música de Barcelona (CC BY-SA 3.0, credited).
 
 ## Where things stand (2026-10-07)
 - **TestFlight:** **build 8 uploaded** (2026-10-07: Hayden Keys feedback adapted for guitar, on top of build 7's Comfortably Numb, Creep and looping lesson).
@@ -159,7 +159,7 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
 - After Hayden Keys and Jaxx Guitar: a **fitness app** and a **jiu jitsu app**.
 - More app ideas after those: **public speaking**, **singing**, **investing and markets**, and **dance**.
 
-## 2026-10-07 — iOS build 9
+## 2026-10-07 - iOS build 9
 - **Songs tab, Netflix-style:** genre rows stacked vertically, each scrolling sideways with album-cover cards (165/188 covers from iTunes Search, looked up at build time; letter tile otherwise); search and level filters kept; tapping a card opens the song and starts the play-along right away.
 - **Chord fact-check** (same corrections as Hayden Keys build 27) plus Comfortably Numb: the first solo is over the chorus chords (D A D A C G C G).
 - **Uploads:** 2 MB pieces to the native decoder; real error shown if it fails.
@@ -285,3 +285,53 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 **Other:** HTTPS now enforced on jaxxguitar.com (the certificate had never been issued; re-adding the custom domain fixed it). Service worker caches every app file.
 
 **Tested 2026-10-07 (late):** every lesson (67) opened, stepped Next/Back and closed, and every library song (270) opened with Whole song played and Main part: 0 page errors. `npm run check` 139 chords, 0 problems; `npm run test:pitch` 99% of frames within 10 cents, 0 octave errors; `npm run test:chords` 133/136 strum changes counted.
+
+## 2026-10-07 (night): guitar logo, guitar of the day, real proportions
+- **Logo and app icon:** a Les Paul-style single-cut in the honey-amber flame-top finish made famous by Slash, with gold notes (`guitarLogo()` in js/scenes.js; no brand logo), in the header, on the splash and as the app icon.
+- **Home stage:** a different legendary guitar on every visit (dealt so none repeats until all have shown): it drops onto its museum stand with a spin and sparkles, then sways under the spotlight, with its fact underneath.
+- **Real proportions:** Jaxx is a ~30 cm beagle pup next to a ~4.8 m pickup: in the truck bed you see his head and ears over the side; at the wheel, his head in the window; the tennis ball is tennis-ball sized.
+- **Second chord check:** see Hayden Keys STATUS (shared song data); Fade to Black's intro/outro moved to B minor.
+- **TestFlight:** build 19 uploaded 2026-10-07.
+
+## 2026-10-07 audit
+**Bugs fixed**
+- Sound kept playing after leaving a screen (strum loops, play-alongs, licks, ear-gym picks): new `stopAllSound()` in guitar-audio.js, called when a tab, lesson, card, song or practice section closes, and on Stop. Switching tabs now also cleans up the open lesson (it used to leave its loops, timers and the `jg-lesson-open` class running).
+- Practice → Upload: "Guess the song" button showed literal `${icon(...)}` text; a second upload left the first song playing; picking the same file twice did nothing; `audio.play()` errors were unhandled.
+- Daily review: unreachable (no button) and used old lesson ids, so Am/E/A/Dm never counted; its timer kept running after leaving. Now a "2-minute review" button on home after Lesson 1.
+- Microphone: closing one listener (tuner) no longer switches iOS back to "playback" while another is still listening (ref-counted); double-tapping Start listening no longer opens two mic streams; friendly mic errors in the practice box.
+- Silent cards: the one-minute challenge chord boxes and tab pages now play (tap a chord / "Hear it").
+- Songs: "Main part (4 chords)" label (not always 4), two "Speed" rows renamed (Tempo).
+- Service worker: settings.js added, cache bumped to v7.
+
+**New:** left-handed (mirrored) fretboard and chord boxes (About & settings, and the Left-handed lesson; `js/settings.js`); Tuner tab tunes Standard, Drop D, DADGAD and Open G.
+
+**Text:** developer wording removed (upload status messages, "basic-pitch", "vendored", TensorFlow), upload disclaimer and notes cut to one or two lines, Customise rows given labels, duplicated scale tips and tuning instructions removed, About rewritten, privacy network section split into a short list, em dashes replaced with hyphens in every file we own.
+
+**Facts corrected:** November Rain (synth strings, not an orchestra; album year 1991; song is in B major), Torres (built his guitars in Seville; perfected, didn't invent, fan bracing), Les Paul (roadhouses), Prince 2004 (a stagehand caught him at the stage edge), A Dorian (pentatonic + B and F#), Frankenstrat (Strat-style body + Gibson pickup).
+
+**For the other engineer (files not edited):** scenes.js LEGENDS: Elvis caption mixes up guitars (the leather-covered one is a 1955 Martin D-28; no source for "$175 / $8 trade-in"); Red Special caption says the guitar came from the mantel, only the neck did. songs-data.js: Vintersaga "Monica Törnell's breakthrough hit in 1984" (her breakthrough was 1972; Ted Ström wrote and first released it). songs-data.js and world-songs.js still have em dashes in user text. guitar-player.js Wait for me could use chord-detect.js for chords. More original licks per solo study (solo-licks.js) not done.
+
+**Tested:** all 67 lessons (281 cards/pages) opened, sound buttons pressed, Next/Back/Close checked: 0 errors, 0 broken buttons, no sound after closing. All 270 library songs opened (autoplay), Whole song, Main part, back: 0 errors, all play (one first-song-after-load timing miss in the harness only). Tab-switch tests: no sound left playing. `npm run check` 0 problems; `test:pitch` 99.0%, 0 octave errors; `test:chords` 90.8% any-of-8, challenge counts unchanged.
+
+## 2026-10-07 (late night): teacher and inspiration videos, Tip jar, App Store setup
+
+**Videos**
+- **Teacher videos** (`js/teach-videos.js`): "Watch a teacher" strips on pressing strings, tuning, first chords, strumming without a pick, changing chords, open-to-barre, barre chords and the capo, from reputable YouTube teachers, all checked with YouTube oEmbed.
+- **Get inspired** (`js/inspire.js`, `js/inspire-data.js`): live performances for 30 songs (mostly advanced), plus 14 general picks on advanced lessons.
+- **Song videos re-checked:** the artist's official acoustic version where one exists, otherwise the official live or music video.
+
+**Tip jar (owner asked 2026-10-07)**
+- A quiet, collapsed "Tip jar · optional" line at the bottom of the home screen (`js/tipjar.js`), iPhone/iPad app only. Three buttons (Thank you, Bravo, Encore) with Apple's localized prices.
+- Native StoreKit 2 plugin restored (`ios/App/App/TipJarPlugin.swift`, registered in JGBridgeViewController).
+- In-App Purchases created (consumable, 175 regions): `com.jaxxguitar.app.tip.small` US$1.00, `.medium` US$5.00, `.large` US$10.00. Each still needs a review screenshot (owner; file in `ios/screenshots/review/`).
+
+**App Store Connect (filled in 2026-10-07)**
+- Name "Jaxx Guitar: Lessons & Tuner", subtitle "Learn Easy Chords and Songs", keywords, promotional text, description, URLs, copyright, review notes, age rating; English (Australia) and English (UK) listings with extra keywords. Version set to manual release. App Privacy filled ("Data Not Collected"), not published.
+- **Left for the owner:** screenshots (`ios/screenshots/app-store-v2/`) and IAP review screenshots; App Review contact; Content Rights; Publish App Privacy; Paid Applications Agreement, tax and banking; select build 20; Add for Review with the tips; submit when ready.
+- **SEO:** title, description, Open Graph, structured data, Smart App Banner (6819445036), `robots.txt`, `sitemap.xml`; Search Ads plan in `ios/SEARCH_ADS_PLAN.md`.
+- **Donor thank-you** (`js/thanks.js`): after a tip, Jaxx strums once, the sound hole glows and a warm heart floats out, his ears lift and tail wags, with three plucked notes. Bravo adds notes; Encore adds a spotlight, a bow with a paw on his chest, and confetti. Supporters get a gold heart by the logo, a gold bandana everywhere, and "Replay thank you".
+- **Home screen:** no dog on the home card any more; it shows the November Rain cliff moment instead (redrawn `cliff()`: a top-hatted guitarist with a honey-amber Les Paul on a desert cliff at sunset, the white church far behind; one big string bend, then wind in the hair and coat). The legendary guitar of the day stays above it.
+- **Fixed:** the first card in each library row was clipped by snap scrolling; the puppy art now mounts one shared SVG defs copy so it can't lose its colours when the header is hidden.
+- **Screenshots:** `ios/screenshots/app-store-v2/` (6 iPhone 6.9", 6 iPad 13"); Tip jar review screenshot in `ios/screenshots/review/tip-jar.png`.
+- **Tested (final):** all 270 library songs open, autoplay, Whole song and Main part all play: 0 problems. All lessons (387 cards/pages) stepped Next/Back/Close with sound checks: 0 errors, 0 broken buttons, no sound left playing. Every scene renders.
+- **TestFlight:** build 20 (tip jar, thank-you, cliff home, videos) archived 2026-10-07; upload waits for the owner to sign in to Xcode again (Settings > Accounts), then run the export step.

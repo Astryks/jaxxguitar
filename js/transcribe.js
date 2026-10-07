@@ -1,11 +1,11 @@
-// Shared "upload your own recording → notes" pipeline — used by both
+// Shared "upload your own recording → notes" pipeline - used by both
 // the Practice tab and the Discover tab's upload entry point, so there
 // is exactly one real implementation, not two parallel copies.
 //
 // Item 44: renderTranscribedPlayback() below replaces the old bare
 // "Play it + one highlighted key" view in both callers with the same
 // falling-notes highway the curated lesson/song-mastery flow uses
-// (note-highway.js), plus a real speed control — not a second
+// (note-highway.js), plus a real speed control - not a second
 // visualizer built just for uploads.
 
 import { getAudioContext } from "./guitar-audio.js";
@@ -16,7 +16,7 @@ import { getAudioContext } from "./guitar-audio.js";
 //
 // Item 56, re-tuned after testing against recordings with KNOWN notes
 // (a melody, a chord progression, and both together). basic-pitch's
-// pitches and onsets were right for every real note (within ~10ms) —
+// pitches and onsets were right for every real note (within ~10ms) -
 // the problems were all in this cleanup step:
 //  - It merged any same-pitch notes that touched. But two presses of
 //    the same key always touch, so "E E F G G" came back as one long E
@@ -25,7 +25,7 @@ import { getAudioContext } from "./guitar-audio.js";
 //  - Faint overtones came through as notes: a quiet copy an octave,
 //    a 12th, two octaves or a 17th above a louder note starting at the
 //    same moment (the piano's own harmonics). Those are dropped when
-//    they're well under half as loud as the note they shadow — a real
+//    they're well under half as loud as the note they shadow - a real
 //    played octave is about as loud as its partner, so it stays.
 //  - Very short, quiet blips (under ~0.12s and quiet) are dropped.
 const OVERTONE_INTERVALS = new Set([12, 19, 24, 28]);
@@ -69,13 +69,13 @@ function cleanupNotes(rawNotes) {
 
 // basic-pitch requires mono audio at exactly 22050 Hz. decodeAudioData
 // gives back whatever sample rate the source file/container actually
-// used (commonly 44100/48000 Hz, and stereo) — e.g. a real bug caught
+// used (commonly 44100/48000 Hz, and stereo) - e.g. a real bug caught
 // in testing: uploading a real mp4 decoded fine (decodeAudioData
 // already pulls the audio track out of a video container on its own)
 // but then failed inside basic-pitch with "Input audio buffer is not
 // at correct sample rate! Is 48000. Should be 22050." This resamples
 // AND downmixes to mono via an OfflineAudioContext rendered at the
-// target rate — a standard technique, no new dependency. Connecting a
+// target rate - a standard technique, no new dependency. Connecting a
 // multi-channel source to a 1-channel destination downmixes
 // automatically per the Web Audio spec's channel-interpretation rules
 // (equal-power sum of channels), which is the normal mono-summing
@@ -97,7 +97,7 @@ async function resampleToMono22050(audioBuffer) {
 
 // Transcribes a user-provided audio/video File to a note list using the
 // locally-vendored basic-pitch (no CDN). `onStatus(text)` is called with
-// human-readable progress messages throughout — callers render it
+// human-readable progress messages throughout - callers render it
 // however fits their UI. Returns the note array, or throws with a
 // message already distinguishing decode/model-load/transcription
 // failures (callers should catch and display `err.message` as-is).
@@ -125,7 +125,7 @@ function decodeWith(ctx, buf) {
 // Last resort for files the decoder can't open directly (common on
 // iPhone for videos from the photo library: Safari plays them fine but
 // decodeAudioData rejects the container). Plays the file silently
-// through a media element and records the audio as it plays — so it
+// through a media element and records the audio as it plays - so it
 // takes as long as the clip itself.
 function captureViaMediaElement(file, ctx, onStatus) {
   return new Promise((resolve, reject) => {
@@ -154,7 +154,7 @@ function captureViaMediaElement(file, ctx, onStatus) {
         src.connect(node);
         node.connect(mute).connect(ctx.destination);
         const total = el.duration;
-        const tick = setInterval(() => onStatus(`Listening to your file… ${Math.round(el.currentTime)}s of ${Math.round(total)}s`), 500);
+        const tick = setInterval(() => onStatus(`Reading the song… ${Math.round(el.currentTime)}s of ${Math.round(total)}s`), 500);
         el.onended = () => {
           clearInterval(tick);
           cleanup();
@@ -253,7 +253,7 @@ async function transcribeFile(file, onStatus = () => {}) {
   let audioBuffer;
   const audioCtx = getAudioContext();
   try {
-    onStatus("Decoding audio...");
+    onStatus("Opening your song…");
     let decoded = null;
     var nativeError = null;
     try {
@@ -265,38 +265,38 @@ async function transcribeFile(file, onStatus = () => {}) {
     if (!decoded) try {
       decoded = await decodeWith(audioCtx, await readFileBuffer(file));
     } catch (firstErr) {
-      onStatus("This file needs to be played through once to read its audio — listening now (it stays silent)...");
+      onStatus("Reading the song (this one takes a little longer)…");
       decoded = await captureViaMediaElement(file, audioCtx, onStatus);
     }
     lastDecoded = decoded;
-    onStatus(`Resampling from ${decoded.sampleRate} Hz / ${decoded.numberOfChannels}ch to 22050 Hz mono...`);
+    onStatus("Getting the song ready…");
     audioBuffer = await resampleToMono22050(decoded);
   } catch (err) {
     const why = nativeError?.message || (err && err.message) || "unsupported format";
-    throw new Error(`Couldn't read the audio in this file (${why}). Try an mp3, m4a or wav file, or a video saved to Files.`);
+    throw new Error(`We couldn't open this file (${why}). Try an mp3, m4a or wav file.`);
   }
 
   // basic-pitch (code + model weights) is vendored locally in
-  // js/vendor/basic-pitch/ — no runtime CDN dependency. See
+  // js/vendor/basic-pitch/ - no runtime CDN dependency. See
   // THIRD_PARTY_NOTICES.md for exact version/provenance. A failure here
   // means a genuinely different problem than "no internet" (nothing is
-  // fetched remotely anymore) — most likely the browser lacking
+  // fetched remotely anymore) - most likely the browser lacking
   // WebGL/WASM support that TensorFlow.js needs.
   let BasicPitch, outputToNotesPoly, addPitchBendsToNoteEvents, noteFramesToTime, basicPitch;
   try {
-    onStatus("Loading transcription model (vendored locally, no network needed)...");
+    onStatus("Waking up the listening robot…");
     ({ BasicPitch, outputToNotesPoly, addPitchBendsToNoteEvents, noteFramesToTime } =
       await import("./vendor/basic-pitch/basic-pitch.bundle.js"));
     basicPitch = new BasicPitch(new URL("./vendor/basic-pitch/model/model.json", import.meta.url).href);
   } catch (err) {
-    throw new Error(`Couldn't load the local transcription model (${err.message}). This usually means your browser lacks WebGL/WASM support for TensorFlow.js.`);
+    throw new Error(`The note finder couldn't start on this device (${err.message}). Try another browser, or the Jaxx Guitar app.`);
   }
 
   try {
     const frames = [];
     const onsets = [];
     const contours = [];
-    onStatus("Transcribing in your browser (this can take a while for longer clips)...");
+    onStatus("Listening for the notes (long songs take a while)…");
     await basicPitch.evaluateModel(
       audioBuffer,
       (f, o, c) => {
@@ -304,10 +304,10 @@ async function transcribeFile(file, onStatus = () => {}) {
         onsets.push(...o);
         contours.push(...c);
       },
-      (progress) => onStatus(`Transcribing... ${Math.round(progress * 100)}%`)
+      (progress) => onStatus(`Listening for the notes… ${Math.round(progress * 100)}%`)
     );
     // Item 44: this used to call outputToNotesPoly with onsetThresh/
-    // frameThresh loosened to 0.25/0.25 — the library's own real
+    // frameThresh loosened to 0.25/0.25 - the library's own real
     // defaults, visible in its source, are 0.5/0.3. That's a real cause
     // of the reported "6233 notes for one song" explosion: a much more
     // sensitive-than-default detector picks up far more noise/harmonic
@@ -318,10 +318,10 @@ async function transcribeFile(file, onStatus = () => {}) {
       addPitchBendsToNoteEvents(contours, outputToNotesPoly(frames, onsets))
     );
     const notes = cleanupNotes(rawNotes);
-    console.log(`Jaxx Guitar: basic-pitch transcription result — ${rawNotes.length} raw notes, ${notes.length} after cleanup`, notes);
+    console.log(`Jaxx Guitar: basic-pitch transcription result - ${rawNotes.length} raw notes, ${notes.length} after cleanup`, notes);
     return notes;
   } catch (err) {
-    throw new Error(`Transcription failed: ${err.message}.`);
+    throw new Error(`Something went wrong finding the notes (${err.message}). Try again, or try a shorter clip.`);
   }
 }
 
@@ -329,14 +329,14 @@ async function transcribeFile(file, onStatus = () => {}) {
 // actually play. (Item 56's version only thinned the raw notes out,
 // which still left awkward 4-note clusters spread over the keyboard.)
 // For each time window, every detected note adds its overlap time to
-// its pitch class (bass notes count extra — they usually spell the
+// its pitch class (bass notes count extra - they usually spell the
 // root); each of the 24 major/minor triads is scored by how much of
 // that weight its 3 notes cover minus a penalty for weight outside it,
 // with a small bonus when the bass note is the chord's root. The
 // winner is drawn as a beginner shape: left hand = the root below
 // Middle C, right hand = the root-position triad in the octave around
 // Middle C. Back-to-back windows with the same chord merge into one
-// held block. A best guess from the recording — labelled as such.
+// held block. A best guess from the recording - labelled as such.
 // Spellings as most chord charts write them (Eb/Ab/Bb majors, C#m/F#m/G#m minors).
 const MAJOR_NAMES = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
 const MINOR_NAMES = ["Cm", "C#m", "Dm", "D#m", "Em", "Fm", "F#m", "Gm", "G#m", "Am", "Bbm", "Bm"];
@@ -345,7 +345,7 @@ function chordName(pc, minor) {
 }
 
 // `keyProfile` = the whole song's pitch-class weights (0-1). When a
-// moment only has a root and fifth (no third — common in bass + power
+// moment only has a root and fifth (no third - common in bass + power
 // chords), major and minor tie; the song's own key decides which third
 // it most likely is, instead of always picking major (which put
 // non-key chords like Ab major into a B-major song).
@@ -413,7 +413,7 @@ function simplifyToChords(highwayNotes, { windowSec = 1, offsetSec = 0 } = {}) {
 // the 80-140 BPM range most songs sit in (so it doesn't lock onto half
 // or double time as easily), then pick the phase that lines up with the
 // most onsets. Returns null when there's too little to go on. An
-// estimate, labelled as one in the UI — not real drum transcription.
+// estimate, labelled as one in the UI - not real drum transcription.
 function estimateBeat(notes) {
   if (notes.length < 8) return null;
   const BIN = 0.01;

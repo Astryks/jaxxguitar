@@ -101,7 +101,24 @@ function micUnavailableReason() {
 // the microphone in that mode; listening needs "play and record", which
 // still plays out loud. Switch first, give WebKit a moment to apply it,
 // and retry once (the first request can fail while the switch happens).
+// How many microphone streams are open. iOS goes back to "playback" audio
+// (loudspeaker, ringer switch ignored) only when the last one closes, so
+// closing the tuner doesn't cut off another screen that's still listening.
+let openMics = 0;
+function releaseMicSession() {
+  openMics = Math.max(0, openMics - 1);
+  if (openMics === 0) {
+    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) { /* older Safari */ }
+  }
+}
+
 async function openMicStream() {
+  const stream = await openMicStreamRaw();
+  openMics++;
+  return stream;
+}
+
+async function openMicStreamRaw() {
   const reason = micUnavailableReason();
   if (reason) throw new Error(reason);
   try { if (navigator.audioSession) navigator.audioSession.type = "play-and-record"; } catch (e) { /* older Safari */ }
@@ -177,7 +194,7 @@ async function startLivePitchDetection(onPitch, { fftSize = 4096 } = {}) {
     running = false;
     clearInterval(timer);
     stream.getTracks().forEach((t) => t.stop());
-    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) { /* older Safari */ }
+    releaseMicSession();
     source.disconnect();
     audioCtx.close();
   };
@@ -187,7 +204,7 @@ async function startLivePitchDetection(onPitch, { fftSize = 4096 } = {}) {
 //
 // A real guitar-tuner-style UI (needle + flat/in-tune/sharp readout)
 // built on the exact same startLivePitchDetection() used by Get Started
-// calibration (item 29) and Practice's Ear Check (item 4/27) — not a
+// calibration (item 29) and Practice's Ear Check (item 4/27) - not a
 // second pitch-detection implementation. Both calibration.js and
 // lessons-ui.js call this one function so there's a single place that
 // owns "what does tuning feedback look like."
@@ -197,7 +214,7 @@ async function startLivePitchDetection(onPitch, { fftSize = 4096 } = {}) {
 //   appear and update live as the user plays, button becomes "Stop".
 // Calls onMatch() once when the target is heard in tune (not
 // repeatedly), but keeps listening so the user can see the needle
-// settle — they close it themselves via the Stop button.
+// settle - they close it themselves via the Stop button.
 //
 // A tuner: the whole widget turns GREEN once the target note is heard
 // steadily within `tolerance` cents for about a third of a second (so a
@@ -240,7 +257,10 @@ function createTunerWidget(container, targetMidi, { label = "Tune this note", on
   const readout = container.querySelector(".hk-tuner-readout");
   const heard = container.querySelector(".hk-tuner-heard");
 
+  let starting = false;
   async function start() {
+    if (starting) return; // a second tap while the microphone is opening
+    starting = true;
     matched = false;
     inTuneSince = null;
     root.classList.remove("hk-tuner-matched");
@@ -252,7 +272,7 @@ function createTunerWidget(container, targetMidi, { label = "Tune this note", on
     try {
       const stop = await startLivePitchDetection((result) => {
         // The step this tuner lived on was replaced (Next, Back, or
-        // leaving the lesson) while it was still listening — release
+        // leaving the lesson) while it was still listening - release
         // the mic instead of keeping it open off-screen.
         if (!container.isConnected) {
           stopNow();
@@ -308,9 +328,10 @@ function createTunerWidget(container, targetMidi, { label = "Tune this note", on
       if (!toggleBtn.isConnected || !display.isConnected) stop();
       else stopListening = stop;
     } catch (err) {
-      readout.textContent = `Microphone access failed: ${friendlyMicError(err)}.`;
+      readout.textContent = `The microphone didn't start: ${friendlyMicError(err)}.`;
       toggleBtn.textContent = label;
     }
+    starting = false;
   }
 
   function stopNow() {
@@ -344,6 +365,7 @@ function createTunerWidget(container, targetMidi, { label = "Tune this note", on
 export {
   detectPitchInFrame,
   openMicStream,
+  releaseMicSession,
   friendlyMicError,
   startLivePitchDetection,
   midiFromFreq,

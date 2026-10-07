@@ -5,6 +5,7 @@ import { SONGS, SONG_STRUCTURES, APPROX_STRUCTURES, getDifficulty } from "./song
 import { songPlan, tuningOffset } from "./song-plan.js";
 import { songSteps } from "./song-map.js";
 import { licksFor, lickMidis } from "./solo-licks.js";
+import { songInspireHtml } from "./inspire.js";
 import { tabSvg } from "./fretboard.js";
 import { playNote } from "./guitar-audio.js";
 import { chordShape, shapeMidis, transposeSymbol } from "./guitar-theory.js";
@@ -13,7 +14,7 @@ import { SONG_VIDEOS } from "./media-data.js";
 import { SONG_ART } from "./song-art-data.js";
 import { icon } from "./icons.js";
 import { chordDiagramSvg } from "./fretboard.js";
-import { strum } from "./guitar-audio.js";
+import { strum, stopAllSound } from "./guitar-audio.js";
 import { mountInstrument, createPracticeBox } from "./practice-widget.js";
 import { getSavedSongs, markSongStatus } from "./storage.js";
 import { chordTimeline } from "./guitar-player.js";
@@ -58,7 +59,7 @@ function libraryRows(q, tier) {
 
 function renderSongs(panel) {
   lastPanel = panel;
-  if (cleanup) { cleanup(); cleanup = null; }
+  leaveSongs();
   const saved = getSavedSongs();
   const tiers = ["All", "Beginner", "Intermediate", "Advanced"];
   panel.innerHTML = `
@@ -133,7 +134,7 @@ function wholeSongChords(song) {
 function tuningText(song) {
   const down = tuningOffset(song);
   if (!down) return /drop d/i.test(song.tuning || "") ? "Drop D tuning: low E string down to D" : "";
-  return down === 1 ? "To play along with the record, tune every string down half a step (E♭ A♭ D♭ G♭ B♭ e♭). The chord names below are the shapes you play." : `To play along with the record, tune every string down ${down === 2 ? "a whole step" : `${down} half steps`}. The chord names below are the shapes you play.`;
+  return down === 1 ? "To match the record, tune every string down half a step (E♭ A♭ D♭ G♭ B♭ e♭). The chords below are the shapes you play." : `To match the record, tune every string down ${down === 2 ? "a whole step" : `${down} half steps`}. The chords below are the shapes you play.`;
 }
 // Two of our own practice licks in the solo's scale (solo-licks.js).
 function soloLicksHtml(so, song) {
@@ -171,12 +172,14 @@ function openSong(panel, song, { autoplay = false } = {}) {
         </div>
         ${(song.solos || []).length ? `<div class="jg-solos"><div class="jg-song-prog-title">${icon("guitar", 18)} The guitar solo${song.solos.length > 1 ? "s" : ""}</div>
           ${song.solos.map((so) => `<div class="jg-solo"><b>${esc(so.section)}</b>${so.chords ? `<span class="jg-solo-chords">Chords underneath: ${tidy(so.chords).map((c) => `<i>${esc(c)}</i>`).join("")}</span>` : ""}<span><b>Scale:</b> ${esc(so.scale)}</span>${so.tips ? `<span>${esc(so.tips)}</span>` : ""}${soloLicksHtml(so, song)}</div>`).join("")}
-          <p class="jg-note">Play "Whole song" to hear the solo's chords in place, then improvise over them with this scale.</p></div>` : ""}
+          <p class="jg-note">Play "Whole song" to hear the solo's chords, then make up your own lines with this scale.</p></div>` : ""}
         ${SONG_VIDEOS[song.title] ? videoHtml(SONG_VIDEOS[song.title]) : ""}
+        ${songInspireHtml(song, { advanced: getDifficulty(song) === "Advanced" })}
         <div class="jg-diagram-row">${unique.map((c) => `<button class="jg-btn jg-dg-btn" data-chord="${esc(c)}">${chordDiagramSvg(chordShape(c), c)}</button>`).join("")}</div>
-        <div class="jg-row"><span class="jg-label">Practice tempo</span>${tempos.map((t) => `<button class="jg-pill ${t === bpm ? "jg-pill-active" : ""}" data-bpm="${t}">${t === songBpm ? `${t} (real speed)` : t}</button>`).join("")}
-          <span class="jg-label">Strum</span><button class="jg-pill jg-pill-active" data-pat="dduudu">D·DU·UDU</button><button class="jg-pill" data-pat="d">Downs</button></div>
-        <div class="jg-row"><span class="jg-label">Play</span><button class="jg-pill jg-pill-active" data-part="main">Main part (4 chords)</button>${SONG_STRUCTURES[song.title] ? `<button class="jg-pill" data-part="whole">Whole song${APPROX_STRUCTURES.has(song.title) ? " (our best guide)" : ""}</button>` : ""}</div>
+        <div class="jg-row jg-set-row"><span class="jg-label">Tempo</span>${tempos.map((t) => `<button class="jg-pill ${t === bpm ? "jg-pill-active" : ""}" data-bpm="${t}">${t === songBpm ? `${t} (real speed)` : t}</button>`).join("")}
+</div>
+        <div class="jg-row jg-set-row"><span class="jg-label">Strum</span><button class="jg-pill jg-pill-active" data-pat="dduudu">D·DU·UDU</button><button class="jg-pill" data-pat="d">Downs</button></div>
+        <div class="jg-row jg-set-row"><span class="jg-label">Play</span><button class="jg-pill jg-pill-active" data-part="main">Main part</button>${SONG_STRUCTURES[song.title] ? `<button class="jg-pill" data-part="whole">Whole song${APPROX_STRUCTURES.has(song.title) ? " (our best guide)" : ""}</button>` : ""}</div>
         <div class="jg-practice-host"></div>
         <div class="jg-row"><button class="jg-btn jg-learned">${getSavedSongs()[song.title]?.status === "completed" ? `${icon("check", 18)} Learned` : "Mark as learned (+15 XP)"}</button></div>
       </div>
@@ -251,6 +254,7 @@ function openSong(panel, song, { autoplay = false } = {}) {
 
 function leaveSongs() {
   if (cleanup) { cleanup(); cleanup = null; }
+  stopAllSound();
 }
 
 // Used by "songs with the same chords" and "Guess the song" in Practice.

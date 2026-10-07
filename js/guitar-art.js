@@ -34,8 +34,9 @@ function guitarSvg() {
 
 // Tuner: the headstock with six pegs (3 on each side, like most
 // acoustics), each string running to its peg. `active` = string index
-// being tuned, `done` = Set of tuned strings, `ok` = active one is in tune.
-function headstockSvg({ active = 0, done = new Set(), ok = false } = {}) {
+// being tuned, `done` = Set of tuned strings, `ok` = active one is in tune,
+// `names` = the string names (they change in alternate tunings).
+function headstockSvg({ active = 0, done = new Set(), ok = false, names = STR } = {}) {
   const sy = (s) => 72 + s * 15.5; // at the nut, low E on top
   // Low E, A, D pegs on the top edge (low E farthest from the nut);
   // G, B, high e on the bottom edge (high e farthest).
@@ -51,7 +52,7 @@ function headstockSvg({ active = 0, done = new Set(), ok = false } = {}) {
     // From the peg post to the nut, then along the neck.
     p.push(`<path d="M${pegX[s]} ${s < 3 ? 40 : 178} L226 ${sy(s)} L526 ${sy(s)}" class="${cls}" style="stroke-width:${3.2 - s * 0.4}"/>`);
   });
-  STR.forEach((n, s) => {
+  names.forEach((n, s) => {
     const cls = ["jg-hs-peg", s === active ? "jg-hs-peg-active" : "", s === active && ok ? "jg-hs-peg-ok" : "", done.has(s) ? "jg-hs-peg-done" : ""].join(" ");
     p.push(`<g class="${cls}" data-s="${s}" role="button" tabindex="0" aria-label="${n} string"><circle cx="${pegX[s]}" cy="${pegY(s)}" r="19"/><text x="${pegX[s]}" y="${pegY(s) + 6}">${n}${done.has(s) ? "✓" : ""}</text></g>`);
     p.push(`<text x="534" y="${sy(s) + 5}" class="jg-hs-name ${s === active ? "jg-hs-name-active" : ""}">${n}</text>`);

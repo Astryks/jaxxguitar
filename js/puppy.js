@@ -1,5 +1,5 @@
 // Jaxx the puppy: a beagle pup (tan head and long ears, white blaze and
-// chest, black saddle) with a red
+// chest, black saddle) with a red (gold for supporters: html.jg-supporter)
 // bandana and his own little guitar, drawn in SVG so he stays crisp and
 // can move. He drives a little red pickup truck.
 //
@@ -218,8 +218,25 @@ const DEFS = `<defs>
   <linearGradient id="jp-gr-fir" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fae6c"/><stop offset="1" stop-color="#2a6b40"/></linearGradient>
   <linearGradient id="jp-gr-paint" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6b6b"/><stop offset="0.6" stop-color="#e5484d"/><stop offset="1" stop-color="#b8343a"/></linearGradient>
   <linearGradient id="jp-gr-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e6f6fd"/><stop offset="1" stop-color="#9fd4ee"/></linearGradient>
+  <linearGradient id="jp-gr-gold" x1="0" y1="0" x2="0.4" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset="0.45" stop-color="#f2c24c"/><stop offset="1" stop-color="#b8861f"/></linearGradient>
   <linearGradient id="jp-gr-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0f5"/><stop offset="1" stop-color="#4a9bc9"/></linearGradient>
 </defs>`;
+
+// Every drawing repeats DEFS, so ids like jp-gr-ginger exist many times and
+// url(#...) resolves to the first copy in the page. If that copy sits inside a
+// hidden element (the header logo during a lesson), the fills vanish. One
+// always-rendered copy at the very top of <body> keeps every drawing coloured.
+(function mountSharedDefs() {
+  if (typeof document === "undefined") return;
+  const mount = () => {
+    if (document.getElementById("jp-shared-defs")) return;
+    const holder = document.createElement("div");
+    holder.innerHTML = `<svg id="jp-shared-defs" aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden">${DEFS}</svg>`;
+    document.body.insertBefore(holder.firstChild, document.body.firstChild);
+  };
+  if (document.body) mount(); else document.addEventListener("DOMContentLoaded", mount);
+})();
+
 
 // A real fir tree lying in the bed, tied down with rope.
 const XMAS_TREE = `<g class="jp-xtree" filter="url(#jp-vol-big)">
@@ -270,7 +287,7 @@ function scene(pose) {
   }
   const show = pose === "show";
   return `<path d="M0 230 H400" class="jp-dash"/>
-    ${show ? '<g class="jp-show-ball"><circle cx="352" cy="210" r="11" fill="#c9e04a"/><path d="M342 206 q10 6 20 -1" fill="none" stroke="#fff" stroke-width="2"/></g>' : ""}
+    ${show ? '<g class="jp-show-ball"><circle cx="372" cy="218" r="4" fill="#c9e04a"/><path d="M369 216.5 q3 2 6 -0.4" fill="none" stroke="#fff" stroke-width="0.8"/></g>' : ""}
     ${truck(false)}
     <g class="jp-actor"><g class="jp-inner">${pup("play")}</g></g>
     ${BED_FRONT}

@@ -23,13 +23,13 @@
 //   { practice: {...}, ok: "label" }            a play-along box, then a button
 //   { changes: ["C", "Am"] }                    the one-minute change drill
 // show: { shape: "C" } | { notes: [...] } | { frets: [1, 2, 3] } |
-//       { guitar: true } | { fingerStrum: true } — what to show first.
+//       { guitar: true } | { fingerStrum: true } - what to show first.
 
 import { icon } from "./icons.js";
 import { puppySvg, nextTrick } from "./puppy.js";
 import { sceneSvg, pickScene, LEGENDS } from "./scenes.js";
 import { chordShape, shapeMidis, midiAt } from "./guitar-theory.js";
-import { strum } from "./guitar-audio.js";
+import { strum, stopAllSound } from "./guitar-audio.js";
 import { chordDiagramSvg, FINGER_NAMES } from "./fretboard.js";
 import { mountInstrument, createPracticeBox } from "./practice-widget.js";
 import { renderStringTuner } from "./tuner.js";
@@ -38,6 +38,8 @@ import { createStrumLoop } from "./strum-loop.js";
 import { guitarSvg, fingerStrumSvg } from "./guitar-art.js";
 import { songCardHtml, wireSongCards, findSong } from "./lesson-songs.js";
 import { wireVideos } from "./media.js";
+import { teachHtml } from "./teach-videos.js";
+import { lessonInspireHtml } from "./inspire.js";
 import { friendlyMicError } from "./pitch.js";
 
 const PHONE = `<div class="jg-card-phone">${icon("guitar", 18)}<span>I know it's hard to play a chord on the app! Tap the dots one at a time here. The real practice is on <b>your guitar</b>: press all the strings and strum them together.</span></div>`;
@@ -53,7 +55,7 @@ function runCards(panel, lesson, { start = 0, onExit, onFinish, changeDrill, cou
   const cards = lesson.cards;
   document.body.classList.add("jg-lesson-open");
   let cleanups = [];
-  const clean = () => { cleanups.forEach((f) => { try { f(); } catch (e) { /* ignore */ } }); cleanups = []; };
+  const clean = () => { cleanups.forEach((f) => { try { f(); } catch (e) { /* ignore */ } }); cleanups = []; stopAllSound(); };
   let micByUs = false;
 
   function show(i) {
@@ -75,7 +77,7 @@ function runCards(panel, lesson, { start = 0, onExit, onFinish, changeDrill, cou
           <span class="jg-cards-count" title="Card ${count} of the whole course">${count}</span>
         </div>
         <div class="jg-cards-thread">
-          <div class="jg-cmsg"><div class="jg-cavatar jg-avatar-scene">${sceneSvg(scene, { label: "Jaxx Guitar" })}</div><div class="jg-cbubble">${card.say}${legend ? `<div class="jg-legend-fact">🎸 <b>${legend.name}</b> (${legend.who}): ${legend.fact}</div>` : ""}</div></div>
+          <div class="jg-cmsg"><div class="jg-cavatar jg-avatar-scene">${sceneSvg(scene, { label: "Jaxx Guitar" })}</div><div class="jg-cbubble">${card.say}${teachHtml(lesson.id, i)}${lessonInspireHtml(lesson.id, i)}${legend ? `<div class="jg-legend-fact">🎸 <b>${legend.name}</b> (${legend.who}): ${legend.fact}</div>` : ""}</div></div>
           <div class="jg-cmore"></div>
         </div>
         ${w.chord ? PHONE : ""}
@@ -85,6 +87,7 @@ function runCards(panel, lesson, { start = 0, onExit, onFinish, changeDrill, cou
       </div>`;
     window.scrollTo(0, 0);
     const thread = panel.querySelector(".jg-cards-thread");
+    wireVideos(thread);
     const controls = panel.querySelector(".jg-card-controls");
     const extra = panel.querySelector(".jg-card-extra");
     panel.querySelector(".jg-cards-x").addEventListener("click", () => { clean(); if (micByUs) disableMic(); document.body.classList.remove("jg-lesson-open"); onExit(); });

@@ -65,10 +65,10 @@ function songCardHtml(song, { n, of } = {}) {
   return `<div class="jg-songcard">
       <div class="jg-songcard-head"><span class="jg-songcard-n">${n ? `Song ${n}${of ? ` of ${of}` : ""}` : "Song"}</span>
         <b>${esc(song.title)}</b><span>${esc(song.artist)}${song.year ? ` · ${song.year}` : ""}</span></div>
-      <p class="jg-songcard-how">${plan.capo ? `Put a <b>capo on fret ${plan.capo}</b>, then play` : "Play"} <b>${esc(loop.join(" · "))}</b>.${plan.capo ? ` <span class="jg-note">No capo? Play the same shapes without one: it just sounds a little lower than the record.</span>` : ""}</p>
+      <p class="jg-songcard-how">${plan.capo ? `Put a <b>capo on fret ${plan.capo}</b>, then play` : "Play"} <b>${esc(loop.join(" · "))}</b>.${plan.capo ? ` <span class="jg-note">No capo? Same shapes, just a little lower.</span>` : ""}</p>
       <div class="jg-diagram-row jg-songcard-dg">${shapes.map((c) => `<button class="jg-btn jg-dg-btn" data-dgc="${esc(c)}" title="Show ${esc(c)} on the fretboard">${chordDiagramSvg(chordShape(c), c)}</button>`).join("")}</div>
       ${videoHtml(SONG_VIDEOS[song.title])}
-      <p class="jg-note">Watch the official video, then strum along with the chords. We never show the lyrics here; sing them if you know them!</p>
+      <p class="jg-note">Watch the video, then strum along. Sing the words if you know them!</p>
       <button class="jg-btn jg-songcard-open" data-open-song="${esc(song.title)}" type="button">Play along in Songs ›</button>
     </div>`;
 }

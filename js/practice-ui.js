@@ -1,12 +1,12 @@
 import { puppySvg, nextPuppyScene } from "./puppy.js";
 import { icon } from "./icons.js";
 // Practice tab: build a chord loop, drill a scale, a metronome with tap
-// tempo, and "upload a song" — the app works out the chords from your
+// tempo, and "upload a song" - the app works out the chords from your
 // own recording and shows the guitar shapes in time with it.
 
 import { chordShape, shapeMidis, scaleBox, SCALES, NOTE_NAMES, suggestCapo } from "./guitar-theory.js";
 import { chordDiagramSvg } from "./fretboard.js";
-import { strum, click, getAudioContext } from "./guitar-audio.js";
+import { strum, click, getAudioContext, stopAllSound } from "./guitar-audio.js";
 import { mountInstrument, createPracticeBox } from "./practice-widget.js";
 import { chordTimeline } from "./guitar-player.js";
 import { transcribeFile, estimateBeat, simplifyToChords, guessLastUpload, canGuessSongs } from "./transcribe.js";
@@ -30,6 +30,7 @@ let cleanup = [];
 function leavePractice() {
   cleanup.forEach((f) => { try { f(); } catch (e) { console.error(e); } });
   cleanup = [];
+  stopAllSound();
 }
 
 function renderPractice(panel) {
@@ -112,9 +113,9 @@ function renderPractice(panel) {
       <div class="jg-card">
         <div class="jg-row"><span class="jg-label">Scale</span>${SCALE_OPTS.map(([n, k]) => `<button class="jg-pill ${k === st.scale ? "jg-pill-active" : ""}" data-scale="${k}">${n}</button>`).join("")}</div>
         <div class="jg-row"><span class="jg-label">Key</span>${NOTE_NAMES.map((n, i) => `<button class="jg-pill ${i === st.root ? "jg-pill-active" : ""}" data-root="${i}">${n}</button>`).join("")}</div>
-        <div class="jg-row"><span class="jg-label">Position (lowest fret)</span><input type="range" min="0" max="12" value="${st.pos}" class="jg-pos"><span class="jg-pos-v">fret ${st.pos}</span>
-          <button class="jg-btn jg-btn-small jg-auto">Find the root position</button></div>
-        <p class="jg-note">One finger per fret across a 4-fret box. Roots are orange. Go slowly with Wait for me and the microphone — clean first, then speed.</p>
+        <div class="jg-row"><span class="jg-label">Start at</span><input type="range" min="0" max="12" value="${st.pos}" class="jg-pos"><span class="jg-pos-v">fret ${st.pos}</span>
+          <button class="jg-btn jg-btn-small jg-auto">Jump to the root</button></div>
+        <p class="jg-note">One finger per fret. Orange dots are the root note. Go slowly with Wait for me: clean first, then fast.</p>
       </div>
       <div class="jg-box"></div>`;
     const mount = () => {
@@ -206,17 +207,23 @@ function renderPractice(panel) {
   function uploadSection() {
     sec.innerHTML = `
       <div class="jg-card">
-        <h3 style="margin:4px 0">${icon("cassette", 26)} Upload any song and we'll find the chords for you!</h3>
-        <p>Pick a song from your phone (a few seconds is enough). We'll show the guitar shapes in time with the music.</p>
+        <h3 style="margin:4px 0">${icon("cassette", 26)} Upload any song and we'll find the chords!</h3>
+        <p>Pick a song from your phone and we'll show the guitar shapes in time with the music.</p>
         <label class="jg-upload-pick">${icon("cassette", 22)} Choose a song<input type="file" accept="audio/*,video/*" class="jg-file jg-upload-input"></label>
-        <p class="jg-upload-fine">(Jaxx Guitar is for entertainment and learning only. We've added this feature for you to record any song from your phone and upload it, only for the purpose of learning the songs you love and support the artists who create beautiful things in this world. The real fun begins when you get inspired and create your own original music! Our model runs on your device only, we don't store any data.)</p>
+        <p class="jg-upload-fine">(For fun and learning only: learn the songs you love, support the artists who make them, then write your own! It all runs on your device and nothing is stored.)</p>
         <p class="jg-status jg-note"></p>
       </div>
       <div class="jg-up-result"></div>`;
     const status = sec.querySelector(".jg-status");
     sec.querySelector(".jg-file").addEventListener("change", async (e) => {
       const file = e.target.files[0];
+      e.target.value = ""; // so picking the same file again still works
       if (!file) return;
+      // A new song replaces the last one: stop it first.
+      if (stopUpload) stopUpload();
+      stopUpload = null;
+      sec.querySelector(".jg-up-result").innerHTML = "";
+      panel.querySelector(".jg-below").innerHTML = "";
       try {
         const notes = await transcribeFile(file, (t) => { status.textContent = t; });
         const hw = notes.map((n) => ({ midi: n.pitchMidi ?? n.midi, time: n.startTimeSeconds ?? n.time, duration: n.durationSeconds ?? n.duration }));
@@ -227,9 +234,9 @@ function renderPractice(panel) {
         simplifyToChords(hw, { windowSec: win, offsetSec: beat ? beat.offsetSec : 0 }).forEach((n) => {
           if (!chords.length || chords[chords.length - 1].time !== n.time) chords.push({ chord: n.chord, time: n.time, end: n.time + n.duration });
         });
-        if (!chords.length) throw new Error("No chords found — try a clearer recording.");
+        if (!chords.length) throw new Error("No chords found. Try a clearer recording.");
         const capo = suggestCapo(chords.map((c) => c.chord));
-        status.textContent = `Found ${chords.length} chord changes${beat ? ` · about ${beat.bpm} BPM (an estimate)` : ""}.`;
+        status.textContent = `Found ${chords.length} chord changes${beat ? ` · about ${beat.bpm} BPM` : ""}.`;
         showUpload(file, chords, capo, beat);
       } catch (err) {
         status.textContent = err.message;
@@ -276,18 +283,16 @@ function renderPractice(panel) {
     // ...everything else below the fretboard.
     below.innerHTML = `
       <details class="jg-upload-settings">
-        <summary>${icon("gear", 20)} Customise: capo, sound, chord shapes, guess the song</summary>
-        <div class="jg-row">
-          ${capo.capo ? `<button class="jg-pill ${useCapo ? "jg-pill-active" : ""}" data-capo="1">Capo ${capo.capo} (easier shapes)</button><button class="jg-pill ${useCapo ? "" : "jg-pill-active"}" data-capo="0">No capo</button>` : ""}
-        </div>
-        <div class="jg-row"><span class="jg-label">Sound</span>
-          <button class="jg-pill jg-pill-active" data-snd="song">Original song</button>
-          <button class="jg-pill" data-snd="guitar">Guitar only</button>
-          <button class="jg-pill" data-snd="both">Guitar + song</button></div>
+        <summary>${icon("gear", 20)} Customise</summary>
+        ${capo.capo ? `<div class="jg-row jg-set-row"><span class="jg-label">Capo</span><button class="jg-pill ${useCapo ? "jg-pill-active" : ""}" data-capo="1">Capo ${capo.capo} (easier)</button><button class="jg-pill ${useCapo ? "" : "jg-pill-active"}" data-capo="0">No capo</button></div>` : ""}
+        <div class="jg-row jg-set-row"><span class="jg-label">Sound</span>
+          <button class="jg-pill jg-pill-active" data-snd="song">Song</button>
+          <button class="jg-pill" data-snd="guitar">Guitar</button>
+          <button class="jg-pill" data-snd="both">Both</button></div>
         <div class="jg-diagram-row jg-up-dg"></div>
-        ${canGuessSongs() ? '<div class="jg-row"><button class="jg-btn jg-up-guess">${icon("search", 18)} Guess the song</button></div><div class="jg-up-rec"></div>' : ""}
-        ${matches.length ? `<div class="jg-up-match"><b>${icon("song", 18)} These songs use the same chords:</b><div class="jg-row">${matches.slice(0, 6).map((m) => `<button class="jg-btn jg-btn-small" data-song="${esc(m.title)}">${esc(m.title)} <span class="jg-label">· ${esc(m.artist)}</span></button>`).join("")}</div><small class="jg-note">Lots of songs share chords, so this is a hint. Tap one to learn the whole song.</small></div>` : ""}
-        <p class="jg-note">These chords are a best guess from the recording: simple major/minor versions. Trust your ears where they disagree.</p>
+        ${canGuessSongs() ? `<div class="jg-row"><button class="jg-btn jg-up-guess">${icon("search", 18)} Guess the song</button></div><div class="jg-up-rec"></div>` : ""}
+        ${matches.length ? `<div class="jg-up-match"><b>${icon("song", 18)} These songs use the same chords:</b><div class="jg-row">${matches.slice(0, 6).map((m) => `<button class="jg-btn jg-btn-small" data-song="${esc(m.title)}">${esc(m.title)} <span class="jg-label">· ${esc(m.artist)}</span></button>`).join("")}</div><small class="jg-note">Many songs share chords, so it's just a hint. Tap one to learn it.</small></div>` : ""}
+        <p class="jg-note">These chords are our best guess (simple major and minor). Trust your ears!</p>
       </details>`;
     const audio = res.querySelector(".jg-up-audio");
     const playBtn = res.querySelector(".jg-up-play");
@@ -324,7 +329,12 @@ function renderPractice(panel) {
     setVolume();
     audio.addEventListener("ended", () => { playBtn.textContent = "▶ Play"; });
     playBtn.addEventListener("click", () => {
-      if (audio.paused) { getAudioContext().resume?.(); audio.play(); playBtn.textContent = "⏸ Pause"; if (!raf) tick(); }
+      if (audio.paused) {
+        getAudioContext().resume?.();
+        audio.play().catch((err) => { playBtn.textContent = "▶ Play"; sec.querySelector(".jg-status").textContent = `This file won't play here (${err.message}).`; });
+        playBtn.textContent = "⏸ Pause";
+        if (!raf) tick();
+      }
       else { audio.pause(); playBtn.textContent = "▶ Play"; }
     });
     below.onclick = (e) => {
@@ -349,7 +359,7 @@ function renderPractice(panel) {
         });
       }
     };
-    stopUpload = () => { audio.pause(); if (raf) cancelAnimationFrame(raf); raf = null; URL.revokeObjectURL(url); };
+    stopUpload = () => { audio.pause(); if (raf) cancelAnimationFrame(raf); raf = null; URL.revokeObjectURL(url); stopAllSound(); };
   }
 
 
@@ -359,7 +369,7 @@ function renderPractice(panel) {
     let root = "C";
     sec.innerHTML = `
       <div class="jg-card">
-        <p><strong>Every common chord, in every key.</strong> Pick a root note, then tap any chord to see it on the fretboard and hear it. Open shapes are shown when there's an easy one; otherwise the movable barre shape.</p>
+        <p><strong>Every common chord, in every key.</strong> Pick a note, then tap a chord to see it and hear it.</p>
         <div class="jg-row">${ROOTS.map((r) => `<button class="jg-pill ${r === root ? "jg-pill-active" : ""}" data-root="${r}">${r}</button>`).join("")}</div>
         <div class="jg-diagram-row jg-lib"></div>
       </div>`;

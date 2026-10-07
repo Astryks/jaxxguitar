@@ -35,8 +35,7 @@ function reviewDoneToday() {
 // Chords you've met, by lesson
 const CHORDS_BY_LESSON = [
   ["lesson-1", ["G", "D", "Em", "C"]],
-  ["lesson-minor", ["E", "Em", "A", "Am"]],
-  ["lesson-more", ["Dm"]],
+  ["lesson-open-chords", ["E", "A", "Am", "Dm"]],
   ["lesson-power", ["E5", "A5"]],
   ["lesson-barre", ["F", "Bm"]],
   ["lesson-sevenths", ["A7", "D7", "E7"]],
@@ -98,7 +97,7 @@ function openDailyReview(panel, { onClose }) {
   const scoreEl = panel.querySelector(".jg-dr-score");
   let finished = false;
   const timer = setInterval(() => {
-    if (!panel.isConnected) return clearInterval(timer);
+    if (!body.isConnected) return clearInterval(timer); // left the review
     left--;
     timeEl.textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`;
     if (left <= 0) finish();
@@ -114,7 +113,7 @@ function openDailyReview(panel, { onClose }) {
     completeQuest("review");
     awardXp(right * 2, "Daily review");
     recordDailyProgress();
-    body.innerHTML = `<div class="jg-hero-mascot">${puppySvg("cheer")}</div><div class="jg-big">${right} / ${i}</div><p style="text-align:center">Review done for today — the ones you missed will come back sooner.</p>
+    body.innerHTML = `<div class="jg-hero-mascot">${puppySvg("cheer")}</div><div class="jg-big">${right} / ${i}</div><p style="text-align:center">Review done for today! The ones you missed will come back sooner.</p>
       <div class="jg-row" style="justify-content:center"><button class="jg-btn jg-btn-primary jg-dr-close">Back to lessons</button></div>`;
     body.querySelector(".jg-dr-close").addEventListener("click", onClose);
   }
@@ -124,7 +123,7 @@ function openDailyReview(panel, { onClose }) {
     if (ok) right++;
     i++;
     scoreEl.textContent = `${right} right`;
-    setTimeout(() => (i >= items.length ? finish() : ask()), ok ? 600 : 1400);
+    setTimeout(() => { if (body.isConnected) (i >= items.length ? finish() : ask()); }, ok ? 600 : 1400);
   }
 
   function choices(item, opts, answer) {
@@ -150,7 +149,7 @@ function openDailyReview(panel, { onClose }) {
       body.innerHTML = `<p><strong>Which chord is this?</strong></p><div class="jg-diagram-row">${chordDiagramSvg(chordShape(item.chord), " ")}</div><div class="jg-row jg-dr-choices"></div>`;
       choices(item, [item.chord, ...others].sort(), item.chord);
     } else if (item.kind === "ear") {
-      body.innerHTML = `<p><strong>Listen: major (bright) or minor (sad)?</strong></p><div class="jg-row"><button class="jg-btn jg-dr-play">🔊 Play again</button></div><div class="jg-row jg-dr-choices"></div>`;
+      body.innerHTML = `<p><strong>Listen: major (bright) or minor (sad)?</strong></p><div class="jg-row"><button class="jg-btn jg-dr-play">🔊 Play it again</button></div><div class="jg-row jg-dr-choices"></div>`;
       const play = () => strum(shapeMidis(chordShape(item.chord)));
       body.querySelector(".jg-dr-play").addEventListener("click", play);
       play();
@@ -174,6 +173,7 @@ function openDailyReview(panel, { onClose }) {
     }
   }
   ask();
+  return () => { clearInterval(timer); inst.fb.onTap(null); inst.hw.destroy(); };
 }
 
 export { openDailyReview, reviewDoneToday };

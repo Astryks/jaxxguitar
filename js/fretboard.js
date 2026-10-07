@@ -8,11 +8,14 @@
 // the last, the 12th fret halfway to the bridge), squeezed a little so
 // the first frets aren't huge. Tapping a string at a fret plays it and
 // reports the note (input-hub), so every input path (screen, mic) works
-// the same.
+// the same. With the left-handed setting on, the whole board is mirrored
+// (nut on the right) and its text is flipped back so it still reads
+// normally (css: .jg-lefty text).
 
 import { TUNING, STRING_NAMES, midiAt, noteName } from "./guitar-theory.js";
 import { playNote } from "./guitar-audio.js";
 import { emitNoteOn } from "./input-hub.js";
+import { isLefty } from "./settings.js";
 
 const STRING_COLORS = ["#e0625b", "#f0a24b", "#e8d24b", "#5bbf72", "#4fa3e0", "#9b78e0"]; // 6th → 1st
 const INLAYS = [3, 5, 7, 9, 15, 17];
@@ -53,7 +56,8 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
     parts.push(`<text x="4" y="${stringY(s) + 6}" class="jg-string-name">${STRING_NAMES[s]}</text>`);
   }
   for (let f = 1; f <= frets; f++) parts.push(`<text x="${center(f)}" y="${H - 8}" class="jg-fret-num" data-fn="${f}">${f}</text>`);
-  container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="jg-fretboard-svg" role="img" aria-label="Guitar fretboard, low E string on top"><g>${parts.join("")}</g><g class="jg-marks"></g><g class="jg-hits"></g></svg>`;
+  const lefty = isLefty();
+  container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="jg-fretboard-svg ${lefty ? "jg-lefty" : ""}" role="img" aria-label="Guitar fretboard, low E string on top${lefty ? ", mirrored for left-handed players" : ""}"><g${lefty ? ` transform="translate(${W} 0) scale(-1 1)"` : ""}><g>${parts.join("")}</g><g class="jg-marks"></g><g class="jg-hits"></g></g></svg>`;
   const svg = container.querySelector("svg");
   const marks = svg.querySelector(".jg-marks");
   const hits = svg.querySelector(".jg-hits");
@@ -227,7 +231,7 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
 
   return {
     show, showShape, placeFingers, morph, highlightFrets, stopAnim, clear: () => show([]), onTap: (cb) => { tapHandler = cb; },
-    xFrac: (f) => center(f) / W, widthFrac: (f) => (f === 0 ? openW : xOf(f) - xOf(f - 1)) / W,
+    xFrac: (f) => (lefty ? 1 - center(f) / W : center(f) / W), widthFrac: (f) => (f === 0 ? openW : xOf(f) - xOf(f - 1)) / W,
     stringColor: (s) => STRING_COLORS[s], frets,
   };
 }
@@ -276,7 +280,8 @@ function chordDiagramSvg(shape, name = "") {
       if (shape.fingers?.[i]) p.push(`<text x="${x}" y="${y + 3.4}" class="jg-dg-finger">${shape.fingers[i]}</text>`);
     }
   });
-  return `<svg viewBox="0 0 ${w} ${h}" class="jg-diagram" role="img" aria-label="${name} chord diagram, low E string on top">${p.join("")}</svg>`;
+  const lefty = isLefty();
+  return `<svg viewBox="0 0 ${w} ${h}" class="jg-diagram ${lefty ? "jg-lefty" : ""}" role="img" aria-label="${name} chord diagram, low E string on top"><g${lefty ? ` transform="translate(${w} 0) scale(-1 1)"` : ""}>${p.join("")}</g></svg>`;
 }
 
 // Tab: six lines (high e on top), fret numbers at their beat positions.

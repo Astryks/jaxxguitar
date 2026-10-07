@@ -1,5 +1,5 @@
 // All persistence for Jaxx Guitar (shared design with sibling app Hayden Keys) lives in localStorage. No backend, no
-// accounts, zero server cost — matches the project's hard cost
+// accounts, zero server cost - matches the project's hard cost
 // constraint. Everything here degrades gracefully if localStorage is
 // unavailable (e.g. private browsing in some browsers).
 
@@ -89,7 +89,7 @@ function isLessonComplete(lessonId) {
 // --- Streak ------------------------------------------------------------
 
 // Item 56: the user's LOCAL calendar day as YYYY-MM-DD. This used to be
-// toISOString(), which is the UTC date — e.g. in US Pacific time the
+// toISOString(), which is the UTC date - e.g. in US Pacific time the
 // "day" rolled over at 4-5pm, so practicing Monday afternoon and Tuesday
 // evening could count as two days apart and silently break the streak.
 function localDay(offsetDays = 0) {
@@ -100,7 +100,7 @@ function localDay(offsetDays = 0) {
 
 function getStreak() {
   const streak = safeGet(KEYS.STREAK, { count: 0, lastDay: null });
-  // A streak that wasn't continued yesterday or today is over — show 0
+  // A streak that wasn't continued yesterday or today is over - show 0
   // rather than the last stored count forever. Item 60: unless a streak
   // freeze can cover exactly one missed day (it's spent on the next
   // practice day, in bumpStreak).
@@ -125,7 +125,7 @@ function bumpStreak() {
   if (streak.lastDay === localDay(-2) && getStreakFreezes() > 0) {
     safeSet(KEYS.FREEZES, getStreakFreezes() - 1);
     count = streak.count + 1;
-    emit("jg-toast", { text: "❄️ Streak freeze used — your streak survived a day off!" });
+    emit("jg-toast", { text: "❄️ Streak freeze used - your streak survived a day off!" });
   }
   if (count > 0 && count % 7 === 0 && getStreakFreezes() < 2) {
     safeSet(KEYS.FREEZES, getStreakFreezes() + 1);
@@ -139,7 +139,7 @@ function bumpStreak() {
 // --- Daily goal (real Duolingo-style pacing, not just the streak) ------
 //
 // The streak only means something if it's tied to actually doing
-// something each day, not just opening the app — so completing a
+// something each day, not just opening the app - so completing a
 // lesson or a song increments *today's* progress count, and only once
 // that reaches DAILY_GOAL_TARGET does the streak itself advance
 // (bumpStreak already dedupes within a day, so calling it multiple
@@ -163,8 +163,8 @@ function recordDailyProgress() {
 
 // --- XP, levels, daily quests, stars (item 60) -------------------------
 // Pure localStorage, like everything else. UI listens for the window
-// events emitted here ("jg-xp", "jg-toast", "jg-celebrate") — app.js
-// shows the toasts — so this file stays free of DOM/UI code.
+// events emitted here ("jg-xp", "jg-toast", "jg-celebrate") - app.js
+// shows the toasts - so this file stays free of DOM/UI code.
 function emit(name, detail) {
   try {
     window.dispatchEvent(new CustomEvent(name, { detail }));
@@ -247,7 +247,7 @@ function getStars() {
 // Earned badges are a plain { [badgeId]: { earnedAt } } map. The badge
 // *definitions* and unlock-check logic live in badges.js (which needs
 // SONGS/LESSONS data storage.js deliberately doesn't depend on, to keep
-// this file a pure, dependency-free localStorage layer) — this is just
+// this file a pure, dependency-free localStorage layer) - this is just
 // the persistence half.
 
 function getEarnedBadges() {

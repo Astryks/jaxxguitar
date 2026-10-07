@@ -7,7 +7,7 @@ import { icon } from "./icons.js";
 import { PRE, BEGINNER, INTERMEDIATE, ADVANCED, strumItems } from "./lessons-data.js";
 import { chordShape, midiAt, noteName, STRING_NAMES, shapeMidis } from "./guitar-theory.js";
 import { chordDiagramSvg, tabSvg } from "./fretboard.js";
-import { strum } from "./guitar-audio.js";
+import { strum, playNote, stopAllSound } from "./guitar-audio.js";
 import { mountInstrument, createPracticeBox } from "./practice-widget.js";
 import { renderStringTuner } from "./tuner.js";
 import { songPlan, songsByTier } from "./song-plan.js";
@@ -15,13 +15,20 @@ import { WORLD_LANGUAGES } from "./songs-data.js";
 import { isLessonComplete, markLessonComplete, markSongStatus, getQuests, getStreak, getDailyGoal, awardXp, getStreakFreezes } from "./storage.js";
 import { openDailyReview, reviewDoneToday } from "./daily-review.js";
 import { peopleHtml, videoHtml, wireVideos } from "./media.js";
+import { teachHtml } from "./teach-videos.js";
+import { lessonInspireHtml } from "./inspire.js";
 import { runCards } from "./cards.js";
 import { withSongs, songCardHtml, wireSongCards, findSong } from "./lesson-songs.js";
 import { startChordListening } from "./chord-detect.js";
 import { friendlyMicError } from "./pitch.js";
 import { puppySvg, nextTrick, nextPuppyScene } from "./puppy.js";
+import { homeGuitar, nextHomeGuitar, LEGENDS, sceneSvg } from "./scenes.js";
+import { leftyToggleHtml, wireLeftyToggle } from "./settings.js";
+import { tipJarHtml, wireTipJar } from "./tipjar.js";
+// One guitar per visit on the home screen.
+let homeGuitarThisVisit = null;
 
-// Jaxx the puppy — a different pose for each kind of moment.
+// Jaxx the puppy - a different pose for each kind of moment.
 const MASCOT_BY_LESSON = {
   "p-guitar": "keyhole", "p-parts": "map-glasses", "p-howitworks": "wrenches", "p-strings": "tangled-strings",
   "p-fretboard": "top-hat-shelf", "p-press": "strumming", "lesson-1": "happy-guitar", "lesson-strum": "strumming",
@@ -62,12 +69,12 @@ function songLesson(song, { tier, world = false } = {}) {
           <p>Key: <strong>${esc(song.key || "?")}</strong>${song.year ? ` · ${song.year}` : ""}. The main loop: <strong>${esc(song.chords.join(" – "))}</strong>.</p>
           ${capoLine}
           ${barre.length ? `<p class="jg-note">${barre.join(", ")} ${barre.length === 1 ? "is a barre chord" : "are barre chords"} - see the Barre chords lesson, or play just the top 4 strings for now${barre.includes("F") ? " (for F, use the baby F from the Open chords, barre chords lesson)" : ""}.</p>` : ""}
-          ${song.confidence === "needs-verification" ? '<p class="jg-note">Sources didn\'t fully agree on this one\'s chords - treat it as a close version, and trust your ears.</p>' : ""}
-          <p class="jg-note">This is the song's main repeating loop, not a full chart - no lyrics are included. Play the original alongside to hear how it fits.</p>`,
+          ${song.confidence === "needs-verification" ? '<p class="jg-note">This is a close version of the chords. Trust your ears!</p>' : ""}
+          <p class="jg-note">This is the song's main loop. Play the record alongside to hear how it fits.</p>`,
         diagrams: unique,
       },
       {
-        html: `<h3>Play along</h3><p>Four beats per chord with the D · D U · U D U strum. Start at 50–75% speed, then switch on the beat.</p>`,
+        html: `<h3>Play along</h3><p>Four beats per chord with the D · D U · U D U strum. Start slow (50% or 75%).</p>`,
         diagrams: unique,
         practice: { items: strumItems(plan.shapes.concat(plan.shapes), DDUUDU), bpm: 80, modes: ["listen", "wait"], label: `${song.title}${plan.capo ? ` (capo ${plan.capo})` : ""}`, drums: true, key: `song:${song.title}` },
       },
@@ -145,6 +152,12 @@ let cleanup = [];
 function runCleanup() {
   cleanup.forEach((f) => { try { f(); } catch (e) { console.error(e); } });
   cleanup = [];
+  stopAllSound();
+}
+// Another tab was opened: stop this lesson's loops, timers and sound.
+function leaveLessons() {
+  runCleanup();
+  document.body.classList.remove("jg-lesson-open", "jg-playing");
 }
 
 function renderLessons(panel) {
@@ -184,9 +197,11 @@ function showHome() {
   // roadmap, review and quests live in the lessons themselves.
   const number = done + 1;
   const pct = Math.round((100 * done) / Math.max(1, total));
+  // The hero art: a guitar solo on a desert cliff at sunset (a November Rain homage).
+  const heroArt = `<span class="jg-hero-art">${sceneSvg("cliff", { label: "A guitarist in a top hat plays a solo on a desert cliff at sunset" })}</span>`;
   const hero = nxt ? `
     <button class="jg-hero-card" data-lesson="${nxt.id}">
-      ${mascot(done ? "happy-guitar" : "strumming")}
+      ${heroArt}
       <span class="jg-hero-body">
         <span class="jg-hero-kicker">${done ? `Lesson ${number} of ${total}${courseCard(nxt) ? ` · card ${courseCard(nxt).n}/${courseCard(nxt).total}` : ""}` : "Start here"}</span>
         <span class="jg-hero-title">${esc(done ? nxt.title : "4 chords, 100+ songs")}</span>
@@ -194,9 +209,11 @@ function showHome() {
         ${streak.count ? `<span class="jg-hero-meta">${icon("flame", 16)} ${streak.count}-day streak</span>` : ""}
         <span class="jg-hero-cta">${done ? "Continue ▶" : "Start now ▶"}</span>
       </span>
-    </button>` : `<div class="jg-hero-card">${mascot("juggling-picks")}<span class="jg-hero-body"><span class="jg-hero-title">You've finished every lesson! 🎉</span></span></div>`;
+    </button>` : `<div class="jg-hero-card">${heroArt}<span class="jg-hero-body"><span class="jg-hero-title">You've finished every lesson! 🎉</span></span></div>`;
   panelEl.innerHTML = `
     <div class="jg-home-clean">
+      <div class="jg-home-stage">${homeGuitar(homeGuitarThisVisit = homeGuitarThisVisit || nextHomeGuitar())}
+        <p class="jg-home-stage-cap">🎸 <b>${esc(LEGENDS[homeGuitarThisVisit].name)}</b> · ${esc(LEGENDS[homeGuitarThisVisit].who)}<br>${esc(LEGENDS[homeGuitarThisVisit].fact)}</p></div>
       ${hero}
       <button class="jg-home-upload" data-home-upload type="button">
         ${icon("cassette", 44)}
@@ -206,10 +223,13 @@ function showHome() {
       <details class="jg-all-lessons"><summary class="jg-btn">${icon("guitar", 18)} All lessons <span class="jg-sub">${COURSE.total} cards in the course</span></summary>
         <p class="jg-note">The number on the right is the card where each lesson starts.</p>
         <div class="jg-roadmap-list">${roadmapHtml()}</div></details>
+      ${isLessonComplete("lesson-1") ? `<button class="jg-home-how jg-open-review" type="button">${icon("flame", 18)} 2-minute review${reviewDoneToday() ? " ✓" : ""}</button>` : ""}
       <button class="jg-home-how" data-home-how type="button">${icon("star", 18)} How it works</button>
+      ${tipJarHtml()}
       <p class="jg-home-credit">Supported by the Astryks Group (<a href="https://astryks.com" target="_blank" rel="noopener">astryks.com</a>)</p>
     </div>`;
   panelEl.querySelector("[data-home-how]")?.addEventListener("click", () => window.dispatchEvent(new CustomEvent("jg-show", { detail: "how" })));
+  wireTipJar(panelEl);
   panelEl.querySelector("[data-home-upload]")?.addEventListener("click", () => {
     document.querySelector('.jg-tab[data-tab="practice"]')?.click();
     setTimeout(() => {
@@ -225,7 +245,7 @@ function wireCommon() {
   panelEl.querySelectorAll("[data-lesson]").forEach((b) => b.addEventListener("click", () => openLesson(b.dataset.lesson)));
   panelEl.querySelector(".jg-open-review")?.addEventListener("click", () => {
     runCleanup();
-    openDailyReview(panelEl, { onClose: showHome });
+    cleanup.push(openDailyReview(panelEl, { onClose: showHome }));
   });
 }
 
@@ -271,9 +291,9 @@ function openLesson(id, pageIndex = 0) {
         <div class="jg-lesson-content">
           <button class="jg-exit">← All lessons</button>
           <div class="jg-step">${esc(lesson.title)} · <span class="jg-cards-count" title="Card number in the whole course">${courseCard(lesson, pageIndex) ? `${courseCard(lesson, pageIndex).n}/${courseCard(lesson, pageIndex).total}` : `${pageIndex + 1}/${lesson.pages.length}`}</span></div>
-          <div class="jg-say">${mascot(MASCOT_BY_LESSON[lesson.id] || (lesson.world ? "singing-mic" : lesson.song ? "playing-guitar" : "happy-guitar"))}<div class="jg-bubble">${page.html || ""}${page.shape ? PHONE_NOTE : ""}${peopleHtml(page.people)}${videoHtml(page.video)}${page.song && findSong(page.song) ? songCardHtml(findSong(page.song), { n: page.songN, of: page.songOf }) : ""}</div></div>
+          <div class="jg-say">${mascot(MASCOT_BY_LESSON[lesson.id] || (lesson.world ? "singing-mic" : lesson.song ? "playing-guitar" : "happy-guitar"))}<div class="jg-bubble">${page.html || ""}${teachHtml(lesson.id, pageIndex)}${lessonInspireHtml(lesson.id, pageIndex)}${page.shape ? PHONE_NOTE : ""}${peopleHtml(page.people)}${videoHtml(page.video)}${page.song && findSong(page.song) ? songCardHtml(findSong(page.song), { n: page.songN, of: page.songOf }) : ""}</div></div>
           ${page.diagrams ? `<div class="jg-diagram-row">${page.diagrams.map((c, i) => { const d = diagramOf(c); return `<button class="jg-btn jg-dg-btn" data-dg="${i}" title="Show ${esc(d.name)} on the fretboard">${chordDiagramSvg(d.shape, d.name)}</button>`; }).join("")}</div><p class="jg-note">Tap a chord box to see it on the fretboard and hear it.</p>` : ""}
-          ${page.tab ? `<div class="jg-tab-wrap">${tabSvg(page.tab.items, { beatsPerBar: page.tab.beatsPerBar, bars: page.tab.bars })}</div>` : ""}
+          ${page.tab ? `<div class="jg-tab-wrap">${tabSvg(page.tab.items, { beatsPerBar: page.tab.beatsPerBar, bars: page.tab.bars })}</div><div class="jg-row"><button class="jg-btn jg-tab-play" type="button">${icon("speaker", 18)} Hear it</button></div>` : ""}
           <div class="jg-extra"></div>
           <div class="jg-instrument-host"></div>
           <div class="jg-practice-host"></div>
@@ -311,6 +331,11 @@ function openLesson(id, pageIndex = 0) {
     cleanup.push(() => inst.hw.destroy());
     restore();
   }
+  // Tab pages: play the tab's notes, one beat each at 80 BPM.
+  panelEl.querySelector(".jg-tab-play")?.addEventListener("click", () => {
+    stopAllSound();
+    page.tab.items.forEach((n) => playNote(midiAt(n.string, n.fret), { delay: n.start * 0.75, duration: Math.max(0.4, n.dur * 0.75) }));
+  });
   panelEl.querySelectorAll("[data-dgc]").forEach((b) => b.addEventListener("click", () => {
     const sh = chordShape(b.dataset.dgc);
     inst.fb.showShape(sh);
@@ -330,6 +355,10 @@ function openLesson(id, pageIndex = 0) {
   if (page.tuner) {
     const t = renderStringTuner(extra);
     cleanup.push(() => t.destroy());
+  }
+  if (page.lefty) {
+    extra.innerHTML = `<div class="jg-card">${leftyToggleHtml()}</div>`;
+    wireLeftyToggle(extra, () => openLesson(id, pageIndex));
   }
   if (page.fretQuiz) fretQuiz(extra, inst, page.fretQuiz.count || 6, restore);
   if (page.earGym) earGym(extra, inst);
@@ -371,9 +400,11 @@ function earGym(host, inst) {
   let stage = 0, round = 0, streak = 0, best = 0, cur = null;
   const scores = STAGES.map(() => 0);
   const play = (c, how = "strum") => {
+    if (!host.isConnected) return;
     const midis = shapeMidis(chordShape(c));
     if (how === "high") return strum(midis.map((m) => m + 12));
-    if (how === "pick") return midis.forEach((m, i) => setTimeout(() => strum([m]), i * 220));
+    // Picked one string at a time, scheduled on the audio clock.
+    if (how === "pick") return midis.forEach((m, i) => strum([m], { delay: i * 0.22 }));
     strum(midis);
   };
   function options(c) {
@@ -498,12 +529,12 @@ function changeDrill(host, inst, [a, b]) {
   let best = 0;
   try { best = Number(localStorage.getItem(key)) || 0; } catch (e) { /* ignore */ }
   host.innerHTML = `<div class="jg-card">
-    <div class="jg-diagram-row">${chordDiagramSvg(chordShape(a), a)}${chordDiagramSvg(chordShape(b), b)}</div>
+    <div class="jg-diagram-row">${[a, b].map((c) => `<button class="jg-btn jg-dg-btn" data-cdc="${esc(c)}" type="button" title="Hear ${esc(c)}">${chordDiagramSvg(chordShape(c), c)}</button>`).join("")}</div>
     <div class="jg-big jg-cd-count">0</div><p style="text-align:center" class="jg-cd-time">60 seconds · best ${best}</p>
     <div class="jg-row" style="justify-content:center"><button class="jg-btn jg-btn-primary jg-cd-start">Start 1 minute</button><button class="jg-btn jg-cd-tap" disabled>I changed! (+1)</button></div>
     <div class="jg-row" style="justify-content:center"><button class="jg-btn jg-cd-mic">${icon("mic", 18)} Count my strums (microphone)</button></div>
     <p class="jg-cd-heard" aria-live="polite"></p>
-    <p class="jg-note">Each time you strum a clean ${a} → ${b} (or back), it counts one. With the microphone on, Jaxx hears which chord you strum; otherwise tap "I changed!" (or press the space bar). We only listen to your guitar, nothing else.</p></div>`;
+    <p class="jg-note">Each clean switch counts one. Turn on the microphone and Jaxx counts for you (it only listens to your guitar), or tap "I changed!".</p></div>`;
   let count = 0;
   let timer = null;
   let cur = a;
@@ -515,6 +546,11 @@ function changeDrill(host, inst, [a, b]) {
   const micBtn = host.querySelector(".jg-cd-mic");
   const heardEl = host.querySelector(".jg-cd-heard");
   inst.fb.showShape(chordShape(a));
+  host.querySelectorAll("[data-cdc]").forEach((btn) => btn.addEventListener("click", () => {
+    const sh = chordShape(btn.dataset.cdc);
+    inst.fb.showShape(sh);
+    strum(shapeMidis(sh));
+  }));
   const tap = () => {
     if (!timer) return;
     count++;
@@ -632,4 +668,4 @@ function cagedPicker(host, inst) {
   pick(0);
 }
 
-export { renderLessons, allLessons, songLesson, openLesson, showHome };
+export { renderLessons, leaveLessons, allLessons, songLesson, openLesson, showHome };

@@ -299,6 +299,9 @@ details > summary::-webkit-details-marker { display: none; }
 .jg-upload-settings { margin: 10px 0; border: 1px solid var(--jg-border); border-radius: 14px; background: var(--jg-panel); padding: 4px 12px; }
 .jg-upload-settings > summary { cursor: pointer; font-weight: 700; padding: 10px 0; list-style: none; }
 .jg-upload-settings > summary::-webkit-details-marker { display: none; }
+/* Settings rows: a fixed-width label, then the choices, with room to breathe. */
+.jg-set-row { gap: 8px; margin: 8px 0; align-items: center; }
+.jg-set-row > .jg-label:first-child { min-width: 64px; font-weight: 700; }
 .jg-up-match { background: var(--jg-accent-soft); border-radius: 12px; padding: 8px 10px; margin: 8px 0; }
 .jg-up-rec-box { display: flex; gap: 12px; align-items: center; background: #fff; border: 2px solid var(--jg-accent-soft); border-radius: 16px; padding: 10px 12px; margin: 8px 0; }
 .jg-up-rec-box b { font-size: 1.15rem; }
@@ -319,6 +322,17 @@ details > summary::-webkit-details-marker { display: none; }
   background: linear-gradient(135deg, #fff1df, #e7f6f3); box-shadow: 0 10px 26px rgba(107, 63, 31, 0.14); }
 .jg-hero-card .jg-avatar { width: 110px; height: 110px; flex: 0 0 auto; }
 .jg-hero-card .jg-avatar img { width: 100%; height: 100%; object-fit: contain; }
+/* Hero art: the cliff-solo scene (js/scenes.js) as a banner on top of the
+   card, cropped to 2:1 (a little sky off the top); a side tile on short
+   landscape screens. */
+.jg-hero-card:has(.jg-hero-art) { flex-direction: column; align-items: stretch; }
+.jg-hero-art { flex: 0 0 auto; display: block; width: 100%; aspect-ratio: 2 / 1; border-radius: 18px; overflow: hidden; background: #5e3c86;
+  box-shadow: 0 6px 16px rgba(60, 30, 60, 0.25); }
+.jg-hero-art .js-scene { width: 100%; height: auto; margin-top: -7.5%; }
+@media (orientation: landscape) and (max-height: 500px) {
+  .jg-hero-card:has(.jg-hero-art) { flex-direction: row; align-items: center; }
+  .jg-hero-art { width: 240px; }
+}
 .jg-hero-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .jg-hero-kicker { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--jg-accent); }
 .jg-hero-title { font-size: 1.35rem; font-weight: 900; color: var(--jg-text); }
@@ -369,7 +383,7 @@ body[data-tab="lessons"] .jg-footer, body[data-tab="songs"] .jg-footer { display
 /* ===== Song library: Netflix-style rows (scroll sideways in a row, down between genres) ===== */
 .jg-lib-row { margin: 6px 0 18px; }
 .jg-lib-row h3 { margin: 0 0 8px; font-size: 1.15rem; font-weight: 900; color: var(--jg-wood); }
-.jg-lib-scroll { display: flex; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; padding: 2px 16px 10px; margin: 0 -16px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.jg-lib-scroll { display: flex; gap: 12px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; padding: 2px 16px 10px; margin: 0 -16px; scrollbar-width: none; scroll-padding-inline: 16px; -webkit-overflow-scrolling: touch; }
 .jg-lib-scroll::-webkit-scrollbar { display: none; }
 .jg-lib-card { flex: 0 0 auto; width: 138px; scroll-snap-align: start; display: flex; flex-direction: column; gap: 3px; text-align: left; background: none; border: none; padding: 0; cursor: pointer; }
 .jg-lib-art { position: relative; display: block; width: 138px; height: 138px; border-radius: 14px; overflow: hidden; background: linear-gradient(135deg, var(--jg-accent), var(--jg-accent-2)); box-shadow: 0 6px 16px rgba(46, 36, 25, 0.22); }
@@ -392,15 +406,6 @@ body[data-tab="lessons"] .jg-footer, body[data-tab="songs"] .jg-footer { display
 .jg-tech-card { background: #fff; border: 2px solid var(--jg-border); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
 .jg-tech-card b { font-size: 1.1rem; }
 .jg-tech-card p { margin: 0; font-size: 0.92rem; color: var(--jg-text-dim); line-height: 1.45; }
-.jg-tipjar { padding: 16px; border-radius: 20px; background: linear-gradient(135deg, #fff1df, #e7f6f3); border: 2px solid var(--jg-border); }
-.jg-tipjar h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; }
-.jg-tipjar p { margin: 0 0 10px; }
-.jg-tip-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.jg-tip { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 12px 6px; border-radius: 16px; border: none; background: linear-gradient(135deg, var(--jg-accent), #e08a3c); color: #fff; cursor: pointer; }
-.jg-tip b { font-size: 1.2rem; }
-.jg-tip span { font-size: 0.78rem; }
-.jg-tip:disabled { opacity: 0.6; }
-.jg-tip-status, .jg-tip-note { font-size: 0.85rem; color: var(--jg-text-dim); }
 .jg-home-how { display: flex; align-items: center; gap: 6px; margin: 8px auto 0; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--jg-border); background: #fff; color: var(--jg-wood); font-weight: 700; font-size: 0.9rem; cursor: pointer; }
 
 /* ===== Jaxx the kitten (flat, animated) =====
@@ -573,6 +578,11 @@ div.jg-funfact-img { width: 110px; height: 124px; float: right; }
 .jg-fret-hl-box { fill: #e3f2fd; opacity: 0.95; }
 .jg-fret-num-hl { fill: var(--jg-hl); font-size: 18px; }
 .jg-finger-tag { font-size: 15px; font-weight: 800; fill: #fff; paint-order: stroke; stroke: var(--jg-wood); stroke-width: 4px; pointer-events: none; }
+/* Left-handed setting: the board is mirrored, each label flipped back in place. */
+.jg-lefty text { transform-box: fill-box; transform-origin: center; transform: scaleX(-1); }
+.jg-lefty text.jg-pop { animation: none; }
+.jg-switch { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; cursor: pointer; padding: 6px 0; }
+.jg-switch input { width: 22px; height: 22px; accent-color: var(--jg-accent, #c46a1f); }
 @media (prefers-reduced-motion: no-preference) {
   .jg-pop { animation: jg-pop-in 0.45s cubic-bezier(.2,1.5,.4,1); transform-box: fill-box; transform-origin: center; }
   .jg-morph-lift .jg-dot { filter: drop-shadow(0 4px 3px rgba(0,0,0,0.35)); }
@@ -708,3 +718,39 @@ body.jg-intro-open { overflow: hidden; }
 .jg-avatar-scene { border-radius: 12px; overflow: hidden; }
 .jg-avatar-scene { width: 180px !important; height: 108px !important; }
 @media (max-width: 520px) { .jg-avatar-scene { width: 132px !important; height: 80px !important; } }
+
+/* Home stage: a different legendary guitar each visit */
+.jg-home-stage { width: 100%; border-radius: 20px; overflow: hidden; background: #211c29; box-shadow: 0 6px 22px rgba(60, 30, 10, 0.18); }
+.jg-home-stage .js-scene { aspect-ratio: 400 / 240; height: auto; }
+.jg-home-stage-cap { margin: 0; padding: 10px 14px 12px; color: #fff6e0; font-size: 0.92rem; line-height: 1.35; }
+.jg-intro-logo { width: min(200px, 50vw); aspect-ratio: 1; filter: drop-shadow(0 10px 22px rgba(120,50,10,.3)); }
+.jg-header .jg-logo, .jg-logo { width: 48px !important; height: 48px !important; }
+.jg-teach { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: #eef6ff; }
+.jg-teach-title { font-weight: 800; font-size: 0.9rem; margin-bottom: 6px; color: #2a6fb0; }
+.jg-inspire { margin: 12px 0; padding: 10px 12px; border-radius: 12px; background: linear-gradient(135deg, #2b2140, #3d2a52); color: #fff6e0; }
+.jg-inspire-title { font-weight: 800; margin-bottom: 6px; }
+.jg-inspire .jg-note { color: #e8dcff; }
+.jg-inspire-blurb { margin: 6px 0 0; font-size: 0.88rem; opacity: 0.92; }
+
+/* Tip jar: a quiet, collapsed line at the bottom of home (app only). */
+.jg-tipjar { max-width: 420px; margin: 22px auto 0; border-top: 1px solid var(--jg-border); color: var(--jg-text-dim); text-align: center; }
+.jg-tipjar summary { list-style: none; display: inline-flex; align-items: center; gap: 6px; padding: 12px 10px 4px; font-size: 0.86rem; font-weight: 600; letter-spacing: 0.02em; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.jg-tipjar summary::-webkit-details-marker { display: none; }
+.jg-tipjar summary small { font-weight: 400; font-size: 0.74rem; opacity: 0.75; }
+.jg-tipjar summary::after { content: ""; width: 6px; height: 6px; margin-left: 2px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform 0.25s ease; }
+.jg-tipjar[open] summary::after { transform: translateY(1px) rotate(-135deg); }
+.jg-tipjar::details-content { block-size: 0; overflow: hidden; transition: block-size 0.3s ease, content-visibility 0.3s allow-discrete; }
+.jg-tipjar[open]::details-content { block-size: auto; }
+@supports (interpolate-size: allow-keywords) { .jg-tipjar { interpolate-size: allow-keywords; } }
+.jg-tipjar-body { padding: 4px 6px 10px; animation: jg-tip-in 0.3s ease; }
+@keyframes jg-tip-in { from { opacity: 0; transform: translateY(-4px); } }
+.jg-tipjar-body p { margin: 4px auto 12px; max-width: 34ch; font-size: 0.84rem; line-height: 1.45; }
+.jg-tip-list { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.jg-tip { min-width: 84px; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 9px 12px; border-radius: 14px; border: 1px solid var(--jg-border); background: var(--jg-panel); color: var(--jg-text); font: inherit; cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
+.jg-tip b { font-size: 1rem; font-weight: 700; }
+.jg-tip span { font-size: 0.72rem; color: var(--jg-text-dim); letter-spacing: 0.03em; }
+.jg-tip:hover, .jg-tip:focus-visible { border-color: var(--jg-accent); }
+.jg-tip:active { transform: scale(0.97); }
+.jg-tip:disabled { opacity: 0.55; }
+.jg-tip-note { display: block; font-size: 0.74rem; opacity: 0.8; margin-top: 10px !important; }
+.jg-tip-thanks .jg-tip-icon { color: var(--jg-accent); }

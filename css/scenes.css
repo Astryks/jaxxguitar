@@ -11,12 +11,14 @@
 .js-scene .js-plaque { font: 600 9px system-ui, sans-serif; fill: #6b5a48; }
 .js-scene .js-script { font: italic 700 9px "Snell Roundhand", "Brush Script MT", cursive; fill: #f4efe2; }
 .js-scene .js-wind path { fill: none; stroke: #fff; stroke-width: 1.6; opacity: 0.4; stroke-linecap: round; }
+.js-scene .js-cl-notes text { font: 900 15px system-ui, sans-serif; fill: #fff3b8; stroke: #a8501e; stroke-width: 0.6; paint-order: stroke; opacity: 0; }
+.js-scene .js-cl-dust path { opacity: 0.35; }
 .js-scene .js-banner { font: 900 18px Impact, "Arial Black", system-ui, sans-serif; fill: #fff6e0; letter-spacing: 1px; }
 
 /* ===== Animations (all respect reduced motion) ===== */
 .js-scene .js-reel { transform-box: view-box; }
 .js-scene .js-eq, .js-scene .js-notes text, .js-scene .js-conf, .js-scene .js-fan, .js-scene .js-hand, .js-scene .js-str, .js-scene .js-pick,
-.js-scene .js-legend, .js-scene .js-player-guitar, .js-scene .js-wind path, .js-scene .js-bolt, .js-scene .js-fog, .js-scene .js-phones,
+.js-scene .js-legend, .js-scene .js-wind path, .js-scene .js-bolt, .js-scene .js-fog, .js-scene .js-phones,
 .js-scene .js-vguitar, .js-scene .js-drums, .js-scene .js-band g, .js-scene .js-haze { transform-box: fill-box; }
 @media (prefers-reduced-motion: no-preference) {
   .js-scene .js-reel { animation: js-spin 2.4s linear infinite; }
@@ -57,10 +59,22 @@
   .js-s-concert .js-cymbal-2 { animation-delay: 0.25s; }
   /* Legends: the guitar turns gently on its stand while light glints across it */
   .js-scene .js-legend { animation: js-turn 7s ease-in-out infinite; transform-origin: 50% 100%; }
-  /* Desert church solo: the player rocks, wind blows, sun sinks a little */
-  .js-s-cliff .js-player-guitar { animation: js-sway 0.6s ease-in-out infinite alternate; transform-origin: 30% 50%; }
-  .js-s-cliff .js-wind path { animation: js-gust 3s ease-in-out infinite; }
-  .js-s-cliff .js-wind path:nth-child(2) { animation-delay: 1.4s; }
+  /* Desert church solo: he leans back into one big bend (once), then sways
+     gently while the wind blows his hair and coat and the sun glows */
+  .js-s-cliff .js-cl-player { animation: js-cl-lean 2.8s ease-in-out 0.2s 1 both, js-cl-idle 5s ease-in-out 3s infinite alternate; }
+  .js-s-cliff .js-cl-guitar { animation: js-cl-bend 2.8s ease-in-out 0.2s 1 both, js-cl-gidle 2.6s ease-in-out 3s infinite alternate; }
+  .js-s-cliff .js-cl-head { animation: js-cl-nod 2.8s ease-in-out 0.2s 1 both, js-cl-hidle 5s ease-in-out 3s infinite alternate; }
+  .js-s-cliff .js-cl-hair { animation: js-cl-hair 1.7s ease-in-out infinite alternate; }
+  .js-s-cliff .js-cl-coat, .js-s-cliff .js-cl-tails { animation: js-cl-flap 1.2s ease-in-out infinite alternate; }
+  .js-s-cliff .js-cl-tails { animation-delay: -0.4s; }
+  .js-s-cliff .js-cl-glow { animation: js-cl-glow 4.4s ease-in-out infinite alternate; }
+  .js-s-cliff .js-cl-clouds { animation: js-cl-drift 18s ease-in-out infinite alternate; }
+  .js-s-cliff .js-cl-dust path, .js-s-cliff .js-cl-specks circle { animation: js-cl-gust 3.4s linear infinite; transform-box: view-box; opacity: 0; }
+  .js-s-cliff .js-cl-dust path:nth-child(2), .js-s-cliff .js-cl-specks circle:nth-child(2n) { animation-delay: 1.1s; }
+  .js-s-cliff .js-cl-dust path:nth-child(3), .js-s-cliff .js-cl-specks circle:nth-child(3n) { animation-delay: 2.2s; }
+  .js-s-cliff .js-cl-dust path:nth-child(4) { animation-delay: 0.6s; }
+  .js-s-cliff .js-cl-notes text { animation: js-cl-note 3.2s ease-out 1.2s infinite both; transform-box: fill-box; }
+  .js-s-cliff .js-cl-notes text:nth-child(2) { animation-delay: 2.2s; } .js-s-cliff .js-cl-notes text:nth-child(3) { animation-delay: 3.2s; }
 }
 @keyframes js-spin { to { transform: rotate(360deg); } }
 @keyframes js-float { 0% { opacity: 0; transform: translateY(10px) rotate(-6deg); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(-34px) rotate(8deg); } }
@@ -81,4 +95,29 @@
 @keyframes js-rock { from { transform: rotate(-4deg) translateY(0); } to { transform: rotate(4deg) translateY(-3px); } }
 @keyframes js-crash { 0% { transform: rotate(-8deg); } 60%, 100% { transform: rotate(0); } }
 @keyframes js-turn { 0%, 100% { transform: rotate(-1.4deg) scaleX(1); } 50% { transform: rotate(1.4deg) scaleX(0.97); } }
+@keyframes js-cl-lean { 0% { transform: rotate(0); } 30% { transform: rotate(-3.5deg) translateY(0.5px); } 55% { transform: rotate(-3deg); } 100% { transform: rotate(-1deg); } }
+@keyframes js-cl-idle { from { transform: rotate(-1deg); } to { transform: rotate(1deg); } }
+@keyframes js-cl-bend { 0% { transform: rotate(0); } 30% { transform: rotate(-6deg); } 40% { transform: rotate(-5deg); } 50% { transform: rotate(-6deg); } 60% { transform: rotate(-5deg); } 70% { transform: rotate(-6deg); } 100% { transform: rotate(-2deg); } }
+@keyframes js-cl-gidle { from { transform: rotate(-2deg); } to { transform: rotate(1deg); } }
+@keyframes js-cl-nod { 0% { transform: rotate(0); } 30% { transform: rotate(-6deg); } 100% { transform: rotate(-2deg); } }
+@keyframes js-cl-hidle { from { transform: rotate(-2deg); } to { transform: rotate(2deg); } }
+@keyframes js-cl-hair { from { transform: skewX(5deg) rotate(1deg); } to { transform: skewX(-2deg) rotate(-1.5deg); } }
+@keyframes js-cl-flap { from { transform: skewX(4deg) rotate(1deg); } to { transform: skewX(-3deg) rotate(-1deg); } }
+@keyframes js-cl-glow { from { opacity: 0.82; transform: scale(1); } to { opacity: 1; transform: scale(1.08); } }
+@keyframes js-cl-drift { from { transform: translateX(6px); } to { transform: translateX(-10px); } }
+@keyframes js-cl-gust { 0% { transform: translateX(40px); opacity: 0; } 30% { opacity: 0.6; } 100% { transform: translateX(-90px); opacity: 0; } }
+@keyframes js-cl-note { 0% { opacity: 0; transform: translate(0, 6px) scale(0.6); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(14px, -30px) rotate(12deg) scale(1.1); } }
 @keyframes js-gust { 0% { transform: translateX(-30px); opacity: 0; } 30% { opacity: 0.6; } 100% { transform: translateX(60px); opacity: 0; } }
+
+/* Logo tile and the home-screen guitar */
+.js-guitar-logo { border-radius: 22%; }
+.js-scene .js-sparkle path { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .js-guitar-logo .js-logo-notes text { animation: js-float 3s ease-out infinite; }
+  .js-guitar-logo .js-logo-notes text:nth-child(2) { animation-delay: 1s; } .js-guitar-logo .js-logo-notes text:nth-child(3) { animation-delay: 2s; }
+  .js-home-guitar .js-legend.js-enter { animation: js-drop-in 1.6s cubic-bezier(.2,.9,.3,1.15) 1 both, js-turn 7s ease-in-out 1.6s infinite; transform-origin: 50% 100%; }
+  .js-home-guitar .js-sparkle path { animation: js-twinkle 2.4s ease-in-out 1.2s infinite; transform-box: fill-box; transform-origin: 50% 50%; }
+  .js-home-guitar .js-sparkle path:nth-child(2) { animation-delay: 1.8s; } .js-home-guitar .js-sparkle path:nth-child(3) { animation-delay: 2.4s; } .js-home-guitar .js-sparkle path:nth-child(4) { animation-delay: 3s; }
+}
+@keyframes js-drop-in { 0% { transform: translateY(-260px) rotate(-200deg) scale(0.6); opacity: 0; } 55% { opacity: 1; } 75% { transform: translateY(8px) rotate(4deg) scale(1.03); } 100% { transform: translateY(0) rotate(0) scale(1); } }
+@keyframes js-twinkle { 0%, 100% { opacity: 0; transform: scale(0.4); } 40% { opacity: 1; transform: scale(1.2); } }

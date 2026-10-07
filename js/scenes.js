@@ -159,7 +159,7 @@ function concert() {
 // caption shown under the card.
 const BODY = {
   strat: "M200 122 C186 122 176 112 168 104 C160 98 150 104 152 116 C154 130 160 138 156 150 C150 166 140 176 142 196 C146 222 176 230 200 230 C226 230 256 224 260 198 C262 178 250 166 246 152 C242 140 246 128 248 118 C250 108 242 100 234 106 C226 114 216 122 200 122 Z",
-  lp: "M200 124 C186 124 170 120 162 128 C152 140 158 154 152 166 C144 182 144 206 158 220 C172 232 228 232 242 220 C256 206 256 184 246 168 C240 156 246 146 244 136 C242 126 236 116 230 110 C226 120 216 126 206 124 Z",
+  lp: "M193 116 C176 112 157 117 151 133 C146 147 153 158 149 171 C138 188 136 214 154 228 C172 243 228 243 246 228 C264 214 263 188 251 172 C244 162 251 152 249 141 C247 130 244 120 238 110 C234 103 225 104 223 112 C221 124 216 131 208 127 L207 116 Z",
   semi: "M200 118 C190 118 182 122 176 116 C168 106 150 108 148 124 C146 136 156 144 150 156 C138 172 136 200 150 216 C166 232 234 232 250 216 C264 200 262 172 250 156 C244 144 254 136 252 124 C250 108 232 106 224 116 C218 122 210 118 200 118 Z",
   acoustic: "M200 112 C184 112 170 112 162 120 C154 128 160 142 156 152 C146 168 136 184 140 204 C146 228 176 234 200 234 C224 234 254 228 260 204 C264 184 254 168 244 152 C240 142 246 128 238 120 C230 112 216 112 200 112 Z",
   classical: "M200 116 C188 116 174 116 168 124 C162 132 166 144 162 152 C152 168 148 186 152 204 C158 226 180 232 200 232 C220 232 242 226 248 204 C252 186 248 168 238 152 C234 144 238 132 232 124 C226 116 212 116 200 116 Z",
@@ -200,7 +200,7 @@ const LEGENDS = {
   },
   redspecial: {
     name: "The Red Special", who: "Brian May", year: "1964",
-    fact: "Brian and his dad built it from an old fireplace mantel, and the whammy bar tip is a knitting needle!",
+    fact: "Brian and his dad built it by hand: the neck came from an old fireplace mantel, and the whammy bar tip is a knitting needle!",
     draw: () => `<g filter="url(#js-vol)"><path d="${BODY.red}" fill="#8a2a18"/></g>
       <path d="M176 140 C166 150 168 170 176 182 L224 182 C232 170 232 150 222 140 Z" fill="#141418"/>
       ${neck("#2a1a10")}${head.three("#141418")}${single(200, 150)}${single(200, 164)}${single(200, 178)}
@@ -227,8 +227,8 @@ const LEGENDS = {
       ${knobs([[228, 196], [240, 204], [228, 212], [240, 220]], "#d4af37")}<path d="M164 150 l10 -6" stroke="#d4af37" stroke-width="3"/>`,
   },
   elvis: {
-    name: "Leather-cover acoustic", who: "Elvis Presley", year: "1956",
-    fact: "Elvis bought a Martin guitar for $175 after trading in his old one for just $8.",
+    name: "Leather-cover Martin", who: "Elvis Presley", year: "1955",
+    fact: "Elvis wrapped his Martin D-28 in a hand-tooled leather cover to protect it while he toured!",
     draw: () => `<defs><clipPath id="js-ev"><path d="${BODY.acoustic}"/></clipPath></defs><g filter="url(#js-vol)"><path d="${BODY.acoustic}" fill="#8a5a2c"/></g>
       <g clip-path="url(#js-ev)"><g stroke="#5a3414" stroke-width="1.4" fill="none" opacity="0.85">${Array.from({ length: 9 }, (_, k) => `<path d="M${150 + (k % 3) * 40} ${140 + Math.floor(k / 3) * 32} q10 -14 20 0 q10 14 0 20 q-14 6 -14 -8"/>`).join("")}</g>
         <path d="M${140} 128 Q200 118 260 128 M140 226 Q200 236 260 226" stroke="#d9b07a" stroke-width="2" stroke-dasharray="3 3" fill="none"/></g>
@@ -279,23 +279,292 @@ function legend(id) {
 // Mexico desert at sunset and a top-hatted guitarist on the rocks. (The
 // "threw his guitar off a cliff" story is a myth; the church was real and
 // moved there for the video.)
-function cliff() {
-  return `<rect width="400" height="240" fill="url(#js-sunset)"/>
-    <circle cx="300" cy="150" r="34" fill="#ffd27a" opacity="0.9"/>
-    <path d="M0 176 Q80 150 160 168 T320 160 T400 166 V240 H0 Z" fill="#c9773d"/>
-    <path d="M0 196 Q100 182 200 192 T400 190 V240 H0 Z" fill="#a85a28"/>
-    <g filter="url(#js-vol)"><rect x="40" y="132" width="44" height="40" fill="#f6f0e4"/><path d="M36 134 L62 112 L88 134 Z" fill="#e6dccb"/><rect x="56" y="88" width="12" height="28" fill="#f6f0e4"/><path d="M53 90 L62 76 L71 90 Z" fill="#e6dccb"/></g>
-    <path d="M62 66 v12 M57 70 h10" stroke="#5a4a3a" stroke-width="2"/><rect x="56" y="148" width="12" height="24" rx="6" fill="#7a5a3a"/>
-    <path d="M170 200 L240 200 L262 240 L150 240 Z" fill="#7a3f1c"/>
-    <g class="js-player" fill="#1e1410">
-      <rect x="196" y="150" width="20" height="36" rx="6"/><path d="M198 186 L194 202 M214 186 L218 202" stroke="#1e1410" stroke-width="6" stroke-linecap="round"/>
-      <circle cx="206" cy="140" r="10"/><path d="M194 140 q-6 14 0 22 M218 140 q6 14 0 22" stroke="#1e1410" stroke-width="5" fill="none"/>
-      <rect x="196" y="122" width="20" height="12" rx="1"/><rect x="190" y="132" width="32" height="4" rx="2"/>
-      <g class="js-player-guitar"><path d="${BODY.lp}" transform="translate(152 104) scale(0.28) rotate(-60 200 170)" fill="#6b1a12"/><path d="M196 170 L240 150" stroke="#2a1a10" stroke-width="4"/></g>
-    </g>
-    <g class="js-wind"><path d="M20 100 q40 -8 80 0" /><path d="M260 90 q40 -8 80 0"/></g>`;
+// Drawing helpers for the cliff scene.
+const f1 = (n) => +n.toFixed(1);
+// A smooth Catmull-Rom curve through the points, as cubic Beziers.
+function crPath(pts) {
+  let d = `M${f1(pts[0][0])} ${f1(pts[0][1])}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    d += ` C${f1(p1[0] + (p2[0] - p0[0]) / 6)} ${f1(p1[1] + (p2[1] - p0[1]) / 6)} ${f1(p2[0] - (p3[0] - p1[0]) / 6)} ${f1(p2[1] - (p3[1] - p1[1]) / 6)} ${f1(p2[0])} ${f1(p2[1])}`;
+  }
+  return d;
+}
+// A tapered tube (arm, leg) through [x, y, width] points, round at the end.
+function limbPath(pts) {
+  const L = [], R = [];
+  pts.forEach((p, i) => {
+    const a = pts[Math.max(0, i - 1)], b = pts[Math.min(pts.length - 1, i + 1)];
+    const len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
+    const nx = (-(b[1] - a[1]) / len) * p[2] / 2, ny = ((b[0] - a[0]) / len) * p[2] / 2;
+    L.push([p[0] + nx, p[1] + ny]); R.push([p[0] - nx, p[1] - ny]);
+  });
+  const r = f1(pts[pts.length - 1][2] / 2), e = R[R.length - 1];
+  return `${crPath(L)} A${r} ${r} 0 0 1 ${f1(e[0])} ${f1(e[1])}${crPath(R.reverse()).replace(/^M[^C]*/, " ")} Z`;
+}
+// Long curly hair: overlapping curls along Bezier strands, with warm glints.
+function curls(strands, r0, seed = 7) {
+  let s = seed;
+  const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+  let base = "", hi = "";
+  strands.forEach(([p0, p1, p2, p3], k) => {
+    for (let i = 0; i <= 10; i++) {
+      const t = i / 10, u = 1 - t;
+      const b = (j) => u * u * u * p0[j] + 3 * u * u * t * p1[j] + 3 * u * t * t * p2[j] + t * t * t * p3[j];
+      const r = r0 * (1 - 0.45 * t) * (0.85 + rnd() * 0.3);
+      const x = b(0) + Math.sin(t * 9 + k) * 1.1, y = b(1) + Math.cos(t * 9 + k * 2) * 1.1;
+      base += `<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(r)}"/>`;
+      hi += `<path d="M${f1(x - r * 0.55)} ${f1(y + r * 0.1)} a${f1(r * 0.55)} ${f1(r * 0.55)} 0 0 1 ${f1(r * 0.9)} -${f1(r * 0.3)}"/>`;
+    }
+  });
+  return `<g fill="#1d120c">${base}</g><g fill="none" stroke="#7a4a2c" stroke-width="0.7" stroke-linecap="round" opacity="0.85">${hi}</g>`;
 }
 
+// The honey-amber Les Paul for the cliff scene, in the logo's local frame
+// (body from BODY.lp, a full-length neck: nut at y 4, headstock to y -52).
+function cliffGuitar() {
+  const T = "translate(190 146) rotate(50) scale(0.285) translate(-200 -172)";
+  const fret = (n) => 4 + 196 * (1 - 2 ** (-n / 12));
+  const frets = Array.from({ length: 19 }, (_, k) => `<path d="M193 ${f1(fret(k + 1))} h14" stroke="#d9dde2" stroke-width="1.6"/>`).join("");
+  const inlays = [3, 5, 7, 9, 12, 15].map((n) => { const y = (fret(n - 1) + fret(n)) / 2; return `<path d="M195.5 ${f1(y - 3)} h9 l-1 6 h-7 z" fill="#efe3c4"/>`; }).join("");
+  const flames = Array.from({ length: 16 }, (_, k) => `<path d="M140 ${112 + k * 8} q15 -7 30 0 t30 0 t30 0 t30 0"/>`).join("");
+  return `<path d="${BODY.lp}" transform="${T} translate(10 12)" fill="#1a0a04" opacity="0.35"/>
+    <g filter="url(#js-vol)"><path d="${BODY.lp}" transform="${T}" fill="url(#js-cl-amber)"/></g>
+    <g transform="${T}">
+      <g clip-path="url(#js-cl-lpclip)"><g fill="none" stroke="#b5601a" stroke-width="3" opacity="0.35">${flames}</g>
+        <ellipse cx="186" cy="150" rx="34" ry="22" fill="#fff6d0" opacity="0.32"/></g>
+      <path d="${BODY.lp}" fill="none" stroke="#f6ecd2" stroke-width="4.5"/>
+      <path d="M211 134 C228 138 238 160 232 182 Q224 188 215 180 Z" fill="#efe3c4" stroke="#d9c9a4" stroke-width="1"/>
+      <path d="M193 4 L189 -40 Q193 -55 200 -48 Q207 -55 211 -40 L207 4 Z" fill="#141418"/>
+      <path d="M194 0 L191 -38" stroke="#5a5a66" stroke-width="2" opacity="0.7"/>
+      ${[0, 1, 2].map((k) => `<rect x="179" y="${-8 - k * 13}" width="9" height="6" rx="3" fill="url(#js-silver)"/><rect x="212" y="${-8 - k * 13}" width="9" height="6" rx="3" fill="url(#js-silver)"/>`).join("")}
+      <rect x="192" y="2" width="16" height="3" fill="#efe3c4"/>
+      <rect x="193" y="4" width="14" height="146" fill="#3a2414"/><path d="M193 4 v146 M207 4 v146" stroke="#f6ecd2" stroke-width="1.6"/>
+      ${frets}${inlays}
+      ${hum(200, 158, "#141418")}${hum(200, 184, "#141418")}
+      <rect x="185" y="196" width="30" height="7" rx="2" fill="url(#js-silver)"/><rect x="184" y="209" width="32" height="6" rx="2" fill="url(#js-silver)"/>
+      ${[0, 1, 2, 3, 4, 5].map((k) => `<path d="M${195 + k * 2} 2 V212" stroke="#f4f6f8" stroke-width="1.1" opacity="0.9"/>`).join("")}
+      ${[[226, 196], [240, 204], [226, 214], [240, 222]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="6" fill="#e9a22e" stroke="#7a4a10" stroke-width="1"/><circle cx="${x - 1.6}" cy="${y - 1.8}" r="1.8" fill="#fff4c8" opacity="0.8"/>`).join("")}
+      <circle cx="168" cy="128" r="3.6" fill="url(#js-silver)"/><path d="M168 128 l-6 -8" stroke="#e8ebef" stroke-width="2.4" stroke-linecap="round"/>
+    </g>`;
+}
+
+// Slash's November Rain solo, kid-friendly: a lone white church in the New
+// Mexico desert at sunset and a top-hatted guitarist on the rocks. (The
+// "threw his guitar off a cliff" story is a myth; the church was real and
+// moved there for the video.) Drawn ~89 px per metre: the player is about
+// 1.8 m tall and the Les Paul about 1 m long. He's right-handed and faces
+// us, so the neck rises toward his left hand (our right).
+function cliff() {
+  const sky = `<linearGradient id="js-cl-sky" x1="0" y1="0" x2="0" y2="168" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2a2462"/><stop offset="0.3" stop-color="#5e3c86"/><stop offset="0.55" stop-color="#b9587e"/><stop offset="0.76" stop-color="#ef8a55"/><stop offset="0.92" stop-color="#ffc56e"/><stop offset="1" stop-color="#ffe3a4"/></linearGradient>
+    <radialGradient id="js-cl-glow" cx="128" cy="148" r="170" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff6cf" stop-opacity="0.95"/><stop offset="0.14" stop-color="#ffd27a" stop-opacity="0.7"/><stop offset="0.45" stop-color="#ff9a5a" stop-opacity="0.22"/><stop offset="1" stop-color="#ff7a50" stop-opacity="0"/></radialGradient>
+    <radialGradient id="js-cl-sun" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="#fffdf0"/><stop offset="0.7" stop-color="#ffe7a6"/><stop offset="1" stop-color="#ffc469"/></radialGradient>
+    <linearGradient id="js-cl-cloud" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6e4a8e" stop-opacity="0.85"/><stop offset="0.55" stop-color="#d77a8a"/><stop offset="1" stop-color="#ffc38a"/></linearGradient>
+    <linearGradient id="js-cl-floor" x1="0" y1="150" x2="0" y2="240" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f7b878"/><stop offset="0.2" stop-color="#e08a50"/><stop offset="0.6" stop-color="#b45a30"/><stop offset="1" stop-color="#7c3a1e"/></linearGradient>
+    <linearGradient id="js-cl-rock" x1="0" y1="160" x2="0" y2="240" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c26a3a"/><stop offset="0.35" stop-color="#93482a"/><stop offset="1" stop-color="#3e1c10"/></linearGradient>
+    <linearGradient id="js-cl-rockx" x1="100" y1="0" x2="400" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffb070" stop-opacity="0.35"/><stop offset="0.5" stop-color="#ffb070" stop-opacity="0"/><stop offset="1" stop-color="#1a0804" stop-opacity="0.35"/></linearGradient>
+    <linearGradient id="js-cl-coat" x1="160" y1="0" x2="228" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7d4a32"/><stop offset="0.18" stop-color="#3f2619"/><stop offset="0.6" stop-color="#25160f"/><stop offset="1" stop-color="#130b07"/></linearGradient>
+    <linearGradient id="js-cl-jeans" x1="168" y1="0" x2="234" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#5a4048"/><stop offset="0.25" stop-color="#2c2229"/><stop offset="1" stop-color="#140f13"/></linearGradient>
+    <linearGradient id="js-cl-hat" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5a4038"/><stop offset="0.3" stop-color="#241a18"/><stop offset="1" stop-color="#0b0808"/></linearGradient>
+    <radialGradient id="js-cl-skin" cx="35%" cy="40%" r="70%"><stop offset="0" stop-color="#f6cfa6"/><stop offset="1" stop-color="#b8785a"/></radialGradient>
+    <radialGradient id="js-cl-amber" cx="40%" cy="45%" r="65%"><stop offset="0" stop-color="#ffe98c"/><stop offset="0.45" stop-color="#f6b93c"/><stop offset="0.8" stop-color="#c96c16"/><stop offset="1" stop-color="#6e2a08"/></radialGradient>
+    <linearGradient id="js-cl-ledge" x1="0" y1="196" x2="0" y2="240" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#b85a2e"/><stop offset="1" stop-color="#5e2812"/></linearGradient>
+    <clipPath id="js-cl-lpclip"><path d="${BODY.lp}"/></clipPath>
+    <filter id="js-cl-blur" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="1.6"/></filter>
+    <filter id="js-cl-blur3" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>`;
+
+  const cloud = (cx, cy, rx, ry) => `<g filter="url(#js-cl-blur)"><ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#js-cl-cloud)"/><ellipse cx="${cx - rx * 0.4}" cy="${cy - ry * 0.5}" rx="${rx * 0.45}" ry="${ry * 0.8}" fill="url(#js-cl-cloud)"/><ellipse cx="${cx + rx * 0.35}" cy="${cy - ry * 0.3}" rx="${rx * 0.5}" ry="${ry * 0.75}" fill="url(#js-cl-cloud)"/></g>
+      <path d="M${cx - rx * 0.8} ${cy + ry * 0.75} Q${cx} ${cy + ry * 1.25} ${cx + rx * 0.8} ${cy + ry * 0.75}" fill="none" stroke="#ffd9a0" stroke-width="1" opacity="0.6" filter="url(#js-cl-blur)"/>`;
+
+  // The little white adobe church, far off in the desert.
+  const church = `<g class="js-cl-church" transform="translate(52 164) scale(0.72) translate(-52 -164)">
+      <path d="M60 164 L20 166 L24 163 L44 162 Z" fill="#6a2e22" opacity="0.35"/>
+      <path d="M58 153 L70 150 L74 152 L74 163 L58 164 Z" fill="#ffdcae"/><path d="M58 153 L66 146 L70 150 Z" fill="#f8c890"/>
+      <path d="M43 164 L43 152 L50.5 145 L58 152 L58 164 Z" fill="#ebdde6"/>
+      <path d="M47.5 152 L47.5 139 Q50.5 137.5 53.5 139 L53.5 152 Z" fill="#f1e6ec"/><path d="M47 139.5 L50.5 134 L54 139.5 Z" fill="#dccbd8"/>
+      <path d="M53.5 139 L54.5 140 L54.5 152 L53.5 152 Z" fill="#ffd9a6"/><path d="M58 152 L58 164" stroke="#ffe2b8" stroke-width="0.8"/>
+      <path d="M50.5 134 V128 M48.6 130 H52.4" stroke="#4a3436" stroke-width="0.9"/>
+      <path d="M49.2 146 Q50.5 143.5 51.8 146 V148 H49.2 Z" fill="#5a3e46"/>
+      <path d="M48.6 164 V159 Q50.5 155.5 52.4 159 V164 Z" fill="#6a4a4e"/><circle cx="50.5" cy="153.5" r="1" fill="#8a6a74"/>
+      <path d="M62 157 h2 v3 h-2 z M67 156 h2 v3 h-2 z" fill="#b8865e"/>
+    </g>`;
+
+  // The rocky cliff top in the foreground (the drop is on the left).
+  const rockTop = "M96 240 L100 226 L106 216 L112 206 L124 202 L140 204 C170 207 198 210 232 209 C258 208 280 202 298 195 C320 186 340 174 358 166 C374 160 388 156 400 155 L400 240 Z";
+  const rocks = `<path d="${rockTop}" fill="url(#js-cl-rock)"/><path d="${rockTop}" fill="url(#js-cl-rockx)"/>
+    <path d="M96 240 L100 226 L106 216 L112 206 L124 202 L127 212 L122 222 L119 232 L118 240 Z" fill="#d8783f"/>
+    <path d="M100 226 L106 216 L112 206 L124 202 L127 212 L116 214 L108 224 Z" fill="#f09858" opacity="0.6"/>
+    <path d="M104 228 L102 240 M110 218 L108 234 M117 210 L114 226 M122 206 L120 218" stroke="#7a3418" stroke-width="0.9" opacity="0.7"/>
+    <path d="M118 240 L121 230 C160 232 220 236 270 232 C310 228 350 214 400 196 L400 240 Z" fill="#3e1a0c" opacity="0.35"/>
+    <g fill="none" stroke-linecap="round"><path d="M126 228 C170 231 220 233 262 229 C300 225 330 214 360 200" stroke="#5a2412" stroke-width="1.1" opacity="0.45"/>
+      <path d="M140 236 C190 239 250 239 300 234 C340 230 370 220 400 206" stroke="#5a2412" stroke-width="1.2" opacity="0.4"/>
+      <path d="M128 224 C168 226 212 228 252 225" stroke="#f0a060" stroke-width="0.8" opacity="0.35"/>
+      <path d="M300 222 l10 -6 l6 4 M262 236 l8 -4 l10 2 M150 232 l6 -3" stroke="#3a160a" stroke-width="0.8" opacity="0.6"/></g>
+    <path d="M112 206 L124 202 L140 204 C170 207 198 210 232 209 C258 208 280 202 298 195 C320 186 340 174 358 166 C374 160 388 156 400 155" fill="none" stroke="#ffbe7a" stroke-width="1.5" opacity="0.9"/>
+    <g filter="url(#js-vol)"><path d="M300 240 C296 216 312 198 336 194 C360 190 380 202 384 222 L386 240 Z" fill="#8e4a28"/>
+      <path d="M352 204 C350 182 366 168 386 168 C400 169 404 182 402 198 L400 240 L362 240 Z" fill="#7a3c20"/>
+      <path d="M244 228 C246 220 258 218 265 223 C270 229 262 233 250 233 Z" fill="#a65a30"/>
+      <path d="M140 226 C142 220 150 219 154 223 C156 228 150 230 144 230 Z" fill="#b0623a"/></g>
+    <path d="M300 236 C298 214 314 197 336 194 M352 202 C351 182 366 169 386 168" fill="none" stroke="#ffb878" stroke-width="1.3" opacity="0.75"/>
+    <path d="M318 214 l12 8 l-4 10 M370 190 l8 12 l-2 14" fill="none" stroke="#3e1a0c" stroke-width="0.9" opacity="0.6"/>
+    <g fill="#b8683a"><path d="M150 216 l14 -3 l12 2 l-4 4 l-18 1 z"/><path d="M252 214 l10 -2 l8 2 l-6 3 z"/><path d="M300 224 l16 -5 l10 3 l-8 5 z"/></g>
+    <g fill="#f2a466" opacity="0.7"><path d="M150 216 l14 -3 l12 2 l-14 0 z"/><path d="M252 214 l10 -2 l8 2 l-9 0 z"/><path d="M300 224 l16 -5 l10 3 l-14 0 z"/></g>
+    <g fill="#5a2a14">${[[136, 222], [168, 230], [240, 234], [262, 222], [286, 230], [210, 236], [190, 228]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="1.6" ry="0.9"/>`).join("")}</g>
+    <g fill="#4e4a22"><circle cx="276" cy="204" r="3"/><circle cx="281" cy="203" r="3.6"/><circle cx="286" cy="205" r="2.6"/><circle cx="141" cy="208" r="2.2"/><circle cx="145" cy="207" r="2.8"/></g>
+    <g fill="#8a8a3a" opacity="0.7"><circle cx="280" cy="201.5" r="1.4"/><circle cx="144" cy="205.5" r="1.1"/></g>`;
+
+  // The guitarist, lit from the low sun on our left.
+  const hairBack = `<path d="M190 63 C182 66 170 74 160 86 C164 92 168 100 170 108 C176 114 184 116 194 112 C202 112 210 110 216 104 C220 94 218 78 213 64 Z" fill="#1d120c"/>` + curls([
+    [[196, 64], [186, 70], [176, 84], [162, 94]],
+    [[199, 65], [190, 77], [181, 94], [170, 106]],
+    [[203, 65], [197, 80], [188, 100], [180, 113]],
+    [[207, 65], [212, 80], [207, 98], [196, 110]],
+    [[211, 66], [218, 82], [217, 98], [210, 106]],
+    [[192, 65], [180, 70], [168, 77], [156, 84]],
+    [[194, 66], [184, 74], [174, 88], [164, 100]],
+    [[205, 66], [206, 82], [198, 96], [188, 108]],
+    [[209, 66], [216, 76], [214, 90], [204, 104]],
+  ], 4.8, 11);
+  const hairFront = curls([
+    [[195, 66], [192, 74], [190, 84], [186, 95]],
+    [[193, 65], [189, 72], [186, 80], [182, 88]],
+    [[207, 66], [210, 74], [210, 86], [206, 97]],
+    [[209, 65], [213, 72], [214, 82], [212, 92]],
+  ], 3.3, 5);
+  const leftLeg = limbPath([[190, 130, 15], [185, 158, 13.5], [181, 182, 11], [178, 200, 10], [176, 214, 9]]);
+  const rightLeg = limbPath([[210, 130, 15], [215, 156, 13.5], [220, 180, 11], [223, 199, 10], [226, 214, 9]]);
+  const rightArm = limbPath([[184, 95, 10], [175, 108, 9.5], [169, 124, 8.5], [176, 139, 7.5], [183, 146, 6.5]]);
+  const leftArm = limbPath([[216, 95, 10], [226, 106, 9.5], [232, 122, 8.5], [224, 129, 7.5], [214, 131, 6.5]]);
+  const player = `<g class="js-cl-player" style="transform-box:view-box;transform-origin:201px 222px">
+      <g class="js-cl-tails" style="transform-box:view-box;transform-origin:196px 110px">
+        <path d="M184 116 C174 140 158 162 138 186 C150 191 164 189 174 184 C182 168 192 148 199 126 Z" fill="#1a0f0a"/>
+        <path d="M214 118 C220 142 220 166 214 190 C206 190 199 188 194 183 C199 162 204 140 206 124 Z" fill="#160d08"/>
+      </g>
+      <path d="${leftLeg}" fill="url(#js-cl-jeans)"/><path d="${rightLeg}" fill="url(#js-cl-jeans)"/>
+      <path d="M183 160 C182 176 178 196 176 212" fill="none" stroke="#a0706a" stroke-width="0.8" opacity="0.6"/>
+      <path d="M171 210 L181 210 L182 219 Q182 224 176 224 L163 224 Q159 224 161 221 Q165 218 171 217 Z" fill="#140d0a"/>
+      <path d="M221 210 L231 210 L231 217 Q236 218 240 221 Q242 224 238 224 L225 224 Q220 224 220 219 Z" fill="#140d0a"/>
+      <path d="M163 221.5 Q168 219 172 218.5 M232 218.5 Q236 219 239 221.5" stroke="#8a5a40" stroke-width="0.8" fill="none"/>
+      <path d="M194 90 L206 90 L209 130 L191 130 Z" fill="#4a1a1e"/>
+      <rect x="190" y="126" width="20" height="4.5" rx="1" fill="#1a1210"/><rect x="197.5" y="126.2" width="5" height="4" rx="1" fill="url(#js-silver)"/>
+      <path d="M197 88 L203 88 L200 97 Z" fill="url(#js-cl-skin)"/>
+      <path d="M194 88 L199 100 L195 104 Z M206 88 L201 100 L205 104 Z" fill="#ece4d6"/>
+      <g class="js-cl-coat" style="transform-box:view-box;transform-origin:184px 96px">
+        <path d="M183 91 C178 100 176 112 175 124 C172 142 162 162 148 184 C157 187 167 186 176 182 C182 166 188 148 191 130 C193 118 194 104 195 94 Z" fill="url(#js-cl-coat)"/>
+        <path d="M183 91 C178 100 176 112 175 124 C172 142 162 162 148 184" fill="none" stroke="#ffae66" stroke-width="0.9" opacity="0.8"/>
+      </g>
+      <path d="M217 91 C223 102 224 116 224 128 C224 148 222 166 216 182 C210 184 204 184 198 182 C204 166 208 148 209 130 C208 116 207 104 205 94 Z" fill="url(#js-cl-coat)"/>
+      <path d="M181 97 Q183 89 194 87.5 L206 87.5 Q217 89 219 97 L214 96 L186 96 Z" fill="url(#js-cl-coat)"/>
+      <path d="M195 94 L191 108 M205 94 L209 108" stroke="#5a3424" stroke-width="1" opacity="0.8"/>
+      <rect x="197" y="80" width="6.5" height="10" rx="2" fill="url(#js-cl-skin)"/>
+      <path d="M195 128 L216 92" stroke="#2a160c" stroke-width="4" stroke-linecap="round"/><path d="M194.4 127 L215.4 91" stroke="#6a4028" stroke-width="1" opacity="0.8"/>
+      ${hairBack}
+      <g class="js-cl-guitar" style="transform-box:view-box;transform-origin:190px 146px">
+        <path d="${leftArm}" fill="url(#js-cl-coat)"/><path d="M216 99 C224 106 230 114 232 120" fill="none" stroke="#5a3424" stroke-width="0.8" opacity="0.7"/>
+        ${cliffGuitar()}
+        <g transform="rotate(-40 210 128.5)"><ellipse cx="210" cy="128.5" rx="4.6" ry="2.9" fill="url(#js-cl-skin)"/><path d="M207.5 127 v3 M209.8 126.6 v3.4 M212.1 126.9 v3" stroke="#9a6448" stroke-width="0.5"/></g>
+      </g>
+      <path d="${rightArm}" fill="url(#js-cl-coat)"/>
+      <path d="M184 99 C176 106 171 116 169 124" fill="none" stroke="#ffae66" stroke-width="0.9" opacity="0.75"/>
+      <g transform="rotate(35 186.5 148)"><ellipse cx="186.5" cy="148" rx="4.2" ry="3.2" fill="url(#js-cl-skin)"/></g>
+      <path d="M188.6 150.4 l2.2 1.4 l-2 1.2 z" fill="#f2f2f2"/>
+      <g class="js-cl-head" style="transform-box:view-box;transform-origin:200px 86px">
+        <ellipse cx="201" cy="74.5" rx="6.6" ry="8.6" transform="rotate(-8 201 74.5)" fill="url(#js-cl-skin)"/>
+        <path d="M195.5 79 Q200.5 85.5 206.5 78.2" fill="none" stroke="#9a6044" stroke-width="0.8" opacity="0.7"/>
+        <g transform="rotate(-8 201 71)"><ellipse cx="197.6" cy="71" rx="2.9" ry="2.2" fill="#0d0d12"/><ellipse cx="204.4" cy="71" rx="2.9" ry="2.2" fill="#0d0d12"/>
+          <path d="M200.4 70.6 h1.2" stroke="#0d0d12" stroke-width="0.8"/><ellipse cx="196.6" cy="70.2" rx="1" ry="0.6" fill="#ffd9a0" opacity="0.85"/><ellipse cx="203.4" cy="70.2" rx="1" ry="0.6" fill="#fff" opacity="0.6"/></g>
+        ${hairFront}
+        <g transform="rotate(-11 201 64)">
+          <path d="M190 64 C190 56 189 49 188.5 43.5 Q201 40 213.5 43.5 C213 49 212 56 212 64 Z" fill="url(#js-cl-hat)"/>
+          <ellipse cx="201" cy="43.6" rx="12.5" ry="2.4" fill="#2e2424"/>
+          <path d="M190 58.5 Q201 60.5 212 58.5 L212 62.5 Q201 64.5 190 62.5 Z" fill="#2a1a12"/>
+          ${[192, 196, 200, 204, 208, 211].map((x) => `<circle cx="${x}" cy="${x === 200 ? 61.6 : 61.3}" r="1" fill="url(#js-silver)"/>`).join("")}
+          <path d="M184.5 64 Q201 59.5 217.5 64 Q201 71.5 184.5 64 Z" fill="#161010"/>
+          <path d="M184.5 64 Q201 71.5 217.5 64" fill="none" stroke="#4a3434" stroke-width="0.7"/>
+          <path d="M188.6 44 C189.2 50 190 57 190.2 63.5" fill="none" stroke="#ffae66" stroke-width="0.9" opacity="0.8"/>
+        </g>
+      </g>
+      <g class="js-cl-hair" style="transform-box:view-box;transform-origin:201px 66px">${curls([
+        [[193, 67], [184, 72], [174, 76], [164, 78]],
+        [[194, 70], [186, 80], [178, 90], [168, 94]],
+      ], 2.6, 3)}</g>
+    </g>`;
+
+  return `<defs>${sky}</defs>
+    <rect width="400" height="240" fill="url(#js-cl-sky)"/>
+    <rect class="js-cl-glow" width="400" height="240" fill="url(#js-cl-glow)" style="transform-box:view-box;transform-origin:128px 148px"/>
+    <g opacity="0.6" filter="url(#js-cl-blur)">${[-50, -28, -8, 12, 32, 54].map((a) => `<path d="M128 146 L${f1(128 + Math.sin((a * Math.PI) / 180 - 0.04) * 220)} ${f1(146 - Math.cos((a * Math.PI) / 180 - 0.04) * 220)} L${f1(128 + Math.sin((a * Math.PI) / 180 + 0.04) * 220)} ${f1(146 - Math.cos((a * Math.PI) / 180 + 0.04) * 220)} Z" fill="#fff1c8" opacity="0.1"/>`).join("")}</g>
+    <circle cx="128" cy="147" r="15" fill="url(#js-cl-sun)"/>
+    <g class="js-cl-clouds" style="transform-box:view-box">${cloud(70, 40, 74, 7)}${cloud(270, 30, 110, 9)}${cloud(340, 82, 70, 6)}${cloud(196, 100, 84, 4.5)}${cloud(36, 118, 52, 3.6)}${cloud(300, 124, 64, 3.6)}</g>
+    <path d="M0 162 L0 152 L14 151 L20 146 L52 145 L57 150 L74 151 L80 154 L150 155 L158 149 L196 148 L202 153 L236 154 L240 146 L246 141 L300 140 L306 146 L312 152 L360 153 L366 147 L400 146 L400 166 Z" fill="#a8628a" opacity="0.9"/>
+    <path d="M20 146 L52 145 M158 149 L196 148 M246 141 L300 140 M366 147 L400 146" stroke="#ffcf9a" stroke-width="1" opacity="0.8"/>
+    <path d="M220 162 L230 152 L236 151 L262 150 L268 155 L292 156 L300 160 L330 160 L336 156 L360 156 L366 161 Z" fill="#8a4a64"/>
+    <path d="M0 160 L400 160 L400 240 L0 240 Z" fill="url(#js-cl-floor)"/>
+    <path d="M0 160 H400 V166 H0 Z" fill="#ffd9a0" opacity="0.35" filter="url(#js-cl-blur)"/>
+    <path d="M0 194 C26 186 46 178 55 165 L57 165 C50 178 32 190 6 199 L0 200 Z" fill="#f6c890" opacity="0.5"/>
+    <g fill="#6a3018" opacity="0.4">${[[18, 186, 9], [88, 180, 7], [72, 204, 11], [30, 174, 6], [96, 196, 8], [150, 176, 9], [262, 182, 10], [300, 172, 8], [150, 196, 9], [372, 160, 6]].map(([x, y, w]) => `<ellipse cx="${x - w}" cy="${y + 1}" rx="${w}" ry="1.3"/>`).join("")}</g>
+    <g fill="#5a4426">${[[18, 186, 1.8], [88, 180, 1.5], [72, 204, 2.2], [30, 174, 1.3], [96, 196, 1.8], [150, 176, 1.8], [262, 182, 2], [300, 172, 1.6], [150, 196, 1.8], [372, 160, 1.2]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join("")}</g>
+    <path d="M0 203 C8 199 14 204 22 201 L28 197 L36 200 C48 198 56 202 66 198 L74 195 L82 199 C92 197 100 200 108 196 L112 206 L100 226 L96 240 L0 240 Z" fill="url(#js-cl-ledge)"/>
+    <path d="M0 203 C8 199 14 204 22 201 L28 197 L36 200 C48 198 56 202 66 198 L74 195 L82 199 C92 197 100 200 108 196" fill="none" stroke="#ffb878" stroke-width="1" opacity="0.75"/>
+    <path d="M0 206 C10 203 16 207 24 205 L36 204 C50 202 58 206 68 202 L82 203 C94 201 102 204 108 201 L108 209 C80 212 40 213 0 212 Z" fill="#5a2410" opacity="0.35"/>
+    <rect x="0" y="150" width="400" height="60" fill="#ffd3a0" opacity="0.18" filter="url(#js-cl-blur3)"/>
+    ${church}
+    ${rocks}
+    <path d="M178 223 L230 223 L330 232 L314 236 Z" fill="#2a0e06" opacity="0.32" filter="url(#js-cl-blur)"/>
+    ${player}
+    <g class="js-cl-dust" fill="none" stroke="#fff4e0" stroke-linecap="round"><path d="M340 112 q-24 -5 -48 0" stroke-width="1.2"/><path d="M380 150 q-30 -6 -60 0" stroke-width="1"/><path d="M300 70 q-20 -4 -40 0" stroke-width="1"/><path d="M360 196 q-26 -5 -52 0" stroke-width="1.3"/></g>
+    <g class="js-cl-specks" fill="#ffd9a8">${[[330, 200], [350, 190], [300, 210], [370, 182], [280, 216]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="0.9"/>`).join("")}</g>
+    <g class="js-cl-notes"><text x="242" y="96">♪</text><text x="256" y="78">♫</text><text x="232" y="66">♪</text></g>`;
+}
+
+
+// The Jaxx Guitar logo/app icon: a Les Paul-style single-cut in the honey /
+// amber flame-top finish Slash made famous: cream binding, two uncovered
+// black humbuckers, amber "top hat" knobs, a cream pickguard, trapezoid
+// inlays and an open-book headstock. No brand logo.
+function guitarLogo({ label = "Jaxx Guitar", tile = true } = {}) {
+  const flames = Array.from({ length: 14 }, (_, k) => `<path d="M140 ${120 + k * 8} q15 -6 30 0 t30 0 t30 0 t30 0" />`).join("");
+  const inlays = [0, 1, 2, 3, 4].map((k) => `<path d="M196 ${60 + k * 16} h8 l-1 5 h-6 z" fill="#efe3c4"/>`).join("");
+  return `<svg class="js-scene js-guitar-logo" viewBox="0 0 200 200" role="img" aria-label="${label}">${DEFS}
+    <defs><radialGradient id="js-logo-bg" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#3b2a4a"/><stop offset="0.7" stop-color="#1d1626"/><stop offset="1" stop-color="#100c16"/></radialGradient>
+      <radialGradient id="js-logo-gold" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#fff3c4"/><stop offset="0.6" stop-color="#f2c94c"/><stop offset="1" stop-color="#c9921f"/></radialGradient>
+      <radialGradient id="js-amber" cx="45%" cy="55%" r="65%"><stop offset="0" stop-color="#ffe27a"/><stop offset="0.45" stop-color="#f4b63a"/><stop offset="0.8" stop-color="#c46a16"/><stop offset="1" stop-color="#6e2a08"/></radialGradient>
+      <clipPath id="js-lp-clip"><path d="${BODY.lp}"/></clipPath>
+      <radialGradient id="js-logo-spot" cx="50%" cy="40%" r="50%"><stop offset="0" stop-color="#ffd27a" stop-opacity="0.45"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/></radialGradient></defs>
+    <rect width="200" height="200" rx="${tile ? 44 : 0}" fill="url(#js-logo-bg)"/>
+    <ellipse cx="104" cy="96" rx="90" ry="90" fill="url(#js-logo-spot)"/>
+    <g class="js-logo-guitar" style="transform-box:view-box" transform="translate(102 102) rotate(22) scale(0.8) translate(-200 -140)">
+      <path d="${BODY.lp}" transform="translate(4 6)" fill="#000" opacity="0.35"/>
+      <g filter="url(#js-vol)"><path d="${BODY.lp}" fill="url(#js-amber)"/></g>
+      <g clip-path="url(#js-lp-clip)" fill="none" stroke="#b5601a" stroke-width="2.2" opacity="0.35">${flames}</g>
+      <path d="${BODY.lp}" fill="none" stroke="#f6ecd2" stroke-width="3.4"/>
+      <path d="M211 134 C228 138 238 160 232 182 Q224 188 215 180 Z" fill="#efe3c4" stroke="#d9c9a4" stroke-width="0.8"/>
+      <rect x="193" y="38" width="14" height="110" rx="2" fill="#3a2414"/><path d="M193 38 v110 M207 38 v110" stroke="#f6ecd2" stroke-width="1"/>
+      ${Array.from({ length: 14 }, (_, k) => `<path d="M193 ${44 + k * 7.6} h14" stroke="#c9ced6" stroke-width="0.9"/>`).join("")}${inlays}
+      <path d="M193 40 L186 12 Q192 2 200 6 Q208 2 214 12 L207 40 Z" fill="#141418"/>
+      ${[0, 1, 2].map((k) => `<circle cx="185" cy="${16 + k * 8}" r="2.6" fill="url(#js-silver)"/><circle cx="215" cy="${16 + k * 8}" r="2.6" fill="url(#js-silver)"/>`).join("")}
+      ${[0, 1, 2, 3, 4, 5].map((k) => `<path d="M${195 + k * 2} 38 V206" stroke="#e8ebef" stroke-width="0.6"/>`).join("")}
+      ${hum(200, 158, "#141418")}${hum(200, 184, "#141418")}
+      <rect x="185" y="198" width="30" height="6" rx="2" fill="url(#js-silver)"/><rect x="184" y="210" width="32" height="5" rx="2" fill="url(#js-silver)"/>
+      ${[[226, 196], [240, 204], [226, 214], [240, 222]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="5.4" fill="#e9a22e" stroke="#7a4a10" stroke-width="0.8"/><circle cx="${x - 1.4}" cy="${y - 1.6}" r="1.6" fill="#fff4c8" opacity="0.8"/>`).join("")}
+      <circle cx="168" cy="128" r="3.2" fill="url(#js-silver)"/><path d="M168 128 l-6 -7" stroke="#e8ebef" stroke-width="2" stroke-linecap="round"/><circle cx="162" cy="121" r="1.8" fill="#f6ecd2"/>
+    </g>
+    <g class="js-logo-notes" fill="url(#js-logo-gold)" font-family="system-ui" font-weight="900"><text x="22" y="56" font-size="28">♪</text><text x="152" y="40" font-size="22">♫</text><text x="160" y="182" font-size="18">♪</text></g>
+  </svg>`;
+}
+
+// Home screen: a different legendary guitar on every visit. It drops onto
+// its stand with a spin and a sparkle, then sways under the spotlight.
+function homeGuitar(id) {
+  const g = LEGENDS[id];
+  return `<svg class="js-scene js-home-guitar" viewBox="0 0 400 240" role="img" aria-label="${g.name}, ${g.who}">${DEFS}
+    ${legend(id).replace('<g class="js-legend">', '<g class="js-legend js-enter">')}
+    <g class="js-sparkle">${[[150, 60], [262, 90], [180, 170], [236, 40]].map(([x, y]) => `<path d="M${x} ${y - 7} l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#fff6c4"/>`).join("")}</g>
+  </svg>`;
+}
+function nextHomeGuitar() {
+  return dealFrom(Object.keys(LEGENDS), "jg_home_guitar_deck");
+}
 
 const PUPPY = ["show", "bonejam", "xmas", "water", "rain", "drive"];
 const SCENES = { boombox, cassette, walkman, strings, metal };
@@ -344,4 +613,4 @@ function pickScene(topic = "") {
   return dealFrom(DECK, "jg_scene_deck");
 }
 
-export { sceneSvg, pickScene, SCENES, LEGENDS };
+export { sceneSvg, pickScene, SCENES, LEGENDS, guitarLogo, homeGuitar, nextHomeGuitar };

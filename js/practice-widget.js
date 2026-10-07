@@ -1,16 +1,17 @@
 // The one practice box every part of Jaxx Guitar uses (lessons, songs,
 // the Practice tab): falling notes over a fretboard, with
-//   Listen         — the app plays it, you watch the shapes
-//   Wait for me    — it waits at each note/chord until it hears you
+//   Listen         - the app plays it, you watch the shapes
+//   Wait for me    - it waits at each note/chord until it hears you
 //                    (microphone, or tap the fretboard)
-//   Play in time   — single notes only; scored, ±0.25s window
+//   Play in time   - single notes only; scored, ±0.25s window
 // plus speed, loop, a drum beat, tab (for single-note pieces) and stars.
 
 import { renderFretboard, tabSvg } from "./fretboard.js";
 import { renderFretHighway } from "./fret-highway.js";
 import { createGuitarPlayer } from "./guitar-player.js";
 import { enableMic, disableMic, micOn } from "./input-hub.js";
-import { getAudioContext } from "./guitar-audio.js";
+import { friendlyMicError } from "./pitch.js";
+import { getAudioContext, stopAllSound } from "./guitar-audio.js";
 import { playBeat } from "./drums.js";
 import { icon } from "./icons.js";
 import { starsFor, recordStars, awardXp, completeQuest } from "./storage.js";
@@ -74,12 +75,12 @@ function createPracticeBox(host, inst, opts) {
       mic.innerHTML = `${icon("mic", 16)} ${micOn() ? "Listening" : "Microphone"}`;
     }
     hint.textContent =
-      mode === "listen" ? "Watch the falling notes land on the fretboard and listen. Shapes show finger numbers (1 = index … 4 = pinky)."
+      mode === "listen" ? "Watch the notes land on the fretboard and listen. The numbers are fingers (1 = index, 4 = pinky)."
       : mode === "wait" ? (hasChords()
-        ? "Strum each chord on your guitar — it moves on when the microphone hears a note of that chord. (Or tap one of the lit notes.)"
-        : "Play each note on your guitar — it waits until it hears it. Turn the microphone on, or tap the lit note.")
-      : "Play each note as it lands. Notes keep falling — each one counts within a quarter second.";
-    if (mode !== "listen" && !micOn()) hint.textContent += " Turn on the microphone to play on your real guitar. We'll use your phone's microphone only to hear your guitar strings, nothing else.";
+        ? "Strum each chord. It moves on when it hears a note from that chord (or tap a lit note)."
+        : "Play each note. It waits until it hears it (or tap the lit note).")
+      : "Play each note as it lands. You have a quarter of a second either way.";
+    if (mode !== "listen" && !micOn()) hint.textContent += " Tap Microphone to use your real guitar (it only listens to your strings).";
   }
 
   function drawTab(current = -1) {
@@ -115,7 +116,7 @@ function createPracticeBox(host, inst, opts) {
 
   function stop() {
     document.body.classList.remove("jg-playing");
-    if (player) player.stop();
+    if (player) { player.stop(); stopAllSound(); }
     player = null;
     stopDrums();
     goBtn.textContent = "Start";
@@ -184,7 +185,7 @@ function createPracticeBox(host, inst, opts) {
     else if (b.classList.contains("jg-pb-mic")) {
       if (micOn()) { disableMic(); micByUs = false; }
       else {
-        try { await enableMic(); micByUs = true; } catch (err) { hint.textContent = `Microphone unavailable (${err.message}). You can still tap the fretboard.`; return; }
+        try { await enableMic(); micByUs = true; } catch (err) { hint.textContent = `The microphone didn't start: ${friendlyMicError(err)}. You can still tap the fretboard.`; return; }
       }
     } else if (b === goBtn) {
       if (player) stop();

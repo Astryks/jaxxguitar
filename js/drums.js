@@ -1,8 +1,8 @@
 // Item 45: a simple, optional rhythmic layer under Follow Along
-// playback — "a basic kick/snare/hi-hat pattern roughly matched to the
+// playback - "a basic kick/snare/hi-hat pattern roughly matched to the
 // song's tempo, not a full drum machine." Each voice is synthesized
 // live via plain Web Audio nodes (an oscillator with a falling pitch
-// for the kick, filtered white noise for snare/hi-hat) — the same
+// for the kick, filtered white noise for snare/hi-hat) - the same
 // "real DSP, no sample files" approach the sibling Dawsons project
 // uses for its own drum kit (website/js/synth.js's DRUM_VOICES), just
 // re-expressed as live-triggered nodes instead of pre-rendered buffer
@@ -61,7 +61,7 @@ function playHihat(ctx, time) {
 }
 
 // A plain, genre-agnostic 4-on-the-floor-ish pattern: kick on beat 1,
-// snare on beat 3 (the classic "backbeat"), hi-hat on every beat —
+// snare on beat 3 (the classic "backbeat"), hi-hat on every beat -
 // deliberately simple, not trying to match any specific song's real
 // drum part (this app has no real drum transcription data to match).
 function playBeat(ctx, beatIndexInBar, time) {

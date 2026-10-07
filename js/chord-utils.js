@@ -1,6 +1,6 @@
 // Minimal chord-symbol parser: turns a chord name like "Bm7" or "C#m"
 // into a set of MIDI notes for playback/highlighting in the Practice
-// tab. Intentionally simple — covers the qualities that actually show
+// tab. Intentionally simple - covers the qualities that actually show
 // up in songs-data.js. Music-theory facts only (interval formulas),
 // nothing copyrighted.
 
@@ -12,10 +12,10 @@ const PITCH_CLASS = {
 // Order matters: more specific/longer suffixes must be checked before
 // shorter ones they'd otherwise be swallowed by (e.g. "mmaj7" and "m6"
 // both start with "m", so they have to come before the plain "m" entry
-// or they'd silently lose their defining color note — a real bug found
+// or they'd silently lose their defining color note - a real bug found
 // and fixed while building the "My Funny Valentine" lesson, whose whole
 // point is the Cm -> CmMaj7 -> Cm7 -> Cm6 descending line).
-// Item 56: added 9ths and altered 7ths — "Dm9" used to match plain "m"
+// Item 56: added 9ths and altered 7ths - "Dm9" used to match plain "m"
 // and light up an ordinary Dm, "C9" played a C7, "G7b9"/"D7b5" lost
 // their defining note, and "6/9" had no 9th.
 const QUALITY_INTERVALS = [

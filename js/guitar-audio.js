@@ -1,4 +1,4 @@
-// Guitar sound for Jaxx Guitar, synthesized live — no sample files.
+// Guitar sound for Jaxx Guitar, synthesized live - no sample files.
 // Karplus-Strong plucked-string synthesis (Karplus & Strong, 1983): a
 // short burst of noise is fed through a delay line one period long with
 // gentle low-pass averaging, which turns it into a decaying, string-like
@@ -11,7 +11,7 @@ let ctx = null;
 function getAudioContext() {
   if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
   // iOS also has an "interrupted" state (after a call, Siri, or switching
-  // apps) — resume from anything that isn't running.
+  // apps): resume from anything that isn't running.
   if (ctx.state !== "running") ctx.resume?.().catch?.(() => {});
   return ctx;
 }
@@ -74,12 +74,20 @@ function pluckBuffer(midi, seconds = 2.6) {
   return buf;
 }
 
+// Every note that's playing or scheduled, so leaving a screen can silence
+// them all at once (stopAllSound). `generation` drops notes that were
+// still waiting for iOS to wake the audio engine when the screen changed.
+const live = new Set();
+let generation = 0;
+
 function playNote(midi, opts = {}) {
   // iOS can hand back a paused audio engine for a moment; a note scheduled
   // then is never heard, so wait for it to wake up and play the note then.
   const ctx0 = getAudioContext();
   if (ctx0.state !== "running" && !opts._retried) {
-    ctx0.resume?.().then(() => playNote(midi, { ...opts, _retried: true })).catch(() => playNote(midi, { ...opts, _retried: true }));
+    const gen = generation;
+    const retry = () => { if (gen === generation) playNote(midi, { ...opts, _retried: true }); };
+    ctx0.resume?.().then(retry).catch(retry);
     return;
   }
   return playNoteNow(midi, opts);
@@ -95,7 +103,26 @@ function playNoteNow(midi, { delay = 0, duration = 2.4, gain = 0.32 } = {}) {
   src.connect(g).connect(c.destination);
   src.start(t);
   src.stop(t + duration + 0.6);
+  const entry = { src, g };
+  live.add(entry);
+  src.onended = () => live.delete(entry);
   return src;
+}
+
+// Silence everything: notes ringing now and notes scheduled for later
+// (strum loops, play-alongs, licks). Called whenever a screen closes.
+function stopAllSound() {
+  generation++;
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  live.forEach(({ src, g }) => {
+    try {
+      g.gain.cancelScheduledValues(now);
+      g.gain.setTargetAtTime(0, now, 0.02);
+      src.stop(now + 0.1);
+    } catch (e) { /* already stopped */ }
+  });
+  live.clear();
 }
 
 // Strum MIDI notes (given low → high). direction: "down" | "up".
@@ -119,4 +146,4 @@ function click(accent = false, delay = 0) {
   o.stop(t + 0.06);
 }
 
-export { getAudioContext, playNote, strum, click };
+export { getAudioContext, playNote, strum, click, stopAllSound };

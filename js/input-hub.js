@@ -1,9 +1,9 @@
 // One place every "a note was played" signal flows through, so wait mode
 // and the daily review listen to all input sources the same way:
 //   - tapping the on-screen fretboard (fretboard.js)
-//   - the microphone, for single notes (monophonic pitch tracking — it
+//   - the microphone, for single notes (monophonic pitch tracking - it
 //     can't reliably pick out six strings of a chord at once)
-//   - a MIDI guitar/controller (Web MIDI — Chromium browsers only)
+//   - a MIDI guitar/controller (Web MIDI - Chromium browsers only)
 // Listeners get (midi, source).
 
 import { startLivePitchDetection } from "./pitch.js";

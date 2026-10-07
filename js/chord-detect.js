@@ -19,7 +19,7 @@
 
 import { chordShape, shapeMidis } from "./guitar-theory.js";
 import { parseChordSymbol } from "./chord-utils.js";
-import { openMicStream } from "./pitch.js";
+import { openMicStream, releaseMicSession } from "./pitch.js";
 
 // --- FFT (radix-2, in place) ------------------------------------------------
 function fft(re, im) {
@@ -204,7 +204,7 @@ async function startChordListening({ candidates, onChord, onLevel }) {
   return function stop() {
     clearInterval(timer);
     stream.getTracks().forEach((t) => t.stop());
-    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) { /* older Safari */ }
+    releaseMicSession();
     source.disconnect();
     ctx.close();
   };
