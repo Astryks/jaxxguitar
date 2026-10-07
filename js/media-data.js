@@ -545,7 +545,9 @@ const VIDEOS = {
  "song-bring-me-to-life": {"id": "3YxaaGgTQYM", "title": "Evanescence - Bring Me To Life (Official HD Music Video) ft. Paul McCoy", "author_name": "EvanescenceVEVO"},
  "song-snuff": {"id": "LXEKuttVRIo", "title": "Slipknot - Snuff [OFFICIAL VIDEO] [HD]", "author_name": "Slipknot"},
  "song-the-sound-of-silence": {"id": "u9Dg-g7t2l4", "title": "Disturbed  - The Sound Of Silence (Official Music Video) [4K UPGRADE]", "author_name": "Disturbed"},
- "song-drown": {"id": "TkV5709EG5M", "title": "Bring Me The Horizon - Drown", "author_name": "BMTHOfficialVEVO"}
+ "song-drown": {"id": "TkV5709EG5M", "title": "Bring Me The Horizon - Drown", "author_name": "BMTHOfficialVEVO"},
+ "song-sekai-ni-hitotsu-dake-no-hana-v": {"id": "b7ruJQM0A0I", "title": "Sekai Ni Hitotsu Dake No Hana (Live At Nippon Budokan / 2005)", "author_name": "Noriyuki Makihara - Topic"},
+ "song-ya-lili-v": {"id": "IJHPpTYtIqk", "title": "Balti feat. Hamouda - Ya Lili (Official Music Video)", "author_name": "Thisiz Balti", "noEmbed": true}
 };
 const SONG_VIDEOS = {
  "Bamboléo": "bamboleo",
@@ -815,6 +817,8 @@ const SONG_VIDEOS = {
  "Bring Me to Life": "song-bring-me-to-life",
  "Snuff": "song-snuff",
  "The Sound of Silence": "song-the-sound-of-silence",
- "Drown": "song-drown"
+ "Drown": "song-drown",
+ "Sekai ni Hitotsu Dake no Hana": "song-sekai-ni-hitotsu-dake-no-hana-v",
+ "Ya Lili": "song-ya-lili-v"
 };
 export { PEOPLE, VIDEOS, SONG_VIDEOS };

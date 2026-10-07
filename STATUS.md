@@ -181,3 +181,30 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
 - Build 18:
   - **Metal genre row** (between Rock & alternative and Folk & country) with **26 songs**: Metallica's 12 most-streamed on Spotify (Kworb): Enter Sandman, Nothing Else Matters, Master of Puppets, One, For Whom the Bell Tolls, The Unforgiven, Whiskey in the Jar, Sad but True, Fade to Black, Fuel, Seek & Destroy, Wherever I May Roam; plus Paranoid, Iron Man, Crazy Train, Breaking the Law, Run to the Hills, The Trooper, Fear of the Dark, In the End, Numb, What I've Done, Bring Me to Life, Snuff, The Sound of Silence (Disturbed), Drown. Each has chords, a whole-song map and the official video. Skipped (sources disagreed): Chop Suey!, Hail to the King, Walk, Ace of Spades, Symphony of Destruction, A Tout le Monde, Down with the Sickness, Duality, Freak on a Leash.
   - **55 more songs** (same as Hayden Keys build 34: classical, pop, Radiohead, karaoke, international, Nelly/Nelly Furtado/Colbie Caillat/Corinne Bailey Rae). Chords the fretboard can't draw were simplified (Dadd9→D, Eadd9→E, Bbadd9→Bb, G7sus4→G7, Ab7sus4→Ab7, Abaug→Ab). Total 270 songs.
+
+## ⏸ Paused 2026-10-07 (out of credits). Pick up here next time
+
+**Done after the last build (committed, not yet in a TestFlight build):**
+- Every song now has real chords: the 15 placeholder songs (Wildest Dreams, Happy, Africa, Bohemian Rhapsody, Misty, Stella by Starlight, November Rain, Still D.R.E. and others) were researched.
+- Every song now has a whole-song map, including all international songs. Maps for international songs go in SONG_STRUCTURES in songs-data.js, looked up by title.
+- Every song has a video. Ya Lili's official video can't be embedded, so it opens on YouTube (new `noEmbed` flag in media-data.js / media.js).
+- Every chord in every song and map is checked playable on the instrument. Jaxx simplified Dadd9→D, Gaug→G, Eaug→E.
+- Map/key sanity check: no map in the wrong key.
+
+**To do next (in order):**
+1. **Spot-check chords:** many of the new maps (and the 15 fixed songs) were written by research agents from memory, not checked against a chord site. They're labelled "our best guide" / "close version". Spot-check the popular ones (Bohemian Rhapsody, Africa, November Rain, Happy, Wildest Dreams, the Metallica songs) against Ultimate Guitar or Hooktheory.
+2. **Full click-through test of both apps** (not finished). Steps:
+   - Open every lesson, step through with Next and Back, then close.
+   - Open songs, switch Main / Whole song, turn on Wait for me (microphone), then close.
+   - Visit every tab and check for page errors and screens with no way back.
+   - Run Chrome with `--use-fake-ui-for-media-stream --use-fake-device-for-media-stream` for the mic.
+   - The old scripts back.mjs / wait.mjs use outdated selectors. The card tests still pass (Hayden 58/58 cards; Jaxx lesson 1 completes; Main/Whole + video OK).
+   - Selectors: lessons `[data-lesson]`, Hayden exit `.hk-lesson-exit`, back `.hk-lesson-back`, Jaxx exit `.jg-exit`, song cards `.hk-lib-card` / `.jg-lib-card`, parts `[data-part]`.
+3. **Test on a real phone:** the Wait for me microphone, Guess the song with a real recording, the Back buttons, landscape.
+4. **New builds:** build and upload Hayden Keys 35 and Jaxx Guitar 19 with these fixes. Steps are under "How to build and upload" above.
+5. **App Store Connect (owner):**
+   - Add the builds to the TestFlight tester group. Check that Jaxx shows up there.
+   - Fill in the version page: screenshots, listing text, Age Rating, App Privacy, Content Rights, review contact.
+   - **Submit only when the owner says so.**
+6. **Guitar solos:** add "Solo" cards (the scale and fret position each solo uses, plus original practice licks; no copied lead lines) for the top guitar songs: Metallica, Stairway, Sweet Child O' Mine, Comfortably Numb and others.
+7. Play-along isn't synced to the YouTube video timing (the chords play at the app's tempo). Possible future feature.
