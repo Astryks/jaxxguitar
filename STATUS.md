@@ -251,3 +251,16 @@ Not started. Notes only; nothing changed yet.
 - [ ] Highlighted text: replace the orange with a pastel light blue that's still dark enough to read.
 - [ ] Don't show the roadmap under lessons (confusing).
 - [ ] End **every** lesson with 3 songs to learn, one card per song with its official video embedded.
+
+## 📝 Owner feedback: restructure the Jaxx course (2026-10-07), to do when we have credits
+Not started. Notes only; nothing changed yet.
+
+Principle: **too many chords, not enough songs.** Every new set of chords is followed straight away by songs that use them.
+
+- [ ] **Lesson 1:** learn the 4 major chords (G D Em C), then **learn 3 songs** with them (official videos, one card per song).
+- [ ] **Quiz after Lesson 1:** "Which other songs use these chords?" Every option is a real song that uses those 4 chords (research and verify online), and **every answer is correct**: "Correct! In fact, all of them use these chords!" Then: "Search online and see what other songs you can play with these chords!"
+- [ ] **Next lesson:** introduce the other open chords, then play **3 songs** that use the new chords.
+- [ ] **Then barre chords:** show how one shape plays A B C D E F G chords up and down the neck.
+- [ ] **Then teach Creep by Radiohead** (barre-chord song; chords only, no lyrics/tab).
+- [ ] **Then genres** (jazz, blues, rock, reggae, flamenco…): after **each** genre, teach one song from that genre, with YouTube videos of the song and the artist.
+- [ ] **Extra chords (7ths, sus, add9, etc.):** "Jargon alert! You don't really need these for easier songs, but here are some other chords". Then show a song that uses them and teach it.
