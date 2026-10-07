@@ -31,11 +31,12 @@ const ROW_TESTS = {
   "R&B, soul & disco": (g) => /R&B|Soul|Funk|Disco/i.test(g),
   "Reggae & Latin": (g) => /Reggae|Dancehall|Latin/i.test(g),
   "Folk & country": (g) => /Folk|Country|Traditional|Hymn|Ukulele/i.test(g),
-  "Rock & alternative": (g) => /Rock|Britpop|Alternative|Indie|Blues|Metal|Grunge/i.test(g),
+  "Metal": (g) => /Metal/i.test(g),
+  "Rock & alternative": (g) => /Rock|Britpop|Alternative|Indie|Blues|Grunge/i.test(g),
   "Pop": () => true,
 };
 const KARAOKE = ["Sweet Caroline", "Bohemian Rhapsody", "Don't Stop Believin'", "I Want It That Way", "Dancing Queen", "Mr. Brightside", "I Will Survive", "Wonderwall", "Piano Man", "Man! I Feel Like a Woman!", "Total Eclipse of the Heart", "Take On Me", "Like a Prayer", "Valerie", "Before He Cheats", "Tennessee Whiskey", "Angels", "My Way", "Africa", "Lose Control"];
-const ROW_ORDER = ["Popular right now", "Karaoke anthems", "Pop", "Rock & alternative", "Folk & country", "R&B, soul & disco", "Hip-hop", "Reggae & Latin", "Jazz", "Film & classical", "Christmas", "International"];
+const ROW_ORDER = ["Popular right now", "Karaoke anthems", "Pop", "Rock & alternative", "Metal", "Folk & country", "R&B, soul & disco", "Hip-hop", "Reggae & Latin", "Jazz", "Film & classical", "Christmas", "International"];
 function libraryRows(q, tier) {
   const byRank = (a, b) => (a.popularityRank || 999) - (b.popularityRank || 999);
   const songs = SONGS.filter((s) => songPlan(s).playable)

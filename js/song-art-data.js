@@ -661,6 +661,290 @@ const SONG_ART = {
  "Stairway to Heaven|Led Zeppelin": {
   "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/5c/15/9b/5c159b27-95ca-b9a7-84e3-28e795fffd39/dj.kvkrpptq.jpg/400x400bb.jpg",
   "url": "https://music.apple.com/us/album/stairway-to-heaven/580708175?i=580708180&uo=4"
+ },
+ "Blank Space|Taylor Swift": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/a7/98/d8/a798d867-344d-2bf2-fbfe-d2d1412dcef8/14UMDIM03793.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/blank-space/1440933512?i=1440933517&uo=4"
+ },
+ "Bad Romance|Lady Gaga": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/1f/25/c4/1f25c4bf-7f7a-ff26-8769-20ab6052dadf/09UMGIM40719.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/bad-romance/1476095083?i=1476095084&uo=4"
+ },
+ "What Was I Made For?|Billie Eilish": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/c0/54/97/c05497aa-c19f-bf4f-de29-71edf30fbefb/075679688767.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/what-was-i-made-for/1689238301?i=1689239800&uo=4"
+ },
+ "Ocean Eyes|Billie Eilish": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/02/1d/30/021d3036-5503-3ed3-df00-882f2833a6ae/17UM1IM17026.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/ocean-eyes/1440898929?i=1440899467&uo=4"
+ },
+ "When the Party's Over|Billie Eilish": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1a/37/d1/1a37d1b1-8508-54f2-f541-bf4e437dda76/19UMGIM05028.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/when-the-partys-over/1450695723?i=1450695872&uo=4"
+ },
+ "Karma Police|Radiohead": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/07/60/ba/0760ba0f-148c-b18f-d0ff-169ee96f3af5/634904078164.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/karma-police/1097861387?i=1097861836&uo=4"
+ },
+ "No Surprises|Radiohead": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/07/60/ba/0760ba0f-148c-b18f-d0ff-169ee96f3af5/634904078164.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/no-surprises/1097861387?i=1097861842&uo=4"
+ },
+ "Everything In Its Right Place|Radiohead": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/bd/8e/13/bd8e1358-b367-a689-cb84-cebd0b067dc4/634904078263.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/everything-in-its-right-place/1097862870?i=1097863108&uo=4"
+ },
+ "Pyramid Song|Radiohead": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/43/d8/ec/43d8ec17-0e96-dba9-21d9-4cdf9d98f2bf/634904078362.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/pyramid-song/1097864180?i=1097864572&uo=4"
+ },
+ "I Want It That Way|Backstreet Boys": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/5f/6b/e9/5f6be919-1b9e-30ef-45b7-cc27fc428fd5/012414167224.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/i-want-it-that-way/283567119?i=283567164&uo=4"
+ },
+ "Man! I Feel Like a Woman!|Shania Twain": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/1e/2f/98/1e2f98c2-3fa6-9601-9825-6a6d19a99cf3/06UMGIM07033.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/man-i-feel-like-a-woman/1445668706?i=1445668856&uo=4"
+ },
+ "Total Eclipse of the Heart|Bonnie Tyler": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/20/74/b8/2074b81d-d546-b0c2-d85b-dda3a5e17661/886448236856.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/total-eclipse-of-the-heart/1504111277?i=1504111288&uo=4"
+ },
+ "Take On Me|a-ha": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music/c6/e1/c8/mzi.ixgzfcmc.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/take-on-me/380907762?i=380907765&uo=4"
+ },
+ "Like a Prayer|Madonna": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/20/3c/f5/203cf53d-689e-528f-29d7-ba33758254aa/mzi.rotbotfl.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/like-a-prayer/83448003?i=83445997&uo=4"
+ },
+ "Valerie|Mark Ronson ft. Amy Winehouse": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/f2/31/88/f2318837-d49d-030e-957f-a85d96ed06d3/mzi.nnorwgpz.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/valerie-feat-amy-winehouse-version-revisited/270051041?i=270051061&uo=4"
+ },
+ "Before He Cheats|Carrie Underwood": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/e7/14/80/e714805d-8aff-9e66-b25f-c75e5683a130/mzi.omppwbeg.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/before-he-cheats/214695525?i=214696369&uo=4"
+ },
+ "Pata Pata|Miriam Makeba": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/65/8d/ea/658deacc-0f1e-e822-8550-08a1b55b3a8a/4062548001204_3000.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/pata-pata-stereo-version/1472549617?i=1472550501&uo=4"
+ },
+ "Hoppípolla|Sigur Rós": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/ce/3e/b8/ce3eb805-fb13-0200-5856-081ed0014e13/190296926952.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/hopp%C3%ADpolla/1447486974?i=1447486980&uo=4"
+ },
+ "Dilemma|Nelly feat. Kelly Rowland": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/37/35/62/373562e8-ab69-254b-bbf2-f1cb9aca66fe/06UMGIM16889.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/dilemma-feat-kelly-rowland/1440735154?i=1440735612&uo=4"
+ },
+ "Hot in Herre|Nelly": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/37/35/62/373562e8-ab69-254b-bbf2-f1cb9aca66fe/06UMGIM16889.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/hot-in-herre/1440735154?i=1440735156&uo=4"
+ },
+ "I'm Like a Bird|Nelly Furtado": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/4a/c7/c1/4ac7c1d7-7457-1399-8dde-8955b9eeb510/06UMGIM18757.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/im-like-a-bird/1440780893?i=1440781293&uo=4"
+ },
+ "Bubbly|Colbie Caillat": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/87/1d/60/871d6075-d79b-0a86-633f-108699abcfd5/09UMGIM01504.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/bubbly/1440745265?i=1440745635&uo=4"
+ },
+ "Like a Star|Corinne Bailey Rae": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/d9/cd/24/d9cd2461-82dc-9f9f-6ed3-86bb75d110b9/13UABIM50290.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/like-a-star/724883560?i=724884368&uo=4"
+ },
+ "Anak|Freddie Aguilar": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/fb/bd/37/fbbd37dd-edf0-997b-6104-df2152c43726/8044290133354.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/anak/1612139766?i=1612139784&uo=4"
+ },
+ "Tadhana|Up Dharma Down": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/47/eb/bc/47ebbc0e-7ad4-4ffa-c1ae-2731a36d424a/cover.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/tadhana/1623878530?i=1623878835&uo=4"
+ },
+ "Sukiyaki|Kyu Sakamoto": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music128/v4/e9/58/78/e9587822-5ab0-bbd4-232f-7a67a5d14589/dj.ckuxphsw.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/sukiyaki-remastered/704731829?i=704731865&uo=4"
+ },
+ "Kal Ho Naa Ho|Sonu Nigam (Shankar-Ehsaan-Loy)": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/fb/82/da/fb82dab1-d0cd-714c-000c-6450774fd5d4/888880945587.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/kal-ho-naa-ho/300388644?i=300388792&uo=4"
+ },
+ "Volare (Nel blu, dipinto di blu)|Domenico Modugno": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music/11/06/e5/mzi.kqecnlps.tif/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/nel-blu-dipinto-di-blu-volare-sanremo-version/275997742?i=275997837&uo=4"
+ },
+ "Dragostea Din Tei|O-Zone": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/96/0d/85/960d8540-8160-ccb8-95fa-1cb02cad46aa/6420565323606.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/dragostea-din-tei/1662362206?i=1662362905&uo=4"
+ },
+ "Jerusalema|Master KG": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/5a/fd/f4/5afdf417-6c6c-a538-5252-da2720a70b5d/190295179229.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/jerusalema-feat-burna-boy-nomcebo-zikode-remix/1522728885?i=1522728887&uo=4"
+ },
+ "Vintersaga|Monica Törnell": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music128/v4/d7/5f/e0/d75fe010-aa03-d51d-55af-25d29672e2e0/5414939821578.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/vintersaga/1440527949?i=1440527950&uo=4"
+ },
+ "Ode to Joy|Ludwig van Beethoven": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/88/a0/80/88a080da-44b3-8b42-7765-c1b3d881d4ea/5056495366171_1.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/ode-to-joy/1594926797?i=1594926813&uo=4"
+ },
+ "Für Elise|Ludwig van Beethoven": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/fa/c9/95/fac995dd-0377-3005-23a2-08506ac836ba/859745438322_cover.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/fur-elise/1551315726?i=1551316118&uo=4"
+ },
+ "Canon in D|Johann Pachelbel": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/00/26/29/002629c1-dcbf-6bfc-f326-e24f58578855/cover.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/pachelbels-canon-in-d-major-piano/623849188?i=623849405&uo=4"
+ },
+ "Symphony No. 5 (Theme)|Ludwig van Beethoven": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/bc/3b/b4/bc3bb436-a5ea-c09d-1362-17c288c0d7e7/198009510634.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/symphony-no-5-beethoven/1723638257?i=1723638258&uo=4"
+ },
+ "La Campanella|Franz Liszt": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/59/44/12/594412fb-ed61-7cb8-9934-9f7e944703b0/4534530132000.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/la-campanella/1571467263?i=1571468858&uo=4"
+ },
+ "Clair de Lune|Claude Debussy": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/ed/f1/ef/edf1ef8d-88ea-dede-5c7c-2236e3b55456/888344195831.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/clair-de-lune-moonlight-debussy-classic-lullaby/1517956001?i=1517956004&uo=4"
+ },
+ "Nocturne in E-flat Major, Op. 9 No. 2|Frédéric Chopin": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/c8/56/28/c8562857-12cc-5757-58e3-a8a8717dab4c/contsched.ndjjyvgx.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/nocturne-in-e-flat-major-op-9-no-2/1609447037?i=1609447043&uo=4"
+ },
+ "Tennessee Whiskey|Chris Stapleton": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/e2/4b/60/e24b6016-8278-bb18-cf5d-d44bf68371da/00602547223838.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/tennessee-whiskey/1440827477?i=1440827492&uo=4"
+ },
+ "Angels|Robbie Williams": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/cf/86/e7/cf86e787-2177-6366-a5c3-2180c3031015/13ULAIM49472.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/angels/725818043?i=725818406&uo=4"
+ },
+ "My Way|Frank Sinatra": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/3f/c2/45/3fc2454d-f1ef-8cef-a1f3-0c5a6d751e0a/19UMGIM69266.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/my-way/1475517532?i=1475517693&uo=4"
+ },
+ "Lose Control|Teddy Swims": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/36/19/66/36196640-1561-dc5e-c6bc-1e5f4befa583/093624856771.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/lose-control/1691699589?i=1691699836&uo=4"
+ },
+ "Aïcha|Khaled": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/ef/0b/15/ef0b1594-461e-f4bf-93d4-e1df560a3972/06UMGIM00831.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/aicha-mixed-version/1444129774?i=1444130117&uo=4"
+ },
+ "Zorba's Dance|Mikis Theodorakis": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/ae/57/29/ae572989-ba38-32b2-bec1-e621c7aa0fed/0602517003996.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/zorbas-dance/1842603704?i=1842603707&uo=4"
+ },
+ "Şımarık|Tarkan": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/f1/95/04/f1950424-2ae5-55ff-580d-d52e8300ec1b/dj.iedkotfi.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/%C5%9F%C4%B1mar%C4%B1k/499332675?i=499332705&uo=4"
+ },
+ "Enter Sandman|Metallica": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2e/94/95/2e9495d7-dfe3-ddc8-87ef-6ef797a60218/850007452056.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/enter-sandman/1572051816?i=1572051818&uo=4"
+ },
+ "Nothing Else Matters|Metallica": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/9e/80/1b/9e801b06-67fa-0990-2d15-85480ad3cd46/850007452025.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/nothing-else-matters/1572046434?i=1572046444&uo=4"
+ },
+ "Master of Puppets|Metallica": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/b8/5a/82/b85a8259-60d9-bfaa-770a-2baac8380e87/858978005196.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/master-of-puppets/1275819392?i=1275819878&uo=4"
+ },
+ "One|Metallica": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/b5/f3/83/b5f38312-5b95-9a09-fcb9-5622dd5ea077/858978005820.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/one/1433827883?i=1433828082&uo=4"
+ },
+ "For Whom the Bell Tolls|Metallica": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Features125/v4/0f/7a/74/0f7a7472-92fa-e77d-384a-1e4304705e83/dj.jbiruenb.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/for-whom-the-bell-tolls/579148345?i=579149036&uo=4"
+ },
+ "The Unforgiven|Metallica": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2e/94/95/2e9495d7-dfe3-ddc8-87ef-6ef797a60218/850007452056.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/the-unforgiven/1572051816?i=1572051821&uo=4"
+ },
+ "Whiskey in the Jar|Metallica": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/ec/2f/09/ec2f0972-db2a-ef0d-52eb-7167fee36d5a/0075596229968.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/whiskey-in-the-jar/579370472?i=579370556&uo=4"
+ },
+ "Sad but True|Metallica": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2e/94/95/2e9495d7-dfe3-ddc8-87ef-6ef797a60218/850007452056.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/sad-but-true/1572051816?i=1572051819&uo=4"
+ },
+ "Fade to Black|Metallica": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Features125/v4/0f/7a/74/0f7a7472-92fa-e77d-384a-1e4304705e83/dj.jbiruenb.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/fade-to-black/579148345?i=579149037&uo=4"
+ },
+ "Fuel|Metallica": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/76/88/4e/76884eb9-33ee-b2ec-dbf4-d1e100801827/810083963532.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/fuel-demo/1889270609?i=1889271032&uo=4"
+ },
+ "Seek & Destroy|Metallica": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Features124/v4/73/06/19/73061928-34a2-6462-963a-039203d507fe/dj.cloeijsr.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/seek-destroy/579146130?i=579146168&uo=4"
+ },
+ "Wherever I May Roam|Metallica": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/2e/94/95/2e9495d7-dfe3-ddc8-87ef-6ef797a60218/850007452056.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/wherever-i-may-roam/1572051816?i=1572051822&uo=4"
+ },
+ "Paranoid|Black Sabbath": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/be/27/91/be279120-2285-16c6-c7ba-9d6643d4a948/075992732727.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/paranoid/785232473?i=785232521&uo=4"
+ },
+ "Iron Man|Black Sabbath": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/d6/ec/ee/d6ecee72-258f-daa8-db6b-116c8c5731ce/075992732727.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/iron-man/787834310?i=787845531&uo=4"
+ },
+ "Crazy Train|Ozzy Osbourne": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/92/06/bd/9206bdb3-453a-db69-44f4-c4b5bfe33510/886448748045.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/crazy-train/1531535089?i=1531535287&uo=4"
+ },
+ "Breaking the Law|Judas Priest": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music3/v4/3e/ce/c7/3ecec7e6-66a3-7ca8-d70f-5a4512aa21ba/dj.stjulnox.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/breaking-the-law/207346194?i=207346225&uo=4"
+ },
+ "Run to the Hills|Iron Maiden": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/6a/e1/0e/6ae10e36-46ca-6143-83b1-0026e8c3c248/0889326208235.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/run-to-the-hills-2015-remaster/1716093328?i=1716093337&uo=4"
+ },
+ "The Trooper|Iron Maiden": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/7a/d3/cf/7ad3cf5d-c594-ff05-f3ca-d7a9d2d123bb/196873833422.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/the-trooper/1862239251?i=1862239892&uo=4"
+ },
+ "Fear of the Dark|Iron Maiden": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/05/ae/cd/05aecd3e-2e71-ad31-723c-2e007d8246ff/0881034134516.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/fear-of-the-dark/1713839098?i=1713839110&uo=4"
+ },
+ "In the End|Linkin Park": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/53/a7/7f/53a77fab-c54c-a57b-8130-248fc12d0c80/093624948995.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/in-the-end/590431776?i=590431785&uo=4"
+ },
+ "Numb|Linkin Park": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/13/44/05/134405bd-9e27-a678-8953-b5f724201f95/093624948988.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/numb/590423275?i=590423552&uo=4"
+ },
+ "What I've Done|Linkin Park": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/73/03/56/730356d5-a510-3d3f-d3c6-171f64700d35/093624948971.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/what-ive-done/590427297?i=590427450&uo=4"
+ },
+ "Bring Me to Life|Evanescence": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/10/4c/21/104c21e6-9ef0-4d3a-d1bd-d47167f121e5/00601501406300.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/bring-me-to-life/1440665838?i=1440666111&uo=4"
+ },
+ "Snuff|Slipknot": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/38/8d/35/388d3526-771c-4c3e-451b-f10afdbf19d9/016861752200.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/snuff/927736478?i=927736702&uo=4"
+ },
+ "The Sound of Silence|Disturbed": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/32/2b/12/322b1228-a133-3317-8d05-742669b700ec/093624926245.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/the-sound-of-silence/1006937448?i=1006937459&uo=4"
+ },
+ "Drown|Bring Me the Horizon": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/72/ca/40/72ca4080-e677-c038-40c8-d884e7634c22/0045778740062.png/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/drown/1485060613?i=1485060616&uo=4"
  }
 };
 export { SONG_ART };

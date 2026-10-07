@@ -1,8 +1,39 @@
 # Jaxx Guitar — status
 
-_Last updated 2026-10-06._ This file is the checklist of everything requested for Jaxx Guitar, so nothing gets missed. ✅ done · 🟡 in progress / waiting on something · ⬜ not started.
+_Last updated 2026-10-07._ This file is the checklist of everything requested for Jaxx Guitar, so nothing gets missed. ✅ done · 🟡 in progress / waiting on something · ⬜ not started.
 
 Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (GitHub Pages) · iOS bundle: `com.jaxxguitar.app`
+
+---
+
+## ▶ Start here: handoff summary (2026-10-07)
+
+**Jaxx Guitar**, repo https://github.com/Astryks/jaxxguitar, site https://jaxxguitar.com, bundle `com.jaxxguitar.app` (App Store Connect app ID 6819445036). Sibling app: Hayden Keys (https://github.com/Astryks/haydenkeys).
+
+**What's done (full history below):** pre-lessons (get a guitar → electric gear → tune it with the string tuner), Lesson 1 / Strumming / Changing chords as simple kitten cards, all the curriculum in the table below, animated orange kitten Jaxx with his guitar, falling-notes fretboard with Listen / Wait for me / Play in time, upload a song → chords, Guess the song (ShazamKit), Netflix-style song library (270 songs, incl. a new **Metal** row and International / Karaoke anthems) with album art, Main part / Whole song and the official YouTube video, How it works page, Astryks credit, App Store screenshots and listing text.
+
+**Latest build:** 18 (see bottom). **Not submitted to App Review yet.**
+
+### Next steps (in order)
+1. **TestFlight:** check the latest build appears in App Store Connect → TestFlight (processing takes 5–30 min; Apple emails if a build fails processing). Add it to the internal tester group and install on the phone.
+2. **Test on a phone:** Wait for me with the microphone, Guess the song with a real recording, Main/Whole song on a few new songs, landscape player.
+3. **App Store version page (owner, signed in):** select the latest build, upload screenshots from `ios/screenshots/app-store/`, paste text from `ios/APP_STORE_LISTING.md`, Age Rating, App Privacy ("Data Not Collected") → Publish, Content Rights, App Review contact + notes. **Submit for Review only when the owner says so.**
+4. Data clean-up: 15 older songs still have a placeholder instead of chords ("insufficient agreement…" — e.g. Wildest Dreams, Happy, Africa, Bohemian Rhapsody, Misty, Stella by Starlight, November Rain, Still D.R.E.). They rely on their notes/song map; research proper chords or hide them.
+5. Later (not in v1): tip jar via Apple In-App Purchase (code existed in build 30/12, removed); left-handed fretboard (Jaxx).
+6. Next apps after Hayden Keys and Jaxx Guitar: fitness, jiu jitsu, then public speaking, singing, investing & markets, dance.
+
+### How to build and upload (both apps)
+```
+npm run cap:sync
+# bump CURRENT_PROJECT_VERSION in ios/App/App.xcodeproj/project.pbxproj
+cd ios/App && xcodebuild -project App.xcodeproj -scheme App -configuration Release -destination 'generic/platform=iOS' -archivePath /tmp/app.xcarchive -allowProvisioningUpdates DEVELOPMENT_TEAM=96H39GP2A4 CODE_SIGN_STYLE=Automatic archive
+xcodebuild -exportArchive -archivePath /tmp/app.xcarchive -exportOptionsPlist ExportOptionsUpload.plist -exportPath /tmp/export -allowProvisioningUpdates
+```
+ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, teamID 96H39GP2A4. If Xcode says "Failed to Use Accounts", sign in again in Xcode → Settings → Accounts (owner only).
+
+### Rules we keep
+- Never print song lyrics or copyrighted melodies/tabs: chords, keys and song maps only. Videos are official uploads, verified with YouTube oEmbed.
+- No tip jar / payments in v1. Don't submit for review until the owner says so. The owner types all passwords.
 
 ---
 
@@ -147,3 +178,6 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 - Build 15: cassette icon on the Practice upload buttons, matching the home card.
 - Build 16: Main part / Whole song on every song with 85 new song maps ("our best guide"); official videos for 187 of 188 songs; microphone switches to play-and-record while listening (iOS refused it in "playback"), fixing Wait for me / tuner microphone errors.
 - Build 17: re-sent (build 16 did not appear in TestFlight); library rows "International" (non-English songs) and "Karaoke anthems".
+- Build 18:
+  - **Metal genre row** (between Rock & alternative and Folk & country) with **26 songs**: Metallica's 12 most-streamed on Spotify (Kworb): Enter Sandman, Nothing Else Matters, Master of Puppets, One, For Whom the Bell Tolls, The Unforgiven, Whiskey in the Jar, Sad but True, Fade to Black, Fuel, Seek & Destroy, Wherever I May Roam; plus Paranoid, Iron Man, Crazy Train, Breaking the Law, Run to the Hills, The Trooper, Fear of the Dark, In the End, Numb, What I've Done, Bring Me to Life, Snuff, The Sound of Silence (Disturbed), Drown. Each has chords, a whole-song map and the official video. Skipped (sources disagreed): Chop Suey!, Hail to the King, Walk, Ace of Spades, Symphony of Destruction, A Tout le Monde, Down with the Sickness, Duality, Freak on a Leash.
+  - **55 more songs** (same as Hayden Keys build 34: classical, pop, Radiohead, karaoke, international, Nelly/Nelly Furtado/Colbie Caillat/Corinne Bailey Rae). Chords the fretboard can't draw were simplified (Dadd9→D, Eadd9→E, Bbadd9→Bb, G7sus4→G7, Ab7sus4→Ab7, Abaug→Ab). Total 270 songs.
