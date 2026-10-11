@@ -356,11 +356,11 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 **Supersedes the earlier "flip the fretboard" note:** keep the ORIGINAL orientation (thick low E at the **bottom**, thin high e on top) and explain it with a picture.
 
 **Bugs**
-- [ ] Back doesn't go back to Lesson 1. Fix it.
-- [ ] Home page: tapping "Lessons" just spins the BB King guitar. Link it to the Lessons tab.
+- [x] Back doesn't go back to Lesson 1. **Fixed 2026-10-11:** Back on a lesson's first card/page now opens the last card of the previous lesson (e.g. 18/260 → Lesson 1's 17/260). Tested in Chrome.
+- [x] Home page: tapping "Lessons" just spins the BB King guitar. **Fixed 2026-10-11:** the Lessons tab now opens the "All lessons" list and scrolls to it (it was folded up at the bottom of home, so the tab only re-dealt the guitar of the day).
 
 **Fretboard orientation (tuner + every chord picture)**
-- [ ] Keep low E at the bottom, high e on top (as it was). Add a faint shadow of a head below the fretboard. Explain it as someone looking down at their guitar: their head is at the bottom of the screen and the neck is above it, so the thick E string (the top string on the guitar) is the one nearest them. Apply this to every chord too (A–G majors and minors).
+- [x] **Done 2026-10-11** (fretboard.js board + chord diagrams, fret-highway.js lanes, guitar-art.js headstock/guitar, lesson text; new `viewerSvg()` head shadow under the Lesson 1 neck card and the tuner). Finger-strum picture left as is (a down strum goes thick → thin). Keep low E at the bottom, high e on top (as it was). Add a faint shadow of a head below the fretboard. Explain it as someone looking down at their guitar: their head is at the bottom of the screen and the neck is above it, so the thick E string (the top string on the guitar) is the one nearest them. Apply this to every chord too (A–G majors and minors).
 - [ ] A cartoon of a guitarist in the style of *Once Upon a Time in Mexico* (a mariachi-style hero, not a likeness of Antonio Banderas; we can't use a real actor's face) looking down at the fretboard while tuning.
 
 **Course order**

@@ -37,7 +37,7 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
   const openW = 62; // string names, then the open/mute markers, left of the nut
   const top = 26;
   const bottom = H - 40; // room for the fret numbers along the bottom
-  const stringY = (s) => top + (s * (bottom - top)) / 5; // s: 0 = low E (TOP)
+  const stringY = (s) => top + ((5 - s) * (bottom - top)) / 5; // s: 0 = low E (BOTTOM: nearest you, looking down)
   const xOf = (f) => openW + fretX(f, frets) * (W - openW - 8);
   const center = (f) => (f === 0 ? openW - 20 : (xOf(f - 1) + xOf(f)) / 2);
 
@@ -57,7 +57,7 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
   }
   for (let f = 1; f <= frets; f++) parts.push(`<text x="${center(f)}" y="${H - 8}" class="jg-fret-num" data-fn="${f}">${f}</text>`);
   const lefty = isLefty();
-  container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="jg-fretboard-svg ${lefty ? "jg-lefty" : ""}" role="img" aria-label="Guitar fretboard, low E string on top${lefty ? ", mirrored for left-handed players" : ""}"><g${lefty ? ` transform="translate(${W} 0) scale(-1 1)"` : ""}><g>${parts.join("")}</g><g class="jg-marks"></g><g class="jg-hits"></g></g></svg>`;
+  container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="jg-fretboard-svg ${lefty ? "jg-lefty" : ""}" role="img" aria-label="Guitar fretboard, low E string at the bottom${lefty ? ", mirrored for left-handed players" : ""}"><g${lefty ? ` transform="translate(${W} 0) scale(-1 1)"` : ""}><g>${parts.join("")}</g><g class="jg-marks"></g><g class="jg-hits"></g></g></svg>`;
   const svg = container.querySelector("svg");
   const marks = svg.querySelector(".jg-marks");
   const hits = svg.querySelector(".jg-hits");
@@ -254,10 +254,10 @@ function chordDiagramSvg(shape, name = "") {
   const y0 = 26;
   const dy = 14;
   const dx = (x1 - x0) / cols;
-  const sy = (s) => y0 + s * dy;
+  const sy = (s) => y0 + (5 - s) * dy; // low E at the bottom
   const p = [`<text x="${(x0 + x1) / 2}" y="16" class="jg-dg-name">${name || shape.symbol || ""}</text>`];
-  p.push(`<rect x="${x0}" y="${sy(0) - 4}" width="${x1 - x0}" height="${5 * dy + 8}" rx="3" class="jg-dg-wood"/>`);
-  for (let c = 0; c <= cols; c++) p.push(`<line x1="${x0 + c * dx}" x2="${x0 + c * dx}" y1="${sy(0) - 4}" y2="${sy(5) + 4}" class="jg-dg-line ${c === 0 && start === 1 ? "jg-dg-nut" : ""}"/>`);
+  p.push(`<rect x="${x0}" y="${sy(5) - 4}" width="${x1 - x0}" height="${5 * dy + 8}" rx="3" class="jg-dg-wood"/>`);
+  for (let c = 0; c <= cols; c++) p.push(`<line x1="${x0 + c * dx}" x2="${x0 + c * dx}" y1="${sy(5) - 4}" y2="${sy(0) + 4}" class="jg-dg-line ${c === 0 && start === 1 ? "jg-dg-nut" : ""}"/>`);
   for (let s = 0; s < 6; s++) {
     p.push(`<line x1="${x0}" x2="${x1}" y1="${sy(s)}" y2="${sy(s)}" class="jg-dg-string" style="stroke-width:${1.9 - s * 0.2}"/>`);
     p.push(`<text x="6" y="${sy(s) + 4}" class="jg-dg-sname">${STRING_NAMES[s]}</text>`);
@@ -268,7 +268,7 @@ function chordDiagramSvg(shape, name = "") {
     const lo = Math.min(...strs);
     const hi = Math.max(...strs);
     const x = x0 + (shape.barre - start + 0.5) * dx;
-    p.push(`<rect x="${x - 7}" y="${sy(lo) - 7}" width="14" height="${sy(hi) - sy(lo) + 14}" rx="7" class="jg-dg-barre"/>`);
+    p.push(`<rect x="${x - 7}" y="${sy(hi) - 7}" width="14" height="${sy(lo) - sy(hi) + 14}" rx="7" class="jg-dg-barre"/>`);
   }
   shape.frets.forEach((f, i) => {
     const y = sy(i);
@@ -281,7 +281,7 @@ function chordDiagramSvg(shape, name = "") {
     }
   });
   const lefty = isLefty();
-  return `<svg viewBox="0 0 ${w} ${h}" class="jg-diagram ${lefty ? "jg-lefty" : ""}" role="img" aria-label="${name} chord diagram, low E string on top"><g${lefty ? ` transform="translate(${w} 0) scale(-1 1)"` : ""}>${p.join("")}</g></svg>`;
+  return `<svg viewBox="0 0 ${w} ${h}" class="jg-diagram ${lefty ? "jg-lefty" : ""}" role="img" aria-label="${name} chord diagram, low E string at the bottom"><g${lefty ? ` transform="translate(${w} 0) scale(-1 1)"` : ""}>${p.join("")}</g></svg>`;
 }
 
 // Tab: six lines (high e on top), fret numbers at their beat positions.

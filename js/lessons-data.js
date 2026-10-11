@@ -136,7 +136,7 @@ const PRE = [
           <li><strong>Body</strong> - on an acoustic it's hollow with a <strong>sound hole</strong>; on an electric it's usually solid with <strong>pickups</strong> (magnets that "hear" the strings) plus volume and tone knobs.</li>
           <li><strong>Bridge</strong> - where the strings are anchored on the body.</li>
         </ul>
-        <p>Below is your fretboard, the way it looks when you glance down at your guitar: nut on the left, and the thickest string (low E, nearest your chin) on top.</p>` },
+        <p>Below is your fretboard, the way it looks when you glance down at your guitar: nut on the left, and you're looking at it from below the picture, so the thickest string (low E, nearest your chin) is at the bottom, nearest you.</p>` },
     ],
   },
   {
@@ -178,7 +178,7 @@ const PRE = [
       { html: `<h3>Six strings, thickest to thinnest: E A D G B E.</h3>
         <p>A popular way to remember it: <strong>E</strong>ddie <strong>A</strong>te <strong>D</strong>ynamite, <strong>G</strong>ood <strong>B</strong>ye <strong>E</strong>ddie.</p>
         <p>Guitarists number them backwards: the <strong>thickest</strong> (lowest-sounding) string is the <strong>6th</strong>, the thinnest (highest) is the <strong>1st</strong>. Both outside strings are E - two octaves apart.</p>
-        <p class="jg-note">On the fretboard below, the thick low E string is on top: the way you see your guitar looking down at it. (Tab, which comes later, is written the other way up.)</p>`,
+        <p class="jg-note">On the fretboard below, the thick low E string is at the bottom: the way you see your guitar looking down at it, with your head below the picture. (Tab, which comes later, is drawn the same way round.)</p>`,
         notes: [0, 1, 2, 3, 4, 5].map((s) => ({ string: s, fret: 0, label: STRING_NAMES[s] })) },
       { html: `<h3>Tune up every time you play.</h3>
         <p>Strings drift out of tune all the time. Pick a string, tap <strong>Start listening</strong>, play it and turn the peg slowly until it goes <strong>green</strong>.</p>`, tuner: true },
@@ -281,10 +281,10 @@ const LESSON1_CARDS = [
   { say: `This is how you hold it 👇<br>Your <b>left hand</b> presses the strings on the <b>neck</b>. Your <b>right hand</b> strums over the <b>sound hole</b>.<br>We draw it for <b>right-handed</b> players, but hold it however feels comfortable for you 😺`,
     more: [["I'm left-handed!", "Lots of lefties play this way round, and some flip it. Try both! On a left-handed guitar, turn on <b>Left-handed</b> in <b>About &amp; settings</b> and the fretboards flip to match."]],
     show: { guitar: true }, want: { tap: "Got it 👍" }, done: "Neck on the left, strum on the right! 👍" },
-  { say: `Now let's zoom in on the <b>neck</b> 👇<br>The <b>6 strings</b> run along it. The thin metal bars across it are the <b>frets</b>.<br>It's drawn the way you see it <b>looking down</b> at your guitar: the <b>thickest</b> string (nearest your chin) is on <b>top</b>.`,
+  { say: `Now let's zoom in on the <b>neck</b> 👇<br>The <b>6 strings</b> run along it. The thin metal bars across it are the <b>frets</b>.<br>It's drawn the way you see it <b>looking down</b> at your guitar, with <b>your head below the picture</b> 👀: the <b>thickest</b> string (the top one on your guitar, nearest your chin) is the one <b>nearest you</b>, so it's at the <b>bottom</b>.`,
     more: [["What are the numbers at the bottom?", "The <b>fret numbers</b>. Fret 1 is the space next to the end of the neck (by the tuning pegs), then fret 2, and so on. Today we only need frets <b>1, 2 and 3</b> 👆"], ["Where do I press?", "In the <b>space between</b> the metal bars, just behind a bar. Never right on top of it."]],
-    show: { frets: [1, 2, 3] }, want: { tap: "Got it 👍" }, done: "Strings along, frets across! 👍" },
-  { say: `Strings are named with <b>letters</b>: <b>E A D G B e</b>, from the thickest to the thinnest. (Frets are the ones with <b>numbers</b>.)<br>Tap the <b>thickest string</b>: the <b>low E</b>, on top.`,
+    show: { frets: [1, 2, 3], viewer: true }, want: { tap: "Got it 👍" }, done: "Strings along, frets across! 👍" },
+  { say: `Strings are named with <b>letters</b>: <b>E A D G B e</b>, from the thickest to the thinnest. (Frets are the ones with <b>numbers</b>.)<br>Tap the <b>thickest string</b>: the <b>low E</b>, at the bottom (nearest you).`,
     more: [["Why two E strings?", "The thickest and the thinnest are both <b>E</b>, two octaves apart. We write the thin one as a small <b>e</b> so you can tell them apart."], ["Do strings have numbers too?", "Yes, as a side note: guitarists also count them <b>6</b> (thickest) down to <b>1</b> (thinnest). You'll see both."]],
     show: {}, want: { string: 0 }, done: "That's the low E string! 🎉" },
   { say: `Now <b>press a fret</b>: on the <b>low E</b> string, press <b>fret 3</b>.<br>Use your fingertip, just <b>behind</b> the metal bar.`, show: { frets: [3] }, want: { pos: [{ string: 0, fret: 3 }] },

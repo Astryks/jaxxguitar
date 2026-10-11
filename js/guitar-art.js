@@ -1,14 +1,17 @@
 // Our own drawings of the guitar, all the same way round as the fretboard:
 // how a right-handed player sees their guitar looking down at it, neck to
-// the left, thickest string (low E) on top.
+// the left, thickest string (low E) at the bottom: your head is below the
+// picture, so the low E (the top string on the guitar) is the nearest one.
 //   guitarSvg()            the whole guitar, with where each hand goes
 //   headstockSvg(opts)     the tuning pegs, one per string (tuner)
 //   fingerStrumSvg()       strumming with a finger instead of a pick
+//   viewerSvg()            a soft shadow of your head under the fretboard,
+//                          looking down at it (why low E is at the bottom)
 
 const STR = ["E", "A", "D", "G", "B", "e"];
 
 function guitarSvg() {
-  const sy = (s) => 100 + s * 6; // strings, low E on top
+  const sy = (s) => 100 + (5 - s) * 6; // strings, low E at the bottom
   const frets = [];
   let x = 92;
   for (let f = 1; f <= 14; f++) { x += 22 - f * 0.55; frets.push(x); }
@@ -24,7 +27,7 @@ function guitarSvg() {
     <circle cx="440" cy="110" r="30" class="jg-ga-hole"/>
     <rect x="556" y="94" width="14" height="32" rx="3" class="jg-ga-bridge"/>
     ${STR.map((n, s) => `<line x1="40" x2="562" y1="${sy(s)}" y2="${sy(s)}" class="jg-ga-string" style="stroke-width:${2.2 - s * 0.28}"/>`).join("")}
-    <text x="96" y="${sy(0) - 14}" class="jg-ga-small">low E (thickest) on top</text>
+    <text x="96" y="${sy(0) + 22}" class="jg-ga-small">low E (thickest) at the bottom: nearest you</text>
     </g>
     <g class="jg-ga-label"><path d="M200 152 L200 174" class="jg-ga-arrow"/><text x="200" y="196">Left hand</text><text x="200" y="214" class="jg-ga-small">presses the frets</text></g>
     <g class="jg-ga-label"><path d="M440 154 L440 222" class="jg-ga-arrow"/><text x="440" y="244">Right hand</text><text x="440" y="262" class="jg-ga-small">strums over the hole</text></g>
@@ -37,11 +40,11 @@ function guitarSvg() {
 // being tuned, `done` = Set of tuned strings, `ok` = active one is in tune,
 // `names` = the string names (they change in alternate tunings).
 function headstockSvg({ active = 0, done = new Set(), ok = false, names = STR } = {}) {
-  const sy = (s) => 72 + s * 15.5; // at the nut, low E on top
+  const sy = (s) => 72 + (5 - s) * 15.5; // at the nut, low E at the bottom
   // Low E, A, D pegs on the top edge (low E farthest from the nut);
   // G, B, high e on the bottom edge (high e farthest).
   const pegX = [40, 100, 160, 160, 100, 40];
-  const pegY = (s) => (s < 3 ? 22 : 196);
+  const pegY = (s) => (s < 3 ? 196 : 22);
   const p = [];
   p.push(`<path d="M18 40 Q10 110 18 178 L226 164 L226 60 Z" class="jg-hs-head"/>`);
   p.push(`<rect x="226" y="60" width="300" height="104" class="jg-hs-neck"/>`);
@@ -50,7 +53,7 @@ function headstockSvg({ active = 0, done = new Set(), ok = false, names = STR } 
   STR.forEach((n, s) => {
     const cls = ["jg-hs-string", s === active ? "jg-hs-active" : "", s === active && ok ? "jg-hs-ok" : "", done.has(s) ? "jg-hs-done" : ""].join(" ");
     // From the peg post to the nut, then along the neck.
-    p.push(`<path d="M${pegX[s]} ${s < 3 ? 40 : 178} L226 ${sy(s)} L526 ${sy(s)}" class="${cls}" style="stroke-width:${3.2 - s * 0.4}"/>`);
+    p.push(`<path d="M${pegX[s]} ${s < 3 ? 178 : 40} L226 ${sy(s)} L526 ${sy(s)}" class="${cls}" style="stroke-width:${3.2 - s * 0.4}"/>`);
   });
   names.forEach((n, s) => {
     const cls = ["jg-hs-peg", s === active ? "jg-hs-peg-active" : "", s === active && ok ? "jg-hs-peg-ok" : "", done.has(s) ? "jg-hs-peg-done" : ""].join(" ");
@@ -74,4 +77,17 @@ function fingerStrumSvg() {
   </svg>`;
 }
 
-export { guitarSvg, headstockSvg, fingerStrumSvg };
+// The back of your head and shoulders, seen from behind and a little above,
+// as if you're sitting just below the screen looking down at the neck.
+function viewerSvg() {
+  return `<svg viewBox="0 0 360 96" class="jg-viewer" role="img" aria-label="You, below the fretboard, looking down at it: the thick low E string is the one nearest you">
+    <path d="M70 96 C80 70 120 60 150 58 L210 58 C240 60 280 70 290 96 Z" class="jg-viewer-body"/>
+    <ellipse cx="180" cy="40" rx="30" ry="34" class="jg-viewer-head"/>
+    <ellipse cx="149" cy="44" rx="6" ry="10" class="jg-viewer-head"/><ellipse cx="211" cy="44" rx="6" ry="10" class="jg-viewer-head"/>
+    <path d="M152 30 C158 8 202 8 208 30" class="jg-viewer-hair"/>
+    <text x="232" y="30" class="jg-viewer-txt">you, looking</text><text x="232" y="46" class="jg-viewer-txt">down at the neck</text>
+    <text x="128" y="30" class="jg-viewer-txt jg-viewer-left">low E (thickest)</text><text x="128" y="46" class="jg-viewer-txt jg-viewer-left">is nearest you</text>
+  </svg>`;
+}
+
+export { guitarSvg, headstockSvg, fingerStrumSvg, viewerSvg };

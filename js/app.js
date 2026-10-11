@@ -68,7 +68,14 @@ function show(tab) {
   try { localStorage.setItem("jg_tab", tab); } catch (e) { /* ignore */ }
 }
 
-document.querySelectorAll(".jg-tab, .jg-footer-link").forEach((b) => b.addEventListener("click", () => show(b.dataset.tab)));
+document.querySelectorAll(".jg-tab, .jg-footer-link").forEach((b) => b.addEventListener("click", () => {
+  show(b.dataset.tab);
+  // Tapping Lessons opens the list of lessons (it lives folded up at the bottom of home).
+  if (b.dataset.tab === "lessons") {
+    const list = panels.lessons.querySelector(".jg-all-lessons");
+    if (list) { list.open = true; list.scrollIntoView({ behavior: "smooth", block: "start" }); }
+  }
+}));
 
 function drawLevel() {
   const l = getLevel();

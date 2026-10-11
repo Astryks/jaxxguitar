@@ -142,6 +142,14 @@ function allLessons() {
 // Chord pages: the app can't strum for you; the real practice is on your guitar.
 const PHONE_NOTE = `<p class="jg-phone-note">${icon("guitar", 18)}<span>I know it's hard to play a chord on the app! On your phone you can tap the notes one at a time. The real practice is on <strong>your guitar</strong>: there, press all the strings and strum them together.</span></p>`;
 
+// The lesson just before this one in its section (Back on a first card goes there).
+function prevLesson(lesson) {
+  const sec = sections().find((x) => x.lessons.some((l) => l.id === lesson.id));
+  const list = sec ? sec.lessons : [];
+  return list[list.findIndex((l) => l.id === lesson.id) - 1] || null;
+}
+const openLastOf = (l) => openLesson(l.id, unitCount(l) - 1);
+
 function nextLesson() {
   return allLessons().find((l) => !l.pre && !l.world && !isLessonComplete(l.id)) || null;
 }
@@ -272,6 +280,7 @@ function openLesson(id, pageIndex = 0) {
       courseStart: cc ? cc.n : null,
       courseTotal: cc ? cc.total : null,
       onExit: showHome,
+      onBackFirst: prevLesson(lesson) ? () => { runCleanup(); openLastOf(prevLesson(lesson)); } : null,
       changeDrill,
       onFinish: () => {
         markLessonComplete(lesson.id);
@@ -299,7 +308,7 @@ function openLesson(id, pageIndex = 0) {
           <div class="jg-practice-host"></div>
         </div>
         <div class="jg-controls">
-          ${pageIndex > 0 ? '<button class="jg-btn jg-prev">← Back</button>' : ""}
+          ${pageIndex > 0 || prevLesson(lesson) ? '<button class="jg-btn jg-prev">← Back</button>' : ""}
           <button class="jg-btn jg-btn-primary jg-next">${last ? "Finish lesson ✓" : "Next →"}</button>
         </div>
       </div>
@@ -309,7 +318,7 @@ function openLesson(id, pageIndex = 0) {
   wireSongCards(panelEl);
   wireCommon();
   panelEl.querySelector(".jg-exit").addEventListener("click", showHome);
-  panelEl.querySelector(".jg-prev")?.addEventListener("click", () => openLesson(id, pageIndex - 1));
+  panelEl.querySelector(".jg-prev")?.addEventListener("click", () => (pageIndex > 0 ? openLesson(id, pageIndex - 1) : openLastOf(prevLesson(lesson))));
   panelEl.querySelector(".jg-next").addEventListener("click", () => {
     if (!last) return openLesson(id, pageIndex + 1);
     markLessonComplete(lesson.id);

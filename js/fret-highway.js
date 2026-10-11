@@ -40,7 +40,7 @@ function renderFretHighway(container, fb, { lookaheadSec = 2.4 } = {}) {
       if (bottom <= 0) continue;
       const colW = fb.widthFrac(n.fret) * w;
       const laneW = colW / 6;
-      const x = fb.xFrac(n.fret) * w - colW / 2 + n.string * laneW; // thickest (low E) lane on the left, like the strings top to bottom
+      const x = fb.xFrac(n.fret) * w - colW / 2 + (5 - n.string) * laneW; // high e lane on the left, low E on the right, like the strings top to bottom
       ctx.globalAlpha = n.ghost ? 0.3 : n.time <= now ? 1 : 0.88;
       ctx.fillStyle = fb.stringColor(n.string);
       ctx.fillRect(x + 1, top, Math.max(3, laneW - 2), Math.max(6 * dpr, bottom - top));

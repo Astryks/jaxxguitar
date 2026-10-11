@@ -7,7 +7,7 @@ import { icon } from "./icons.js";
 import { createTunerWidget } from "./pitch.js";
 import { TUNING } from "./guitar-theory.js";
 import { playNote } from "./guitar-audio.js";
-import { headstockSvg } from "./guitar-art.js";
+import { headstockSvg, viewerSvg } from "./guitar-art.js";
 
 // Strings low (6th) to high (1st). midi: E2 = 40.
 const TUNINGS = {
@@ -45,6 +45,7 @@ function renderStringTuner(container, { tunings = false } = {}) {
   container.innerHTML = `
     ${tunings ? `<div class="jg-row jg-set-row jg-tn-tunings" style="justify-content:center"><span class="jg-label">Tuning</span>${Object.entries(TUNINGS).map(([id, x]) => `<button class="jg-pill" data-tuning="${id}" type="button">${x.label}</button>`).join("")}</div><p class="jg-note jg-tn-tnote" style="text-align:center"></p>` : ""}
     <div class="jg-hs-wrap"></div>
+    <div class="jg-viewer-wrap">${viewerSvg()}</div>
     <p class="jg-note" style="text-align:center;margin-top:0">Tap a peg to pick a string and hear it.</p>
     <div class="jg-tuner-strings"></div>
     <p class="jg-tuner-msg jg-tn-which"></p>

@@ -35,7 +35,7 @@ import { mountInstrument, createPracticeBox } from "./practice-widget.js";
 import { renderStringTuner } from "./tuner.js";
 import { onNoteOn, enableMic, disableMic, micOn } from "./input-hub.js";
 import { createStrumLoop } from "./strum-loop.js";
-import { guitarSvg, fingerStrumSvg } from "./guitar-art.js";
+import { guitarSvg, fingerStrumSvg, viewerSvg } from "./guitar-art.js";
 import { songCardHtml, wireSongCards, findSong } from "./lesson-songs.js";
 import { wireVideos } from "./media.js";
 import { teachHtml } from "./teach-videos.js";
@@ -51,7 +51,7 @@ const SWITCH_TIPS = `<ul class="jg-switch-tips">
   <li><b>👀 Look ahead:</b> look at where your fingers are going, not where they've been.</li>
 </ul>`;
 
-function runCards(panel, lesson, { start = 0, onExit, onFinish, changeDrill, courseStart = null, courseTotal = null }) {
+function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onFinish, changeDrill, courseStart = null, courseTotal = null }) {
   const cards = lesson.cards;
   document.body.classList.add("jg-lesson-open");
   let cleanups = [];
@@ -63,7 +63,7 @@ function runCards(panel, lesson, { start = 0, onExit, onFinish, changeDrill, cou
     if (i >= cards.length) { if (micByUs) disableMic(); document.body.classList.remove("jg-lesson-open"); return onFinish(); }
     const card = cards[i];
     const w = card.want || { tap: "Got it!" };
-    const needsBoard = w.string !== undefined || w.pos || w.chord || w.practice || w.changes || w.compare || w.morph || w.strum || w.loop || card.show?.shape || card.show?.notes || card.show?.frets || (card.show && !card.show.guitar && !card.show.fingerStrum && Object.keys(card.show).length === 0);
+    const needsBoard = w.string !== undefined || w.pos || w.chord || w.practice || w.changes || w.compare || w.morph || w.strum || w.loop || card.show?.shape || card.show?.notes || card.show?.frets || (card.show && !card.show.guitar && !card.show.fingerStrum && Object.keys(card.show).filter((k) => k !== "viewer").length === 0);
     // One animation per card, never the same as the last few (scenes.js).
     const scene = pickScene(`${lesson.title} ${card.say || ""}`);
     const legend = scene.startsWith("legend-") ? LEGENDS[scene.slice(7)] : null;
@@ -72,7 +72,7 @@ function runCards(panel, lesson, { start = 0, onExit, onFinish, changeDrill, cou
       <div class="jg-cards">
         <div class="jg-cards-top">
           <button class="jg-cards-x" aria-label="Close lesson">✕</button>
-          ${i > 0 ? '<button class="jg-cards-back">← Back</button>' : "<span></span>"}
+          ${i > 0 || onBackFirst ? '<button class="jg-cards-back">← Back</button>' : "<span></span>"}
           <b class="jg-cards-title">${lesson.title}</b>
           <span class="jg-cards-count" title="Card ${count} of the whole course">${count}</span>
         </div>
@@ -91,7 +91,7 @@ function runCards(panel, lesson, { start = 0, onExit, onFinish, changeDrill, cou
     const controls = panel.querySelector(".jg-card-controls");
     const extra = panel.querySelector(".jg-card-extra");
     panel.querySelector(".jg-cards-x").addEventListener("click", () => { clean(); if (micByUs) disableMic(); document.body.classList.remove("jg-lesson-open"); onExit(); });
-    panel.querySelector(".jg-cards-back")?.addEventListener("click", () => show(i - 1));
+    panel.querySelector(".jg-cards-back")?.addEventListener("click", () => { if (i > 0) return show(i - 1); clean(); onBackFirst(); });
     const reply = (html, pose) => {
       thread.querySelector(".jg-cmsg-oops")?.remove();
       thread.insertAdjacentHTML("beforeend", `<div class="jg-cmsg ${pose === "oops" || pose === "tangled" ? "jg-cmsg-oops" : ""}"><div class="jg-cbubble">${html}</div></div>`);
@@ -123,6 +123,7 @@ function runCards(panel, lesson, { start = 0, onExit, onFinish, changeDrill, cou
       if (card.show?.notes) inst.fb.show(card.show.notes);
       if (card.show?.frets) inst.fb.highlightFrets(card.show.frets);
     }
+    if (card.show?.viewer) panel.querySelector(".jg-card-board").insertAdjacentHTML("afterend", `<div class="jg-viewer-wrap">${viewerSvg()}</div>`);
     if (card.show?.guitar) extra.innerHTML = `<div class="jg-guitar-wrap">${guitarSvg()}</div>`;
     if (card.show?.fingerStrum) extra.innerHTML = `<div class="jg-fingerstrum-wrap">${fingerStrumSvg()}</div>`;
 
