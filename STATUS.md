@@ -389,3 +389,10 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - Both in the song library of both apps (Rock & alternative row), album art from iTunes; maps marked "our best guide".
 - **Fixed 2026-10-11:** 4 chords the fretboard couldn't draw (G7#5, Daug, Abaug, Eaug, in older song maps). Added movable **aug** and **7#5** shapes to both barre families in `js/guitar-theory.js` (E-shape aug `0 x 2 1 1 x`, 7#5 `0 x 0 1 1 x`; A-shape aug `x 0 3 2 2 x`, 7#5 `x 0 x 0 2 1`) plus open **Eaug** (0 3 2 1 1 0) and **Daug** (x x 0 3 3 2). Every chord in all 272 songs and their maps is now playable; `npm run check`: 141 chords, 0 problems.
 - The aug / 7#5 chord fix is on the website but **not yet in a TestFlight build** (build 22 was uploaded just before it). Include it in the next build (23).
+
+## 2026-10-11: today's songs in lessons and the library (iOS build 23)
+- **Save Your Tears** (The Weeknd): library + first of the 3 songs after "More open chords" (C Am Em G, no capo).
+- **I Don't Want to Talk About It** (Rod Stewart): first song after "The capo" (capo 3: G Am D).
+- **Where Is My Mind?** (Pixies): now in the library (official PixiesOfficial video OJ62RzJkYUo) and first song after "Power chords" (capo 4: C Am E F; the band plays it as power chords).
+- **Glory Box** (Portishead): song after "Jargon alert! Extra chords" (capo 6: Am Am/G F#m7b5 Fmaj7).
+- Build 23 also includes the aug / 7#5 chord shapes fix.

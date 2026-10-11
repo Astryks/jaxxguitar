@@ -370,7 +370,7 @@ const BEGINNER = [
   {
     id: "lesson-open-chords", title: "More open chords: E, A, Am, Dm", subtitle: "Happy or sad? One finger",
     cards: OPEN_CARDS,
-    songs: ["Riptide", "Last Christmas"],
+    songs: ["Save Your Tears", "Riptide", "Last Christmas"],
     pages: [],
   },
   {
@@ -407,6 +407,7 @@ const BEGINNER = [
   },
   {
     id: "lesson-capo", title: "The capo: play in any key", subtitle: "Same shapes, higher sound",
+    songs: ["I Don't Want to Talk About It"],
     pages: [
       { html: `<h3>A capo is a clamp that moves the nut.</h3>
         <p>Clip it across all six strings just behind a fret, and every open-chord shape now sounds higher by that many half-steps. That's how guitarists play songs in hard keys with easy shapes.</p>
@@ -427,6 +428,7 @@ const BEGINNER = [
   },
   {
     id: "lesson-power", title: "Power chords and palm muting", subtitle: "The rock sound",
+    songs: ["Where Is My Mind?"],
     pages: [
       { html: `<h3>Two notes, huge sound.</h3>
         <p>A <strong>power chord</strong> is just a root and the note a fifth above it - no third, so it's neither major nor minor, and it sounds great with distortion. Shape: index on the root (6th or 5th string), ring finger two frets higher on the next string. Written "E5", "A5", "G5".</p>
@@ -525,6 +527,7 @@ const BEGINNER = [
   },
   {
     id: "lesson-sevenths", title: "Jargon alert! Extra chords", subtitle: "7ths, sus, add9 and maj7",
+    songs: ["Glory Box"],
     pages: [
       { html: `<h3>Jargon alert! 🚨</h3>
         <p>You <strong>don't really need these</strong> for easier songs. But here are some other chords you'll see in songbooks, so the names don't scare you:</p>
