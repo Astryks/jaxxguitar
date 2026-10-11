@@ -351,3 +351,34 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **Store page:** 6 iPhone 6.9" and 6 iPad 13" screenshots from `ios/screenshots/app-store-v2/` uploaded (English U.S.; Australia and UK listings use the same). Each tip has its review screenshot.
 - **Filled in:** App Review contact (same as the owner's other apps), review notes, Content Rights (uses third-party content: iTunes album art, YouTube embeds, chord progressions), App Privacy published as "Data Not Collected", export compliance (no non-exempt encryption).
 - **Still for the owner:** Paid Applications Agreement, tax and banking must be active before tips can be sold; watch for App Review messages in App Store Connect; press Release after approval; Google Search Console verification and sitemap.
+
+## 📝 Owner feedback, round 3 (2026-10-11)
+**Supersedes the earlier "flip the fretboard" note:** keep the ORIGINAL orientation (thick low E at the **bottom**, thin high e on top) and explain it with a picture.
+
+**Bugs**
+- [ ] Back doesn't go back to Lesson 1. Fix it.
+- [ ] Home page: tapping "Lessons" just spins the BB King guitar. Link it to the Lessons tab.
+
+**Fretboard orientation (tuner + every chord picture)**
+- [ ] Keep low E at the bottom, high e on top (as it was). Add a faint shadow of a head below the fretboard. Explain it as someone looking down at their guitar: their head is at the bottom of the screen and the neck is above it, so the thick E string (the top string on the guitar) is the one nearest them. Apply this to every chord too (A–G majors and minors).
+- [ ] A cartoon of a guitarist in the style of *Once Upon a Time in Mexico* (a mariachi-style hero, not a likeness of Antonio Banderas; we can't use a real actor's face) looking down at the fretboard while tuning.
+
+**Course order**
+1. [ ] The 4 chords (G D Em C).
+2. [ ] Then **all chords** (A–G, majors and minors).
+3. [ ] Then all chords as **barre chords** (yes: one E-shape and one A-shape barre plays every major and minor chord up the neck).
+4. [ ] Then all majors vs minors played together so users hear happy vs sad.
+5. [ ] Then: "Stop! Too many chords. Let's use our 4 to play songs." Songs with the 4 chords.
+6. [ ] Then the same songs with the 4 chords as barre chords.
+7. [ ] After **every** lesson, teach songs.
+- [ ] Add blues players: BB King and others (blues lesson + songs).
+- [ ] Creep (Radiohead), plus Creed.
+- [ ] Teach songs on electric vs acoustic vs bass.
+- [ ] Ear training: pre-recorded G, Em, C, D at different speeds; users hear happy vs sad chords.
+- [ ] Add the "Aerials" (System of a Down) barre-chord riff (chords only).
+
+**New songs**
+- [ ] B.B. King: The Thrill Is Gone. Santana (e.g. Smooth, Black Magic Woman, Oye Como Va, Maria Maria). Aerosmith: I Don't Want to Miss a Thing. Guns N' Roses: Don't Cry, November Rain (fix its chords). Scorpions: Still Loving You.
+
+**Play-along animation**
+- [ ] Replace the falling "tetris" blocks with an animated guitar: the fretboard lights up the chord shape and the strings ring as they're strummed (like the owner's reference video "guitar style.mp4" in ~/Downloads). Do it for all songs.
