@@ -86,6 +86,8 @@ const OPEN_SHAPES = {
   A7sus4: { frets: [-1, 0, 2, 0, 3, 0], fingers: [0, 0, 2, 0, 3, 0] },
   C7b9: { frets: [-1, 3, 2, 3, 2, 3], fingers: [0, 2, 1, 3, 1, 4] },
   Caug: { frets: [-1, 3, 2, 1, 1, 0], fingers: [0, 4, 3, 1, 2, 0] },
+  Eaug: { frets: [0, 3, 2, 1, 1, 0], fingers: [0, 4, 3, 1, 2, 0] },
+  Daug: { frets: [-1, -1, 0, 3, 3, 2], fingers: [0, 0, 0, 2, 3, 1] },
   CmMaj7: { frets: [-1, 3, 1, 0, 0, -1], fingers: [0, 3, 1, 0, 0, 0] },
   "D6/9": { frets: [-1, 5, 4, 4, 5, 5], fingers: [0, 2, 1, 1, 3, 4] },
   D7b5: { frets: [-1, -1, 0, 1, 1, 2], fingers: [0, 0, 0, 1, 1, 2] },
@@ -112,6 +114,8 @@ const MOVABLE = {
     m7: [0, 2, 0, 0, 0, 0],
     maj7: [0, null, 1, 1, 0, null],
     sus4: [0, 2, 2, 2, 0, 0],
+    aug: [0, null, 2, 1, 1, null], // root, root, 3rd, #5
+    "7#5": [0, null, 0, 1, 1, null], // root, b7, 3rd, #5
     "5": [0, 2, 2, null, null, null],
   },
   A: {
@@ -128,6 +132,8 @@ const MOVABLE = {
     "9": [null, 0, -1, 0, 0, 0],
     dim: [null, 0, 1, 2, 1, null],
     dim7: [null, 0, 1, -1, 1, null],
+    aug: [null, 0, 3, 2, 2, null], // root, #5, root, 3rd
+    "7#5": [null, 0, null, 0, 2, 1], // root, b7, 3rd, #5
     "5": [null, 0, 2, 2, null, null],
   },
 };
