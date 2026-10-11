@@ -12,7 +12,7 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 
 **What's done (full history below):** pre-lessons (get a guitar → electric gear → tune it with the string tuner), Lesson 1 / Strumming / Changing chords as simple chat cards, all the curriculum in the table below, Jaxx the beagle puppy plus music scenes and legendary guitars (the home card shows the November Rain cliff scene), Tip jar with a donor thank-you, teacher and inspiration videos, falling-notes fretboard with Listen / Wait for me / Play in time, upload a song → chords, Guess the song (ShazamKit), Netflix-style song library (270 songs, incl. a new **Metal** row and International / Karaoke anthems) with album art, Main part / Whole song and the official YouTube video, How it works page, Astryks credit, App Store screenshots and listing text.
 
-**Latest build:** 20, uploaded to TestFlight (the "Team" group gets every build automatically). **Submitted to App Review 2026-10-07** with the three tips; status Waiting for Review. Release is manual. App ID 6819445036.
+**Latest build:** 21 (2026-10-11: Back between lessons, Lessons tab, low E at the bottom), uploaded to TestFlight; build 20 (the "Team" group gets every build automatically). **Submitted to App Review 2026-10-07** with the three tips; status Waiting for Review. Release is manual. App ID 6819445036.
 
 **Business (checked 2026-10-07):** Free and Paid Apps Agreements active until 18 Aug 2027, bank account active (paid in AUD), tax forms (ABN/GST, W-8BEN) active. Nothing to do here; tips can be paid out once approved.
 
