@@ -945,6 +945,14 @@ const SONG_ART = {
  "Drown|Bring Me the Horizon": {
   "img": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/72/ca/40/72ca4080-e677-c038-40c8-d884e7634c22/0045778740062.png/400x400bb.jpg",
   "url": "https://music.apple.com/us/album/drown/1485060613?i=1485060616&uo=4"
+ },
+ "Glory Box|Portishead": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/c1/71/93/c1719342-df7d-e9c5-c87c-53dae5afb289/00042282855329.rgb.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/glory-box/1440653096?i=1440653206&uo=4"
+ },
+ "I Don't Want to Talk About It|Rod Stewart": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/ea/89/8d/ea898dc7-79a3-f8c7-fdcd-8fed21bf9973/mzi.fyjtoqdz.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/i-dont-want-to-talk-about-it/295535258?i=295535372&uo=4"
  }
 };
 export { SONG_ART };

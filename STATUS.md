@@ -382,3 +382,9 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 
 **Play-along animation**
 - [ ] Replace the falling "tetris" blocks with an animated guitar: the fretboard lights up the chord shape and the strings ring as they're strummed (like the owner's reference video "guitar style.mp4" in ~/Downloads). Do it for all songs.
+
+## 2026-10-11: Glory Box and I Don't Want to Talk About It
+- **Glory Box** (Portishead, 1994): D# minor, one descending loop D#m → D#m/C# → Cm7b5 (B#ø7) → Bmaj7 all song (Hooktheory, Musicnotes), whole-song map incl. the guitar solo, official video (PortisheadVEVO 4qQyUi4zfDs).
+- **I Don't Want to Talk About It** (Rod Stewart, 1977; written by Danny Whitten): Bb major; verse Bb Cm F, chorus Eb F Bb F/A Gm, chorus ending Cm F7sus4 Bbadd9 (Hooktheory); Jaxx uses F7 / Bb for the two chords its fretboard can't draw. Official video (esUHMBHJsn8). Guitar: capo 3, G shapes.
+- Both in the song library of both apps (Rock & alternative row), album art from iTunes; maps marked "our best guide".
+- To check (found 2026-10-11, older data): Jaxx songs-data.js has 4 chords its fretboard cannot draw: G7#5, Daug, Abaug, Eaug. Simplify them or add the shapes.

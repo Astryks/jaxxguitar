@@ -660,7 +660,9 @@ const VIDEOS = {
  "song-the-sound-of-silence": {"id": "u9Dg-g7t2l4", "title": "Disturbed  - The Sound Of Silence (Official Music Video) [4K UPGRADE]", "author_name": "Disturbed"},
  "song-drown": {"id": "TkV5709EG5M", "title": "Bring Me The Horizon - Drown", "author_name": "BMTHOfficialVEVO"},
  "song-sekai-ni-hitotsu-dake-no-hana-v": {"id": "b7ruJQM0A0I", "title": "Sekai Ni Hitotsu Dake No Hana (Live At Nippon Budokan / 2005)", "author_name": "Noriyuki Makihara - Topic"},
- "song-ya-lili-v": {"id": "IJHPpTYtIqk", "title": "Balti feat. Hamouda - Ya Lili (Official Music Video)", "author_name": "Thisiz Balti", "noEmbed": true}
+ "song-ya-lili-v": {"id": "IJHPpTYtIqk", "title": "Balti feat. Hamouda - Ya Lili (Official Music Video)", "author_name": "Thisiz Balti", "noEmbed": true},
+ "song-glory-box": {"id": "4qQyUi4zfDs", "title": "Portishead - Glory Box", "author_name": "PortisheadVEVO"},
+ "song-i-don-t-want-to-talk-about-it": {"id": "esUHMBHJsn8", "title": "Rod Stewart - I Don't Want To Talk About It (Official Video)", "author_name": "Rod Stewart"}
 };
 const SONG_VIDEOS = {
  "Bamboléo": "bambol-o-live-v2",
@@ -933,6 +935,8 @@ const SONG_VIDEOS = {
  "The Sound of Silence": "the-sound-of-silence-live-v2",
  "Drown": "drown-live-v2",
  "Sekai ni Hitotsu Dake no Hana": "song-sekai-ni-hitotsu-dake-no-hana-v",
- "Ya Lili": "song-ya-lili-v"
+ "Ya Lili": "song-ya-lili-v",
+ "Glory Box": "song-glory-box",
+ "I Don't Want to Talk About It": "song-i-don-t-want-to-talk-about-it"
 };
 export { PEOPLE, VIDEOS, SONG_VIDEOS };
