@@ -14,7 +14,9 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 
 **Latest build:** 23. **Resubmitted to App Review 2026-10-13 10:09 AM AEDT** as one submission: iOS 1.0 build 23 plus the three tips (Thank you, Bravo, Encore); status Waiting for Review. Earlier build 20 submission was withdrawn to apply the new listing. Release is manual. App ID 6819445036.
 
-**App Store listing (changed 2026-10-13):** Name `Jaxx Guitar: Free Lessons` (was Jaxx Guitar: Lessons & Tuner) · Subtitle `Learn Chords, Songs & Tuner` · Keywords `beginner,acoustic,electric,tabs,strum,capo,fretboard,practice,tutor,teacher,solo,barre,metronome`. Description and promo text unchanged. Next: fuller description, screenshot captions, en-GB/en-AU/en-CA localizations and Google Play listing (drafts in progress).
+**App Store listing (changed 2026-10-13):** Name `Jaxx Guitar: Free Lessons` (was Jaxx Guitar: Lessons & Tuner) · Subtitle `Learn Chords, Songs & Tuner` · Keywords `beginner,acoustic,electric,tabs,strum,capo,fretboard,practice,tutor,teacher,solo,barre,metronome`. 
+
+**Full listing applied 2026-10-13:** new promo text and description (US), plus en-GB, en-AU and en-CA localizations with their own subtitles and keywords. Resubmitted 2026-10-13 10:29 AM AEDT (build 23 + 3 tips). Exact text in `ios/ASO_LISTING_2026-10-13.md`. Still to do: screenshot captions (need new images) and the Google Play listing.
 
 **Business (checked 2026-10-07):** Free and Paid Apps Agreements active until 18 Aug 2027, bank account active (paid in AUD), tax forms (ABN/GST, W-8BEN) active. Nothing to do here; tips can be paid out once approved.
 
