@@ -1,6 +1,6 @@
 # Jaxx Guitar - status
 
-_Last updated 2026-10-07._ This file is the checklist of everything requested for Jaxx Guitar, so nothing gets missed. ✅ done · 🟡 in progress / waiting on something · ⬜ not started.
+_Last updated 2026-10-13._ This file is the checklist of everything requested for Jaxx Guitar, so nothing gets missed. ✅ done · 🟡 in progress / waiting on something · ⬜ not started.
 
 Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (GitHub Pages) · iOS bundle: `com.jaxxguitar.app`
 
@@ -12,7 +12,9 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 
 **What's done (full history below):** pre-lessons (get a guitar → electric gear → tune it with the string tuner), Lesson 1 / Strumming / Changing chords as simple chat cards, all the curriculum in the table below, Jaxx the beagle puppy plus music scenes and legendary guitars (the home card shows the November Rain cliff scene), Tip jar with a donor thank-you, teacher and inspiration videos, falling-notes fretboard with Listen / Wait for me / Play in time, upload a song → chords, Guess the song (ShazamKit), Netflix-style song library (270 songs, incl. a new **Metal** row and International / Karaoke anthems) with album art, Main part / Whole song and the official YouTube video, How it works page, Astryks credit, App Store screenshots and listing text.
 
-**Latest build:** 21 (2026-10-11: Back between lessons, Lessons tab, low E at the bottom), uploaded to TestFlight (the "Team" group gets every build automatically). **Build 20 was submitted to App Review 2026-10-07** with the three tips; status Waiting for Review. Release is manual. App ID 6819445036.
+**Latest build:** 23. **Resubmitted to App Review 2026-10-13 10:09 AM AEDT** as one submission: iOS 1.0 build 23 plus the three tips (Thank you, Bravo, Encore); status Waiting for Review. Earlier build 20 submission was withdrawn to apply the new listing. Release is manual. App ID 6819445036.
+
+**App Store listing (changed 2026-10-13):** Name `Jaxx Guitar: Free Lessons` (was Jaxx Guitar: Lessons & Tuner) · Subtitle `Learn Chords, Songs & Tuner` · Keywords `beginner,acoustic,electric,tabs,strum,capo,fretboard,practice,tutor,teacher,solo,barre,metronome`. Description and promo text unchanged. Next: fuller description, screenshot captions, en-GB/en-AU/en-CA localizations and Google Play listing (drafts in progress).
 
 **Business (checked 2026-10-07):** Free and Paid Apps Agreements active until 18 Aug 2027, bank account active (paid in AUD), tax forms (ABN/GST, W-8BEN) active. Nothing to do here; tips can be paid out once approved.
 
