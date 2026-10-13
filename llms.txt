@@ -1,0 +1,41 @@
+# Jaxx Guitar
+
+> Free guitar lessons with Jaxx the beagle: 65+ lessons, 270 songs, a mic tuner and play-along fretboard. No ads, no account, ever.
+
+Jaxx Guitar ("Jaxx Guitar: Free Lessons" on the App Store, app ID 6819445036) is a free guitar learning app for iPhone and iPad, also playable in a web browser at https://jaxxguitar.com/. It is made by Astryks. It has no ads, no account and no paywall; the only purchase is an optional tip jar that unlocks nothing. Song pages give the key and chord names only, never lyrics.
+
+## Features
+- Learn step by step: 65+ lessons that take you from the basics to barre chords and solos, teacher videos that show what your hands should do, daily review and streaks.
+- Play 270 songs: Chord diagrams for every song, capo and key info, solo cards for lead parts, and upload any song to get its chords, worked out on your device.
+- Falling notes on a fretboard: Three modes: Listen to hear it first, Wait for me (it listens to your guitar and waits for the right note), and Play in time.
+- Tune up in seconds: The mic tuner supports Standard, Drop D, DADGAD and Open G tunings.
+- Train your ear and timing: Chord Ear Gym teaches you to recognise chords by sound, plus a built-in metronome.
+- Made for every player: Left-handed mode flips the fretboard and diagrams. Works for acoustic and electric guitar. No sign-up.
+
+## Links
+- [App Store](https://apps.apple.com/app/id6819445036)
+- [Web app](https://jaxxguitar.com/)
+- [Free guitar lessons](https://jaxxguitar.com/learn/index.html)
+- [Guitar chords for popular songs](https://jaxxguitar.com/songs/index.html)
+- [Privacy policy](https://jaxxguitar.com/privacy.html)
+
+## Lessons
+- [The 4 beginner guitar chords: G, D, Em and C](https://jaxxguitar.com/learn/beginner-guitar-chords.html): Learn the four easiest guitar chords for beginners, G, D, Em and C, with finger positions, and the G - D - Em - C loop behind hundreds of songs.
+- [Guitar chord chart for beginners](https://jaxxguitar.com/learn/guitar-chord-chart.html): Free beginner guitar chord chart: the common open chords C, D, E, G, A, Am, Em, Dm and more, with fret numbers for every string.
+- [How to tune a guitar (Standard, Drop D, DADGAD, Open G)](https://jaxxguitar.com/learn/how-to-tune-a-guitar.html): How to tune a guitar for beginners: standard tuning E A D G B E, plus Drop D, DADGAD and Open G. Use the free mic tuner in Jaxx Guitar.
+- [How to use a capo on guitar](https://jaxxguitar.com/learn/how-to-use-a-capo.html): What a capo does and how to use it: play songs in hard keys with easy open chord shapes. Examples with real songs.
+- [Easy guitar songs for beginners](https://jaxxguitar.com/learn/easy-guitar-songs.html): Easy guitar songs for beginners with their key and chords. Free chord pages, no lyrics, and play-along in Jaxx Guitar.
+- [Learning guitar left-handed](https://jaxxguitar.com/learn/left-handed-guitar.html): Left-handed guitar for beginners: what changes, and how Jaxx Guitar's left-handed mode flips the fretboard and chord diagrams.
+
+## FAQ
+- Is Jaxx Guitar free? Yes. Jaxx Guitar is completely free, with no ads, no subscription and no paywall. There is an optional tip jar in the iPhone and iPad app if you want to support development, and a tip unlocks nothing extra.
+- Do I need an account? No. There is no sign-up, so you can start in seconds. Your progress and streaks stay on your own device.
+- What are the best beginner guitar chords? Start with G, D, Em and C. Jaxx Guitar's first lesson teaches these four chords and the G - D - Em - C loop, the I - V - vi - IV pattern behind a huge number of pop songs.
+- Does Jaxx Guitar have a tuner? Yes. The mic tuner listens to your guitar and supports Standard, Drop D, DADGAD and Open G tunings.
+- Does it work for left-handed players? Yes. Left-handed mode flips the fretboard and the chord diagrams.
+- Does it work for acoustic and electric guitar? Yes. Jaxx Guitar works for both acoustic and electric guitar.
+- Is my microphone audio recorded or uploaded? No. The microphone is optional and the sound is analysed on your device. It is never recorded or sent anywhere.
+- Do the song pages include lyrics? No. Song pages show the key and chord names only, never lyrics.
+
+## Sibling app
+- [Hayden Keys](https://haydenkeys.com): free piano lessons by Astryks, with the same no ads, no account approach.
