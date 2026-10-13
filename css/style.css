@@ -756,9 +756,9 @@ body.jg-intro-open { overflow: hidden; }
 .jg-tip-thanks .jg-tip-icon { color: var(--jg-accent); }
 /* A soft shadow of your head under the fretboard, looking down at it. */
 .jg-viewer-wrap { display: flex; justify-content: center; margin: 6px 0; }
-.jg-viewer { width: min(360px, 92%); height: auto; overflow: visible; }
-.jg-viewer-body, .jg-viewer-head { fill: #6b5b4e; opacity: .18; }
-.jg-viewer-hair { fill: none; stroke: #6b5b4e; stroke-width: 6; stroke-linecap: round; opacity: .22; }
+.jg-viewer { width: min(300px, 86%); height: auto; overflow: visible; }
+.jg-viewer-fig { fill: #2b211c; opacity: .5; }
+.jg-viewer-band { fill: none; stroke: #c94f3d; stroke-width: 3; stroke-linecap: round; opacity: .75; }
 .jg-viewer-eyes { font-size: 15px; text-anchor: middle; }
-.jg-viewer-txt { font-size: 12px; fill: var(--jg-muted, #6b6b6b); }
+.jg-viewer-txt { font-size: 11px; fill: var(--jg-muted, #6b6b6b); }
 .jg-viewer-left { text-anchor: end; }

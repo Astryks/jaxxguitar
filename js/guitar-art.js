@@ -77,16 +77,20 @@ function fingerStrumSvg() {
   </svg>`;
 }
 
-// The back of your head and shoulders, seen from behind and a little above,
-// as if you're sitting just below the screen looking down at the neck.
+// A small shadow of a 60s rock guitarist seen from behind (big round afro,
+// headband ties), as if sitting just below the screen looking down at the
+// neck: why the thick low E is drawn at the bottom.
 function viewerSvg() {
-  return `<svg viewBox="0 0 360 96" class="jg-viewer" role="img" aria-label="You, below the fretboard, looking down at it: the thick low E string is the one nearest you">
-    <path d="M70 96 C80 70 120 60 150 58 L210 58 C240 60 280 70 290 96 Z" class="jg-viewer-body"/>
-    <ellipse cx="180" cy="40" rx="30" ry="34" class="jg-viewer-head"/>
-    <ellipse cx="149" cy="44" rx="6" ry="10" class="jg-viewer-head"/><ellipse cx="211" cy="44" rx="6" ry="10" class="jg-viewer-head"/>
-    <path d="M152 30 C158 8 202 8 208 30" class="jg-viewer-hair"/>
-    <text x="232" y="30" class="jg-viewer-txt">you, looking</text><text x="232" y="46" class="jg-viewer-txt">down at the neck</text>
-    <text x="128" y="30" class="jg-viewer-txt jg-viewer-left">low E (thickest)</text><text x="128" y="46" class="jg-viewer-txt jg-viewer-left">is nearest you</text>
+  return `<svg viewBox="0 0 300 74" class="jg-viewer" role="img" aria-label="A guitarist below the fretboard, looking down at it: the thick low E string is the one nearest them">
+    <g class="jg-viewer-fig">
+      <path d="M112 74 C116 58 132 52 150 52 C168 52 184 58 188 74 Z"/>
+      <rect x="143" y="38" width="14" height="16" rx="5"/>
+      <ellipse cx="150" cy="28" rx="22" ry="20"/><circle cx="129.0" cy="25.0" r="7.5"/><circle cx="130.5" cy="17.9" r="7.5"/><circle cx="134.9" cy="11.8" r="7.5"/><circle cx="141.5" cy="7.6" r="7.5"/><circle cx="149.3" cy="6.0" r="7.5"/><circle cx="157.2" cy="7.1" r="7.5"/><circle cx="164.1" cy="10.9" r="7.5"/><circle cx="168.9" cy="16.7" r="7.5"/><circle cx="170.9" cy="23.7" r="7.5"/>
+    </g>
+    <path d="M128 31 Q150 37 172 31" class="jg-viewer-band"/>
+    <path d="M171 32 q7 6 4 15 M173 31 q10 4 11 13" class="jg-viewer-band jg-viewer-tie"/>
+    <text x="98" y="30" class="jg-viewer-txt jg-viewer-left">low E (thickest)</text><text x="98" y="45" class="jg-viewer-txt jg-viewer-left">is nearest you</text>
+    <text x="202" y="30" class="jg-viewer-txt">you, looking</text><text x="202" y="45" class="jg-viewer-txt">down at the neck</text>
   </svg>`;
 }
 

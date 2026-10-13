@@ -276,7 +276,7 @@ const PRE = [
 // all the chords side by side, how to switch, a plain looping Play, and
 // every lesson ends with 3 songs (added by lesson-songs.js).
 const LESSON1_CARDS = [
-  { say: `Welcome to Jaxx Guitar! 🎸<br>Soon you'll know <b>4 chords</b> that play <b>100+ songs</b>: <b>G · D · Em · C</b> 🎶<br>But <b>bear</b> 🐻 with us while we cover the <b>basics</b> first. It only takes a minute!<br><br>Grab <b>your guitar</b> (the real one!) 🎸`, want: { tap: "I've got my guitar! 🎸" }, done: "Let's get you in tune! 🎵" },
+  { say: `Welcome to Jaxx Guitar! 🎸<br>Soon you'll know <b>4 chords</b> that play <b>100+ songs</b>: <b>G · D · Em · C</b> 🎶<br>But 🐻 <b>bear</b> with us while we cover the <b>basics</b> first. It only takes a minute!<br><br>Grab <b>your guitar</b> (the real one!) 🎸`, want: { tap: "I've got my guitar! 🎸" }, done: "Let's get you in tune! 🎵" },
   { say: `Quick <b>tuning check</b> 🎵<br>Tap a peg to <b>hear</b> the note. Then tap <b>Start listening</b>, play that string and turn the peg until it goes <b>green</b>.`, want: { tuner: true }, done: "In tune and ready! 🎉" },
   { say: `This is how you hold it 👇<br>Your <b>left hand</b> presses the strings on the <b>neck</b>. Your <b>right hand</b> strums over the <b>sound hole</b>.<br>We draw it for <b>right-handed</b> players, but hold it however feels comfortable for you 😺`,
     more: [["I'm left-handed!", "Lots of lefties play this way round, and some flip it. Try both! On a left-handed guitar, turn on <b>Left-handed</b> in <b>About &amp; settings</b> and the fretboards flip to match."]],

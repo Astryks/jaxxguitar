@@ -176,7 +176,8 @@ function renderLessons(panel) {
 function roadmapHtml(currentId) {
   const nxt = nextLesson();
   let n = 0;
-  return sections().map((sec) => `
+  // "Before you start" isn't listed on home (owner: not needed there).
+  return sections().filter((sec) => sec.lessons !== PRE).map((sec) => `
     <div class="jg-section-head">${sec.name}</div>
     ${sec.note ? `<div class="jg-note" style="margin-bottom:4px">${sec.note}</div>` : ""}
     ${sec.optional ? `<details><summary class="jg-btn jg-btn-small">Show ${sec.lessons.length} optional lessons</summary>` : ""}

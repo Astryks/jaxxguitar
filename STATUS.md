@@ -417,3 +417,8 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **Where Is My Mind?** (Pixies): now in the library (official PixiesOfficial video OJ62RzJkYUo) and first song after "Power chords" (capo 4: C Am E F; the band plays it as power chords).
 - **Glory Box** (Portishead): song after "Jargon alert! Extra chords" (capo 6: Am Am/G F#m7b5 Fmaj7).
 - Build 23 also includes the aug / 7#5 chord shapes fix.
+
+## 2026-10-13: owner tweaks (website now; next TestFlight build, not in the build 23 under review)
+- "You, looking down" picture redrawn: a small shadow of a 60s rock guitarist seen from behind (big round afro, red headband ties), about half the old size (`viewerSvg()` in js/guitar-art.js).
+- Home "All lessons" list no longer shows "Before you start" (starts at Beginner).
+- Lesson 1 card 1: "🐻 bear with us" (bear emoji before the word).
