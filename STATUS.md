@@ -422,3 +422,4 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - "You, looking down" picture redrawn: a small shadow of a 60s rock guitarist seen from behind (big round afro, red headband ties), about half the old size (`viewerSvg()` in js/guitar-art.js).
 - Home "All lessons" list no longer shows "Before you start" (starts at Beginner).
 - Lesson 1 card 1: "🐻 bear with us" (bear emoji before the word).
+- **Beanie** (Chezile, 2024), 2026-10-13: added to the song library (Gm7 C7 Fmaj7 Dm7, key of F, official visualizer video). Website now; next TestFlight build.

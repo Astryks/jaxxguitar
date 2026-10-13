@@ -961,6 +961,10 @@ const SONG_ART = {
  "Where Is My Mind?|Pixies": {
   "img": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/68/b7/c0/68b7c018-dc15-f44a-2611-be10237fc9a5/652637080308.png/400x400bb.jpg",
   "url": "https://music.apple.com/us/album/where-is-my-mind-2007-remaster/1027465077?i=1027465608&uo=4"
+ },
+ "Beanie|Chezile": {
+  "img": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/a3/20/4d/a3204d28-a2a0-e949-5b95-2aec1d5eeee7/810482896134.jpg/400x400bb.jpg",
+  "url": "https://music.apple.com/us/album/beanie/1739267342?i=1739267347&uo=4"
  }
 };
 export { SONG_ART };
