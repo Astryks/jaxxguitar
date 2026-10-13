@@ -423,3 +423,4 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - Home "All lessons" list no longer shows "Before you start" (starts at Beginner).
 - Lesson 1 card 1: "🐻 bear with us" (bear emoji before the word).
 - **Beanie** (Chezile, 2024), 2026-10-13: added to the song library (Gm7 C7 Fmaj7 Dm7, key of F, official visualizer video). Website now; next TestFlight build.
+- **iOS build 24** uploaded to TestFlight 2026-10-13 (everything up to this point; not the build under App Review).
