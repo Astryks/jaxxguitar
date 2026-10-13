@@ -424,3 +424,6 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - Lesson 1 card 1: "🐻 bear with us" (bear emoji before the word).
 - **Beanie** (Chezile, 2024), 2026-10-13: added to the song library (Gm7 C7 Fmaj7 Dm7, key of F, official visualizer video). Website now; next TestFlight build.
 - **iOS build 24** uploaded to TestFlight 2026-10-13 (everything up to this point; not the build under App Review).
+
+## 2026-10-13: lit-up guitar play-along (iOS build 25)
+- [x] **Falling "tetris" blocks replaced** (owner request, like the reference video "guitar style.mp4"): above the fretboard, a dark tab panel scrolls past a glowing green playhead (chords as chips with their strum arrow ↓/↑, single notes as fret numbers on their string, high e on top); on the fretboard, every ringing string glows orange from where it's pressed to the body and shimmers, with a glowing ring on the fret (`fb.glow()` in js/fretboard.js, js/fret-highway.js). Used by every play-along (lessons, songs, Practice). Tested: all 43 lessons stepped through (230 steps), songs play, 0 page errors.

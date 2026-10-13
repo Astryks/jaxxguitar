@@ -57,7 +57,7 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
   }
   for (let f = 1; f <= frets; f++) parts.push(`<text x="${center(f)}" y="${H - 8}" class="jg-fret-num" data-fn="${f}">${f}</text>`);
   const lefty = isLefty();
-  container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="jg-fretboard-svg ${lefty ? "jg-lefty" : ""}" role="img" aria-label="Guitar fretboard, low E string at the bottom${lefty ? ", mirrored for left-handed players" : ""}"><g${lefty ? ` transform="translate(${W} 0) scale(-1 1)"` : ""}><g>${parts.join("")}</g><g class="jg-marks"></g><g class="jg-hits"></g></g></svg>`;
+  container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="jg-fretboard-svg ${lefty ? "jg-lefty" : ""}" role="img" aria-label="Guitar fretboard, low E string at the bottom${lefty ? ", mirrored for left-handed players" : ""}"><g${lefty ? ` transform="translate(${W} 0) scale(-1 1)"` : ""}><g>${parts.join("")}</g><g class="jg-glow"></g><g class="jg-marks"></g><g class="jg-hits"></g></g></svg>`;
   const svg = container.querySelector("svg");
   const marks = svg.querySelector(".jg-marks");
   const hits = svg.querySelector(".jg-hits");
@@ -229,8 +229,25 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
     anim.push(setTimeout(() => go(true), holdMs));
   }
 
+  // Play-along glow (like a lit-up guitar video): each ringing string glows
+  // from where it's pressed to the body, shimmering, with a glowing ring on
+  // the fret. notes: [{ string, fret }]. Cheap to call every frame.
+  const glowG = container.querySelector(".jg-glow");
+  let glowKey = "";
+  function glow(notes = []) {
+    const key = notes.map((n) => `${n.string}:${n.fret}`).sort().join(",");
+    if (key === glowKey) return;
+    glowKey = key;
+    glowG.innerHTML = notes.map((n) => {
+      const y = stringY(n.string), x1 = n.fret > 0 ? center(n.fret) : openW;
+      return `<line x1="${x1}" x2="${W - 8}" y1="${y}" y2="${y}" class="jg-glow-string" style="stroke-width:${5.5 - n.string * 0.5}"/>` +
+        `<line x1="${x1}" x2="${W - 8}" y1="${y}" y2="${y}" class="jg-glow-core" style="stroke-width:${2.2 - n.string * 0.2}"/>` +
+        `<circle cx="${center(n.fret)}" cy="${y}" r="14" class="jg-glow-ring"/>`;
+    }).join("");
+  }
+
   return {
-    show, showShape, placeFingers, morph, highlightFrets, stopAnim, clear: () => show([]), onTap: (cb) => { tapHandler = cb; },
+    show, showShape, placeFingers, morph, highlightFrets, stopAnim, glow, clear: () => show([]), onTap: (cb) => { tapHandler = cb; },
     xFrac: (f) => (lefty ? 1 - center(f) / W : center(f) / W), widthFrac: (f) => (f === 0 ? openW : xOf(f) - xOf(f - 1)) / W,
     stringColor: (s) => STRING_COLORS[s], frets,
   };
