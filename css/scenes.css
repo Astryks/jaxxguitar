@@ -121,3 +121,31 @@
 }
 @keyframes js-drop-in { 0% { transform: translateY(-260px) rotate(-200deg) scale(0.6); opacity: 0; } 55% { opacity: 1; } 75% { transform: translateY(8px) rotate(4deg) scale(1.03); } 100% { transform: translateY(0) rotate(0) scale(1); } }
 @keyframes js-twinkle { 0%, 100% { opacity: 0; transform: scale(0.4); } 40% { opacity: 1; transform: scale(1.2); } }
+
+/* ===== Legend tributes + guitar extras (fun-animations) ===== */
+.js-scene .js-th-beam, .js-scene .js-th-arm, .js-scene .js-th-spark path, .js-scene .js-tb-arm, .js-scene .js-tb-steam path,
+.js-scene .js-ss-swish, .js-scene .js-fx-shimmer path, .js-scene .js-fx-glint, .js-scene .js-tb-notes text { transform-box: fill-box; }
+.js-scene .js-tb-notes text { font: 800 20px system-ui, sans-serif; fill: #f2c94c; opacity: 0; }
+.js-scene .js-th-spark path, .js-scene .js-fx-shimmer path, .js-scene .js-ss-swish { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .js-s-tophat .js-th-beam-l { animation: js-sweep 3.2s ease-in-out infinite alternate; transform-origin: 50% 0; }
+  .js-s-tophat .js-th-beam-r { animation: js-sweep 3.2s ease-in-out 1.6s infinite alternate-reverse; transform-origin: 50% 0; }
+  .js-s-tophat .js-th-arm { animation: js-fx-shred 0.22s ease-in-out infinite alternate; transform-origin: 0% 0%; }
+  .js-s-tophat .js-th-spark path { animation: js-twinkle 1.8s ease-in-out infinite; transform-origin: 50% 50%; }
+  .js-s-tophat .js-th-spark path:nth-child(2) { animation-delay: 0.6s; } .js-s-tophat .js-th-spark path:nth-child(3) { animation-delay: 1.2s; }
+  .js-s-teabreak .js-tb-arm { animation: js-fx-sip 4s ease-in-out infinite; transform-origin: 0% 50%; }
+  .js-s-teabreak .js-tb-steam path { animation: js-fx-steam 1.6s ease-out infinite; transform-origin: 50% 100%; }
+  .js-s-teabreak .js-tb-steam path:nth-child(2) { animation-delay: 0.8s; }
+  .js-s-teabreak .js-tb-notes text { animation: js-float 3s ease-out infinite; } .js-s-teabreak .js-tb-notes text:nth-child(2) { animation-delay: 1.5s; }
+  .js-s-strapspin .js-ss-guitar { animation: js-fx-spin 3.6s cubic-bezier(.4,0,.2,1) infinite; transform-box: view-box; transform-origin: 200px 158px; }
+  .js-s-strapspin .js-ss-swish { animation: js-fx-swish 3.6s ease-out infinite; transform-origin: 50% 50%; }
+  .js-scene .js-fx-shimmer path { animation: js-twinkle 2.2s ease-in-out infinite; transform-origin: 50% 50%; }
+  .js-scene .js-fx-shimmer path:nth-child(2) { animation-delay: 0.55s; } .js-scene .js-fx-shimmer path:nth-child(3) { animation-delay: 1.1s; } .js-scene .js-fx-shimmer path:nth-child(4) { animation-delay: 1.65s; }
+  .js-scene .js-fx-glint { animation: js-fx-glint 3.5s ease-in-out 0.6s infinite; }
+}
+@keyframes js-fx-shred { from { transform: rotate(-6deg); } to { transform: rotate(8deg); } }
+@keyframes js-fx-sip { 0%, 55%, 100% { transform: rotate(0); } 65%, 80% { transform: rotate(-14deg) translateY(-4px); } }
+@keyframes js-fx-steam { 0% { opacity: 0; transform: translateY(4px) scaleY(0.7); } 30% { opacity: 0.85; } 100% { opacity: 0; transform: translateY(-10px) scaleY(1.1); } }
+@keyframes js-fx-spin { 0%, 70% { transform: rotate(0); } 92%, 100% { transform: rotate(360deg); } }
+@keyframes js-fx-swish { 0%, 72% { opacity: 0; } 82% { opacity: 0.7; } 95%, 100% { opacity: 0; } }
+@keyframes js-fx-glint { 0%, 70% { transform: translateX(-60px); opacity: 0; } 75% { opacity: 0.35; } 95% { opacity: 0.35; } 100% { transform: translateX(170px); opacity: 0; } }

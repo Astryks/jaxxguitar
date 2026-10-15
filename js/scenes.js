@@ -263,13 +263,20 @@ const LEGENDS = {
   },
 };
 
+const star4 = (x, y, r = 6) => `<path d="M${x} ${y - r} l${r * 0.28} ${r * 0.72} ${r * 0.72} ${r * 0.28} -${r * 0.72} ${r * 0.28} -${r * 0.28} ${r * 0.72} -${r * 0.28} -${r * 0.72} -${r * 0.72} -${r * 0.28} ${r * 0.72} -${r * 0.28}z"/>`;
+// Tiny extras on two guitars: reflector twinkles and a glint of light.
+const LEGEND_FX = {
+  frankenstrat: `<g class="js-fx-shimmer" fill="#fff">${[[168, 214], [236, 176], [178, 150], [226, 222]].map(([x, y]) => star4(x, y, 5)).join("")}</g>`,
+  redspecial: `<defs><clipPath id="js-rs-clip"><path d="${BODY.red}"/></clipPath></defs><g clip-path="url(#js-rs-clip)"><rect class="js-fx-glint" x="120" y="100" width="18" height="160" fill="#fff" opacity="0.35" transform="rotate(20 129 180)"/></g>`,
+};
+
 // A guitar on a museum stand under a spotlight, with a little plaque.
 function legend(id) {
   const g = LEGENDS[id];
   return `<rect width="400" height="240" fill="url(#js-gallery)"/>
     <path d="M140 0 L260 0 L340 236 L60 236 Z" fill="url(#js-spot)"/>
     <rect x="0" y="226" width="400" height="14" fill="#2a2230"/><ellipse cx="200" cy="232" rx="90" ry="6" fill="#000" opacity="0.35"/>
-    <g class="js-legend">${g.draw()}</g>
+    <g class="js-legend">${g.draw()}${LEGEND_FX[id] || ""}</g>
     <path d="M168 236 L186 200 M232 236 L214 200 M186 200 h28" stroke="#2a2a30" stroke-width="4" stroke-linecap="round" fill="none"/>
     <g filter="url(#js-vol)"><rect x="268" y="174" width="124" height="46" rx="4" fill="#f4ecd8"/></g>
     <text x="330" y="193" class="js-plaque-t" text-anchor="middle" textLength="${Math.min(112, g.name.length * 6.2)}">${g.name}</text><text x="330" y="209" class="js-plaque" text-anchor="middle">${g.who} · ${g.year}</text>`;
@@ -566,9 +573,71 @@ function nextHomeGuitar() {
   return dealFrom(Object.keys(LEGENDS), "jg_home_guitar_deck");
 }
 
+
+// ---- Legend tributes (fun-animations): silhouettes and guitars only, no
+// faces and no names. Each loop is calm, with one quick (< 1 s) move.
+const SIL = "#120d1f";
+// A small single-cut guitar silhouette, centred on (0,0), about 90 long.
+const miniLp = (fill, edge = "none") => `<g transform="scale(0.36) translate(-200 -150)"><path d="${BODY.lp}" fill="${fill}" stroke="${edge}" stroke-width="5"/><rect x="193" y="20" width="14" height="110" fill="${fill}" stroke="${edge}" stroke-width="3"/><path d="M193 22 L186 0 L214 0 L207 22 Z" fill="${fill}"/></g>`;
+const miniSemi = (fill, edge) => `<g transform="scale(0.36) translate(-200 -150)"><path d="${BODY.semi}" fill="${fill}" stroke="${edge}" stroke-width="5"/><path d="M178 150 q-6 12 0 24 M222 150 q6 12 0 24" stroke="${edge}" stroke-width="4" fill="none"/><rect x="193" y="20" width="14" height="104" fill="${fill}"/><path d="M193 22 L188 0 L212 0 L207 22 Z" fill="${fill}"/></g>`;
+
+// A top-hatted shredder under sweeping stage lights.
+function tophat() {
+  return `<rect width="400" height="240" fill="url(#js-stage)"/>
+    <g class="js-th-beam js-th-beam-l"><path d="M70 -10 L40 240 L150 240 Z" fill="url(#js-beam)" opacity="0.5"/></g>
+    <g class="js-th-beam js-th-beam-r"><path d="M330 -10 L250 240 L360 240 Z" fill="url(#js-beam)" opacity="0.5"/></g>
+    <rect x="0" y="214" width="400" height="26" fill="#0b0814"/>
+    <g fill="${SIL}" class="js-th-man">
+      <path d="M186 214 L192 160 L202 160 L200 214 Z M206 214 L206 160 L216 160 L222 214 Z"/>
+      <path d="M184 166 C182 140 186 116 200 112 C214 116 220 140 218 166 Z"/>
+      <circle cx="201" cy="100" r="13"/>
+      <path d="M186 92 C188 104 184 116 178 124 C188 120 192 112 192 100 Z M216 92 C214 104 218 116 224 124 C214 120 210 112 210 100 Z"/>
+      <rect x="181" y="86" width="40" height="5" rx="2"/><rect x="189" y="58" width="24" height="30" rx="2"/>
+      <g class="js-th-neck"><path d="M190 124 L168 150" stroke="${SIL}" stroke-width="9" stroke-linecap="round"/></g>
+      <g transform="translate(202 150) rotate(-62)">${miniLp(SIL, "#ffb85c")}</g>
+      <g class="js-th-arm"><path d="M212 124 L222 146 L208 156" stroke="${SIL}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g>
+    </g>
+    <g class="js-th-spark" fill="#fff3b8">${star4(150, 120)}${star4(256, 96, 5)}${star4(236, 176, 4)}</g>
+    ${notes}`;
+}
+
+// A bluesman's tea break: a black, cream-bound semi-hollow rests on its
+// stand while its player sips from a steaming cup.
+function teabreak() {
+  return `<rect width="400" height="240" fill="url(#js-gallery)"/>
+    <path d="M150 0 L250 0 L320 236 L80 236 Z" fill="url(#js-spot)"/>
+    <rect x="0" y="222" width="400" height="18" fill="#2a2230"/>
+    <g fill="${SIL}">
+      <path d="M118 222 l6 -52 h40 l6 52 h-6 l-5 -44 h-30 l-5 44 Z"/><rect x="118" y="164" width="52" height="8" rx="3"/>
+      <path d="M128 168 C124 132 128 104 146 98 C164 104 168 132 162 168 Z"/>
+      <circle cx="146" cy="84" r="14"/><path d="M128 74 q18 -14 36 0 l4 6 h-44 Z"/>
+      <path d="M152 168 L178 172 L182 222 L172 222 L168 182 L148 180 Z"/>
+      <g class="js-tb-arm"><path d="M156 112 L178 128 L172 102" stroke="${SIL}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <g transform="translate(172 98)"><path d="M-8 -12 h16 l-2 14 h-12 Z" fill="#f4efe2"/><path d="M8 -9 q7 1 5 7 q-2 4 -6 2" stroke="#f4efe2" stroke-width="2" fill="none"/>
+          <g class="js-tb-steam" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.8"><path d="M-3 -16 q-4 -6 0 -12 q4 -6 0 -12"/><path d="M3 -16 q-4 -6 0 -12 q4 -6 0 -12"/></g></g></g>
+    </g>
+    <path d="M240 222 L256 196 M284 222 L268 196" stroke="#3a3346" stroke-width="4" stroke-linecap="round"/>
+    <g class="js-tb-guitar" transform="translate(262 150) rotate(8)">${miniSemi("#151418", "#f4efe2")}</g>
+    <g class="js-tb-notes"><text x="230" y="70">♪</text><text x="300" y="54">♫</text></g>`;
+}
+
+// A guitar flipped round on its strap: one quick spin, then back to playing.
+function strapspin() {
+  return `<rect width="400" height="240" fill="url(#js-stage)"/>
+    <ellipse cx="200" cy="214" rx="120" ry="14" fill="#fff" opacity="0.06"/><rect x="0" y="216" width="400" height="24" fill="#0b0814"/>
+    <g fill="${SIL}">
+      <path d="M186 216 L190 160 L200 160 L198 216 Z M204 216 L204 160 L214 160 L218 216 Z"/>
+      <path d="M182 166 C180 140 186 116 200 112 C214 116 220 140 218 166 Z"/><circle cx="200" cy="98" r="14"/>
+    </g>
+    <path d="M186 118 Q200 150 216 158" stroke="#ff7a59" stroke-width="2.4" fill="none"/>
+    <g transform="translate(200 158)"><g class="js-ss-guitar"><g transform="rotate(-70)">${miniLp("#d32a2f", "#f7f4ee")}</g></g></g>
+    <g class="js-ss-swish" stroke="#fff3b8" stroke-width="2" fill="none" stroke-linecap="round"><path d="M150 140 a52 52 0 0 1 100 -10"/><path d="M252 176 a52 52 0 0 1 -100 10"/></g>
+    ${notes}`;
+}
+
 const PUPPY = ["show", "bonejam", "xmas", "water", "rain", "drive"];
 const SCENES = { boombox, cassette, walkman, strings, metal };
-Object.assign(SCENES, { cliff, concert });
+Object.assign(SCENES, { cliff, concert, tophat, teabreak, strapspin });
 for (const id of Object.keys(LEGENDS)) SCENES[`legend-${id}`] = () => legend(id);
 
 function sceneSvg(name, { label = "Jaxx Guitar" } = {}) {
@@ -595,7 +664,7 @@ function dealFrom(all, key) {
 }
 
 // Mostly music things and legends; the puppy turns up about one card in six.
-const ORDER = ["boombox", "legend-hendrix", "cassette", "strings", "legend-redspecial", "walkman", "show", "legend-frankenstrat", "concert", "legend-trigger", "legend-lucille", "bonejam", "legend-elvis", "legend-log", "cliff", "legend-cobain", "xmas", "metal", "legend-rhoads"];
+const ORDER = ["boombox", "legend-hendrix", "cassette", "strings", "legend-redspecial", "walkman", "show", "legend-frankenstrat", "concert", "legend-trigger", "legend-lucille", "bonejam", "legend-elvis", "legend-log", "cliff", "legend-cobain", "xmas", "metal", "legend-rhoads", "tophat", "teabreak", "strapspin"];
 // The deck: every scene once (the puppy ones count as one slot each time).
 const DECK = [...new Set(ORDER)];
 function pickScene(topic = "") {
@@ -606,7 +675,7 @@ function pickScene(topic = "") {
   if (/van halen|frankenstrat/i.test(topic)) return "legend-frankenstrat";
   if (/les paul|the log/i.test(topic)) return "legend-log";
   if (/elvis/i.test(topic)) return "legend-elvis";
-  if (/b\.?\s?b\.? king|lucille|blues/i.test(topic)) return "legend-lucille";
+  if (/b\.?\s?b\.? king|lucille|blues/i.test(topic)) return Math.random() < 0.5 ? "teabreak" : "legend-lucille";
   if (/willie|trigger|country/i.test(topic)) return "legend-trigger";
   if (/grunge|nirvana|cobain/i.test(topic)) return "legend-cobain";
   if (/november rain|slash|solo/i.test(topic)) return "cliff";
