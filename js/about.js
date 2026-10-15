@@ -7,7 +7,7 @@ function renderAbout(panel) {
     <div class="jg-card">
       <div class="jg-hero-mascot">${puppySvg("wave")}</div>
       <h2 style="margin:4px 0">About Jaxx Guitar</h2>
-      <p>Hi, I'm <strong>Jaxx</strong>, a beagle puppy who loves guitars. I'll be with you in every lesson!</p>
+      <p>Learn on the iconic guitars of the legends, from your first chord to full songs.</p>
       <p>Jaxx Guitar is a free guitar course. No account, no ads, no tracking: your progress is saved on this device only.</p>
       <h3>Settings</h3>
       <p>${leftyToggleHtml()}</p>

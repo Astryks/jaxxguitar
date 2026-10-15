@@ -1,6 +1,6 @@
 # Jaxx Guitar
 
-> Free guitar lessons with Jaxx the beagle: 65+ lessons, 270 songs, a mic tuner and play-along fretboard. No ads, no account, ever.
+> Free guitar lessons inspired by the iconic guitars of the legends: 65+ lessons, 270 songs, a mic tuner and play-along fretboard. No ads, no account, ever.
 
 Jaxx Guitar ("Jaxx Guitar: Free Lessons" on the App Store, app ID 6819445036) is a free guitar learning app for iPhone and iPad, also playable in a web browser at https://jaxxguitar.com/. It is made by Astryks. It has no ads, no account and no paywall; the only purchase is an optional tip jar that unlocks nothing. Song pages give the key and chord names only, never lyrics.
 

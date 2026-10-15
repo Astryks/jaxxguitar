@@ -56,6 +56,6 @@ Freely licensed images from Wikimedia Commons, resized to small WebP portraits (
 
 Some lessons link to YouTube videos (mostly from the artists' or labels' official channels). They're embedded click-to-load from youtube-nocookie.com and aren't redistributed by this app.
 
-## Mascot
+## Artwork
 
-Jaxx the kitten artwork was supplied by the project owner (`assets/mascot/`).
+Card artwork was supplied by the project owner (`assets/mascot/`).

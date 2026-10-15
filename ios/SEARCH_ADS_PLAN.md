@@ -280,7 +280,7 @@ or copyrighted tabs.
 6. **"Strumming without a pick"**: from the teacher videos lesson.
 7. **"The legendary guitar built by a father and son"**: a fun-fact
    short from the legendary guitars cards.
-8. **"Jaxx the beagle reacts"**: Jaxx's celebration after a streak.
+8. **"Streak celebration"**: the celebration after a streak.
 
 Every caption ends with "Free on the App Store and at jaxxguitar.com".
 Hashtags: #learnguitar #guitarlessons #guitarforbeginners #guitarchords

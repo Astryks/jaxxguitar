@@ -1,4 +1,4 @@
-// Jaxx the puppy: a beagle pup (tan head and long ears, white blaze and
+// Character art (SVG): tan head and long ears, white blaze and
 // chest, black saddle) with a red (gold for supporters: html.jg-supporter)
 // bandana and his own little guitar, drawn in SVG so he stays crisp and
 // can move. He drives a little red pickup truck.
@@ -294,7 +294,7 @@ function scene(pose) {
     ${show ? '<g class="jp-show-sparkles jp-sparkles"><path d="M300 70l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/><path d="M384 108l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></g>' : ""}`;
 }
 
-function puppySvg(pose = "idle", { label = "Jaxx the puppy" } = {}) {
+function puppySvg(pose = "idle", { label = "Jaxx Guitar" } = {}) {
   if (!POSES.includes(pose)) pose = "idle";
   if (TRUCK.has(pose)) {
     return `<svg class="jp-puppy jp-scene jp-${pose}" viewBox="0 0 400 240" role="img" aria-label="${label}">${DEFS}${scene(pose)}</svg>`;

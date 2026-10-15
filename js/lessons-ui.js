@@ -42,7 +42,7 @@ const MASCOT_BY_LESSON = {
 };
 const POSE_OF = {"happy-guitar": "idle", "strumming": "play", "playing-guitar": "play", "running-guitar": "rockout", "juggling-picks": "cheer", "singing-mic": "sing", "singing-stage": "sing", "tangled-strings": "tangled", "quill-scroll": "think", "map-glasses": "think", "music-scrolls": "think", "sheet-music-jump": "jump", "keyhole": "think", "wrenches": "think", "top-hat-shelf": "idle", "cello": "play", "big-pen": "think", "painter": "idle", "sleeping-guitar": "sleep", "sleep-in-hat": "sleep", "teacup-books": "idle", "trumpet": "sing", "chef": "fish"};
 // Jaxx is drawn live (js/puppy.js); the old picture names pick a pose.
-function mascot(name, alt = "Jaxx the puppy", extra = "") {
+function mascot(name, alt = "Jaxx Guitar", extra = "") {
   return `<div class="jg-avatar ${extra}">${puppySvg(POSE_OF[name] || "idle", { label: alt })}</div>`;
 }
 
@@ -379,7 +379,7 @@ function openLesson(id, pageIndex = 0) {
 
 function finishScreen(lesson, nxt) {
   panelEl.innerHTML = `
-    <div class="jg-say"><div class="jg-avatar jg-mascot-celebrate">${puppySvg(nextTrick("yay"), { label: "Jaxx celebrating" })}</div><div class="jg-bubble">
+    <div class="jg-say"><div class="jg-avatar jg-mascot-celebrate">${puppySvg(nextTrick("yay"), { label: "Celebration" })}</div><div class="jg-bubble">
       <h3>Lesson complete: ${esc(lesson.title)}</h3>
       <p>Nice work! ${lesson.song ? "Song added to your learned list." : ""}</p>
       <div class="jg-row">

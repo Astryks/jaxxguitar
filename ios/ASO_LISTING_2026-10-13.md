@@ -2,11 +2,11 @@
 
 ## Promotional text (129/170 chars)
 
-Free guitar lessons with Jaxx the beagle: 65+ lessons, 270 songs, a mic tuner and play-along fretboard. No ads, no account, ever.
+Free guitar lessons inspired by the iconic guitars of the legends: 65+ lessons, 270 songs, a mic tuner and play-along fretboard. No ads, no account, ever.
 
 ## Description (1695/4000 chars)
 
-Learn guitar for free with Jaxx the beagle, from your very first chord to full songs.
+Learn guitar for free, from your very first chord to full songs.
 65+ guided lessons, 270 songs with chord diagrams, and a built-in mic tuner, all in one app.
 No ads. No account. No paywall. Just pick up your acoustic or electric guitar and play.
 
@@ -83,7 +83,7 @@ More at jaxxguitar.com
 ## No-cost ways to get the first users
 - Post a short video of Jaxx's Wait for me mode in r/guitarlessons, r/Guitar and r/LearnGuitar weekly threads (follow each sub's self-promo rules).
 - Pitch 'free, no ads, no account' to guitar YouTubers and TikTokers who review learning apps. Offer them a TestFlight build now.
-- Make TikTok/Reels/Shorts with Jaxx the beagle: 'learn this chord in 15s' and left-handed mode demos. Lefty players are an underserved niche.
+- Make TikTok/Reels/Shorts featuring legendary guitars: 'learn this chord in 15s' and left-handed mode demos. Lefty players are an underserved niche.
 - Post in left-handed guitar forums and Facebook groups. Left-handed mode is a real differentiator.
 - Add a free chords page for each of the 270 songs at jaxxguitar.com for SEO, each linking to the App Store.
 - Share it with guitar teachers as a free homework tool, and email local music schools.

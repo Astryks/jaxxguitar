@@ -79,7 +79,7 @@ WHAT YOU GET, ALL FREE
 - Chord Ear Gym, a metronome, streaks, a 2-minute daily review and fun facts
 
 MEET JAXX
-Jaxx the beagle is your guide, cheering you on through every lesson so practice feels like a game, not homework.
+Every lesson is built around the iconic guitars of the legends, so practice feels like a game, not homework.
 
 MADE FOR YOUR REAL GUITAR
 Acoustic, electric or classical: Jaxx Guitar shows you what to play, and the real practice happens on your own guitar. The microphone is optional and is only used to hear your strings. Sound is analysed on your device and never recorded or sent.
@@ -100,7 +100,7 @@ Also on the web at jaxxguitar.com.
 ## What's New (version 1.0)
 
 ```
-Welcome to Jaxx Guitar! Learn guitar free with 65+ lessons and 270 songs with whole-song chords and the easiest capo. Tune up with the mic tuner, follow falling notes on a fretboard, try left-handed mode, and meet Jaxx the beagle. No ads, no account.
+Welcome to Jaxx Guitar! Learn guitar free with 65+ lessons and 270 songs with whole-song chords and the easiest capo. Tune up with the mic tuner, follow falling notes on a fretboard, try left-handed mode, and play along on the iconic guitars of the legends. No ads, no account.
 ```
 [250] (Apple doesn't show What's New for a first release, but the field
 is kept ready for 1.0.1 onwards; replace it with the real changes then.)

@@ -34,7 +34,7 @@ function sceneSvg(tier) {
   const notes = tier !== "small" ? `<g class="jg-ty-notes"><text x="44" y="150">♪</text><text x="236" y="120">♫</text><text x="30" y="96">♫</text><text x="250" y="190">♪</text></g>` : "";
   const spot = tier === "large" ? `<g class="jg-ty-spot"><path d="M126 -10 L174 -10 L268 250 Q150 272 32 250 Z" fill="url(#jg-ty-beam)"/><ellipse cx="150" cy="246" rx="120" ry="20" fill="url(#jg-ty-pool)"/></g>` : "";
   const sparkles = `<g class="jg-ty-sparkles"><path d="M70 50 l2.2 5.4 5.4 2.2 -5.4 2.2 -2.2 5.4 -2.2 -5.4 -5.4 -2.2 5.4 -2.2 z"/><path d="M226 40 l1.8 4.4 4.4 1.8 -4.4 1.8 -1.8 4.4 -1.8 -4.4 -4.4 -1.8 4.4 -1.8 z"/><path d="M240 92 l1.4 3.4 3.4 1.4 -3.4 1.4 -1.4 3.4 -1.4 -3.4 -3.4 -1.4 3.4 -1.4 z"/></g>`;
-  return `<svg class="jp-puppy jg-ty-svg" viewBox="15 18 270 243" role="img" aria-label="Jaxx strums his guitar and a warm heart floats out of the sound hole">
+  return `<svg class="jp-puppy jg-ty-svg" viewBox="15 18 270 243" role="img" aria-label="A guitar strums and a warm heart floats out of the sound hole">
     <defs>
       <radialGradient id="jg-ty-hole-gr" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fffbe0"/><stop offset="0.55" stop-color="#ffd36b"/><stop offset="1" stop-color="#f29a3c"/></radialGradient>
       <radialGradient id="jg-ty-heart-gr" cx="36%" cy="30%" r="80%"><stop offset="0" stop-color="#ffb8c2"/><stop offset="0.45" stop-color="#f0566c"/><stop offset="1" stop-color="#b8243c"/></radialGradient>

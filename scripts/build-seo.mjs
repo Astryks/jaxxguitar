@@ -18,8 +18,8 @@ const C = isGuitar ? {
   name: "Jaxx Guitar", store: "Jaxx Guitar: Free Lessons", id: "6819445036", site: "https://jaxxguitar.com",
   inst: "guitar", accent: "#b85c1e", bg: "#fbf4ea", image: "https://jaxxguitar.com/assets/og-image.jpg",
   icon: "https://jaxxguitar.com/assets/icons/icon-512.png", sibling: { name: "Hayden Keys", url: "https://haydenkeys.com", what: "piano" },
-  tagline: "Free guitar lessons with Jaxx the beagle: 65+ lessons, 270 songs, a mic tuner and play-along fretboard. No ads, no account, ever.",
-  lead: "Learn guitar for free with Jaxx the beagle, from your very first chord to full songs. 65+ guided lessons, 270 songs with chord diagrams, and a built-in mic tuner, all in one app. No ads. No account. No paywall.",
+  tagline: "Free guitar lessons inspired by the iconic guitars of the legends: 65+ lessons, 270 songs, a mic tuner and play-along fretboard. No ads, no account, ever.",
+  lead: "Learn guitar for free, from your very first chord to full songs. 65+ guided lessons, 270 songs with chord diagrams, and a built-in mic tuner, all in one app. No ads. No account. No paywall.",
   features: [
     ["Learn step by step", "65+ lessons that take you from the basics to barre chords and solos, teacher videos that show what your hands should do, daily review and streaks."],
     ["Play 270 songs", "Chord diagrams for every song, capo and key info, solo cards for lead parts, and upload any song to get its chords, worked out on your device."],

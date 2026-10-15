@@ -10,7 +10,7 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 
 **Jaxx Guitar**, repo https://github.com/Astryks/jaxxguitar, site https://jaxxguitar.com, bundle `com.jaxxguitar.app` (App Store Connect app ID 6819445036). Sibling app: Hayden Keys (https://github.com/Astryks/haydenkeys).
 
-**What's done (full history below):** pre-lessons (get a guitar → electric gear → tune it with the string tuner), Lesson 1 / Strumming / Changing chords as simple chat cards, all the curriculum in the table below, Jaxx the beagle puppy plus music scenes and legendary guitars (the home card shows the November Rain cliff scene), Tip jar with a donor thank-you, teacher and inspiration videos, falling-notes fretboard with Listen / Wait for me / Play in time, upload a song → chords, Guess the song (ShazamKit), Netflix-style song library (270 songs, incl. a new **Metal** row and International / Karaoke anthems) with album art, Main part / Whole song and the official YouTube video, How it works page, Astryks credit, App Store screenshots and listing text.
+**What's done (full history below):** pre-lessons (get a guitar → electric gear → tune it with the string tuner), Lesson 1 / Strumming / Changing chords as simple chat cards, all the curriculum in the table below, music scenes and legendary guitars (the home card shows the November Rain cliff scene), Tip jar with a donor thank-you, teacher and inspiration videos, falling-notes fretboard with Listen / Wait for me / Play in time, upload a song → chords, Guess the song (ShazamKit), Netflix-style song library (270 songs, incl. a new **Metal** row and International / Karaoke anthems) with album art, Main part / Whole song and the official YouTube video, How it works page, Astryks credit, App Store screenshots and listing text.
 
 **Latest build:** 23. **Resubmitted to App Review 2026-10-13 10:09 AM AEDT** as one submission: iOS 1.0 build 23 plus the three tips (Thank you, Bravo, Encore); status Waiting for Review. Earlier build 20 submission was withdrawn to apply the new listing. Release is manual. App ID 6819445036.
 
@@ -104,9 +104,9 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
 | ✅ | Celebration = tiny musical notes falling from the sky | `app.js` `confetti()` |
 | ✅ | Home: one step at a time (welcome box, then a fun fact with a single Start lesson button); no 1-5-6-4 jargon | |
 | ✅ | Open chords vs barre chords, and the baby F (plus Fmaj7) early in Beginner | `lesson-open-barre` |
-| ✅ | Mascot: Jaxx the beagle puppy (was a kitten), shown on about 1 card in 6; music scenes and legendary guitars on the rest | `assets/mascot/*.webp` (23 poses) |
-| ✅ | Animated mascots: sways while talking, bops while music plays, hops on celebrate, wiggles on fun facts | CSS, respects reduced-motion |
-| ✅ | App icon from the mascot | `assets/icons/`, iOS AppIcon |
+| ✅ | Card art: music scenes and legendary guitars | `assets/mascot/*.webp` (23 poses) |
+| ✅ | Animated card art: sways while talking, bops while music plays, hops on celebrate, wiggles on fun facts | CSS, respects reduced-motion |
+| ✅ | App icon | `assets/icons/`, iOS AppIcon |
 | ✅ | Not locked to landscape; works in portrait (the fretboard scrolls sideways); dismissible rotate tip | |
 | ✅ | No iOS text inflation, no stuck zoom; sound plays with the ringer switch on silent | |
 | ✅ | **Photos of every person mentioned** (Brian May, Les Paul, Hendrix, Segovia…) | 18 freely licensed Wikimedia Commons photos in `assets/people/`, author and licence under each one and in THIRD_PARTY_NOTICES. No free photo exists for Leo Fender or Gabby Pahinui; the Nino Rota image was skipped because its source was unclear. |
@@ -296,19 +296,19 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 **Notes for the other engineer (files I didn't edit):** the songs data changed under me while I worked (Shallow, Zombie, Someone Like You etc. now have slash/7th chords), so the lesson song picks are validated at runtime. Creep appears twice in SONGS (Alternative Rock and Alternative/Rock). Wait for me in `guitar-player.js` still matches a chord by "any one note of it"; it could use `startChordListening()` / `matchChord()` from `js/chord-detect.js` for real chord recognition.
 
 
-## 2026-10-07 (late): song re-check, solos, beagle, music scenes
+## 2026-10-07 (late): song re-check, solos, music scenes
 
 **Song data (shared with Hayden Keys, `js/song-verified.js`):** all songs re-researched against the original recordings (key at concert pitch, tuning, tempo, every section incl. every guitar solo with the chords underneath), applied on top of songs-data.js. 8 already right, 204 corrected, 59 "our best guide". Whole song now loops each section's chords for its real length at the record's tempo (new `js/song-map.js`; "real speed" tempo pill), tuned-down songs show "tune down a half step" and use the right shapes, power chords (E5) parse as root + fifth, colour chords the fretboard can't draw are simplified. New song: Something Just Like This (The Chainsmokers & Coldplay). Duplicate Creep entry removed.
 
 **Guitar solos:** every song with a solo shows a "The guitar solo" card: the chords under it, the scale/position to use, tips, and two of our own practice licks in that scale (tab + play button, `js/solo-licks.js`; no copied lead lines).
 
-**Mascot: Jaxx is a beagle puppy** (tan head, long ears, white blaze, black saddle, red bandana) who drives a red pickup truck (`js/puppy.js`, `css/puppy.css`): the logo is Jaxx in the truck bed, the splash is his show (hops out of the truck, tricks, plays, hops back in). Drawn with 3D lighting (SVG light filters), fur texture and a realistic truck.
+**Identity: Jaxx Guitar has no animal or mascot; its identity is iconic guitars from legends.** Legacy character art lives in `js/puppy.js` and `css/puppy.css`: the logo is Jaxx in the truck bed, the splash is his show (hops out of the truck, tricks, plays, hops back in). Drawn with 3D lighting (SVG light filters), fur texture and a realistic truck.
 
 **Card animations (`js/scenes.js`, `css/scenes.css`):** one animation per card, dealt from a shuffled deck so none repeats until all have shown (remembered in localStorage):
 - Music things: boombox (speakers thump, EQ dances), cassette ("Jaxx's mixtape", reels turn), Walkman-style player with headphones, electric-strings close-up (a pick strums, strings shimmer), a rock concert (lights sweep, band rocks, crowd bounces, confetti), kid-friendly metal stage (amp stack, fog, lightning, Randy Rhoads' polka-dot V).
 - Legendary guitars on a museum stand with a fact caption: Hendrix's Woodstock Strat, Brian May's Red Special, Van Halen's Frankenstrat, Willie Nelson's Trigger, B.B. King's Lucille, Elvis's leather-covered acoustic, Kurt Cobain's Mustang, Les Paul's The Log, Randy Rhoads' polka-dot V. Facts checked on Wikipedia; museum locations we couldn't confirm are left off the plaque.
 - Slash's November Rain solo, kid-friendly: a top-hatted guitarist by a lone white church in the New Mexico desert. (The "threw his Les Paul off a cliff" story is a myth; the church was real and moved there for the video.)
-- The beagle appears in about 1 card in 6. Lessons about metal get the metal stage; lessons naming a legend get that guitar.
+- Lessons about metal get the metal stage; lessons naming a legend get that guitar.
 
 **App icon:** Jaxx in his truck (all web sizes + iOS AppIcon).
 
@@ -319,7 +319,7 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 ## 2026-10-07 (night): guitar logo, guitar of the day, real proportions
 - **Logo and app icon:** a Les Paul-style single-cut in the honey-amber flame-top finish made famous by Slash, with gold notes (`guitarLogo()` in js/scenes.js; no brand logo), in the header, on the splash and as the app icon.
 - **Home stage:** a different legendary guitar on every visit (dealt so none repeats until all have shown): it drops onto its museum stand with a spin and sparkles, then sways under the spotlight, with its fact underneath.
-- **Real proportions:** Jaxx is a ~30 cm beagle pup next to a ~4.8 m pickup: in the truck bed you see his head and ears over the side; at the wheel, his head in the window; the tennis ball is tennis-ball sized.
+- **Real proportions:** the character art is drawn to scale next to a ~4.8 m pickup: in the truck bed you see his head and ears over the side; at the wheel, his head in the window; the tennis ball is tennis-ball sized.
 - **Second chord check:** see Hayden Keys STATUS (shared song data); Fade to Black's intro/outro moved to B minor.
 - **TestFlight:** build 19 uploaded 2026-10-07.
 
@@ -360,8 +360,8 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **Left for the owner:** screenshots (`ios/screenshots/app-store-v2/`) and IAP review screenshots; App Review contact; Content Rights; Publish App Privacy; Paid Applications Agreement, tax and banking; select build 20; Add for Review with the tips; submit when ready.
 - **SEO:** title, description, Open Graph, structured data, Smart App Banner (6819445036), `robots.txt`, `sitemap.xml`; Search Ads plan in `ios/SEARCH_ADS_PLAN.md`.
 - **Donor thank-you** (`js/thanks.js`): after a tip, Jaxx strums once, the sound hole glows and a warm heart floats out, his ears lift and tail wags, with three plucked notes. Bravo adds notes; Encore adds a spotlight, a bow with a paw on his chest, and confetti. Supporters get a gold heart by the logo, a gold bandana everywhere, and "Replay thank you".
-- **Home screen:** no dog on the home card any more; it shows the November Rain cliff moment instead (redrawn `cliff()`: a top-hatted guitarist with a honey-amber Les Paul on a desert cliff at sunset, the white church far behind; one big string bend, then wind in the hair and coat). The legendary guitar of the day stays above it.
-- **Fixed:** the first card in each library row was clipped by snap scrolling; the puppy art now mounts one shared SVG defs copy so it can't lose its colours when the header is hidden.
+- **Home screen:** the home card shows the November Rain cliff moment instead (redrawn `cliff()`: a top-hatted guitarist with a honey-amber Les Paul on a desert cliff at sunset, the white church far behind; one big string bend, then wind in the hair and coat). The legendary guitar of the day stays above it.
+- **Fixed:** the first card in each library row was clipped by snap scrolling; the card art now mounts one shared SVG defs copy so it can't lose its colours when the header is hidden.
 - **Screenshots:** `ios/screenshots/app-store-v2/` (6 iPhone 6.9", 6 iPad 13"); Tip jar review screenshot in `ios/screenshots/review/tip-jar.png`.
 - **Tested (final):** all 270 library songs open, autoplay, Whole song and Main part all play: 0 problems. All lessons (387 cards/pages) stepped Next/Back/Close with sound checks: 0 errors, 0 broken buttons, no sound left playing. Every scene renders.
 - **TestFlight:** build 20 (tip jar, thank-you, cliff home, videos) archived 2026-10-07; upload waits for the owner to sign in to Xcode again (Settings > Accounts), then run the export step.

@@ -302,7 +302,7 @@
 }
 .jp-puppy .jp-brow { opacity: 0.4; stroke-width: 2.4; } .jp-puppy .jp-eye { stroke-width: 1; }
 
-/* ===== Beagle coat ===== */
+/* ===== Coat colours ===== */
 .jp-puppy .jp-white { fill: url(#jp-gr-white); }
 .jp-puppy .jp-black { fill: url(#jp-gr-black); }
 .jp-puppy .jp-tail { stroke: #b3712f; stroke-width: 13; }
@@ -312,7 +312,7 @@
 .jp-puppy .jp-chest, .jp-puppy .jp-blaze, .jp-puppy .jp-snout { display: none; }
 .jp-puppy .jp-toe { stroke: #b9ab98; }
 
-/* ===== v4: real proportions next to the truck (a ~30 cm beagle pup, a ~4.8 m pickup) ===== */
+/* ===== v4: real proportions next to the truck (a small character next to a ~4.8 m pickup) ===== */
 .jp-scene .jp-actor { transform: translate(250px, 99px) scale(0.17); }
 .jp-scene .jp-actor.jp-at-wheel { transform: translate(144px, 91px) scale(0.14); }
 @keyframes jp-hop-out-in {
