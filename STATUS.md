@@ -438,3 +438,4 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - Tested: all 43 lessons stepped through (230 steps), 0 page errors.
 - **iOS build 26** uploaded to TestFlight 2026-10-15 with these changes.
 - **Teacher videos (owner rule: over 1M views)**: Lesson 1 "How to play chords in the key of G (G, C, D, Em)" (Worship Tutorials, 2.2M); holding the guitar (JustinGuitar, 1.8M); strumming without a pick (JustinGuitar, 2.4M); beginner strumming patterns (Marty Music, 2.1M); changing chords (Andy Guitar, 1.1M); barre chords (swiftlessons, 3.9M); tuning (Fender, 1.0M). Capo video removed (none over 1M).
+- **iOS build 27** uploaded to TestFlight 2026-10-15 (everything above).
