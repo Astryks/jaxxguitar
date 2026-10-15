@@ -11,7 +11,6 @@ const TEACH = {
   "lesson-changes": ["teach-changing"],
   "lesson-open-barre": ["teach-barre"],
   "lesson-barre": ["teach-barre"],
-  "lesson-capo": ["teach-capo"],
 };
 
 // "Watch a teacher" block for a lesson's first card/page, or "".

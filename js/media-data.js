@@ -201,16 +201,13 @@ const PEOPLE = {
  }
 };
 const VIDEOS = {
- "teach-hold": {"id": "C-mt8td1teU", "title": "Holding the Guitar with Your Fretting Hand? | Guitar for Beginners", "author_name": "JustinGuitar", "kind": "teacher"},
- "teach-four-chords": {"id": "tw09AanVXQo", "title": "Easy Guitar Chords - G, C, D, Em - Beginner Lesson", "author_name": "Jackson Emmer", "kind": "teacher"},
- "teach-first-chords": {"id": "jcGSBDZKbFw", "title": "Three Easy and Popular Chords to Get You Playing Songs (G, C, D)  | Beginner Guitar Tips", "author_name": "Guitar Center", "kind": "teacher"},
- "teach-changing": {"id": "xSFHgeJUuIs", "title": "Want Fast & Perfect Chord Changes on Guitar?", "author_name": "JustinGuitar", "kind": "teacher"},
- "teach-finger-strum": {"id": "0YIY52OW5Do", "title": "How to Strum With and Without a Pick", "author_name": "Andy Guitar", "kind": "teacher"},
- "teach-strum-patterns": {"id": "6LmQCdt_ZhQ", "title": "The Most Common Strumming Pattern of All Time! Guitar for Beginners", "author_name": "JustinGuitar", "kind": "teacher"},
- "teach-barre": {"id": "rb0rNvUw46I", "title": "F BARRE CHORD GUITAR  - TOP 5 TIPS!", "author_name": "Andy Guitar", "kind": "teacher"},
- "teach-capo": {"id": "KjU-ga47lXI", "title": "Using a Capo | Beginner Guitar Tips", "author_name": "Guitar Center", "kind": "teacher"},
+ "teach-hold": {"id": "MlV6WhM9YhE", "title": "How to (Really) Hold a Guitar When Playing", "author_name": "JustinGuitar", "kind": "teacher"},
+ "teach-four-chords": {"id": "4uwPUO7LNpY", "title": "Guitar Lesson - How to play chords in the key of G (G, C, D, Em)", "author_name": "Worship Tutorials", "kind": "teacher"},
+ "teach-changing": {"id": "VaegrntyEgk", "title": "Change Chords FASTER on Guitar for Beginners", "author_name": "Andy Guitar", "kind": "teacher"},
+ "teach-finger-strum": {"id": "j-ljksb6oIY", "title": "How to Strum a Guitar WITHOUT a Pick", "author_name": "JustinGuitar", "kind": "teacher"},
+ "teach-strum-patterns": {"id": "ely9LaJJJr4", "title": "Beginner Strumming Patterns For Acoustic Guitar Pattern 1 - Beginner Guitar Lessons", "author_name": "Marty Music", "kind": "teacher"},
+ "teach-barre": {"id": "qPJKtFi2PmQ", "title": "How to REALLY Play Bar Chords - A Beginner Guitar Tutorial", "author_name": "swiftlessons", "kind": "teacher"},
  "teach-tuning": {"id": "woGj3RsJwv8", "title": "How to Tune an Acoustic Guitar for Beginners | Fender Play | Fender", "author_name": "Fender", "kind": "teacher"},
- "teach-first-chords-em": {"id": "lqcd3jVysXY", "title": "Em chord (JustinGuitar)", "author_name": "JustinGuitar", "kind": "teacher"},
  "fairy-tale-t-ng-hu-live-v2": {"id": "bO_yuRt8pf0", "title": "MAYDAY五月天 ╳ 光良 Michael Wong [ 童話 Fairy Tale ] 5525版 Official Live Video", "author_name": "相信音樂BinMusic", "kind": "live"},
  "sunny-day-q-ng-ti-n-live-v2": {"id": "JKPVRyg01gg", "title": "【周杰倫地表最強演唱會LIVE-晴天】 Jay Chou's The Invincible Concert LIVE (Sunny Day)", "author_name": "周杰倫 Jay Chou", "kind": "live"},
  "stay-with-me-live-v2": {"id": "gczLiXqHR-8", "title": "Punch - Stay With Me (feat. EXO Chanyeol) [Yu Huiyeol's Sketchbook/2018.03.14]", "author_name": "KBS WORLD TV", "kind": "live"},
