@@ -756,7 +756,7 @@ body.jg-intro-open { overflow: hidden; }
 .jg-tip-thanks .jg-tip-icon { color: var(--jg-accent); }
 /* A soft shadow of your head under the fretboard, looking down at it. */
 .jg-viewer-wrap { display: flex; justify-content: center; margin: 6px 0; }
-.jg-viewer { width: min(360px, 94%); height: auto; overflow: visible; }
+.jg-viewer { width: min(340px, 94%); height: auto; overflow: visible; border-radius: 18px; }
 .jg-viewer-fig { fill: #3b302b; }
 .jg-viewer-arm { fill: none; stroke: #3b302b; stroke-width: 15; stroke-linecap: round; }
 .jg-viewer-neck { fill: #5b3a22; }
@@ -786,3 +786,26 @@ body.jg-intro-open { overflow: hidden; }
 .jg-strum-cell b { font-size: 18px; line-height: 1; }
 .jg-strum-cell small { font-size: 11px; color: #5d7d9b; }
 .jg-strum-gap { background: transparent; color: #b9b0a5; }
+
+/* "Looking down at your guitar" cartoon (viewerSvg). */
+.jg-viewer .vw-jacket { fill: #1f1b22; }
+.jg-viewer .vw-sleeve { fill: none; stroke: #1f1b22; stroke-linecap: round; }
+.jg-viewer .vw-trim { fill: none; stroke: #c9a24a; stroke-width: 2; stroke-dasharray: 3 5; opacity: 0.8; }
+.jg-viewer .vw-embroidery { fill: none; stroke: #c9a24a; stroke-width: 2; stroke-linecap: round; opacity: 0.85; }
+.jg-viewer .vw-hair { fill: #2a1a12; }
+.jg-viewer .vw-strand { fill: none; stroke: #4a3022; stroke-width: 2; stroke-linecap: round; }
+.jg-viewer .vw-skin { fill: #d9a07a; stroke: #b47a55; stroke-width: 1; }
+.jg-viewer .vw-finger { fill: none; stroke: #d9a07a; stroke-width: 7; stroke-linecap: round; }
+.jg-viewer .vw-side { fill: #8a5a2e; }
+.jg-viewer .vw-ring { fill: none; stroke: #6b3f1d; stroke-width: 3; }
+.jg-viewer .vw-hole { fill: #2b1a10; }
+.jg-viewer .vw-bridge { fill: #3a2414; }
+.jg-viewer .vw-board { fill: #3b2416; }
+.jg-viewer .vw-head { fill: #5b3a22; }
+.jg-viewer .vw-peg { fill: #d8c79a; }
+.jg-viewer .vw-fret { stroke: #cdbf9e; stroke-width: 1.2; }
+.jg-viewer .vw-nut { stroke: #efe6d0; stroke-width: 3; }
+.jg-viewer .vw-str { stroke: #f2ead8; }
+.jg-viewer .jg-viewer-txt { font: 600 11px system-ui, sans-serif; fill: #5a3a1f; text-anchor: middle; }
+.jg-viewer .jg-viewer-strong { font-weight: 800; fill: #3b2410; }
+.jg-card-skip { display: block; margin: 8px 0 0 auto; background: none; border: 0; color: var(--jg-muted, #777); font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; }

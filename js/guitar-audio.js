@@ -23,8 +23,17 @@ function getAudioContext() {
 if (typeof navigator !== "undefined" && navigator.audioSession) {
   try { navigator.audioSession.type = "playback"; } catch (e) { /* older Safari */ }
 }
+// A fresh audio engine, for when iOS leaves the old one "interrupted" for
+// good (back from YouTube, a call, Siri or the microphone).
+function freshAudioContext() {
+  try { ctx && ctx.close(); } catch (e) { /* ignore */ }
+  ctx = null;
+  return getAudioContext();
+}
 function unlockAudio() {
-  const c = getAudioContext();
+  let c = getAudioContext();
+  // Inside a tap, iOS lets a new engine start straight away.
+  if (c.state === "interrupted" || c.state === "closed") { c = freshAudioContext(); c.resume?.().catch(() => {}); }
   try {
     const b = c.createBuffer(1, 1, c.sampleRate);
     const s = c.createBufferSource();
@@ -32,10 +41,14 @@ function unlockAudio() {
     s.connect(c.destination);
     s.start(0);
   } catch (e) { /* ignore */ }
-  if (c.state !== "running") c.resume?.();
-  else ["touchend", "pointerdown", "keydown"].forEach((t) => window.removeEventListener(t, unlockAudio, true));
+  // Keep listening for taps all session: iOS can pause the sound again later.
+  if (c.state !== "running") {
+    c.resume?.().catch(() => {});
+    setTimeout(() => { if (ctx === c && c.state !== "running") freshAudioContext(); }, 400);
+  }
 }
 if (typeof document !== "undefined") document.addEventListener("visibilitychange", () => { if (!document.hidden) getAudioContext(); });
+if (typeof window !== "undefined") window.addEventListener("pageshow", () => getAudioContext());
 if (typeof window !== "undefined") ["touchend", "pointerdown", "keydown"].forEach((t) => window.addEventListener(t, unlockAudio, true));
 
 const cache = new Map();
@@ -86,8 +99,11 @@ function playNote(midi, opts = {}) {
   const ctx0 = getAudioContext();
   if (ctx0.state !== "running" && !opts._retried) {
     const gen = generation;
-    const retry = () => { if (gen === generation) playNote(midi, { ...opts, _retried: true }); };
-    ctx0.resume?.().then(retry).catch(retry);
+    let done = false;
+    const retry = () => { if (!done && gen === generation) { done = true; playNote(midi, { ...opts, _retried: true }); } };
+    ctx0.resume?.().then(retry).catch(() => {});
+    // Still stuck: start a fresh engine and play the note on that.
+    setTimeout(() => { if (done) return; if (ctx0.state !== "running") freshAudioContext(); retry(); }, 350);
     return;
   }
   return playNoteNow(midi, opts);

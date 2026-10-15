@@ -1,6 +1,7 @@
 // Songs tab: the library, filterable by level and searchable, each song
 // with its easiest capo and chord shapes, and a play-along.
 
+import { flipButtonHtml, wireFlip } from "./settings.js";
 import { strumHtml } from "./lesson-songs.js";
 import { SONGS, SONG_STRUCTURES, APPROX_STRUCTURES, getDifficulty } from "./songs-data.js";
 import { songPlan, tuningOffset } from "./song-plan.js";
@@ -185,6 +186,7 @@ function openSong(panel, song, { autoplay = false } = {}) {
         <div class="jg-practice-host"></div>
         <div class="jg-row"><button class="jg-btn jg-learned">${getSavedSongs()[song.title]?.status === "completed" ? `${icon("check", 18)} Learned` : "Mark as learned (+15 XP)"}</button></div>
       </div>
+      ${flipButtonHtml()}
       <div class="jg-instrument-host"></div>
     </div>`;
   const inst = mountInstrument(panel.querySelector(".jg-instrument-host"));
@@ -213,6 +215,7 @@ function openSong(panel, song, { autoplay = false } = {}) {
   if (autoplay) setTimeout(() => panel.querySelector(".jg-pb-go")?.click(), 400);
   cleanup = () => { box && box.destroy(); inst.hw.destroy(); };
   panel.querySelector(".jg-exit").addEventListener("click", () => renderSongs(panel));
+  wireFlip(panel, () => openSong(panel, song));
   panel.querySelectorAll(".jg-dg-btn").forEach((b) => b.addEventListener("click", () => {
     const sh = chordShape(b.dataset.chord);
     inst.fb.showShape(sh);

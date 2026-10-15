@@ -24,4 +24,12 @@ function wireLeftyToggle(root, onChange) {
   }));
 }
 
-export { isLefty, setLefty, leftyToggleHtml, wireLeftyToggle };
+// The "↔ Left-handed? Flip it" button, used on every screen with a guitar.
+function flipButtonHtml() {
+  return `<button class="jg-flip-btn" type="button">↔ ${isLefty() ? "Left-handed view (tap for right-handed)" : "Left-handed? Flip it"}</button>`;
+}
+function wireFlip(root, rerender) {
+  root.querySelectorAll(".jg-flip-btn").forEach((b) => b.addEventListener("click", () => { setLefty(!isLefty()); rerender(); }));
+}
+
+export { isLefty, setLefty, leftyToggleHtml, wireLeftyToggle, flipButtonHtml, wireFlip };

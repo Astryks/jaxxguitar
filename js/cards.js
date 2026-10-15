@@ -36,7 +36,7 @@ import { renderStringTuner } from "./tuner.js";
 import { onNoteOn, enableMic, disableMic, micOn } from "./input-hub.js";
 import { createStrumLoop } from "./strum-loop.js";
 import { guitarSvg, fingerStrumSvg, viewerSvg } from "./guitar-art.js";
-import { isLefty, setLefty } from "./settings.js";
+import { isLefty, setLefty, flipButtonHtml, wireFlip } from "./settings.js";
 import { songCardHtml, wireSongCards, findSong } from "./lesson-songs.js";
 import { wireVideos } from "./media.js";
 import { teachHtml } from "./teach-videos.js";
@@ -131,10 +131,9 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onFinish, cha
     if (card.show?.viewer) panel.querySelector(".jg-card-board").insertAdjacentHTML("afterend", `<div class="jg-viewer-wrap">${viewerSvg()}</div>`);
     if (card.show?.guitar) extra.innerHTML = `<div class="jg-guitar-wrap ${isLefty() ? "jg-flipped" : ""}">${guitarSvg()}</div>`;
     // Left-handed? One tap mirrors every fretboard, chord box and guitar picture.
-    if (needsBoard || card.show?.guitar) {
-      panel.querySelector(".jg-card-board").insertAdjacentHTML("beforebegin", `<button class="jg-flip-btn" type="button">↔ ${isLefty() ? "Left-handed view (tap for right-handed)" : "Left-handed? Flip it"}</button>`);
-      panel.querySelector(".jg-flip-btn").addEventListener("click", () => { setLefty(!isLefty()); show(i); });
-    }
+    // On every card, so left-handed players can flip at any point.
+    panel.querySelector(".jg-card-board").insertAdjacentHTML("beforebegin", flipButtonHtml());
+    wireFlip(panel, () => show(i));
     if (card.show?.fingerStrum) extra.innerHTML = `<div class="jg-fingerstrum-wrap">${fingerStrumSvg()}</div>`;
 
     let finished = false;
@@ -361,6 +360,11 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onFinish, cha
         controls.innerHTML = `<button class="jg-btn jg-btn-primary">${w.ok || "Done ✓"}</button>`;
         controls.firstElementChild.addEventListener("click", () => success());
       }
+    }
+    // Never stuck: every card that asks you to do something can be skipped.
+    if (!w.tap) {
+      controls.insertAdjacentHTML("afterend", `<button class="jg-card-skip" type="button">Skip ›</button>`);
+      panel.querySelector(".jg-card-skip").addEventListener("click", () => success());
     }
     if (holdTask()) nextMore(); else setupTask();
   }

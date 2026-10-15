@@ -1,3 +1,4 @@
+import { flipButtonHtml, wireFlip } from "./settings.js";
 import { puppySvg, nextPuppyScene } from "./puppy.js";
 import { icon } from "./icons.js";
 // Practice tab: build a chord loop, drill a scale, a metronome with tap
@@ -46,10 +47,12 @@ function renderPractice(panel) {
       <button class="jg-pill" data-sec="upload">${icon("cassette", 16)} Upload a song</button>
     </div>
     <div class="jg-sec"></div>
+    ${flipButtonHtml()}
     <div class="jg-instrument-host"></div>
     <div class="jg-below"></div>`;
   const sec = panel.querySelector(".jg-sec");
   const inst = mountInstrument(panel.querySelector(".jg-instrument-host"), { frets: 15 });
+  wireFlip(panel, () => renderPractice(panel));
   cleanup.push(() => inst.hw.destroy());
   let box = null;
   let stopMetro = null;

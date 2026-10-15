@@ -23,7 +23,7 @@ import { startChordListening } from "./chord-detect.js";
 import { friendlyMicError } from "./pitch.js";
 import { puppySvg, nextTrick, nextPuppyScene } from "./puppy.js";
 import { homeGuitar, nextHomeGuitar, LEGENDS, sceneSvg } from "./scenes.js";
-import { leftyToggleHtml, wireLeftyToggle } from "./settings.js";
+import { leftyToggleHtml, wireLeftyToggle, flipButtonHtml, wireFlip } from "./settings.js";
 import { tipJarHtml, wireTipJar } from "./tipjar.js";
 // One guitar per visit on the home screen.
 let homeGuitarThisVisit = null;
@@ -303,6 +303,7 @@ function openLesson(id, pageIndex = 0) {
           ${page.diagrams ? `<div class="jg-diagram-row">${page.diagrams.map((c, i) => { const d = diagramOf(c); return `<button class="jg-btn jg-dg-btn" data-dg="${i}" title="Show ${esc(d.name)} on the fretboard">${chordDiagramSvg(d.shape, d.name)}</button>`; }).join("")}</div><p class="jg-note">Tap a chord box to see it on the fretboard and hear it.</p>` : ""}
           ${page.tab ? `<div class="jg-tab-wrap">${tabSvg(page.tab.items, { beatsPerBar: page.tab.beatsPerBar, bars: page.tab.bars })}</div><div class="jg-row"><button class="jg-btn jg-tab-play" type="button">${icon("speaker", 18)} Hear it</button></div>` : ""}
           <div class="jg-extra"></div>
+          ${flipButtonHtml()}
           <div class="jg-instrument-host"></div>
           <div class="jg-practice-host"></div>
         </div>
@@ -317,6 +318,7 @@ function openLesson(id, pageIndex = 0) {
   wireSongCards(panelEl);
   wireCommon();
   panelEl.querySelector(".jg-exit").addEventListener("click", showHome);
+  wireFlip(panelEl, () => openLesson(id, pageIndex));
   panelEl.querySelector(".jg-prev")?.addEventListener("click", () => (pageIndex > 0 ? openLesson(id, pageIndex - 1) : openLastOf(prevLesson(lesson))));
   panelEl.querySelector(".jg-next").addEventListener("click", () => {
     if (!last) return openLesson(id, pageIndex + 1);

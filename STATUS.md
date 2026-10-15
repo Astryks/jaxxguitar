@@ -439,3 +439,10 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **iOS build 26** uploaded to TestFlight 2026-10-15 with these changes.
 - **Teacher videos (owner rule: over 1M views)**: Lesson 1 "How to play chords in the key of G (G, C, D, Em)" (Worship Tutorials, 2.2M); holding the guitar (JustinGuitar, 1.8M); strumming without a pick (JustinGuitar, 2.4M); beginner strumming patterns (Marty Music, 2.1M); changing chords (Andy Guitar, 1.1M); barre chords (swiftlessons, 3.9M); tuning (Fender, 1.0M). Capo video removed (none over 1M).
 - **iOS build 27** uploaded to TestFlight 2026-10-15 (everything above).
+
+## 2026-10-15 (evening): sound, left-handed everywhere, new "looking down" cartoon
+- **Silent guitar fixed**: once sound had started, the app stopped listening for taps to wake it, so after YouTube, a call or the microphone (iOS pauses Web Audio) it stayed silent for the rest of the session. It now keeps listening, replaces a stuck ("interrupted") audio engine inside the next tap, and replays a note on a fresh engine if the old one won't wake (`freshAudioContext()` in js/guitar-audio.js).
+- **Never stuck**: every card that asks you to do something has a "Skip ›".
+- **Left-handed flip everywhere**: the "↔ Left-handed? Flip it" button is on every lesson card and page, every song page, Practice and the Tuner (the tuner's headstock mirrors too); one tap flips every fretboard, chord box and guitar picture (`flipButtonHtml()` / `wireFlip()` in js/settings.js).
+- **"Looking down at your guitar" picture** redrawn as a clear cartoon over a guitar hero's shoulder (long dark hair, black embroidered jacket, warm acoustic guitar, sunny desert colours; seen from behind, not a likeness of anyone): his hand on the neck running up to the right, the other strumming over the sound hole, caption "This is you, looking down at your guitar: the thick low E string is the one nearest you".
+- **iOS build 28** uploaded to TestFlight 2026-10-15 with these fixes.

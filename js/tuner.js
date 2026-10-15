@@ -1,3 +1,4 @@
+import { isLefty } from "./settings.js";
 import { icon } from "./icons.js";
 // Per-string guitar tuner: pick a string, hear a reference tone, and
 // watch the needle. It turns green within ±8 cents, about what a clip-on
@@ -56,7 +57,7 @@ function renderStringTuner(container, { tunings = false } = {}) {
   const host = container.querySelector(".jg-tn-widget");
   const hs = container.querySelector(".jg-hs-wrap");
   const stringsEl = container.querySelector(".jg-tuner-strings");
-  const drawHead = (ok = false) => { hs.innerHTML = headstockSvg({ active: current, done, ok, names: t.names }); };
+  const drawHead = (ok = false) => { hs.innerHTML = headstockSvg({ active: current, done, ok, names: t.names }); hs.classList.toggle("jg-flipped", isLefty()); };
   const label = (i) => t.names[i] + (done.has(i) ? " ✓" : "");
   const listening = () => Boolean(container.querySelector(".hk-tuner-display[style*='flex']"));
 

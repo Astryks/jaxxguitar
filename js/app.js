@@ -1,3 +1,4 @@
+import { flipButtonHtml, wireFlip } from "./settings.js";
 import { puppySvg, nextPuppyScene } from "./puppy.js";
 import { guitarLogo } from "./scenes.js";
 import { icon } from "./icons.js";
@@ -60,8 +61,9 @@ function show(tab) {
   if (tab === "tuner") {
     el.innerHTML = `<div class="jg-card"><div class="jg-hero-mascot">${puppySvg("tangled")}</div><h2 style="margin:4px 0">Tune your guitar</h2>
       <p>Pick a string, tap <em>Start listening</em> and play it. Turn the peg until it goes green.</p>
-      <div class="jg-tuner-host"></div></div>`;
+      ${flipButtonHtml()}<div class="jg-tuner-host"></div></div>`;
     tunerWidget = renderStringTuner(el.querySelector(".jg-tuner-host"), { tunings: true });
+    wireFlip(el, () => show("tuner"));
   }
   if (tab === "about") renderAbout(el);
   if (tab === "how") renderHow(el);

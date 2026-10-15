@@ -77,31 +77,43 @@ function fingerStrumSvg() {
   </svg>`;
 }
 
-// Over the shoulder of a bluesman (a generic silhouette, not a likeness):
-// head bowed, guitar held in front of him, his hand on the neck as it
-// reaches up toward the fretboard drawn above. This is what you see looking
-// down at your own guitar, and why the thick low E is drawn at the bottom:
-// it's the string nearest you.
+// Looking over a guitarist's shoulder (a cartoon in the style of a cool
+// desert-movie guitar hero: long dark hair, black embroidered jacket, warm
+// acoustic guitar; seen from behind, not a likeness of anyone): the neck
+// runs up to the right with his hand on it, the other hand strums over the
+// sound hole. This is what you see looking down at your own guitar, and the
+// thick low E string is the one nearest your face.
 function viewerSvg() {
-  // The neck runs from the body (lower right) up to the top left.
-  const nx0 = 150, ny0 = 122, nx1 = 34, ny1 = 8;
-  const len = Math.hypot(nx1 - nx0, ny1 - ny0), ux = (nx1 - nx0) / len, uy = (ny1 - ny0) / len, px = -uy, py = ux;
-  const w = 9; // half the neck width
-  const pt = (t, o) => `${(nx0 + ux * t + px * o).toFixed(1)} ${(ny0 + uy * t + py * o).toFixed(1)}`;
-  const neck = `M${pt(0, -w)} L${pt(len, -w * 0.8)} L${pt(len, w * 0.8)} L${pt(0, w)} Z`;
-  const frets = [0.18, 0.34, 0.48, 0.6, 0.71, 0.8, 0.88].map((f) => `M${pt(len * f, -w * (1 - f * 0.2))} L${pt(len * f, w * (1 - f * 0.2))}`).join(" ");
-  const strings = [0, 1, 2, 3, 4, 5].map((i) => { const o = -w * 0.8 + (i * 1.6 * w * 0.8) / 5; return `<path d="M${pt(0, o)} L${pt(len, o * 0.8)}" class="jg-viewer-str" style="stroke-width:${(1.5 - i * 0.18).toFixed(2)}"/>`; }).join("");
-  return `<svg viewBox="0 0 360 150" class="jg-viewer" role="img" aria-label="Over the shoulder of a guitarist looking down the neck of his guitar: the thick low E string is the one nearest him">
-    <path d="${neck}" class="jg-viewer-neck"/><path d="${frets}" class="jg-viewer-fret"/>${strings}
-    <g class="jg-viewer-guitar"><ellipse cx="262" cy="134" rx="44" ry="24" transform="rotate(-18 262 134)"/></g>
-    <g class="jg-viewer-fig">
-      <path d="M128 132 Q102 104 82 66" class="jg-viewer-arm"/>
-      <ellipse cx="80" cy="61" rx="10" ry="8" transform="rotate(-40 80 61)"/>
-      <path d="M104 150 C114 124 150 112 190 110 C230 112 262 124 272 150 Z"/>
-      <ellipse cx="190" cy="98" rx="24" ry="28" transform="rotate(-10 190 98)"/>
-      <ellipse cx="167" cy="101" rx="5" ry="8"/><ellipse cx="213" cy="97" rx="5" ry="8"/>
+  return `<svg viewBox="0 0 320 284" class="jg-viewer" role="img" aria-label="Over a guitarist's shoulder, looking down at the guitar in his lap: the thick low E string is the one nearest his face">
+    <defs><radialGradient id="vw-sun" cx="80%" cy="15%" r="85%"><stop offset="0" stop-color="#ffe6b0"/><stop offset="0.55" stop-color="#f6cf96"/><stop offset="1" stop-color="#e3aa72"/></radialGradient>
+      <linearGradient id="vw-top" x1="0" x2="1"><stop offset="0" stop-color="#ebba73"/><stop offset="1" stop-color="#cf9350"/></linearGradient></defs>
+    <rect x="0" y="0" width="320" height="250" rx="18" fill="url(#vw-sun)"/>
+    <path d="M0 214 Q80 198 160 206 T320 196 V232 Q320 250 302 250 H18 Q0 250 0 232 Z" fill="#d79b62" opacity="0.5"/>
+    <g transform="translate(160 176) rotate(-34) scale(1.05)">
+      <path d="M150 12 L138 64" class="vw-sleeve" style="stroke-width:20"/>
+      <ellipse cx="150" cy="16" rx="14" ry="10" class="vw-skin"/>
+      <ellipse cx="-22" cy="0" rx="60" ry="48" class="vw-side"/><ellipse cx="38" cy="0" rx="44" ry="37" class="vw-side"/>
+      <ellipse cx="-22" cy="0" rx="55" ry="43" fill="url(#vw-top)"/><ellipse cx="38" cy="0" rx="39" ry="32" fill="url(#vw-top)"/>
+      <circle cx="22" cy="0" r="17" class="vw-ring"/><circle cx="22" cy="0" r="13" class="vw-hole"/>
+      <rect x="-56" y="-15" width="11" height="30" rx="3" class="vw-bridge"/>
+      <rect x="68" y="-9.5" width="126" height="19" rx="2" class="vw-board"/>
+      <path d="M194 -11 L228 -15 L228 15 L194 11 Z" class="vw-head"/><circle cx="198" cy="-14" r="3.2" class="vw-peg"/><circle cx="198" cy="14" r="3.2" class="vw-peg"/><circle cx="209" cy="-14" r="3.2" class="vw-peg"/><circle cx="209" cy="14" r="3.2" class="vw-peg"/><circle cx="220" cy="-14" r="3.2" class="vw-peg"/><circle cx="220" cy="14" r="3.2" class="vw-peg"/>
+      <line x1="90" x2="90" y1="-9" y2="9" class="vw-fret"/><line x1="110" x2="110" y1="-9" y2="9" class="vw-fret"/><line x1="128" x2="128" y1="-9" y2="9" class="vw-fret"/><line x1="144" x2="144" y1="-9" y2="9" class="vw-fret"/><line x1="158" x2="158" y1="-9" y2="9" class="vw-fret"/><line x1="170" x2="170" y1="-9" y2="9" class="vw-fret"/><line x1="180" x2="180" y1="-9" y2="9" class="vw-fret"/>
+      <line x1="66" x2="66" y1="-10" y2="10" class="vw-nut"/>
+      <line x1="-46" x2="194" y1="-7.5" y2="-7.5" class="vw-str" style="stroke-width:1.90"/><line x1="-46" x2="194" y1="-4.5" y2="-4.5" class="vw-str" style="stroke-width:1.65"/><line x1="-46" x2="194" y1="-1.5" y2="-1.5" class="vw-str" style="stroke-width:1.40"/><line x1="-46" x2="194" y1="1.5" y2="1.5" class="vw-str" style="stroke-width:1.15"/><line x1="-46" x2="194" y1="4.5" y2="4.5" class="vw-str" style="stroke-width:0.90"/><line x1="-46" x2="194" y1="7.5" y2="7.5" class="vw-str" style="stroke-width:0.65"/>
+      <path d="M138 18 L137 -3 M149 19 L149 -5 M160 18 L160 -4 M170 16 L171 -1" class="vw-finger"/>
     </g>
-    <text x="290" y="30" class="jg-viewer-txt">looking down</text><text x="290" y="45" class="jg-viewer-txt">the neck: the thick</text><text x="290" y="60" class="jg-viewer-txt">low E is nearest</text>
+    <path d="M40 156 Q92 172 128 190" class="vw-sleeve" style="stroke-width:30"/>
+    <path d="M40 156 Q92 172 128 190" class="vw-trim"/>
+    <ellipse cx="136" cy="194" rx="15" ry="11" transform="rotate(-30 136 194)" class="vw-skin"/>
+    <path d="M131 200 l10 9 l4 -11 z" fill="#c0392b"/>
+    <path d="M0 250 L0 92 C16 58 66 50 108 72 C130 88 124 128 100 152 C82 170 58 200 50 250 Z" class="vw-jacket"/>
+    <path d="M16 104 q14 -14 32 -6 q-10 10 -4 22 M64 80 q16 -6 28 6 q-14 2 -16 16 M24 140 q12 -8 22 2" class="vw-embroidery"/>
+    <path d="M84 96 L106 100 L94 118 Z" fill="#f4efe6"/>
+    <path d="M30 72 C18 34 52 4 88 12 C122 20 132 54 118 82 C114 96 112 112 116 130 C104 124 98 110 96 98 C92 116 94 132 100 146 C86 140 80 124 80 108 C74 122 76 140 82 156 C66 146 62 128 64 110 C56 126 56 142 60 158 C44 144 44 124 48 106 C40 116 32 122 22 124 C32 108 34 90 30 72 Z" class="vw-hair"/>
+    <path d="M44 28 C62 18 84 24 100 38 M38 52 C58 42 82 48 102 62 M56 76 C70 70 86 80 92 98 M70 92 C76 108 78 124 84 140" class="vw-strand"/>
+    <text x="160" y="266" class="jg-viewer-txt">This is you, looking down at your guitar:</text>
+    <text x="160" y="281" class="jg-viewer-txt jg-viewer-strong">the thick low E string is the one nearest you</text>
   </svg>`;
 }
 
