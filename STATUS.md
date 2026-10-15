@@ -436,3 +436,4 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **Stuck cards fixed** (cards 4–5 and others): the next "tap the orange bubble" question used to appear above the answers, so the card looked stuck; it now always appears under the latest message, scrolls into view, and has a "Skip ›".
 - **Strumming patterns** with ↓/↑ arrows over the beats (1 & 2 & 3 & 4 &) on every song card and song page, chosen by style (classic pop D DU UDU, rock/country, steady downs for metal, slow and simple for ballads, off-beat ups for reggae).
 - Tested: all 43 lessons stepped through (230 steps), 0 page errors.
+- **iOS build 26** uploaded to TestFlight 2026-10-15 with these changes.
