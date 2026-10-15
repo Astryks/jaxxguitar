@@ -36,6 +36,7 @@ import { renderStringTuner } from "./tuner.js";
 import { onNoteOn, enableMic, disableMic, micOn } from "./input-hub.js";
 import { createStrumLoop } from "./strum-loop.js";
 import { guitarSvg, fingerStrumSvg, viewerSvg } from "./guitar-art.js";
+import { isLefty, setLefty } from "./settings.js";
 import { songCardHtml, wireSongCards, findSong } from "./lesson-songs.js";
 import { wireVideos } from "./media.js";
 import { teachHtml } from "./teach-videos.js";
@@ -106,13 +107,17 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onFinish, cha
       moreEl.innerHTML = "";
       if (!more.length) return setupTask();
       const [q, a] = more.shift();
-      moreEl.innerHTML = `<div class="jg-chip-hint">Tap the orange bubble to keep going 👇</div><button class="jg-chip">${q} <span>›</span></button>`;
+      // The next question always sits right under the latest message.
+      thread.appendChild(moreEl);
+      moreEl.innerHTML = `<div class="jg-chip-hint">Tap the orange bubble to keep going 👇</div><button class="jg-chip">${q} <span>›</span></button><button class="jg-chip-skip" type="button">Skip ›</button>`;
       moreEl.querySelector(".jg-chip").addEventListener("click", () => {
         moreEl.innerHTML = "";
         thread.insertAdjacentHTML("beforeend", `<div class="jg-cmsg jg-cme"><div class="jg-cbubble">${q}</div></div>`);
         reply(a, "idle");
         nextMore();
       });
+      moreEl.querySelector(".jg-chip-skip").addEventListener("click", () => { more.length = 0; nextMore(); });
+      moreEl.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
     }
 
     let inst = null;
@@ -124,7 +129,12 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onFinish, cha
       if (card.show?.frets) inst.fb.highlightFrets(card.show.frets);
     }
     if (card.show?.viewer) panel.querySelector(".jg-card-board").insertAdjacentHTML("afterend", `<div class="jg-viewer-wrap">${viewerSvg()}</div>`);
-    if (card.show?.guitar) extra.innerHTML = `<div class="jg-guitar-wrap">${guitarSvg()}</div>`;
+    if (card.show?.guitar) extra.innerHTML = `<div class="jg-guitar-wrap ${isLefty() ? "jg-flipped" : ""}">${guitarSvg()}</div>`;
+    // Left-handed? One tap mirrors every fretboard, chord box and guitar picture.
+    if (needsBoard || card.show?.guitar) {
+      panel.querySelector(".jg-card-board").insertAdjacentHTML("beforebegin", `<button class="jg-flip-btn" type="button">↔ ${isLefty() ? "Left-handed view (tap for right-handed)" : "Left-handed? Flip it"}</button>`);
+      panel.querySelector(".jg-flip-btn").addEventListener("click", () => { setLefty(!isLefty()); show(i); });
+    }
     if (card.show?.fingerStrum) extra.innerHTML = `<div class="jg-fingerstrum-wrap">${fingerStrumSvg()}</div>`;
 
     let finished = false;

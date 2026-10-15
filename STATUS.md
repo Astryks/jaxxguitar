@@ -427,3 +427,12 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 
 ## 2026-10-13: lit-up guitar play-along (iOS build 25)
 - [x] **Falling "tetris" blocks replaced** (owner request, like the reference video "guitar style.mp4"): above the fretboard, a dark tab panel scrolls past a glowing green playhead (chords as chips with their strum arrow ↓/↑, single notes as fret numbers on their string, high e on top); on the fretboard, every ringing string glows orange from where it's pressed to the body and shimmers, with a glowing ring on the fret (`fb.glow()` in js/fretboard.js, js/fret-highway.js). Used by every play-along (lessons, songs, Practice). Tested: all 43 lessons stepped through (230 steps), songs play, 0 page errors.
+
+## 2026-10-15: owner feedback (lessons, left-handed, strums)
+- **Lessons tab** opens your next lesson; the course list ("All lessons" timeline) is removed from home.
+- **Lesson 1 video**: one teacher video for all 4 chords: "Easy Guitar Chords - G, C, D, Em - Beginner Lesson" (Jackson Emmer's channel, tw09AanVXQo, embeddable) instead of two.
+- **"Looking down the neck" picture**: over the shoulder of a bluesman (a generic silhouette, not a likeness): head bowed, his left hand on the neck stretching up toward the fretboard, the guitar body peeking out on his right, sized to him (`viewerSvg()`).
+- **Left-handed**: a "↔ Left-handed? Flip it" button on every card with a fretboard or the guitar picture mirrors every fretboard, chord box and guitar picture for the whole course (the existing `setLefty` setting); "I'm left-handed!" now explains the three ways lefties learn (left-handed guitar like Paul McCartney, flipped and restrung like Jimi Hendrix, or playing right-handed).
+- **Stuck cards fixed** (cards 4–5 and others): the next "tap the orange bubble" question used to appear above the answers, so the card looked stuck; it now always appears under the latest message, scrolls into view, and has a "Skip ›".
+- **Strumming patterns** with ↓/↑ arrows over the beats (1 & 2 & 3 & 4 &) on every song card and song page, chosen by style (classic pop D DU UDU, rock/country, steady downs for metal, slow and simple for ballads, off-beat ups for reggae).
+- Tested: all 43 lessons stepped through (230 steps), 0 page errors.

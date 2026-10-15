@@ -202,6 +202,7 @@ const PEOPLE = {
 };
 const VIDEOS = {
  "teach-hold": {"id": "C-mt8td1teU", "title": "Holding the Guitar with Your Fretting Hand? | Guitar for Beginners", "author_name": "JustinGuitar", "kind": "teacher"},
+ "teach-four-chords": {"id": "tw09AanVXQo", "title": "Easy Guitar Chords - G, C, D, Em - Beginner Lesson", "author_name": "Jackson Emmer", "kind": "teacher"},
  "teach-first-chords": {"id": "jcGSBDZKbFw", "title": "Three Easy and Popular Chords to Get You Playing Songs (G, C, D)  | Beginner Guitar Tips", "author_name": "Guitar Center", "kind": "teacher"},
  "teach-changing": {"id": "xSFHgeJUuIs", "title": "Want Fast & Perfect Chord Changes on Guitar?", "author_name": "JustinGuitar", "kind": "teacher"},
  "teach-finger-strum": {"id": "0YIY52OW5Do", "title": "How to Strum With and Without a Pick", "author_name": "Andy Guitar", "kind": "teacher"},

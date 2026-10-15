@@ -70,11 +70,8 @@ function show(tab) {
 
 document.querySelectorAll(".jg-tab, .jg-footer-link").forEach((b) => b.addEventListener("click", () => {
   show(b.dataset.tab);
-  // Tapping Lessons opens the list of lessons (it lives folded up at the bottom of home).
-  if (b.dataset.tab === "lessons") {
-    const list = panels.lessons.querySelector(".jg-all-lessons");
-    if (list) { list.open = true; list.scrollIntoView({ behavior: "smooth", block: "start" }); }
-  }
+  // Tapping Lessons opens the lesson you're up to.
+  if (b.dataset.tab === "lessons") panels.lessons.querySelector(".jg-hero-card[data-lesson]")?.click();
 }));
 
 function drawLevel() {

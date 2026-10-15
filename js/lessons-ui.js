@@ -229,9 +229,7 @@ function showHome() {
         <span><b>Upload any song</b><span>and we'll find the chords for you</span></span>
         <span class="jg-home-upload-go">Upload</span>
       </button>
-      <details class="jg-all-lessons"><summary class="jg-btn">${icon("guitar", 18)} All lessons <span class="jg-sub">${COURSE.total} cards in the course</span></summary>
-        <p class="jg-note">The number on the right is the card where each lesson starts.</p>
-        <div class="jg-roadmap-list">${roadmapHtml()}</div></details>
+      <!-- The course list was removed from home (owner request); Lessons opens your next lesson. -->
       ${isLessonComplete("lesson-1") ? `<button class="jg-home-how jg-open-review" type="button">${icon("flame", 18)} 2-minute review${reviewDoneToday() ? " ✓" : ""}</button>` : ""}
       <button class="jg-home-how" data-home-how type="button">${icon("star", 18)} How it works</button>
       ${tipJarHtml()}

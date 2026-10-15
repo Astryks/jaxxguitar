@@ -36,6 +36,22 @@ function teachable(song) {
   return Boolean(v && !v.noEmbed && !NOT_OFFICIAL_CHANNEL.test(v.author_name || "") && songPlan(song).playable);
 }
 
+// A strumming pattern that suits the song (by style and feel), with the
+// beats underneath. A starting point: listen to the video and adjust.
+function strumFor(song) {
+  const g = `${song.genre || ""} ${song.notes || ""}`;
+  if (/Reggae|Dancehall|ska/i.test(g)) return { arrows: ["·", "↑", "·", "↑", "·", "↑", "·", "↑"], name: "off-beat (reggae)" };
+  if (/Metal|Punk|Grunge|Hard Rock/i.test(g)) return { arrows: ["↓", "↓", "↓", "↓", "↓", "↓", "↓", "↓"], name: "steady down-strums (rock)" };
+  if (/Ballad|Classical|Hymn|Christmas|Waltz|Lullaby|slow/i.test(g)) return { arrows: ["↓", "·", "↓", "·", "↓", "·", "↓", "·"], name: "slow and simple" };
+  if (/Rock|Blues|Country/i.test(g)) return { arrows: ["↓", "·", "↓", "↑", "·", "↑", "↓", "↑"], name: "rock/country" };
+  return { arrows: ["↓", "·", "↓", "↑", "·", "↑", "↓", "↑"], name: "the classic pop strum" };
+}
+function strumHtml(song) {
+  const st = strumFor(song);
+  const beats = ["1", "&", "2", "&", "3", "&", "4", "&"];
+  return `<b>Strum:</b> ${esc(st.name)}<span class="jg-strum-row">${st.arrows.map((a, i) => `<span class="jg-strum-cell ${a === "·" ? "jg-strum-gap" : ""}"><b>${a}</b><small>${beats[i]}</small></span>`).join("")}</span>`;
+}
+
 function shapesOf(song) {
   return [...new Set(songPlan(song).shapes)].filter((c) => chordShape(c));
 }
@@ -68,6 +84,7 @@ function songCardHtml(song, { n, of } = {}) {
       <p class="jg-songcard-how">${plan.capo ? `Put a <b>capo on fret ${plan.capo}</b>, then play` : "Play"} <b>${esc(loop.join(" · "))}</b>.${plan.capo ? ` <span class="jg-note">No capo? Same shapes, just a little lower.</span>` : ""}</p>
       <div class="jg-diagram-row jg-songcard-dg">${shapes.map((c) => `<button class="jg-btn jg-dg-btn" data-dgc="${esc(c)}" title="Show ${esc(c)} on the fretboard">${chordDiagramSvg(chordShape(c), c)}</button>`).join("")}</div>
       ${videoHtml(SONG_VIDEOS[song.title])}
+      <p class="jg-songcard-strum">${strumHtml(song)}</p>
       <p class="jg-note">Watch the video, then strum along. Sing the words if you know them!</p>
       <button class="jg-btn jg-songcard-open" data-open-song="${esc(song.title)}" type="button">Play along in Songs ›</button>
     </div>`;
@@ -131,4 +148,4 @@ function withSongs(lessons, { count = 3, skip = () => false } = {}) {
   });
 }
 
-export { withSongs, songCardHtml, wireSongCards, findSong, teachable };
+export { withSongs, songCardHtml, wireSongCards, findSong, teachable, strumHtml };

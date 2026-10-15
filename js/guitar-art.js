@@ -77,20 +77,31 @@ function fingerStrumSvg() {
   </svg>`;
 }
 
-// A small shadow of a 60s rock guitarist seen from behind (big round afro,
-// headband ties), as if sitting just below the screen looking down at the
-// neck: why the thick low E is drawn at the bottom.
+// Over the shoulder of a bluesman (a generic silhouette, not a likeness):
+// head bowed, guitar held in front of him, his hand on the neck as it
+// reaches up toward the fretboard drawn above. This is what you see looking
+// down at your own guitar, and why the thick low E is drawn at the bottom:
+// it's the string nearest you.
 function viewerSvg() {
-  return `<svg viewBox="0 0 300 74" class="jg-viewer" role="img" aria-label="A guitarist below the fretboard, looking down at it: the thick low E string is the one nearest them">
+  // The neck runs from the body (lower right) up to the top left.
+  const nx0 = 150, ny0 = 122, nx1 = 34, ny1 = 8;
+  const len = Math.hypot(nx1 - nx0, ny1 - ny0), ux = (nx1 - nx0) / len, uy = (ny1 - ny0) / len, px = -uy, py = ux;
+  const w = 9; // half the neck width
+  const pt = (t, o) => `${(nx0 + ux * t + px * o).toFixed(1)} ${(ny0 + uy * t + py * o).toFixed(1)}`;
+  const neck = `M${pt(0, -w)} L${pt(len, -w * 0.8)} L${pt(len, w * 0.8)} L${pt(0, w)} Z`;
+  const frets = [0.18, 0.34, 0.48, 0.6, 0.71, 0.8, 0.88].map((f) => `M${pt(len * f, -w * (1 - f * 0.2))} L${pt(len * f, w * (1 - f * 0.2))}`).join(" ");
+  const strings = [0, 1, 2, 3, 4, 5].map((i) => { const o = -w * 0.8 + (i * 1.6 * w * 0.8) / 5; return `<path d="M${pt(0, o)} L${pt(len, o * 0.8)}" class="jg-viewer-str" style="stroke-width:${(1.5 - i * 0.18).toFixed(2)}"/>`; }).join("");
+  return `<svg viewBox="0 0 360 150" class="jg-viewer" role="img" aria-label="Over the shoulder of a guitarist looking down the neck of his guitar: the thick low E string is the one nearest him">
+    <path d="${neck}" class="jg-viewer-neck"/><path d="${frets}" class="jg-viewer-fret"/>${strings}
+    <g class="jg-viewer-guitar"><ellipse cx="262" cy="134" rx="44" ry="24" transform="rotate(-18 262 134)"/></g>
     <g class="jg-viewer-fig">
-      <path d="M112 74 C116 58 132 52 150 52 C168 52 184 58 188 74 Z"/>
-      <rect x="143" y="38" width="14" height="16" rx="5"/>
-      <ellipse cx="150" cy="28" rx="22" ry="20"/><circle cx="129.0" cy="25.0" r="7.5"/><circle cx="130.5" cy="17.9" r="7.5"/><circle cx="134.9" cy="11.8" r="7.5"/><circle cx="141.5" cy="7.6" r="7.5"/><circle cx="149.3" cy="6.0" r="7.5"/><circle cx="157.2" cy="7.1" r="7.5"/><circle cx="164.1" cy="10.9" r="7.5"/><circle cx="168.9" cy="16.7" r="7.5"/><circle cx="170.9" cy="23.7" r="7.5"/>
+      <path d="M128 132 Q102 104 82 66" class="jg-viewer-arm"/>
+      <ellipse cx="80" cy="61" rx="10" ry="8" transform="rotate(-40 80 61)"/>
+      <path d="M104 150 C114 124 150 112 190 110 C230 112 262 124 272 150 Z"/>
+      <ellipse cx="190" cy="98" rx="24" ry="28" transform="rotate(-10 190 98)"/>
+      <ellipse cx="167" cy="101" rx="5" ry="8"/><ellipse cx="213" cy="97" rx="5" ry="8"/>
     </g>
-    <path d="M128 31 Q150 37 172 31" class="jg-viewer-band"/>
-    <path d="M171 32 q7 6 4 15 M173 31 q10 4 11 13" class="jg-viewer-band jg-viewer-tie"/>
-    <text x="98" y="30" class="jg-viewer-txt jg-viewer-left">low E (thickest)</text><text x="98" y="45" class="jg-viewer-txt jg-viewer-left">is nearest you</text>
-    <text x="202" y="30" class="jg-viewer-txt">you, looking</text><text x="202" y="45" class="jg-viewer-txt">down at the neck</text>
+    <text x="290" y="30" class="jg-viewer-txt">looking down</text><text x="290" y="45" class="jg-viewer-txt">the neck: the thick</text><text x="290" y="60" class="jg-viewer-txt">low E is nearest</text>
   </svg>`;
 }
 

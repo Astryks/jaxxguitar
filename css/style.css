@@ -756,12 +756,17 @@ body.jg-intro-open { overflow: hidden; }
 .jg-tip-thanks .jg-tip-icon { color: var(--jg-accent); }
 /* A soft shadow of your head under the fretboard, looking down at it. */
 .jg-viewer-wrap { display: flex; justify-content: center; margin: 6px 0; }
-.jg-viewer { width: min(300px, 86%); height: auto; overflow: visible; }
-.jg-viewer-fig { fill: #2b211c; opacity: .5; }
-.jg-viewer-band { fill: none; stroke: #c94f3d; stroke-width: 3; stroke-linecap: round; opacity: .75; }
+.jg-viewer { width: min(360px, 94%); height: auto; overflow: visible; }
+.jg-viewer-fig { fill: #3b302b; }
+.jg-viewer-arm { fill: none; stroke: #3b302b; stroke-width: 15; stroke-linecap: round; }
+.jg-viewer-neck { fill: #5b3a22; }
+.jg-viewer-fret { stroke: #c9b79a; stroke-width: 1; fill: none; opacity: 0.7; }
+.jg-viewer-str { stroke: #efe6d6; fill: none; opacity: 0.9; }
+.jg-viewer-guitar { fill: #17110f; }
+.jg-viewer-fhole { stroke: #4a3a30; stroke-width: 2; fill: none; }
 .jg-viewer-eyes { font-size: 15px; text-anchor: middle; }
 .jg-viewer-txt { font-size: 11px; fill: var(--jg-muted, #6b6b6b); }
-.jg-viewer-left { text-anchor: end; }
+.jg-viewer-txt { text-anchor: middle; }
 /* Play-along: dark tab panel with a glowing playhead, and ringing strings that glow. */
 .jg-tabhw { background: radial-gradient(120% 140% at 70% 0%, #2b2233 0%, #121016 70%); border: 1px solid #2e5f36; box-shadow: inset 0 0 0 1px rgba(125,255,122,0.08); }
 .jg-glow-string { stroke: #ff9a3c; opacity: 0.55; filter: blur(2px); stroke-linecap: round; animation: jg-shimmer 0.12s ease-in-out infinite alternate; }
@@ -769,3 +774,15 @@ body.jg-intro-open { overflow: hidden; }
 .jg-glow-ring { fill: none; stroke: #ffb45c; stroke-width: 3; filter: drop-shadow(0 0 4px #ff9a3c); }
 @keyframes jg-shimmer { from { transform: translateY(-0.8px); } to { transform: translateY(0.8px); } }
 @media (prefers-reduced-motion: reduce) { .jg-glow-string, .jg-glow-core { animation: none; } }
+.jg-chip-skip { display: block; margin: 4px 0 0 auto; background: none; border: 0; color: var(--jg-muted, #777); font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; }
+/* Left-handed flip: a button on fretboard cards, and the mirrored guitar picture (text kept readable). */
+.jg-flip-btn { display: block; margin: 4px 0 6px auto; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--jg-border, #e3d6c6); background: #fff; font: 600 13px/1.2 system-ui, sans-serif; color: #2a6fb0; cursor: pointer; }
+.jg-flipped svg { transform: scaleX(-1); }
+.jg-flipped svg text { transform-box: fill-box; transform-origin: center; transform: scaleX(-1); }
+/* Strumming pattern on song cards: arrows over the beats. */
+.jg-songcard-strum { margin: 6px 0; }
+.jg-strum-row { display: flex; gap: 4px; margin-top: 4px; }
+.jg-strum-cell { display: flex; flex-direction: column; align-items: center; min-width: 26px; padding: 3px 0; border-radius: 8px; background: #e3f2fd; color: #2a6fb0; }
+.jg-strum-cell b { font-size: 18px; line-height: 1; }
+.jg-strum-cell small { font-size: 11px; color: #5d7d9b; }
+.jg-strum-gap { background: transparent; color: #b9b0a5; }

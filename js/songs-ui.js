@@ -1,6 +1,7 @@
 // Songs tab: the library, filterable by level and searchable, each song
 // with its easiest capo and chord shapes, and a play-along.
 
+import { strumHtml } from "./lesson-songs.js";
 import { SONGS, SONG_STRUCTURES, APPROX_STRUCTURES, getDifficulty } from "./songs-data.js";
 import { songPlan, tuningOffset } from "./song-plan.js";
 import { songSteps } from "./song-map.js";
@@ -167,6 +168,7 @@ function openSong(panel, song, { autoplay = false } = {}) {
             ${songBpm ? `<span class="jg-song-key">${icon("drum", 18)} ${songBpm} BPM${beatsPerBar !== 4 ? ` · ${beatsPerBar}/4` : ""}</span>` : ""}</div>
         </div>
         ${tuneNote ? `<p class="jg-note">${icon("tuner", 18)} ${esc(tuneNote)}</p>` : ""}
+        <p class="jg-songcard-strum">${strumHtml(song)}</p>
         <div class="jg-song-prog"><div class="jg-song-prog-title">The chords in this song</div>
           ${progressionRows(song).map((r) => `<div class="jg-song-prog-row"><span>${esc(r.label)}</span><b>${r.chords.map((c) => `<i>${esc(c)}</i>`).join("")}</b></div>`).join("")}
         </div>
