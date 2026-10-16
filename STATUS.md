@@ -497,3 +497,4 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **Left-handed flip everywhere**: the "↔ Left-handed? Flip it" button is on every lesson card and page, every song page, Practice and the Tuner (the tuner's headstock mirrors too); one tap flips every fretboard, chord box and guitar picture (`flipButtonHtml()` / `wireFlip()` in js/settings.js).
 - **"Looking down at your guitar" picture** redrawn as a clear cartoon over a guitar hero's shoulder (long dark hair, black embroidered jacket, warm acoustic guitar, sunny desert colours; seen from behind, not a likeness of anyone): his hand on the neck running up to the right, the other strumming over the sound hole, caption "This is you, looking down at your guitar: the thick low E string is the one nearest you".
 - **iOS build 28** uploaded to TestFlight 2026-10-15 with these fixes.
+- **iOS build 29** uploaded to TestFlight 2026-10-17 (includes the 2026-10-16 full lesson audit).
