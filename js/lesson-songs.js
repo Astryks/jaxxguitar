@@ -63,7 +63,7 @@ function lessonChords(lesson) {
   (lesson.cards || []).forEach((c) => {
     const w = c.want || {};
     if (w.chord) out.add(w.chord);
-    (w.compare || []).forEach((x) => out.add(x));
+    (w.compare || []).forEach((x) => typeof x === "string" && out.add(x));
     (w.loop?.chords || []).forEach((x) => out.add(x));
   });
   (lesson.pages || []).forEach((p) => {

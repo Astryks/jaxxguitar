@@ -1,9 +1,9 @@
 // Fretboard, chord diagrams and tab for Jaxx Guitar.
 //
 // renderFretboard(): a horizontal fretboard the way a right-handed
-// player sees it looking down at their own guitar: the thickest low E
-// string (the one nearest your chin) on TOP, the thin high e at the
-// bottom, the nut on the left and the fret numbers along the bottom.
+// player sees it looking down at their own guitar: the thin high e at
+// the top and the thickest low E string (the one nearest your chin) at
+// the BOTTOM, nearest you, the nut on the left and the fret numbers along the bottom.
 // Fret spacing follows a real guitar's (each fret ~5.6% narrower than
 // the last, the 12th fret halfway to the bridge), squeezed a little so
 // the first frets aren't huge. Tapping a string at a fret plays it and
@@ -254,7 +254,7 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
 }
 
 // Chord diagram, drawn the same way round as the fretboard (and as you see
-// your own guitar looking down): low E on top, high e at the bottom, the
+// your own guitar looking down): high e on top, low E at the bottom, the
 // nut on the left, fret numbers along the bottom, × / ○ before the nut,
 // pressed frets in the app's colour with finger numbers.
 function chordDiagramSvg(shape, name = "") {

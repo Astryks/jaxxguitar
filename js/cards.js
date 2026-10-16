@@ -16,6 +16,7 @@
 //   { allCorrect: "message", options: [...] }   quiz where every answer is right
 //   { tuner: true }                             the string tuner
 //   { compare: ["E", "Em"] }                    chords side by side, tap to hear
+//                                               (a symbol or a custom { name, frets, fingers })
 //   { morph: [["C", "Am"], ...] }               how to switch: fingers sliding
 //   { strum: { chords, pattern, bpm } }         strum arrows over lit frets
 //   { loop: { chords, pattern, bpm } }          the same, looping a chord loop
@@ -257,13 +258,16 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onFinish, cha
         controls.innerHTML = `<button class="jg-btn jg-btn-primary">${w.tap || "Next song →"}</button>`;
         controls.firstElementChild.addEventListener("click", () => success());
       } else if (w.compare) {
-        extra.innerHTML = `<div class="jg-compare">${w.compare.map((c) => `<button class="jg-compare-item" data-c="${c}" type="button">${chordDiagramSvg(chordShape(c), c)}<span>${icon("speaker", 14)} Hear it</span></button>`).join("")}</div>${w.note ? `<p class="jg-compare-note">${w.note}</p>` : ""}`;
-        const pick = (c) => {
-          extra.querySelectorAll("[data-c]").forEach((b) => b.classList.toggle("jg-compare-on", b.dataset.c === c));
-          inst.fb.showShape(chordShape(c));
+        // A chord symbol ("G") or a custom shape { name, frets, fingers } (e.g. the 4-finger G).
+        const shapeOf = (c) => (typeof c === "string" ? chordShape(c) : c);
+        const nameOf = (c) => (typeof c === "string" ? c : c.name);
+        extra.innerHTML = `<div class="jg-compare">${w.compare.map((c, k) => `<button class="jg-compare-item" data-c="${k}" type="button">${chordDiagramSvg(shapeOf(c), nameOf(c))}<span>${icon("speaker", 14)} Hear it</span></button>`).join("")}</div>${w.note ? `<p class="jg-compare-note">${w.note}</p>` : ""}`;
+        const pick = (k) => {
+          extra.querySelectorAll("[data-c]").forEach((b) => b.classList.toggle("jg-compare-on", Number(b.dataset.c) === k));
+          inst.fb.showShape(shapeOf(w.compare[k]));
         };
-        extra.querySelectorAll("[data-c]").forEach((b) => b.addEventListener("click", () => { pick(b.dataset.c); strum(shapeMidis(chordShape(b.dataset.c))); }));
-        pick(w.compare[0]);
+        extra.querySelectorAll("[data-c]").forEach((b) => b.addEventListener("click", () => { const k = Number(b.dataset.c); pick(k); strum(shapeMidis(shapeOf(w.compare[k]))); }));
+        pick(0);
         controls.innerHTML = `<button class="jg-btn jg-btn-primary">${w.tap || "Got it 👍"}</button>`;
         controls.firstElementChild.addEventListener("click", () => success());
       } else if (w.morph) {

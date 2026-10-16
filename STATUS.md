@@ -1,6 +1,6 @@
 # Jaxx Guitar - status
 
-_Last updated 2026-10-13._ This file is the checklist of everything requested for Jaxx Guitar, so nothing gets missed. ✅ done · 🟡 in progress / waiting on something · ⬜ not started.
+_Last updated 2026-10-16._ This file is the checklist of everything requested for Jaxx Guitar, so nothing gets missed. ✅ done · 🟡 in progress / waiting on something · ⬜ not started.
 
 Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (GitHub Pages) · iOS bundle: `com.jaxxguitar.app`
 
@@ -47,6 +47,57 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
 ### Rules we keep
 - Never print song lyrics or copyrighted melodies/tabs: chords, keys and song maps only. Videos are official uploads, verified with YouTube oEmbed.
 - Payments: only the optional Tip jar (Apple In-App Purchase, unlocks nothing, app only). Don't submit for review until the owner says so. The owner types all passwords.
+
+---
+
+## Curriculum audit and missing-topics pass (2026-10-16)
+
+Read every lesson card and page in course order (Lesson 1 to Chord Ear Gym), checked the chords and notes against `js/guitar-theory.js`, and compared the course with what well-known teachers recommend.
+
+**Flow problems fixed:**
+- ✅ Reading tab said tab is "upside down compared with our fretboard pictures". Since the low E moved to the bottom, they're the same way round. Text fixed.
+- ✅ Lesson 1 "the top one on your guitar" (the low E) reworded to "the one nearest your chin as you hold the guitar", so nothing says "top" for the low E. Stale code comments in `js/fretboard.js` (said low E on top) fixed.
+- ✅ More open chords: "Am: same shape as E, moved down one string" (the thin strings are at the top of our pictures now) is now "moved over one string, towards the thin strings".
+- ✅ Wonderwall (Jargon alert) said ring and pinky stay on fret 3 of the B and e strings, but the diagrams showed Em7 022000, G 320003 and A7sus4 x02030. It now uses the real anchored shapes (Em7 022033, G 320033, Dsus4 xx0233, A7sus4 x02033), all checked with `validateShape`.
+- ✅ Jargon alert (7th chords) now comes **before** Music has flavours (Genres), which uses A7/D7/E7 and Dm7/G7/Cmaj7. The 12-bar blues was taught twice; it now lives only in Genres.
+- ✅ Baby F was described after Fmaj7 ("same as the baby F…"). Order swapped, with Andy Guitar's caution that Fmaj7 works best in the key of C.
+- ✅ Creep: "from C to Cm only one finger moves" was wrong for the fingerings shown; now "only one note changes: the B string drops one fret".
+- ✅ How to practise scales mentioned hammer-ons before they're taught; now says "(next lesson)".
+- ✅ Power-chord riff now has Wait for me, not only Listen; text explains the 3-note version the diagrams show.
+
+**Topics added (short, same patterns as the existing cards/pages):**
+- Lesson 1: "How do I strum?" on the Em card (strumming is used before the Strumming lesson); "My fingertips hurt!" on the G card (calluses, 10–15 min a day).
+- Strumming: a first card of **4 down-strums** on G (hand still swings up), before D · D U · U D U.
+- Changing chords: **never stop the strum** (strum open strings on the last strum while fingers move), the **rock-star G family** (G 4-finger, Cadd9, Dsus4, Em7 with fingers 3 and 4 anchored) as a card comparison, and a **10-minutes-a-day** routine card. (`js/cards.js` `compare` now accepts custom shapes too.)
+- Capo: a **Capo tricks** page (where to clip it, capo maths, fit your voice, sparkle).
+- Power chords: **notes on the low E and A strings** (to find any power/barre chord) and **mute with both hands** (palm mute, fret-hand mute, the acoustic "chuck") with a palm-muted E5 play-along.
+- Lead techniques: **hammer-on / pull-off** play-along (our own exercise in the A minor pentatonic box).
+- Fingerpicking: **Travis picking** play-along (our own pattern over C and G).
+- Chord Ear Gym: **work out a song by ear** (find the home note on the low E, likely chords per key).
+
+**Research findings (what top teachers stress) and sources:**
+- One-minute changes and anchor fingers (already taught; kept): justinguitar.com/guitar-lessons/one-minute-changes-exercise-b1-110 · community.justinguitar.com/t/how-to-use-anchor-fingers/1779 · andyguitar.co.uk/lessons/03-changing-between-e-a-chords
+- G / Cadd9 family with fingers 3+4 anchored (added): andyguitar.co.uk/videos/the-cadd9-chord-when-to-use-it-beginner-electric · community.justinguitar.com/t/c-vs-cadd9/208561
+- Easy F: Fmaj7 / mini F (already taught; caveat added): andyguitar.co.uk/videos/02-easy-f-chord-fmaj7 · nationalguitaracademy.com/lessons/f-guitar-chord/
+- Strumming hand never stops; start with downs, then D-DU-UDU (added the downs card): blog.guitar-pro.com/?p=49330 · goodguitarist.com/guitar-strumming-tips-for-beginners
+- Palm and fret-hand muting, the percussive chuck (added): fretjam.com/palm-mute-guitar.html · laurenbateman.com/?p=4248 · community.justinguitar.com/t/the-backbeat-hit/2477/29
+- Capo transposing / fit your voice (added): rhymebook.com/tools/capo-chart · musicademy.com/lesson/using-a-capo-part-2-transposing-basics/
+- Power chords and note names on the E and A strings (added): goodguitarist.com/power-chords-guitar · justinguitar.com/guitar-lessons/IM-111
+- Calluses, short daily sessions (added): fender.com/articles/techniques/5-tips-to-fight-finger-pain · fender.com/articles/techniques/how-to-minimize-finger-pain-playing-guitar
+- Practice routine, slow with a metronome, +4–5 BPM (beginner card added; scale routine already there): learn.truefire.com/how-to-use-a-metronome-for-guitar · musicradar.com/how-to/10-ways-to-improve-your-guitar-practice-now
+- Playing by ear: find the home note, the last chord is usually the key (added): guitarlessons.com/guitar-lessons/guitar-lessons-for-beginners/instantly-find-the-key-of-your-favorite-song · andyguitar.co.uk/videos/live-replay-how-to-work-out-songs-by-ear
+- Travis picking, thumb alternating bass first (added): fender.com/articles/techniques/travis-picking-on-guitar · premierguitar.com/articles/19838-twang-101-travis-picking-essentials
+- Hammer-ons / pull-offs / slides / bends (play-along added): guitar.com/lessons/lesson-basic-guitar-technique-hammer-on-pull-off-bend-slide/
+- I–IV–V, I–V–vi–IV, 12-bar blues (already taught in Lesson 1, Open/barre, Genres): musiciangoods.com/en-ca/blogs/guitar/i-iv-v-chord-progression-guitar
+- Note: JustinGuitar's lesson pages blocked fetching (403), so those points come from search results and his community forum.
+
+**Not changed (on purpose):**
+- "Before you start" lessons (p-guitar … p-pick) are not reachable from the app any more (home doesn't list the course, and Back from Lesson 1 doesn't go there). Their key tips (pressing, sore fingers, strumming) are now in the Beginner cards instead. Owner: decide whether to show them again or delete them.
+- PRE has three tuner pages (Get a guitar, Tune, Six strings); left alone because PRE isn't shown.
+- No new teacher videos (none were verified over 1M views in this pass).
+- Song cards for Wonderwall still show the library's standard Em7/G shapes; the lesson page above them shows the anchored ones.
+
+**Tested:** headless Chrome stepped through all 67 non-world lessons (290 cards/pages) with `openLesson(id, i)`: no page errors, no empty cards; spot checks of each changed card/page (4 down-strum slots, rock-star compare renders and plays, baby F order, capo tricks, notes page, muting play-along, Wonderwall shapes, hammer-ons, Travis, by-ear page, Jargon before Genres). `npm run check`: 141 chords, 0 problems. Cache `jaxx-guitar-v23`.
 
 ---
 
