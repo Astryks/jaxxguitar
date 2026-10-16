@@ -498,3 +498,6 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **"Looking down at your guitar" picture** redrawn as a clear cartoon over a guitar hero's shoulder (long dark hair, black embroidered jacket, warm acoustic guitar, sunny desert colours; seen from behind, not a likeness of anyone): his hand on the neck running up to the right, the other strumming over the sound hole, caption "This is you, looking down at your guitar: the thick low E string is the one nearest you".
 - **iOS build 28** uploaded to TestFlight 2026-10-15 with these fixes.
 - **iOS build 29** uploaded to TestFlight 2026-10-17 (includes the 2026-10-16 full lesson audit).
+
+## 2026-10-17: "Before you start" reachable again (iOS build 30)
+- The 10 "Before you start" lessons (get a guitar, tune it, parts, strings, fretboard, pressing a fret, which hand, holding it, picks…) were unreachable after the course list left home. Lesson 1's first card now has an optional "New to guitar? Start with the basics ›" link; it opens them in order (finishing one offers the next basics lesson, and the last one leads back to Lesson 1). Home still shows no course list.

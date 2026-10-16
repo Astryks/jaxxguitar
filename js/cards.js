@@ -53,7 +53,7 @@ const SWITCH_TIPS = `<ul class="jg-switch-tips">
   <li><b>👀 Look ahead:</b> look at where your fingers are going, not where they've been.</li>
 </ul>`;
 
-function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onFinish, changeDrill, courseStart = null, courseTotal = null }) {
+function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onOpenLesson, onFinish, changeDrill, courseStart = null, courseTotal = null }) {
   const cards = lesson.cards;
   document.body.classList.add("jg-lesson-open");
   let cleanups = [];
@@ -132,6 +132,11 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onFinish, cha
     if (card.show?.viewer) panel.querySelector(".jg-card-board").insertAdjacentHTML("afterend", `<div class="jg-viewer-wrap">${viewerSvg()}</div>`);
     if (card.show?.guitar) extra.innerHTML = `<div class="jg-guitar-wrap ${isLefty() ? "jg-flipped" : ""}">${guitarSvg()}</div>`;
     // Left-handed? One tap mirrors every fretboard, chord box and guitar picture.
+    // Optional "Before you start" lessons (getting a guitar, tuning, holding it…).
+    if (card.basics && onOpenLesson) {
+      controls.insertAdjacentHTML("beforebegin", `<button class="jg-basics-link" type="button">New to guitar? Start with the basics ›</button>`);
+      panel.querySelector(".jg-basics-link").addEventListener("click", () => { clean(); document.body.classList.remove("jg-lesson-open"); onOpenLesson(card.basics); });
+    }
     // On every card, so left-handed players can flip at any point.
     panel.querySelector(".jg-card-board").insertAdjacentHTML("beforebegin", flipButtonHtml());
     wireFlip(panel, () => show(i));

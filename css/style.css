@@ -809,3 +809,4 @@ body.jg-intro-open { overflow: hidden; }
 .jg-viewer .jg-viewer-txt { font: 600 11px system-ui, sans-serif; fill: #5a3a1f; text-anchor: middle; }
 .jg-viewer .jg-viewer-strong { font-weight: 800; fill: #3b2410; }
 .jg-card-skip { display: block; margin: 8px 0 0 auto; background: none; border: 0; color: var(--jg-muted, #777); font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; }
+.jg-basics-link { display: block; margin: 6px auto 4px; padding: 8px 14px; border-radius: 999px; border: 1px dashed #c98f4a; background: #fff8ee; color: #8a4f17; font: 600 14px/1.2 system-ui, sans-serif; cursor: pointer; }

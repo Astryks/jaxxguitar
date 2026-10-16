@@ -150,6 +150,16 @@ function prevLesson(lesson) {
 }
 const openLastOf = (l) => openLesson(l.id, unitCount(l) - 1);
 
+// After a "Before you start" lesson, carry on through the basics in order,
+// then into Lesson 1; otherwise the next unfinished lesson.
+function nextAfter(lesson) {
+  if (lesson.pre) {
+    const pre = sections()[0].lessons;
+    const i = pre.findIndex((l) => l.id === lesson.id);
+    if (i >= 0 && pre[i + 1]) return pre[i + 1];
+  }
+  return nextLesson();
+}
 function nextLesson() {
   return allLessons().find((l) => !l.pre && !l.world && !isLessonComplete(l.id)) || null;
 }
@@ -279,12 +289,13 @@ function openLesson(id, pageIndex = 0) {
       courseStart: cc ? cc.n : null,
       courseTotal: cc ? cc.total : null,
       onExit: showHome,
+      onOpenLesson: (lid) => { runCleanup(); openLesson(lid); },
       onBackFirst: prevLesson(lesson) ? () => { runCleanup(); openLastOf(prevLesson(lesson)); } : null,
       changeDrill,
       onFinish: () => {
         markLessonComplete(lesson.id);
         runCleanup();
-        finishScreen(lesson, nextLesson());
+        finishScreen(lesson, nextAfter(lesson));
       },
     });
     cleanup.push(stop);
@@ -324,7 +335,7 @@ function openLesson(id, pageIndex = 0) {
     if (!last) return openLesson(id, pageIndex + 1);
     markLessonComplete(lesson.id);
     if (lesson.song) markSongStatus(lesson.song.title, "completed");
-    const nxt = nextLesson();
+    const nxt = nextAfter(lesson);
     runCleanup();
     finishScreen(lesson, nxt);
   });
