@@ -1,6 +1,6 @@
 # Jaxx Guitar - status
 
-_Last updated 2026-10-18._ This file is the checklist of everything requested for Jaxx Guitar, so nothing gets missed. ✅ done · 🟡 in progress / waiting on something · ⬜ not started.
+_Last updated 2026-10-19._ This file is the checklist of everything requested for Jaxx Guitar, so nothing gets missed. ✅ done · 🟡 in progress / waiting on something · ⬜ not started.
 
 Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (GitHub Pages) · iOS bundle: `com.jaxxguitar.app`
 
@@ -49,6 +49,28 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
 - Payments: only the optional Tip jar (Apple In-App Purchase, unlocks nothing, app only). Don't submit for review until the owner says so. The owner types all passwords.
 
 ---
+
+## Upload a song: "Every note", string and fret for every note (2026-10-19)
+
+Owner: "when users upload an mp3 it should be super detailed": every note, which string and which fret, not just chords. Tested in headless Chrome (upload → Every note → Listen, jump to bar 9, loop 4 bars at 50%, Wait for me answered note by note) on desktop and phone width, screenshots checked, no page errors; `npm run check` and the new `npm run test:every-note` pass. iOS not built. Cache v29.
+
+1. ✅ **Every note view** (Practice → Upload a song → Show: **Every note**; `js/every-note-view.js`). All of Basic Pitch's notes (chords, bass and tune), with their onsets, lengths and loudness. Above the fretboard: the current moment big (fret number, or the chord it spells: "G", "Am7", "D/F#", "E5"), each note as "B string, fret 7" chips, **"Bar 5 · beat 2 &"**, and "next: ...". A strip of the next 8 moments as fret numbers on their strings (a page that turns over, never scrolls), with bar lines and bar numbers, chord names on top, louder notes bolder and a tail for how long each rings. On the fretboard: the moment's notes as dots with their fret numbers, their strings glowing with rings while they ring, the next moment faint. Controls: Listen / Wait for me (stops at every moment until the mic hears one of its notes, any octave, or you tap it), 50 / 75 / 100% speed (pitch kept), Loop 4 bars from here, a bar slider to jump anywhere, Sound: song / our guitar / both, Tuning and capo.
+2. ✅ **Tablature algorithm** (`js/every-note.js` `assignTab`): dynamic programming (Viterbi) over every playable fingering of each moment, the "optimum path" approach (Sayegh 1989, *Computer Music Journal* 13(3); Radisavljevic & Driessen 2004, ICMC; playability rules as in Tuohy & Potter 2005, Barbancho et al. 2012, Yazawa et al. 2013). Candidates: each note on a different string, fretted notes within 4 frets, at most 4 fingers (a barre counts as one), frets 0-15 from the capo; notes out of range move by an octave; a moment no hand can hold drops octave doublings first, then the quietest inner note (counted in the summary). Hold cost: higher positions, stretches, fingers, a barre, skipped strings, crossed strings. Move cost: how far the hand's 4-fret window shifts, more in fast passages; open strings leave the hand where it is; the same pitch prefers the same string. ~12 ms for a 30 s song. Result on the test songs: open C / G / E / A / B7 shapes, scale runs in position.
+3. ✅ **Tuning and capo**: tuning heard from notes below E2 (standard, half step down, drop D, whole step down; a bass guitar in the mix = standard), switchable; capo 0/2/3/4/5 and the capo that fits the chords. Fret numbers count from the capo, as in tab.
+4. ✅ **Beats and bars** (`trackBeats`, `quantizeGroups`): tempo by autocorrelation, beat times by dynamic programming (Ellis 2007, *J. New Music Research* 36(1)), downbeats where the harmony in the bar before and after differs most (bars start on chord changes), then each moment moves 60% of the way to the nearest 16th (at most 40 ms, never past a neighbour, so every bar keeps the presses the recording has).
+5. ✅ **Cleaner notes for a guitar** (`cleanForGuitar`, `transcribe.js` `detailedNotes`): Every note re-reads the model output with onset threshold 0.6 and drops harmonics of a louder ringing note (octave, 12th, 2 octaves, 17th, 19th, 3 octaves), sub-octave ghosts, short quiet blips and pitches above D6. The chord and tune views are unchanged.
+6. ✅ **Accuracy**, three synthesized guitar recordings with known notes (Karplus-Strong, the app's own pluck algorithm; Ode to Joy and Twinkle Twinkle, both public domain, with strummed chords, bass walks and 8th-note scale runs, ±12 ms human timing; one tuned a half step down). Note F1 (pitch exact, onset within 50 ms):
+
+   | Recording | Before (app cleanup) P / R / F | Every note P / R / F | Tempo | Bars and beats right | Unplayable positions |
+   |---|---|---|---|---|---|
+   | Ode to Joy, 100 BPM | 64 / 90 / 75 | 75 / 90 / 82 | 100 | 100% | 0 |
+   | Twinkle, full strums, 84 BPM | 69 / 61 / 65 | 89 / 72 / 80 | 85 | 100% | 0 |
+   | Twinkle, half step down | 71 / 61 / 66 | 87 / 71 / 78 (tuning found) | 85 | 100% | 0 |
+
+   Every position sounds the right pitch in the chosen tuning; max span 4 frets. Timing vs the score 7-9 ms before and 7-8 ms after quantizing. Caveat: the cleanup thresholds were tuned on these same recordings; real band mixes (drums, vocals, distortion) will be noticeably worse.
+7. ✅ **A better model? Not added.** Checked open guitar transcription models for one that runs on-device in TF.js / ONNX-web, is licensed for commercial use and clearly beats Basic Pitch (Apache-2.0, ~17K parameters, GuitarSet note F1 ~79%): Riley, Edwards & Dixon 2024 ("High Resolution Guitar Transcription via Domain Adaptation", ICASSP; ~87-90% F1, ~20M parameters) has no released weights or licence; MT3 (90%, Apache-2.0) is a 77M-parameter T5, far too big for a phone web view; TabCNN (Wiggins & Kim 2019) and FretNet score lower note F1 than Basic Pitch (58% / 66% in Riley et al.'s table), and the one ONNX export of TabCNN has no clear licence; NoodleGP / TART have no released web models. So Basic Pitch stays; revisit if Riley et al. publish weights under a permissive licence.
+
+Known limits: a group of notes counts as one "moment" when they start within 75 ms; 4/4 only (3/4 songs get bars of 4); Wait for me's microphone hears one note at a time, so for a chord any one of its notes moves on; notes too close together for one hand are left out and counted; tuning detection needs the low strings to be heard.
 
 ## Owner additions: Godfather theme, Parisienne Walkways, Michael Jackson, full solos on Songsterr (2026-10-18)
 

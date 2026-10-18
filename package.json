@@ -9,7 +9,8 @@
     "cap:open:ios": "cap open ios",
     "check": "node scripts/check-shapes.mjs",
     "test:pitch": "node scripts/test-pitch.mjs",
-    "test:chords": "node scripts/test-chords.mjs"
+    "test:chords": "node scripts/test-chords.mjs",
+    "test:every-note": "node scripts/test-every-note.mjs"
   },
   "license": "ISC",
   "dependencies": {
