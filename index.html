@@ -155,7 +155,7 @@
 <script>if(location.protocol==="capacitor:"||window.Capacitor)document.documentElement.classList.add("native");</script>
 <style>.seo-landing{max-width:760px;margin:24px auto;padding:0 20px;font-size:16px;line-height:1.6}.seo-landing h2{margin-top:1.4em}
 .seo-landing h3{margin:1em 0 .2em;font-size:1.05em}.seo-cta{display:inline-block;padding:10px 18px;border-radius:12px;background:#b85c1e;color:#fff!important;text-decoration:none;font-weight:600}
-html.native .seo-landing{display:none}</style>
+html.native .seo-landing{display:none}html.jg-app .seo-landing{display:none}html.jg-app.jg-faq-open:not(.native) .seo-landing{display:block}html.native .jg-faq-link{display:none}</style>
 <!-- SEO:JSONLD:END -->
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="icon" href="assets/icons/icon-32.png" sizes="32x32" type="image/png" />
@@ -217,6 +217,7 @@ html.native .seo-landing{display:none}</style>
   <footer class="jg-footer">
     <p>Jaxx Guitar runs 100% on your device. No account, no ads, no cost. ·
        <button class="jg-footer-link" data-tab="about" type="button">About &amp; settings</button> ·
+       <button class="jg-faq-link" type="button" aria-controls="about-app" aria-expanded="false">About &amp; FAQ</button> ·
        <a href="privacy.html">Privacy Policy</a> ·
        <a href="https://github.com/Astryks/jaxxguitar/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">Notices</a> ·
        A sibling of <a href="https://haydenkeys.com" target="_blank" rel="noopener">Hayden Keys</a> (piano).</p>

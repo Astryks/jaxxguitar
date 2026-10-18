@@ -110,9 +110,11 @@ function withSongs(lessons, { count = 3, skip = () => false } = {}) {
   return lessons.map((lesson) => {
     const fresh = lessonChords(lesson);
     fresh.forEach((c) => known.add(c));
-    if (skip(lesson)) return lesson;
+    // songCount: 0 for lessons that already teach their own songs.
+    const want = lesson.songCount ?? count;
+    if (skip(lesson) || want === 0) return lesson;
     let picks = (lesson.songs || []).map(findSong).filter(teachable);
-    if (picks.length < count) {
+    if (picks.length < want) {
       const fits = (s) => shapesOf(s).every((c) => known.has(c));
       const usesNew = (s) => shapesOf(s).some((c) => fresh.has(c));
       const notWorld = (s) => !(s.genre || "").startsWith("World");
@@ -125,14 +127,14 @@ function withSongs(lessons, { count = 3, skip = () => false } = {}) {
       ];
       for (const ok of tiers) {
         for (const s of pool) {
-          if (picks.length >= count) break;
+          if (picks.length >= want) break;
           if (used.has(s.title) || picks.includes(s) || !ok(s)) continue;
           picks.push(s);
         }
-        if (picks.length >= count) break;
+        if (picks.length >= want) break;
       }
     }
-    picks = picks.slice(0, count);
+    picks = picks.slice(0, want);
     picks.forEach((s) => used.add(s.title));
     if (!picks.length) return lesson;
     if (lesson.cards) {

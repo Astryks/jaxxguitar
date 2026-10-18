@@ -132,6 +132,16 @@ document.addEventListener("click", (e) => {
   if (e.target.closest(".jg-funfact-open")) showFunFact();
 });
 
+// Web: once the app is running it looks like the iOS app: the crawlable
+// "About & FAQ" text under it (index.html .seo-landing) is hidden until
+// the footer's About & FAQ link opens it.
+document.documentElement.classList.add("jg-app");
+document.querySelectorAll(".jg-faq-link").forEach((b) => b.addEventListener("click", () => {
+  const open = document.documentElement.classList.toggle("jg-faq-open");
+  b.setAttribute("aria-expanded", String(open));
+  if (open) document.getElementById("about-app")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}));
+
 drawLevel();
 // Splash first (just Jaxx), then the home screen underneath.
 let started = false;

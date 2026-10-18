@@ -10,12 +10,13 @@
 // reports the note (input-hub), so every input path (screen, mic) works
 // the same. With the left-handed setting on, the whole board is mirrored
 // (nut on the right) and its text is flipped back so it still reads
-// normally (css: .jg-lefty text).
+// normally (settings.js mirrorSvgTexts: plain SVG attributes, so the iOS
+// web view draws it exactly like Chrome).
 
 import { TUNING, STRING_NAMES, midiAt, noteName } from "./guitar-theory.js";
 import { playNote } from "./guitar-audio.js";
 import { emitNoteOn } from "./input-hub.js";
-import { isLefty } from "./settings.js";
+import { isLefty, mirrorSvgTexts } from "./settings.js";
 
 const STRING_COLORS = ["#e0625b", "#f0a24b", "#e8d24b", "#5bbf72", "#4fa3e0", "#9b78e0"]; // 6th → 1st
 const INLAYS = [3, 5, 7, 9, 15, 17];
@@ -57,7 +58,8 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
   }
   for (let f = 1; f <= frets; f++) parts.push(`<text x="${center(f)}" y="${H - 8}" class="jg-fret-num" data-fn="${f}">${f}</text>`);
   const lefty = isLefty();
-  container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="jg-fretboard-svg ${lefty ? "jg-lefty" : ""}" role="img" aria-label="Guitar fretboard, low E string at the bottom${lefty ? ", mirrored for left-handed players" : ""}"><g${lefty ? ` transform="translate(${W} 0) scale(-1 1)"` : ""}><g>${parts.join("")}</g><g class="jg-glow"></g><g class="jg-marks"></g><g class="jg-hits"></g></g></svg>`;
+  const fix = (html) => (lefty ? mirrorSvgTexts(html) : html);
+  container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="jg-fretboard-svg ${lefty ? "jg-lefty" : ""}" role="img" aria-label="Guitar fretboard, low E string at the bottom, nut on the ${lefty ? "right (mirrored for left-handed players)" : "left"}"><g${lefty ? ` transform="translate(${W} 0) scale(-1 1)"` : ""}><g>${fix(parts.join(""))}</g><g class="jg-glow"></g><g class="jg-marks"></g><g class="jg-hits"></g></g></svg>`;
   const svg = container.querySelector("svg");
   const marks = svg.querySelector(".jg-marks");
   const hits = svg.querySelector(".jg-hits");
@@ -136,7 +138,7 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
       const lab = q.label ?? (q.finger ? String(q.finger) : "");
       if (lab) p.push(`<text x="${x}" y="${y + 4.5}" class="jg-dot-label ${q.pop ? "jg-pop" : ""}">${lab}</text>`);
     });
-    marks.innerHTML = p.join("");
+    marks.innerHTML = fix(p.join(""));
   }
 
   // Show a chord shape ({frets, fingers, barre}) with finger numbers, all
@@ -178,6 +180,7 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
           t.setAttribute("y", stringY(q.string) - 14);
           t.setAttribute("class", "jg-finger-tag");
           t.textContent = `${fg} = ${FINGER_NAMES[fg] || "finger"}${isBarre ? " (flat across)" : ""}`;
+          if (lefty) { t.setAttribute("transform", `matrix(-1 0 0 1 ${2 * (center(q.fret) + 20)} 0)`); t.style.textAnchor = "end"; }
           marks.appendChild(t);
         }
         onStep?.(fg, i);
@@ -203,17 +206,17 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
     const all = [...new Set([...A.keys(), ...B.keys()])].sort();
     const same = (p, q) => p && q && p.string === q.string && p.fret === q.fret;
     const mutes = (shape) => shape.frets.map((f, s) => (f < 0 ? `<text x="${openW - 20}" y="${stringY(s) + 6}" class="jg-mute">×</text>` : "")).join("");
-    marks.innerHTML = `<g class="jg-morph-mutes">${mutes(a)}</g>` + all.map((fg) => {
+    marks.innerHTML = fix(`<g class="jg-morph-mutes">${mutes(a)}</g>` + all.map((fg) => {
       const p = A.get(fg) || B.get(fg);
       const anchor = same(A.get(fg), B.get(fg));
       return `<g class="jg-morph-f ${anchor ? "jg-morph-anchor" : ""}" data-fg="${fg}" style="transform:translate(${center(p.fret)}px,${stringY(p.string)}px);opacity:${A.get(fg) ? 1 : 0}">
         ${anchor ? '<circle r="18" class="jg-anchor-ring"/>' : ""}<circle r="12" class="jg-dot jg-lit"/><text y="4.5" class="jg-dot-label">${fg}</text></g>`;
-    }).join("");
+    }).join(""));
     const groups = [...marks.querySelectorAll(".jg-morph-f")];
     const go = (toB) => {
       const src = toB ? A : B;
       const dst = toB ? B : A;
-      marks.querySelector(".jg-morph-mutes").innerHTML = mutes(toB ? b : a);
+      marks.querySelector(".jg-morph-mutes").innerHTML = fix(mutes(toB ? b : a));
       groups.forEach((g) => {
         const fg = Number(g.dataset.fg);
         const p = dst.get(fg) || src.get(fg);
@@ -298,7 +301,7 @@ function chordDiagramSvg(shape, name = "") {
     }
   });
   const lefty = isLefty();
-  return `<svg viewBox="0 0 ${w} ${h}" class="jg-diagram ${lefty ? "jg-lefty" : ""}" role="img" aria-label="${name} chord diagram, low E string at the bottom"><g${lefty ? ` transform="translate(${w} 0) scale(-1 1)"` : ""}>${p.join("")}</g></svg>`;
+  return `<svg viewBox="0 0 ${w} ${h}" class="jg-diagram ${lefty ? "jg-lefty" : ""}" role="img" aria-label="${name} chord diagram, low E string at the bottom, high e on top"><g${lefty ? ` transform="translate(${w} 0) scale(-1 1)"` : ""}>${lefty ? mirrorSvgTexts(p.join("")) : p.join("")}</g></svg>`;
 }
 
 // Tab: six lines (high e on top), fret numbers at their beat positions.

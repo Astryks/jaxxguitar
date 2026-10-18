@@ -23,6 +23,17 @@
 //   { song: "Title" }                           a song to learn, with its video
 //   { practice: {...}, ok: "label" }            a play-along box, then a button
 //   { changes: ["C", "Am"] }                    the one-minute change drill
+//   { songPractice: { title, bpm, capo, parts } } a song in the play-along
+//                                               box: each part (intro, verse,
+//                                               chorus) with its own chords
+//                                               and strum, shown as it plays
+// Text can use {{fret}} / {{strum}} for the hands (settings.js hands()),
+// so left-handed players read "right hand presses the frets".
+// card.video: a video key (media-data.js) shown under the message.
+//
+// The chat reads top to bottom like WhatsApp: the message, then each
+// question you tap and its answer, then the task, then every reply
+// (oops, tips, "Yes!") right under the task, oldest first.
 // show: { shape: "C" } | { notes: [...] } | { frets: [1, 2, 3] } |
 //       { guitar: true } | { fingerStrum: true } - what to show first.
 
@@ -37,9 +48,10 @@ import { renderStringTuner } from "./tuner.js";
 import { onNoteOn, enableMic, disableMic, micOn } from "./input-hub.js";
 import { createStrumLoop } from "./strum-loop.js";
 import { guitarSvg, fingerStrumSvg, viewerSvg } from "./guitar-art.js";
-import { isLefty, setLefty, flipButtonHtml, wireFlip } from "./settings.js";
+import { isLefty, setLefty, flipButtonHtml, wireFlip, hands } from "./settings.js";
 import { songCardHtml, wireSongCards, findSong } from "./lesson-songs.js";
-import { wireVideos } from "./media.js";
+import { wireVideos, videoHtml } from "./media.js";
+import { chordTimeline } from "./guitar-player.js";
 import { teachHtml } from "./teach-videos.js";
 import { lessonInspireHtml } from "./inspire.js";
 import { friendlyMicError } from "./pitch.js";
@@ -53,7 +65,7 @@ const SWITCH_TIPS = `<ul class="jg-switch-tips">
   <li><b>👀 Look ahead:</b> look at where your fingers are going, not where they've been.</li>
 </ul>`;
 
-function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onOpenLesson, onFinish, changeDrill, courseStart = null, courseTotal = null }) {
+function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onExit, onBackFirst, onOpenLesson, onFinish, changeDrill, courseStart = null, courseTotal = null }) {
   const cards = lesson.cards;
   document.body.classList.add("jg-lesson-open");
   let cleanups = [];
@@ -64,8 +76,9 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onOpenLesson,
     clean();
     if (i >= cards.length) { if (micByUs) disableMic(); document.body.classList.remove("jg-lesson-open"); return onFinish(); }
     const card = cards[i];
+    onShow?.(i);
     const w = card.want || { tap: "Got it!" };
-    const needsBoard = w.string !== undefined || w.pos || w.chord || w.practice || w.changes || w.compare || w.morph || w.strum || w.loop || card.show?.shape || card.show?.notes || card.show?.frets || (card.show && !card.show.guitar && !card.show.fingerStrum && Object.keys(card.show).filter((k) => k !== "viewer").length === 0);
+    const needsBoard = w.string !== undefined || w.pos || w.chord || w.practice || w.songPractice || w.changes || w.compare || w.morph || w.strum || w.loop || card.show?.shape || card.show?.notes || card.show?.frets || (card.show && !card.show.guitar && !card.show.fingerStrum && Object.keys(card.show).filter((k) => k !== "viewer").length === 0);
     // One animation per card, never the same as the last few (scenes.js).
     const scene = pickScene(`${lesson.title} ${card.say || ""}`);
     const legend = scene.startsWith("legend-") ? LEGENDS[scene.slice(7)] : null;
@@ -75,16 +88,17 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onOpenLesson,
         <div class="jg-cards-top">
           <button class="jg-cards-x" aria-label="Close lesson">✕</button>
           ${i > 0 || onBackFirst ? '<button class="jg-cards-back">← Back</button>' : "<span></span>"}
-          <b class="jg-cards-title">${lesson.title}</b>
+          <b class="jg-cards-title">${title}</b>
           <span class="jg-cards-count" title="Card ${count} of the whole course">${count}</span>
         </div>
         <div class="jg-cards-thread">
-          <div class="jg-cmsg"><div class="jg-cavatar jg-avatar-scene">${sceneSvg(scene, { label: "Jaxx Guitar" })}</div><div class="jg-cbubble">${card.say}${teachHtml(lesson.id, i)}${lessonInspireHtml(lesson.id, i)}${legend ? `<div class="jg-legend-fact">🎸 <b>${legend.name}</b> (${legend.who}): ${legend.fact}</div>` : ""}</div></div>
+          <div class="jg-cmsg"><div class="jg-cavatar jg-avatar-scene">${sceneSvg(scene, { label: "Jaxx Guitar" })}</div><div class="jg-cbubble">${hands(card.say)}${card.video ? videoHtml(card.video) : ""}${teachHtml(lesson.id, i)}${lessonInspireHtml(lesson.id, i)}${legend ? `<div class="jg-legend-fact">🎸 <b>${legend.name}</b> (${legend.who}): ${legend.fact}</div>` : ""}</div></div>
           <div class="jg-cmore"></div>
         </div>
         ${w.chord ? PHONE : ""}
         <div class="jg-card-extra"></div>
         <div class="jg-card-board"></div>
+        <div class="jg-card-feed" aria-live="polite"></div>
         <div class="jg-card-controls"></div>
       </div>`;
     window.scrollTo(0, 0);
@@ -94,10 +108,13 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onOpenLesson,
     const extra = panel.querySelector(".jg-card-extra");
     panel.querySelector(".jg-cards-x").addEventListener("click", () => { clean(); if (micByUs) disableMic(); document.body.classList.remove("jg-lesson-open"); onExit(); });
     panel.querySelector(".jg-cards-back")?.addEventListener("click", () => { if (i > 0) return show(i - 1); clean(); onBackFirst(); });
-    const reply = (html, pose) => {
-      thread.querySelector(".jg-cmsg-oops")?.remove();
-      thread.insertAdjacentHTML("beforeend", `<div class="jg-cmsg ${pose === "oops" || pose === "tangled" ? "jg-cmsg-oops" : ""}"><div class="jg-cbubble">${html}</div></div>`);
-      thread.lastElementChild.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+    const feed = panel.querySelector(".jg-card-feed");
+    // Every new message goes at the very end of its list, under the one
+    // before it: questions/answers in the thread (before the task starts),
+    // replies to the task in the feed right under the task.
+    const reply = (html, pose, list = feed) => {
+      list.insertAdjacentHTML("beforeend", `<div class="jg-cmsg ${pose === "oops" || pose === "tangled" ? "jg-cmsg-oops" : ""}"><div class="jg-cbubble">${hands(html)}</div></div>`);
+      list.lastElementChild.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
     };
 
     // "Tell me more" questions, one tap at a time; the task waits until they're read.
@@ -110,11 +127,13 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onOpenLesson,
       const [q, a] = more.shift();
       // The next question always sits right under the latest message.
       thread.appendChild(moreEl);
-      moreEl.innerHTML = `<div class="jg-chip-hint">Tap the orange bubble to keep going 👇</div><button class="jg-chip">${q} <span>›</span></button><button class="jg-chip-skip" type="button">Skip ›</button>`;
+      moreEl.innerHTML = `<div class="jg-chip-hint">Tap the purple bubble to keep going 👇</div><button class="jg-chip">${hands(q)} <span>›</span></button><button class="jg-chip-skip" type="button">Skip ›</button>`;
       moreEl.querySelector(".jg-chip").addEventListener("click", () => {
         moreEl.innerHTML = "";
-        thread.insertAdjacentHTML("beforeend", `<div class="jg-cmsg jg-cme"><div class="jg-cbubble">${q}</div></div>`);
-        reply(a, "idle");
+        // Question, then its answer, appended in order before the (moved) chip.
+        moreEl.insertAdjacentHTML("beforebegin", `<div class="jg-cmsg jg-cme"><div class="jg-cbubble">${hands(q)}</div></div>`);
+        moreEl.insertAdjacentHTML("beforebegin", `<div class="jg-cmsg"><div class="jg-cbubble">${hands(a)}</div></div>`);
+        moreEl.previousElementSibling.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
         nextMore();
       });
       moreEl.querySelector(".jg-chip-skip").addEventListener("click", () => { more.length = 0; nextMore(); });
@@ -122,13 +141,16 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onOpenLesson,
     }
 
     let inst = null;
-    if (needsBoard && !w.practice) {
+    if (needsBoard && !w.practice && !w.songPractice) {
       inst = mountInstrument(panel.querySelector(".jg-card-board"), { frets: 12, highway: false });
       cleanups.push(() => { inst.fb.stopAnim(); inst.hw.destroy(); });
       if (card.show?.shape) inst.fb.showShape(chordShape(card.show.shape));
       if (card.show?.notes) inst.fb.show(card.show.notes);
       if (card.show?.frets) inst.fb.highlightFrets(card.show.frets);
     }
+    // Left-handed: the nut is on the right, so start the (scrollable) board there.
+    const showNut = () => { const bd = panel.querySelector(".jg-card-board"); if (isLefty() && bd) requestAnimationFrame(() => { bd.scrollLeft = bd.scrollWidth; }); };
+    showNut();
     if (card.show?.viewer) panel.querySelector(".jg-card-board").insertAdjacentHTML("afterend", `<div class="jg-viewer-wrap">${viewerSvg()}</div>`);
     if (card.show?.guitar) extra.innerHTML = `<div class="jg-guitar-wrap ${isLefty() ? "jg-flipped" : ""}">${guitarSvg()}</div>`;
     // Left-handed? One tap mirrors every fretboard, chord box and guitar picture.
@@ -148,7 +170,7 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onOpenLesson,
       if (finished) return;
       finished = true;
       if (card.tip) reply(card.tip, "idle");
-      reply(`<b>${card.done || "Yes! 🎉"}</b>`, nextTrick("yay"));
+      reply(`<b>${hands(card.done || "Yes! 🎉")}</b>`, nextTrick("yay"));
       const label = next || (i === cards.length - 1 ? "Finish lesson ✓" : "Next →");
       controls.innerHTML = (w.chord ? `<button class="jg-btn jg-card-again">${icon("speaker", 18)} Strum it again</button>` : "") + `<button class="jg-btn jg-btn-primary jg-card-next ${stay ? "" : "jg-card-next-auto"}">${label}</button>`;
       const go = () => show(i + 1);
@@ -253,6 +275,46 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onOpenLesson,
       cleanups.push(() => inst.fb.onTap(null));
     }
 
+    // A song in the play-along box: the chords and the strum change with
+    // each part of the song, and the list above lights up the part playing.
+    function songPractice(sp) {
+      const ARROW = { down: "↓", up: "↑" };
+      const arrows = (pat) => pat.map((d) => `<i class="${d ? "" : "jg-sp-gap"}">${d ? ARROW[d] : "·"}</i>`).join("");
+      const info = new Map();
+      let at = 0;
+      const items = [];
+      sp.parts.forEach((part, pi) => {
+        const steps = part.chords.map((c) => { const shape = { ...chordShape(c) }; info.set(shape, { pi, chord: c }); return { chord: c, shape, beats: part.beats || 4 }; });
+        chordTimeline(steps, { pattern: part.pattern }).forEach((it) => items.push({ ...it, start: it.start + at }));
+        at += steps.reduce((n, x) => n + x.beats, 0);
+      });
+      extra.innerHTML = `<div class="jg-songmap">
+          <div class="jg-sp-now"><span class="jg-sp-part">${sp.parts[0].name}</span><b class="jg-sp-chord">${sp.parts[0].chords[0]}</b><span class="jg-sp-strum">${arrows(sp.parts[0].pattern)}</span></div>
+          ${sp.parts.map((part, pi) => `<div class="jg-sp-row" data-pi="${pi}"><b>${part.name}</b><span>${part.chords.join(" · ")}</span><span class="jg-sp-strum">${arrows(part.pattern)}</span><small>${part.strumName || ""}</small></div>`).join("")}
+          ${sp.capo ? `<p class="jg-note">Capo on fret ${sp.capo} to match the record (or play it without a capo, a little lower).</p>` : ""}
+        </div><div class="jg-sp-box"></div>`;
+      inst = mountInstrument(panel.querySelector(".jg-card-board"), { frets: 12, highway: true });
+      showNut();
+      cleanups.push(() => inst.hw.destroy());
+      const now = extra.querySelector(".jg-sp-now");
+      const rows = [...extra.querySelectorAll(".jg-sp-row")];
+      const light = (pi, chord) => {
+        const part = sp.parts[pi];
+        rows.forEach((r) => r.classList.toggle("jg-sp-on", Number(r.dataset.pi) === pi));
+        now.querySelector(".jg-sp-part").textContent = part.name;
+        now.querySelector(".jg-sp-chord").textContent = chord;
+        now.querySelector(".jg-sp-strum").innerHTML = arrows(part.pattern);
+      };
+      light(0, sp.parts[0].chords[0]);
+      // The player shows each chord on the fretboard as it plays: follow it.
+      const orig = inst.fb.showShape;
+      inst.fb.showShape = (shape, o) => { orig(shape, o); const hit = info.get(shape); if (hit) light(hit.pi, hit.chord); };
+      const box = createPracticeBox(extra.querySelector(".jg-sp-box"), inst, { items: () => items, bpm: sp.bpm || 80, modes: ["listen", "wait"], label: sp.label || sp.title, drums: true, key: `${lesson.id}:card${i}` });
+      cleanups.push(() => box.destroy());
+      controls.innerHTML = `<button class="jg-btn jg-btn-primary">${w.ok || "I played along! ✓"}</button>`;
+      controls.firstElementChild.addEventListener("click", () => success());
+    }
+
     function setupTask() {
       if (w.song) {
         const song = findSong(w.song);
@@ -266,7 +328,7 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onOpenLesson,
         // A chord symbol ("G") or a custom shape { name, frets, fingers } (e.g. the 4-finger G).
         const shapeOf = (c) => (typeof c === "string" ? chordShape(c) : c);
         const nameOf = (c) => (typeof c === "string" ? c : c.name);
-        extra.innerHTML = `<div class="jg-compare">${w.compare.map((c, k) => `<button class="jg-compare-item" data-c="${k}" type="button">${chordDiagramSvg(shapeOf(c), nameOf(c))}<span>${icon("speaker", 14)} Hear it</span></button>`).join("")}</div>${w.note ? `<p class="jg-compare-note">${w.note}</p>` : ""}`;
+        extra.innerHTML = `<div class="jg-compare">${w.compare.map((c, k) => `<button class="jg-compare-item" data-c="${k}" type="button">${chordDiagramSvg(shapeOf(c), nameOf(c))}<span>${icon("speaker", 14)} Hear it</span></button>`).join("")}</div>${w.note ? `<p class="jg-compare-note">${hands(w.note)}</p>` : ""}`;
         const pick = (k) => {
           extra.querySelectorAll("[data-c]").forEach((b) => b.classList.toggle("jg-compare-on", Number(b.dataset.c) === k));
           inst.fb.showShape(shapeOf(w.compare[k]));
@@ -313,7 +375,7 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onOpenLesson,
         extra.querySelectorAll("[data-v]").forEach((b) => b.addEventListener("click", () => {
           if (finished) return;
           extra.querySelectorAll("[data-v]").forEach((x) => { x.classList.add("jg-card-right"); x.insertAdjacentText("afterbegin", "✓ "); });
-          reply(w.allCorrect, "cheer");
+          reply(hands(w.allCorrect), "cheer");
           success({ stay: true });
         }));
       } else if (w.choice) {
@@ -321,7 +383,7 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onOpenLesson,
         controls.querySelectorAll("[data-v]").forEach((b) => b.addEventListener("click", () => {
           if (b.dataset.v === w.choice) return success();
           b.classList.add("jg-card-wrong");
-          oops(w.wrong || "Not quite! Have another look 🙈");
+          oops(hands(w.wrong || "Not quite! Have another look 🙈"));
         }));
       } else if (w.string !== undefined) {
         inst.fb.show([{ string: w.string, fret: 0, tone: "root" }]);
@@ -356,8 +418,11 @@ function runCards(panel, lesson, { start = 0, onExit, onBackFirst, onOpenLesson,
         const off = onNoteOn((midi, src) => { if (src === "mic" && !finished && k < steps.length && midi % 12 === midiAt(steps[k].string, steps[k].fret) % 12) advance(); });
         cleanups.push(off);
         prompt();
+      } else if (w.songPractice) {
+        songPractice(w.songPractice);
       } else if (w.practice) {
         inst = mountInstrument(panel.querySelector(".jg-card-board"), { frets: 12, highway: true });
+        showNut();
         cleanups.push(() => inst.hw.destroy());
         const box = createPracticeBox(extra, inst, { ...w.practice, key: `${lesson.id}:card${i}`, preferWait: true });
         cleanups.push(() => box.destroy());
