@@ -392,7 +392,7 @@ const BEGINNER = [
   {
     id: "lesson-strum", title: "Strumming and smooth changes", subtitle: "Your fingers or a pick, and the one-minute challenge",
     cards: STRUM_CARDS,
-    songs: ["Brown Eyed Girl", "Ocean Eyes", "Sweet Caroline"],
+    songs: ["Brown Eyed Girl", "Man in the Mirror", "Ocean Eyes", "Sweet Caroline"],
     pages: [],
   },
   {
@@ -484,7 +484,7 @@ const BEGINNER = [
   },
   {
     id: "lesson-power", title: "Power chords and palm muting", subtitle: "The rock sound",
-    songs: ["Where Is My Mind?"],
+    songs: ["Where Is My Mind?", "Beat It"],
     pages: [
       { html: `<h3>Two notes, huge sound.</h3>
         <p>A <strong>power chord</strong> is just a root and the note a fifth above it - no third, so it's neither major nor minor, and it sounds great with distortion. Shape: index on the root (6th or 5th string), ring finger two frets higher on the next string. Written "E5", "A5", "G5". For a fuller sound, add your pinky (or flatten your ring finger) on the next string too, at the same fret: that's the 3-note version in the boxes below.</p>
@@ -510,6 +510,13 @@ const BEGINNER = [
         <p>Try it: palm-muted E5, all down-strums, steady eighth notes. Lift your palm for the last two to hear the difference.</p>`,
         diagrams: ["E5"],
         practice: { items: () => chordTimeline(shapes(["E5", "E5", "E5", "G5", "A5"]), { beatsPerChord: 2, pattern: ["down", "down", "down", "down"] }), bpm: 80, modes: ["listen", "wait"], label: "Palm-muted E5 chugs" } },
+      { html: `<h3>Michael Jackson's "Beat It" 🕺</h3>
+        <p>"Beat It" (1982) is Michael Jackson's rock song: a tough guitar riff, and a solo by <strong>Eddie Van Halen</strong>. The whole song sits on two chords, <strong>E♭m and D♭</strong>, with <strong>B</strong> for the turn in each verse.</p>
+        <p>The guitars on the record are tuned down half a step, so on a normal guitar you play <strong>Em and D</strong> shapes (and <strong>C</strong> for the turn). <strong>Beginner version</strong> (simplified, our label): play them as power chords, <strong>E5 and D5</strong>, palm-muted, two beats each.</p>
+        <p>Listen to the video, then play along in <strong>Songs</strong> (the whole song is mapped there in the real key).</p>`,
+        diagrams: ["E5", "D5", "Em", "D", "C"],
+        song: "Beat It",
+        practice: { items: () => chordTimeline(shapes(["E5", "D5", "E5", "D5", "C5", "D5", "E5", "D5"]), { beatsPerChord: 2, pattern: ["down", "down", "down", "down"] }), bpm: 100, modes: ["listen", "wait"], label: "Beat It, beginner version: E5 D5 (C5 for the turn)" } },
     ],
   },
   {
@@ -787,7 +794,7 @@ const INTERMEDIATE = [
     ],
   },
   {
-    id: "lesson-hotel", title: "Solo study: Hotel California", subtitle: "Eagles, 1976",
+    id: "lesson-hotel", fullSolo: "Hotel California", title: "Solo study: Hotel California", subtitle: "Eagles, 1976",
     pages: [
       { html: `<h3>One of the most famous guitar solos ever.</h3>
         <p>The song's long outro solo is played by <strong>Don Felder</strong> and <strong>Joe Walsh</strong>, trading lines and then playing together in harmony with flowing arpeggios. In 1998, readers of <em>Guitarist</em> magazine voted it the best guitar solo of all time.</p>
@@ -810,7 +817,7 @@ const INTERMEDIATE = [
     ],
   },
   {
-    id: "lesson-november", title: "Solo study: November Rain", subtitle: "Guns N' Roses, 1991",
+    id: "lesson-november", fullSolo: "November Rain", title: "Solo study: November Rain", subtitle: "Guns N' Roses, 1991",
     pages: [
       { html: `<h3>Slash's slow-burn solos</h3>
         <p>"November Rain" is a nearly nine-minute power ballad, led by Axl Rose's piano, with big orchestra-style strings he played on a synthesizer. <strong>Slash</strong> plays melodic solos full of long bends and wide vibrato, and for the finale the band kicks into a heavier outro with his most famous solo of the song.</p>
@@ -832,6 +839,31 @@ const INTERMEDIATE = [
     ],
   },
   {
+    id: "lesson-parisienne", fullSolo: "Parisienne Walkways", title: "Solo study: Parisienne Walkways", subtitle: "Gary Moore, 1978: the long, singing note",
+    songs: ["Parisienne Walkways"],
+    pages: [
+      { html: `<h3>Gary Moore's Parisienne Walkways</h3>
+        <p>Northern Irish guitarist <strong>Gary Moore</strong> wrote it with Phil Lynott of Thin Lizzy (1978). It's a slow blues-rock ballad in <strong>A minor</strong> with a 12/8 feel, and the guitar does most of the singing.</p>
+        <p>It's famous for one moment: in the last solo Gary holds a single note for a very long time - around 15 to 20 seconds live - kept alive by a loud valve amp, feedback and slow, wide <strong>vibrato</strong>. The solo is copyrighted, so here's what it's made of: the chords, the scale and the techniques, plus our own lick.</p>`,
+        video: "song-parisienne-walkways" },
+      { html: `<h3>The chords under the solo</h3>
+        <p>The chords walk round the <strong>circle of fifths</strong>: <strong>Dm7 – Dm7/G – Cmaj7 – Fmaj7 – Bm7♭5 – E7</strong>, then home to <strong>Am</strong>. Each root is a fifth below the last (D, G, C, F, B, E, A), so every chord pulls into the next.</p>
+        <p>Strum it slowly (two beats each) so you hear where the solo sits.</p>`,
+        diagrams: ["Am", "Dm7", "Cmaj7", "Fmaj7", "Bm7b5", "E7"],
+        practice: { items: () => chordTimeline(shapes(["Dm7", "Dm7/G", "Cmaj7", "Fmaj7", "Bm7b5", "E7", "Am", "Am"]), { beatsPerChord: 2, pattern: ["down", "down", "down", "down"] }), bpm: 60, modes: ["listen", "wait"], label: "Solo chords: Dm7 Dm7/G Cmaj7 Fmaj7 Bm7b5 E7 Am", drums: true } },
+      { html: `<h3>The scale and the position</h3>
+        <p>Gary plays mostly in <strong>A minor pentatonic, box 1 at the 5th fret</strong> (orange dots are A), adding notes from <strong>A natural minor</strong> (B and F) for the sweet, sad sound. For the big ending he moves up the neck to the 12th-17th frets: the same box an octave higher.</p>
+        <p>Over each chord, aim for one of its notes: F over Fmaj7, B over Bm7♭5, G♯ over E7 (a note from A harmonic minor).</p>`,
+        notes: AMIN_PENT.map((n) => ({ string: n.string, fret: n.fret, tone: n.root ? "root" : undefined, label: String(n.fret) })),
+        practice: { items: scaleItems(AMIN_PENT), bpm: 70, modes: ["listen", "wait", "timed"], mic: true, label: "A minor pentatonic, 5th fret" } },
+      { html: `<h3>Our own lick: climb, then hold one note</h3>
+        <p>In Gary's style but <strong>our own notes</strong>: climb the box and land on <strong>A</strong> (high e string, fret 5). <strong>Hold it for four beats</strong> with slow, even vibrato: push the string up a little and let it back, over and over, with your wrist (not just the finger). Then fall back to A on the G string.</p>
+        <p>Practise holding a note for 4 beats, then 8. A long note only sings if the vibrato stays steady and you keep the other strings quiet.</p>`,
+        notes: AMIN_PENT.map((n) => ({ string: n.string, fret: n.fret, tone: n.root ? "root" : undefined, label: String(n.fret) })),
+        practice: { items: melody([[3, 5, 0.5], [3, 7, 0.5], [4, 5, 0.5], [4, 8, 0.5], [5, 5, 4], [4, 8, 0.5], [4, 5, 0.5], [3, 7, 0.5], [3, 5, 0.5], [2, 7, 2]]), bpm: 66, modes: ["listen", "wait", "timed"], mic: true, label: "Climb-and-hold lick in A minor (our own)" } },
+    ],
+  },
+  {
     id: "lesson-wah", fun: true, title: "Just for fun: get yourself a wah pedal", subtitle: "The pedal that makes your guitar talk",
     songCount: 0,
     pages: [
@@ -847,7 +879,7 @@ const INTERMEDIATE = [
     ],
   },
   {
-    id: "lesson-sweet-child", title: "Song study: Sweet Child O' Mine", subtitle: "Guns N' Roses, 1987: chords, the riff idea and the solos",
+    id: "lesson-sweet-child", fullSolo: "Sweet Child O' Mine", title: "Song study: Sweet Child O' Mine", subtitle: "Guns N' Roses, 1987: chords, the riff idea and the solos",
     songCount: 0,
     pages: [
       { html: `<h3>Sweet Child O' Mine</h3>
@@ -910,7 +942,7 @@ const INTERMEDIATE = [
     ],
   },
   {
-    id: "lesson-stairway", title: "Song study: Stairway to Heaven", subtitle: "Led Zeppelin, 1971 - fingerpicking to a solo",
+    id: "lesson-stairway", fullSolo: "Stairway to Heaven", title: "Song study: Stairway to Heaven", subtitle: "Led Zeppelin, 1971 - fingerpicking to a solo",
     pages: [
       { html: `<h3>One of the most famous guitar songs ever</h3>
         <p>"Stairway to Heaven" was written by <strong>Jimmy Page</strong> and <strong>Robert Plant</strong> and released on Led Zeppelin's fourth album in <strong>1971</strong>. It was never released as a single in the UK or US - yet it became one of the most-played rock songs on radio.</p>
@@ -1007,8 +1039,9 @@ const INTERMEDIATE = [
       { html: `<h3>🇮🇹 Italy and the Godfather sound: tremolo picking</h3>
         <p>Italian mandolin players make a single note <strong>sing</strong> by picking it super fast - down-up-down-up - over and over. That's <strong>tremolo picking</strong>. It's the shimmering sound guitarists use when they play the love theme from <strong>The Godfather</strong> (1972), composed by <strong>Nino Rota</strong>.</p>
         <p>Here's the technique on our own little A minor tune (not the film's music). Pick each note four times, fast and even, with a loose wrist and tiny movements.</p>
+        <p><strong>Play the Godfather theme:</strong> its chords are in <strong>Songs</strong> ("Love Theme from The Godfather"). With a <strong>capo on fret 3</strong> they're easy A minor shapes: <strong>Am, Dm, E</strong> (and C, G, F in the middle). Strum them, then <strong>find the tune by ear</strong> with the video: it starts on the B string and moves slowly, so pick each note with tremolo.</p>
         <p class="jg-note">Classical guitarists do tremolo with their fingers instead (p-a-m-i, very fast) - listen to Tárrega's <em>Recuerdos de la Alhambra</em> (1896), the most famous tremolo piece ever.</p>`,
-        people: ["nino-rota"], video: "godfather-tremolo",
+        people: ["nino-rota"], video: "godfather-tremolo", song: "Love Theme from The Godfather",
         practice: { items: () => {
           const tune = [[5, 0], [5, 1], [5, 0], [4, 3], [4, 1], [4, 0], [4, 1], [3, 2], [3, 2], [4, 0], [4, 1], [5, 0]];
           const out = [];
@@ -1081,7 +1114,7 @@ const ADVANCED = [
     ],
   },
   {
-    id: "lesson-wmggw", title: "Solo study: Prince & While My Guitar Gently Weeps", subtitle: "The 2004 Hall of Fame solo",
+    id: "lesson-wmggw", fullSolo: "While My Guitar Gently Weeps", title: "Solo study: Prince & While My Guitar Gently Weeps", subtitle: "The 2004 Hall of Fame solo",
     pages: [
       { html: `<h3>The most famous guitar solo at a tribute show</h3>
         <p><strong>George Harrison</strong> wrote "While My Guitar Gently Weeps" for the Beatles' White Album in 1968. His friend <strong>Eric Clapton</strong> played the original lead guitar on the record.</p>
@@ -1142,7 +1175,7 @@ const COURSE_PLAN = [
   { name: "Lesson 1: 4 chords, 3 songs", ids: ["lesson-1"] },
   { name: "Lesson 2: More chords, and one note at a time", ids: ["lesson-strum", "lesson-open-chords", "lesson-open-barre", "lesson-barre", "lesson-power", "lesson-sevenths", "lesson-capo", "lesson-tab"] },
   { name: "Lesson 3: Genres", ids: ["lesson-genres", "lesson-fingerpicking", "lesson-classical", "lesson-world"] },
-  { name: "Lesson 4: Solos", ids: ["lesson-pentatonic", "lesson-techniques", "lesson-hotel", "lesson-november", "lesson-wah", "lesson-sweet-child"] },
+  { name: "Lesson 4: Solos", ids: ["lesson-pentatonic", "lesson-techniques", "lesson-hotel", "lesson-november", "lesson-parisienne", "lesson-wah", "lesson-sweet-child"] },
   { name: "Lesson 5: Loops", ids: ["lesson-looping"] },
 ];
 const KEEP_GOING = ["lesson-lespaul", "lesson-redspecial", "lesson-creep", "lesson-major-scale", "lesson-scale-practice", "lesson-minor-scales", "lesson-all-chords", "lesson-stairway", "lesson-greensleeves", "lesson-caged", "lesson-modes", "lesson-wmggw", "lesson-ear-gym"];

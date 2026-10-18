@@ -950,3 +950,9 @@ body.jg-intro-open { overflow: hidden; }
 .jg-scale-pos input { width: 100%; }
 .jg-sel { font: inherit; font-size: 0.95rem; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--jg-border); background: var(--jg-panel); color: var(--jg-text); max-width: 100%; }
 @media (orientation: landscape) and (max-height: 500px) { .jg-pav.jg-pav-notes { grid-template-columns: minmax(150px, 250px) 1fr; } }
+/* "Full solo, note for note" link to Songsterr (licensed tabs). */
+.jg-fullsolo { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin: 6px 0; padding: 8px 12px; border-radius: 12px; border: 1px solid var(--jg-hl); background: var(--jg-hl-bg); color: var(--jg-hl); font-weight: 800; text-decoration: none; }
+.jg-fullsolo small { font-weight: 600; color: var(--jg-text-dim); }
+/* Lesson tables fit a phone: wrap long words instead of pushing the page sideways. */
+table.jg-table { width: 100%; table-layout: fixed; overflow-wrap: anywhere; }
+@media (max-width: 640px) { .jg-table th, .jg-table td { padding: 4px 6px; } }

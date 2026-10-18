@@ -668,7 +668,11 @@ const VIDEOS = {
  "song-i-don-t-want-to-talk-about-it": {"id": "esUHMBHJsn8", "title": "Rod Stewart - I Don't Want To Talk About It (Official Video)", "author_name": "Rod Stewart"},
  "song-save-your-tears": {"id": "XXYlFuWEuKI", "title": "The Weeknd - Save Your Tears (Official Music Video)", "author_name": "TheWeekndVEVO"},
  "song-where-is-my-mind": {"id": "OJ62RzJkYUo", "title": "Pixies - Where Is My Mind? (Official Lyric Video)", "author_name": "PixiesOfficial"},
- "song-beanie": {"id": "tERTBPdVivc", "title": "Chezile - Beanie (Official Visualizer)", "author_name": "Chezile"}
+ "song-beanie": {"id": "tERTBPdVivc", "title": "Chezile - Beanie (Official Visualizer)", "author_name": "Chezile"},
+ "song-godfather-love-theme": {"id": "Flb01Ni3p3M", "title": "Love Theme From \"The Godfather\"", "author_name": "Nino Rota - Topic"},
+ "song-parisienne-walkways": {"id": "lUBCXGeK694", "title": "Parisienne Walkways", "author_name": "Gary Moore - Topic"},
+ "song-beat-it": {"id": "oRdxUFDoQe0", "title": "Michael Jackson - Beat It (Official 4K Video)", "author_name": "michaeljacksonVEVO"},
+ "song-man-in-the-mirror": {"id": "PivWY9wn5ps", "title": "Michael Jackson - Man In The Mirror (Official Video)", "author_name": "michaeljacksonVEVO"},
 };
 const SONG_VIDEOS = {
  "Bamboléo": "bambol-o-live-v2",
@@ -947,6 +951,10 @@ const SONG_VIDEOS = {
  "I Don't Want to Talk About It": "song-i-don-t-want-to-talk-about-it",
  "Save Your Tears": "song-save-your-tears",
  "Where Is My Mind?": "song-where-is-my-mind",
- "Beanie": "song-beanie"
+ "Beanie": "song-beanie",
+ "Love Theme from The Godfather": "song-godfather-love-theme",
+ "Parisienne Walkways": "song-parisienne-walkways",
+ "Beat It": "song-beat-it",
+ "Man in the Mirror": "song-man-in-the-mirror",
 };
 export { PEOPLE, VIDEOS, SONG_VIDEOS };

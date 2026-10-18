@@ -5241,6 +5241,109 @@ function getDifficulty(song) {
 // Item 60: the optional "World songs" section - popular songs in 10
 // other languages (world-songs.js), part of the library (Discover,
 // Practice) but taught only in their own skippable lessons at the end.
+// Added 2026-10-18 (owner): the Godfather love theme, Parisienne Walkways and two
+// Michael Jackson songs. Whole-song maps are in song-verified.js.
+SONGS.push(...[
+  {
+    "title": "Love Theme from The Godfather",
+    "artist": "Nino Rota",
+    "genre": "Film / Classical",
+    "popularityRank": 131,
+    "key": "C minor",
+    "chords": [
+      "Cm",
+      "Fm",
+      "Eb",
+      "G",
+      "Bb",
+      "Db",
+      "Ddim",
+      "D"
+    ],
+    "degreeSequence": "i - iv - i - III - iv - i - V - i (middle: VII - III - II - ii° - II - V)",
+    "confidence": "needs-verification",
+    "oneFiveSixFourMatch": false,
+    "difficulty": "Intermediate",
+    "notes": "Nino Rota's love theme from the 1972 film. With a capo on fret 3 it's the easy A minor shapes: Am, Dm, E (and C, G, F, Bb in the middle). Find the tune by ear with the video, then try it with tremolo picking."
+  },
+  {
+    "title": "Parisienne Walkways",
+    "artist": "Gary Moore",
+    "genre": "Blues Rock",
+    "popularityRank": 132,
+    "key": "A minor",
+    "chords": [
+      "Am",
+      "Dm7",
+      "Dm7/G",
+      "Cmaj7",
+      "F",
+      "Fmaj7",
+      "Bm7b5",
+      "E7sus4",
+      "E7",
+      "A5",
+      "A",
+      "D/A",
+      "Esus4",
+      "E",
+      "Asus4",
+      "B7"
+    ],
+    "degreeSequence": "i - iv7 - VII - IIImaj7 - VImaj7 - ii7b5 - V7 (round the circle of fifths)",
+    "confidence": "needs-verification",
+    "oneFiveSixFourMatch": false,
+    "difficulty": "Advanced",
+    "notes": "Gary Moore and Phil Lynott, 1978. The chords walk round the circle of fifths (A D G C F B E) back to Am. Slow 12/8 feel; the solo is A minor pentatonic and A natural minor, with one famously long held note."
+  },
+  {
+    "title": "Beat It",
+    "artist": "Michael Jackson",
+    "genre": "Pop / Rock",
+    "popularityRank": 133,
+    "key": "Eb minor",
+    "chords": [
+      "Ebm",
+      "Db",
+      "B"
+    ],
+    "degreeSequence": "i - VII (verse turn: VI - VII)",
+    "confidence": "needs-verification",
+    "oneFiveSixFourMatch": false,
+    "difficulty": "Beginner",
+    "notes": "Thriller, 1982. Guitars tuned down half a step, so you play Em and D shapes (or E5 and D5 power chords), with C for the turn. Eddie Van Halen played the solo."
+  },
+  {
+    "title": "Man in the Mirror",
+    "artist": "Michael Jackson",
+    "genre": "Pop / Gospel",
+    "popularityRank": 134,
+    "key": "G major (last choruses in Ab major)",
+    "chords": [
+      "G",
+      "D/F#",
+      "Em",
+      "D",
+      "C",
+      "Am7",
+      "C/B",
+      "G/B",
+      "A/C#",
+      "Ab",
+      "Ab/C",
+      "Db",
+      "Eb",
+      "Bb/D",
+      "Eb/G",
+      "Fm"
+    ],
+    "degreeSequence": "I - V/7 - vi - V - IV; chorus I - I/3 - IV - V",
+    "confidence": "needs-verification",
+    "oneFiveSixFourMatch": false,
+    "difficulty": "Beginner",
+    "notes": "Bad, 1987. Lesson 1's G, D, Em and C plus Am7, with bass-note slash chords (D/F#, C/B, G/B) that walk down. The last choruses jump up half a step to Ab."
+  }
+]);
 SONGS.push(...WORLD_SONGS);
 SONGS.forEach((s) => {
   if (WORLD_ALSO[s.title]) s.alsoWorld = WORLD_ALSO[s.title];

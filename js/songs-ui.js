@@ -18,6 +18,7 @@ import { icon } from "./icons.js";
 import { chordDiagramSvg } from "./fretboard.js";
 import { strum, stopAllSound } from "./guitar-audio.js";
 import { mountInstrument, createPracticeBox } from "./practice-widget.js";
+import { fullSoloLinkHtml } from "./songsterr-links.js";
 import { getSavedSongs, markSongStatus } from "./storage.js";
 import { chordTimeline } from "./guitar-player.js";
 
@@ -206,7 +207,7 @@ function openSong(panel, song, { autoplay = false } = {}) {
         <div class="jg-song-prog"><div class="jg-song-prog-title">The chords in this song</div>
           ${progressionRows(song).map((r) => `<div class="jg-song-prog-row"><span>${esc(r.label)}</span><b>${r.chords.map((c) => `<i>${esc(c)}</i>`).join("")}</b></div>`).join("")}
         </div>
-        ${(song.solos || []).length ? `<div class="jg-solos"><div class="jg-song-prog-title">${icon("guitar", 18)} The guitar solo${song.solos.length > 1 ? "s" : ""}</div>
+        ${(song.solos || []).length ? `<div class="jg-solos"><div class="jg-song-prog-title">${icon("guitar", 18)} The guitar solo${song.solos.length > 1 ? "s" : ""}</div>${fullSoloLinkHtml(song.title, song.artist)}
           ${song.solos.map((so) => `<div class="jg-solo"><b>${esc(so.section)}</b>${so.chords ? `<span class="jg-solo-chords">Chords underneath: ${tidy(so.chords).map((c) => `<i>${esc(c)}</i>`).join("")}</span>` : ""}<span><b>Scale:</b> ${esc(so.scale)}</span>${so.tips ? `<span>${esc(so.tips)}</span>` : ""}${soloLicksHtml(so, song)}</div>`).join("")}
           <p class="jg-note">Tap "Solo licks" to practise these on the fretboard (the ring shows each note), or "Whole song" to play them in the solo's place. Then make up your own lines with this scale.</p></div>` : ""}
         ${SONG_VIDEOS[song.title] ? videoHtml(SONG_VIDEOS[song.title]) : ""}
