@@ -1,5 +1,7 @@
 // The one practice box every part of Jaxx Guitar uses (lessons, songs,
-// the Practice tab): falling notes over a fretboard, with
+// the Practice tab): the calm play-along view over a fretboard (chord name,
+// shape and strum arrows; or the current note's fret with a glowing ring,
+// play-along-view.js), with
 //   Listen         - the app plays it, you watch the shapes
 //   Wait for me    - it waits at each note/chord until it hears you
 //                    (microphone, or tap the fretboard)
@@ -7,8 +9,8 @@
 // plus speed, loop, a drum beat, tab (for single-note pieces) and stars.
 
 import { renderFretboard, tabSvg } from "./fretboard.js";
-import { renderFretHighway } from "./fret-highway.js";
-import { createGuitarPlayer } from "./guitar-player.js";
+import { createPlayAlongView } from "./play-along-view.js";
+import { createGuitarPlayer, timelineEvents } from "./guitar-player.js";
 import { enableMic, disableMic, micOn } from "./input-hub.js";
 import { friendlyMicError } from "./pitch.js";
 import { getAudioContext, stopAllSound } from "./guitar-audio.js";
@@ -18,12 +20,13 @@ import { starsFor, recordStars, awardXp, completeQuest } from "./storage.js";
 
 const MODE_LABELS = { listen: ["play", "Listen"], wait: ["hand", "Wait for me"], timed: ["tuner", "Play in time"] };
 
-// An instrument: highway on top of a fretboard. Returns { fb, hw, el }.
+// An instrument: the play-along view on top of a fretboard. Returns
+// { fb, hw, el } (hw = the view; the name is kept from the old highway).
+const NO_VIEW = { load() {}, update() {}, preview() {}, reset() {}, destroy() {} };
 function mountInstrument(container, { frets = 12, highway = true } = {}) {
-  container.innerHTML = `<div class="jg-instrument">${highway ? '<div class="jg-hw"></div>' : ""}<div class="jg-fb"></div></div>`;
+  container.innerHTML = `<div class="jg-instrument">${highway ? '<div class="jg-pav-host"></div>' : ""}<div class="jg-fb"></div></div>`;
   const fb = renderFretboard(container.querySelector(".jg-fb"), { frets });
-  const hw = highway ? renderFretHighway(container.querySelector(".jg-hw"), fb) : { render() {}, destroy() {} };
-  if (highway) hw.render(0, []);
+  const hw = highway ? createPlayAlongView(container.querySelector(".jg-pav-host"), fb, container) : NO_VIEW;
   return { fb, hw, el: container.firstElementChild };
 }
 
@@ -75,11 +78,13 @@ function createPracticeBox(host, inst, opts) {
       mic.innerHTML = `${icon("mic", 16)} ${micOn() ? "Listening" : "Microphone"}`;
     }
     hint.textContent =
-      mode === "listen" ? "Watch the notes land on the fretboard and listen. The numbers are fingers (1 = index, 4 = pinky)."
+      mode === "listen" ? (hasChords()
+        ? "Watch and listen: the chord's shape is on the fretboard (numbers = fingers, 1 = index, 4 = pinky) and the arrows show the strum, lighting up in time."
+        : "Watch and listen: the glowing ring shows the string and fret to play; the faint dot is the next note.")
       : mode === "wait" ? (hasChords()
-        ? "Strum each chord. It moves on when it hears a note from that chord (or tap a lit note)."
-        : "Play each note. It waits until it hears it (or tap the lit note).")
-      : "Play each note as it lands. You have a quarter of a second either way.";
+        ? "It waits at each new chord: strum it and it moves on (it hears any note from that chord, or tap a lit note). Then strum along with the arrows."
+        : "Play the note in the ring. It waits until it hears it (or tap the lit note).")
+      : "Play each note as its ring lights up. You have a quarter of a second either way.";
     if (mode !== "listen" && !micOn()) hint.textContent += " Tap Microphone to use your real guitar (it only listens to your strings).";
   }
 
@@ -114,13 +119,21 @@ function createPracticeBox(host, inst, opts) {
     }, 50);
   }
 
-  function stop() {
+  // Before Start: the view shows the first chord and its arrows (or the
+  // first notes), nothing lit.
+  function preview() {
+    try { inst.hw.preview(timelineEvents(opts.items(), { bpm: opts.bpm || 80, speed }), { beatSec: 60 / (opts.bpm || 80) / speed, beatsPerBar: opts.beatsPerBar || 4, origin: 1.6 }); } catch (e) { console.error(e); }
+  }
+
+  function stop({ again = true } = {}) {
     document.body.classList.remove("jg-playing");
     if (player) { player.stop(); stopAllSound(); }
     player = null;
     stopDrums();
     goBtn.textContent = "Start";
     if (opts.restore) opts.restore();
+    if (again) preview();
+    else inst.hw.reset();
   }
 
   function start() {
@@ -129,7 +142,7 @@ function createPracticeBox(host, inst, opts) {
     const bpm = opts.bpm || 80;
     getAudioContext().resume?.();
     player = createGuitarPlayer({
-      fb: inst.fb, highway: inst.hw, items, bpm, mode, speed, loop: loop && mode === "listen",
+      fb: inst.fb, highway: inst.hw, items, bpm, mode, speed, loop: loop && mode === "listen", beatsPerBar: opts.beatsPerBar || 4,
       onStep: ({ item }) => {
         if (item && !item.chord && opts.showTab) drawTab(items.filter((i) => !i.chord).indexOf(item));
       },
@@ -156,7 +169,9 @@ function createPracticeBox(host, inst, opts) {
             : `${r.accuracy}% right first time · best combo ${r.maxCombo} <span class="jg-stars">${"★".repeat(stars)}${"☆".repeat(3 - stars)}</span>`;
         }
         if (opts.onDone) opts.onDone(r);
+        inst.hw.reset();
         if (opts.restore) opts.restore();
+        preview();
       },
     });
     player.start();
@@ -199,11 +214,12 @@ function createPracticeBox(host, inst, opts) {
   if (mode === "timed" && hasChords()) mode = "listen";
   refresh();
   drawTab(-1);
+  preview();
 
   return {
-    stop,
+    stop: () => stop(),
     destroy() {
-      stop();
+      stop({ again: false });
       if (micByUs) disableMic();
     },
   };

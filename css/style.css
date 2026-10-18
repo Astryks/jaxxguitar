@@ -837,3 +837,52 @@ body.jg-intro-open { overflow: hidden; }
 .jg-sp-row.jg-sp-on { background: #f4effd; outline: 2px solid var(--jg-chat); }
 /* Web: the About & FAQ text stays hidden under the app (like the iOS app) until asked for. */
 .jg-faq-link { background: none; border: 0; padding: 0; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
+/* ==========================================================================
+   Calm play-along view (2026-10-18, js/play-along-view.js). Replaces the
+   dark scrolling tab panel: nothing scrolls. Chord name + "next" on the
+   left, the chord's strum arrows (current one blinks) or the next notes as
+   fret numbers on the right; the fretboard below shows the shape / the
+   note's ring and glow.
+   ========================================================================== */
+.jg-pav { display: grid; grid-template-columns: minmax(120px, 200px) 1fr; gap: 12px; align-items: center; min-height: 100px; padding: 8px 14px; background: var(--jg-panel); border: 1px solid var(--jg-border); border-bottom: 0; border-radius: 12px 12px 0 0; }
+.jg-pav-empty { display: none; }
+.jg-pav-head { min-width: 0; }
+.jg-pav-name { font-size: 2.7rem; font-weight: 900; line-height: 1; color: var(--jg-accent); letter-spacing: -0.5px; overflow-wrap: anywhere; }
+.jg-pav-sub { font-size: 0.85rem; font-weight: 700; color: var(--jg-text-dim); min-height: 1.1em; margin-top: 2px; }
+.jg-pav-next { font-size: 0.95rem; color: var(--jg-text-dim); margin-top: 2px; }
+.jg-pav-next b { color: var(--jg-text); }
+.jg-pav-chip { display: inline-block; min-width: 1.4em; text-align: center; color: #fff; border-radius: 6px; padding: 0 5px; font-weight: 900; }
+.jg-pav-ready .jg-pav-name { opacity: 0.55; }
+.jg-pav-arrows { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 68px)); gap: 6px; justify-content: center; }
+.jg-pav-slot { display: flex; flex-direction: column; align-items: center; padding: 4px 0 2px; border-radius: 12px; background: var(--jg-bg); border: 2px solid transparent; }
+.jg-pav-slot b { font-size: 2.3rem; line-height: 1.05; font-weight: 900; color: var(--jg-wood); }
+.jg-pav-miss b { opacity: 0.22; }
+.jg-pav-slot small { font-size: 0.8rem; font-weight: 800; color: var(--jg-text-dim); min-height: 1.1em; }
+.jg-pav-on { background: var(--jg-hl-bg); border-color: var(--jg-hl); animation: jg-pav-blink 0.45s ease-out; }
+.jg-pav-on b { color: var(--jg-hl); }
+.jg-pav-on.jg-pav-miss b { opacity: 0.45; }
+@keyframes jg-pav-blink { 0% { transform: scale(1.16); background: #bfe0ff; } 100% { transform: scale(1); } }
+.jg-pav-waiting .jg-pav-on { animation: jg-pav-wait 1.1s ease-in-out infinite; }
+@keyframes jg-pav-wait { 0%, 100% { box-shadow: 0 0 0 0 rgba(42,111,176,0.45); } 50% { box-shadow: 0 0 0 6px rgba(42,111,176,0); } }
+.jg-pav-tab { display: block; width: 100%; max-width: 620px; height: auto; max-height: 104px; margin: 0 auto; }
+.jg-pav-tabline { stroke-width: 1.3; opacity: 0.75; }
+.jg-pav-tabname { font: 800 8px -apple-system, sans-serif; fill: var(--jg-text-dim); text-anchor: middle; }
+.jg-pav-tn circle { fill: #fff; stroke: #cdbba4; stroke-width: 1; }
+.jg-pav-tn text { font: 800 9.5px -apple-system, sans-serif; fill: var(--jg-text); text-anchor: middle; }
+.jg-pav-tn.jg-pav-now circle { fill: var(--jg-accent); stroke: #ffb45c; stroke-width: 2.5; filter: drop-shadow(0 0 3px #ff9a3c); }
+.jg-pav-tn.jg-pav-now text { fill: #fff; }
+.jg-pav-tn.jg-pav-soon circle { stroke: var(--jg-accent); stroke-dasharray: 2 2; }
+.jg-pav-tn.jg-pav-done { opacity: 0.35; }
+.jg-pav-waiting .jg-pav-tn.jg-pav-now circle { animation: jg-pav-ring 1.1s ease-in-out infinite; }
+@keyframes jg-pav-ring { 0%, 100% { stroke-width: 2.5; } 50% { stroke-width: 5; } }
+/* Each new strum or note flashes the glowing ring on the fretboard. */
+.jg-glow-hit .jg-glow-ring { animation: jg-ring-hit 0.35s ease-out; }
+@keyframes jg-ring-hit { from { stroke-width: 8; opacity: 1; } to { stroke-width: 3; } }
+.jg-up-view { margin: 6px 0; }
+@media (orientation: landscape) and (max-height: 500px) {
+  .jg-pav { min-height: 74px; padding: 4px 10px; }
+  .jg-pav-name { font-size: 2rem; }
+  .jg-pav-slot b { font-size: 1.7rem; }
+  .jg-pav-tab { max-height: 70px; }
+}
+@media (prefers-reduced-motion: reduce) { .jg-pav-on, .jg-pav-waiting .jg-pav-on, .jg-glow-hit .jg-glow-ring { animation: none; } }

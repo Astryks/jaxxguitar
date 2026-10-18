@@ -5,9 +5,10 @@ import { icon } from "./icons.js";
 // tempo, and "upload a song" - the app works out the chords from your
 // own recording and shows the guitar shapes in time with it.
 
-import { chordShape, shapeMidis, scaleBox, SCALES, NOTE_NAMES, suggestCapo } from "./guitar-theory.js";
+import { chordShape, shapeMidis, scaleBox, SCALES, NOTE_NAMES, suggestCapo, midiAt } from "./guitar-theory.js";
 import { chordDiagramSvg } from "./fretboard.js";
-import { strum, click, getAudioContext, stopAllSound } from "./guitar-audio.js";
+import { strum, click, getAudioContext, stopAllSound, playNote } from "./guitar-audio.js";
+import { placeMelody, melodyLine } from "./fret-map.js";
 import { mountInstrument, createPracticeBox } from "./practice-widget.js";
 import { chordTimeline } from "./guitar-player.js";
 import { transcribeFile, estimateBeat, simplifyToChords, guessLastUpload, canGuessSongs } from "./transcribe.js";
@@ -65,7 +66,7 @@ function renderPractice(panel) {
     if (stopUpload) stopUpload();
     stopUpload = null;
     inst.fb.clear();
-    inst.hw.render(0, []);
+    inst.hw.reset();
     panel.querySelector(".jg-below").innerHTML = "";
   };
   cleanup.push(clearSec);
@@ -240,7 +241,7 @@ function renderPractice(panel) {
         if (!chords.length) throw new Error("No chords found. Try a clearer recording.");
         const capo = suggestCapo(chords.map((c) => c.chord));
         status.textContent = `Found ${chords.length} chord changes${beat ? ` · about ${beat.bpm} BPM` : ""}.`;
-        showUpload(file, chords, capo, beat);
+        showUpload(file, chords, capo, beat, hw);
       } catch (err) {
         status.textContent = err.message;
       }
@@ -270,7 +271,7 @@ function renderPractice(panel) {
     }).sort((a, b) => (b.confidence === "confirmed") - (a.confidence === "confirmed") || (a.popularityRank || 999) - (b.popularityRank || 999));
   }
 
-  function showUpload(file, chords, capo, beat) {
+  function showUpload(file, chords, capo, beat, heard) {
     const res = sec.querySelector(".jg-up-result");
     const below = panel.querySelector(".jg-below");
     const unique = [...new Set(chords.map((c) => c.chord))];
@@ -281,7 +282,9 @@ function renderPractice(panel) {
     // Play first, right above the fretboard...
     res.innerHTML = `
       <button class="jg-upload-bigplay jg-up-play">▶ Play</button>
-      <div class="jg-big jg-up-now"></div>
+      <div class="jg-row jg-up-view"><span class="jg-label">Show</span>
+        <button class="jg-pill jg-pill-active" data-view="chords">Chords + strums</button>
+        <button class="jg-pill" data-view="notes">The tune (single notes)</button></div>
       <audio class="jg-up-audio" preload="auto"></audio>`;
     // ...everything else below the fretboard.
     below.innerHTML = `
@@ -307,25 +310,63 @@ function renderPractice(panel) {
     let lastIdx = -1;
     const drawDg = () => { below.querySelector(".jg-up-dg").innerHTML = unique.map((c) => chordDiagramSvg(chordShape(shapeFor(c)), shapeFor(c) + (useCapo ? ` (${c})` : ""))).join(""); };
     drawDg();
-    const notesFor = () => chords.flatMap((c) => {
-      const sh = chordShape(shapeFor(c.chord));
-      return sh ? sh.frets.map((f, s) => (f >= 0 ? { string: s, fret: f, time: c.time, duration: Math.max(0.2, c.end - c.time - 0.05) } : null)).filter(Boolean) : [];
+    // Chords: the classic pop strum (D · D U · U D U) on the song's beat,
+    // so each chord shows its arrows; one strum per chord if we couldn't
+    // find a beat. The tune: the top note at each moment, placed where
+    // it's easy to play (fret-map.js; the tune ignores the capo).
+    const POP = ["down", null, "down", "up", null, "up", "down", "up"];
+    let view = "chords";
+    const chordEvs = () => {
+      const out = [];
+      const slot = beat ? beat.beatSec / 2 : 0;
+      chords.forEach((c) => {
+        const sym = shapeFor(c.chord);
+        const shape = chordShape(sym);
+        const before = out.length;
+        if (slot) {
+          for (let j = Math.ceil((c.time - beat.offsetSec) / slot - 1e-6); beat.offsetSec + j * slot < c.end - 0.02; j++) {
+            const dir = POP[((j % 8) + 8) % 8];
+            const t = beat.offsetSec + j * slot;
+            if (dir) out.push({ t, d: slot * 0.95, span: slot, chord: sym, shape, strum: dir });
+          }
+        }
+        if (out.length === before) out.push({ t: c.time, d: Math.max(0.2, c.end - c.time - 0.05), span: c.end - c.time, chord: sym, shape, strum: "down" });
+      });
+      return out;
+    };
+    const noteEvs = () => {
+      const line = melodyLine(heard);
+      const pos = placeMelody(line.map((n) => n.midi));
+      return line.map((n, i) => ({ t: n.time, d: n.duration, span: n.duration, string: pos[i].string, fret: pos[i].fret }));
+    };
+    let evs = [];
+    const loadView = () => {
+      evs = view === "notes" ? noteEvs() : chordEvs();
+      if (!evs.length && view === "notes") { view = "chords"; evs = chordEvs(); }
+      inst.hw.preview(evs, { beatSec: beat ? beat.beatSec : 0, beatsPerBar: 4, origin: beat ? beat.offsetSec : 0, hint: "Press Play" });
+      const first = evs[0];
+      if (first && first.chord) inst.fb.showShape(first.shape);
+      else if (first) inst.fb.show([{ string: first.string, fret: first.fret, tone: "root", label: String(first.fret) }]);
+      res.querySelectorAll("[data-view]").forEach((x) => x.classList.toggle("jg-pill-active", x.dataset.view === view));
+      lastIdx = -1;
+    };
+    loadView();
+    res.querySelector(".jg-up-view").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-view]");
+      if (!b) return;
+      view = b.dataset.view;
+      loadView();
     });
-    let notes = notesFor();
     const tick = () => {
       const t = audio.currentTime;
-      const idx = chords.findIndex((c) => t >= c.time && t < c.end);
-      if (idx !== lastIdx) {
-        lastIdx = idx;
-        const c = chords[idx];
-        if (c) {
-          const sh = chordShape(shapeFor(c.chord));
-          inst.fb.showShape(sh);
-          res.querySelector(".jg-up-now").textContent = shapeFor(c.chord);
-          if (snd !== "song" && sh && !audio.paused) strum(shapeMidis(sh), { duration: Math.min(3, c.end - c.time) });
+      const e = inst.hw.update(t);
+      if (e && e.i0 !== lastIdx && t >= e.t - 0.03) {
+        lastIdx = e.i0;
+        if (snd !== "song" && !audio.paused) {
+          if (e.chord && e.shape) { const m = shapeMidis(e.shape); strum(e.strum === "up" ? m.slice(-4) : m, { direction: e.strum, duration: e.d + 0.3 }); }
+          else if (!e.chord) playNote(midiAt(e.string, e.fret), { duration: e.d + 0.2 });
         }
       }
-      inst.hw.render(t, notes, { chordLabel: "" });
       raf = requestAnimationFrame(tick);
     };
     const setVolume = () => { audio.volume = snd === "guitar" ? 0 : snd === "both" ? 0.6 : 1; audio.muted = snd === "guitar"; };
@@ -343,7 +384,7 @@ function renderPractice(panel) {
     below.onclick = (e) => {
       const b = e.target.closest("button");
       if (!b) return;
-      if (b.dataset.capo !== undefined) { useCapo = b.dataset.capo === "1"; below.querySelectorAll("[data-capo]").forEach((x) => x.classList.toggle("jg-pill-active", x === b)); drawDg(); notes = notesFor(); lastIdx = -1; }
+      if (b.dataset.capo !== undefined) { useCapo = b.dataset.capo === "1"; below.querySelectorAll("[data-capo]").forEach((x) => x.classList.toggle("jg-pill-active", x === b)); drawDg(); loadView(); }
       if (b.dataset.snd) { snd = b.dataset.snd; below.querySelectorAll("[data-snd]").forEach((x) => x.classList.toggle("jg-pill-active", x === b)); setVolume(); }
       if (b.dataset.song) openSongByTitle(b.dataset.song);
       if (b.classList.contains("jg-up-guess")) {
@@ -362,7 +403,7 @@ function renderPractice(panel) {
         });
       }
     };
-    stopUpload = () => { audio.pause(); if (raf) cancelAnimationFrame(raf); raf = null; URL.revokeObjectURL(url); stopAllSound(); };
+    stopUpload = () => { audio.pause(); if (raf) cancelAnimationFrame(raf); raf = null; URL.revokeObjectURL(url); stopAllSound(); inst.hw.reset(); };
   }
 
 

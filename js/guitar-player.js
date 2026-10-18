@@ -1,16 +1,19 @@
-// Practice engine for Jaxx Guitar: drives the fretboard + falling-notes
-// view from a timeline of notes and chords, and listens to every input
-// (fretboard taps, the microphone) through input-hub.js.
+// Practice engine for Jaxx Guitar: drives the fretboard and the calm
+// play-along view (play-along-view.js: chord name + shape + strum arrows,
+// or the current note's fret with a glowing ring) from a timeline of notes
+// and chords, and listens to every input (fretboard taps, the microphone)
+// through input-hub.js.
 //
-//   mode "listen" - the app plays it for you (sound + falling notes).
-//   mode "wait"   - the notes stop at the fretboard until you play them.
-//                   Single notes must match exactly (the mic hears one note
-//                   at a time well). For a chord, the microphone can't
-//                   reliably pick out six strings at once, so wait mode
-//                   moves on when it hears any note that belongs to the
-//                   chord - a strum of the right shape - and says so.
-//   mode "timed"  - single notes only: the notes keep falling; each counts
-//                   if played within ±0.25s. Scored at the end.
+//   mode "listen" - the app plays it for you.
+//   mode "wait"   - it stops at each new chord and each note until you
+//                   play it. Single notes must match exactly (the mic hears
+//                   one note at a time well). For a chord, the microphone
+//                   can't reliably pick out six strings at once, so wait
+//                   mode moves on when it hears any note that belongs to
+//                   the chord - a strum of the right shape - and then runs
+//                   through that chord's strums in time while you strum.
+//   mode "timed"  - single notes only: the notes keep coming in time; each
+//                   counts if played within ±0.25s. Scored at the end.
 //
 // Timeline items: { start, dur } in beats plus either
 //   { string, fret }            - a single note (string 0 = low E), or
@@ -20,46 +23,48 @@ import { onNoteOn } from "./input-hub.js";
 import { playNote, strum } from "./guitar-audio.js";
 import { midiAt, shapeMidis } from "./guitar-theory.js";
 import { parseChordSymbol } from "./chord-utils.js";
+import { buildBlocks } from "./play-along-view.js";
 
 const LEAD = 1.6;
 const WINDOW = 0.25;
 
-function createGuitarPlayer({ fb, highway, items, bpm = 80, mode = "listen", speed = 1, loop = false, onStep, onFinish }) {
+// The timeline in seconds (after the lead-in), shared with the view's
+// "press Start" preview so both draw the same thing.
+function timelineEvents(items, { bpm = 80, speed = 1 } = {}) {
   const beat = 60 / bpm / speed;
-  const evs = items.map((it, i) => ({
+  return items.map((it, i) => ({
     ...it,
     i,
     t: it.start * beat + LEAD,
     d: Math.max(0.12, it.dur * beat * 0.95),
+    span: it.dur * beat,
     midis: it.chord ? shapeMidis(it.shape) : [midiAt(it.string, it.fret)],
     pcs: it.chord ? new Set((parseChordSymbol(it.chord)?.intervals || []).map((iv) => (parseChordSymbol(it.chord).root + iv) % 12)) : null,
   }));
+}
+
+function createGuitarPlayer({ fb, highway, items, bpm = 80, mode = "listen", speed = 1, loop = false, beatsPerBar = 4, onStep, onFinish }) {
+  const beat = 60 / bpm / speed;
+  const evs = timelineEvents(items, { bpm, speed });
   const endT = Math.max(...evs.map((e) => e.t + e.d)) + 0.4;
-  const blocks = evs.flatMap((e) =>
-    e.chord
-      ? e.shape.frets.map((f, s) => (f >= 0 ? { string: s, fret: f, time: e.t, duration: e.d, ev: e } : null)).filter(Boolean)
-      : [{ string: e.string, fret: e.fret, time: e.t, duration: e.d, ev: e }]
-  );
-  const stats = { right: 0, wrong: 0, hits: 0, misses: 0, combo: 0, maxCombo: 0, total: evs.length, timing: [] };
+  highway.load(evs, { beatSec: beat, beatsPerBar, origin: LEAD });
+  // Wait mode stops at each new chord (its first strum) and at every note.
+  buildBlocks(evs, { beatSec: beat, beatsPerBar, origin: LEAD });
+  const gates = evs.filter((e) => !e.chord || e.k === 0);
+  const stats = { right: 0, wrong: 0, hits: 0, misses: 0, combo: 0, maxCombo: 0, total: mode === "wait" ? gates.length : evs.length, timing: [] };
   let clock = 0;
   let last = null;
   let raf = null;
   let running = false;
-  let idx = 0; // wait mode: current item
+  let gi = 0; // wait mode: the next gate
   let nextSound = 0;
   const hit = new Set();
   let shown = -1;
 
-  function showCurrent(e) {
-    if (!e) return fb.clear();
-    if (e.chord) fb.showShape(e.shape);
-    else fb.show([{ string: e.string, fret: e.fret, tone: "root", label: String(e.fret) }]);
-  }
-
   const unsub = onNoteOn((midi) => {
     if (!running || mode === "listen") return;
     if (mode === "wait") {
-      const e = evs[idx];
+      const e = gates[gi];
       if (!e) return;
       const ok = e.chord ? e.pcs.has(((midi % 12) + 12) % 12) : midi === e.midis[0];
       if (ok) {
@@ -69,7 +74,7 @@ function createGuitarPlayer({ fb, highway, items, bpm = 80, mode = "listen", spe
         // Played it before it landed: that's fine in wait mode - jump the
         // music forward to it rather than ignoring the note.
         if (clock < e.t) clock = e.t;
-        idx++;
+        gi++;
       } else {
         stats.wrong++;
         stats.combo = 0;
@@ -89,12 +94,14 @@ function createGuitarPlayer({ fb, highway, items, bpm = 80, mode = "listen", spe
     }
   });
 
+  let curPtr = 0;
   function frame(now) {
     if (!running) return;
     const dt = last === null ? 0 : Math.min(0.1, (now - last) / 1000);
     last = now;
     let next = clock + dt;
-    if (mode === "wait" && evs[idx] && next > evs[idx].t) next = evs[idx].t;
+    const gate = mode === "wait" ? gates[gi] : null;
+    if (gate && next > gate.t) next = gate.t;
     clock = next;
 
     if (mode === "listen") {
@@ -115,16 +122,16 @@ function createGuitarPlayer({ fb, highway, items, bpm = 80, mode = "listen", spe
       });
     }
 
-    const cur = mode === "wait" ? evs[idx] : evs.filter((e) => clock >= e.t - 0.05 && clock < e.t + e.d).pop() || evs.find((e) => e.t > clock);
-    const curI = cur ? cur.i : -1;
-    if (curI !== shown) {
-      shown = curI;
-      showCurrent(cur);
-      if (onStep) onStep({ item: cur, index: curI, stats });
+    if (clock < evs[curPtr].t - 0.03) curPtr = 0;
+    while (curPtr + 1 < evs.length && evs[curPtr + 1].t <= clock + 0.03) curPtr++;
+    const cur = evs[curPtr];
+    if (cur.i !== shown) {
+      shown = cur.i;
+      if (onStep) onStep({ item: items[cur.i], index: cur.i, stats });
     }
-    highway.render(clock, blocks.map((b) => ({ ...b, ghost: mode === "wait" && b.ev.i < idx })), { chordLabel: cur && cur.chord ? cur.chord : "" });
+    highway.update(clock, { waiting: Boolean(gate && clock >= gate.t - 1e-6) });
 
-    if (clock >= endT || (mode === "wait" && idx >= evs.length && clock >= evs[evs.length - 1].t)) {
+    if (clock >= endT || (mode === "wait" && gi >= gates.length && clock >= evs[evs.length - 1].t + evs[evs.length - 1].d)) {
       if (loop && mode === "listen") {
         clock = 0;
         nextSound = 0;
@@ -155,8 +162,10 @@ function createGuitarPlayer({ fb, highway, items, bpm = 80, mode = "listen", spe
       unsub();
       if (raf) cancelAnimationFrame(raf);
       fb.clear();
-      highway.render(0, []);
+      highway.reset();
     },
+    // Where the music is now (seconds, including the lead-in).
+    get clock() { return clock; },
   };
 }
 
@@ -178,4 +187,4 @@ function chordTimeline(chordShapes, { beatsPerChord = 4, pattern = ["down"] } = 
   return items;
 }
 
-export { createGuitarPlayer, chordTimeline };
+export { createGuitarPlayer, chordTimeline, timelineEvents, LEAD };

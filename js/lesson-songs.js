@@ -150,4 +150,4 @@ function withSongs(lessons, { count = 3, skip = () => false } = {}) {
   });
 }
 
-export { withSongs, songCardHtml, wireSongCards, findSong, teachable, strumHtml };
+export { withSongs, songCardHtml, wireSongCards, findSong, teachable, strumHtml, strumFor };
