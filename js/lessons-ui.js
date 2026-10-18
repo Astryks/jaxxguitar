@@ -384,8 +384,8 @@ function openLesson(id, pageIndex = null) {
     inst = mountInstrument(panelEl.querySelector(".jg-instrument-host"), { frets: page.caged || page.barreMover ? 15 : 12, highway: Boolean(page.practice) });
     cleanup.push(() => inst.hw.destroy());
     // Left-handed: the nut is on the right, so start the (scrollable) board there.
-    const host = panelEl.querySelector(".jg-instrument-host");
-    if (isLefty()) requestAnimationFrame(() => { host.scrollLeft = host.scrollWidth; });
+    const host = panelEl.querySelector(".jg-instrument-host .jg-fb");
+    if (isLefty() && host) requestAnimationFrame(() => { host.scrollLeft = host.scrollWidth; });
     restore();
   }
   // Tab pages: play the tab's notes, one beat each at 80 BPM.

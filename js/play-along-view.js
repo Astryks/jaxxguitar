@@ -29,6 +29,12 @@
 import { STRING_NAMES, midiAt, noteName } from "./guitar-theory.js";
 
 const PAGE = 8;
+// Strum arrows as crisp vector shapes (currentColor), drawn at their size.
+const ARROW = {
+  down: '<svg class="jg-pav-arrow" viewBox="0 0 24 32" aria-hidden="true"><path d="M12 3v24M4.5 19.5 12 27l7.5-7.5"/></svg>',
+  up: '<svg class="jg-pav-arrow" viewBox="0 0 24 32" aria-hidden="true"><path d="M12 29V5M4.5 12.5 12 5l7.5 7.5"/></svg>',
+  miss: '<svg class="jg-pav-arrow" viewBox="0 0 24 32" aria-hidden="true"><circle cx="12" cy="16" r="2.6"/></svg>',
+};
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const near = (a, b, tol = 0.06) => Math.abs(a - b) <= tol * Math.max(a, b);
 
@@ -73,13 +79,15 @@ function buildBlocks(evs, { beatSec = 0, beatsPerBar = 4, origin = null } = {}) 
     b.barSlots = barSlots;
     b.pages = Math.ceil(n / barSlots);
     // Counting under the arrows: "1 & 2 &" for eighths, "1 2 3 4" for beats.
-    const per = beatSec ? (near(step, beatSec / 2) ? 2 : near(step, beatSec) ? 1 : 0) : 0;
+    // Sixteenths: "1 e & a".
+    const per = beatSec ? (near(step, beatSec / 2) ? 2 : near(step, beatSec) ? 1 : near(step, beatSec / 4) ? 4 : 0) : 0;
     b.counts = dirs.map((_, j) => {
       if (!per) return "";
       const beats = (first.t - t0) / beatSec + (j * step) / beatSec;
       const whole = Math.round(beats * per) / per;
       const inBar = ((Math.floor(whole + 1e-6) % beatsPerBar) + beatsPerBar) % beatsPerBar;
-      return Math.abs(whole - Math.round(whole)) < 1e-3 ? String(inBar + 1) : "&";
+      const frac = Math.round((whole - Math.floor(whole + 1e-6)) * 4);
+      return frac === 0 || frac === 4 ? String(inBar + 1) : frac === 2 ? "&" : frac === 1 ? "e" : "a";
     });
   });
   return blocks;
@@ -139,8 +147,18 @@ function createPlayAlongView(container, fb, root = null) {
     const slots = b.dirs.slice(from, from + b.barSlots);
     const counts = b.counts.slice(from, from + b.barSlots);
     subEl.textContent = b.pages > 1 ? `bar ${page + 1} of ${b.pages}` : "";
-    mainEl.innerHTML = `<div class="jg-pav-arrows" style="--n:${slots.length}">${slots.map((d, j) =>
-      `<div class="jg-pav-slot ${d ? "jg-pav-" + d : "jg-pav-miss"}" data-j="${from + j}"><b>${d === "up" ? "↑" : d === "down" ? "↓" : "·"}</b><small>${counts[j] || ""}</small></div>`).join("")}</div>`;
+    // Compact cells in beat groups (4 = "1 & 2 &") that wrap onto a new
+    // row on a narrow phone, so the arrows always fit the screen. Sharp
+    // SVG arrows at their real size (no scaling animation: that blurred).
+    const g = slots.length > 4 && slots.length % 4 === 0 ? 4 : slots.length > 3 && slots.length % 3 === 0 ? 3 : slots.length;
+    const cell = (d, j) => `<div class="jg-pav-slot ${d ? "jg-pav-" + d : "jg-pav-miss"}" data-j="${from + j}">${ARROW[d || "miss"]}<small>${counts[j] || ""}</small></div>`;
+    const groups = [];
+    for (let i = 0; i < slots.length; i += g) groups.push(`<div class="jg-pav-grp">${slots.slice(i, i + g).map((d, k) => cell(d, i + k)).join("")}</div>`);
+    // Two beat groups (8 cells) to a line: 16 strums make two tidy lines.
+    const lines = [];
+    const perLine = g === 4 ? 2 : g === 3 ? 2 : 1;
+    for (let i = 0; i < groups.length; i += perLine) lines.push(`<div class="jg-pav-line">${groups.slice(i, i + perLine).join("")}</div>`);
+    mainEl.innerHTML = `<div class="jg-pav-arrows" data-n="${slots.length}" aria-label="Strums: ${slots.map((d) => d || "rest").join(", ")}">${lines.join("")}</div>`;
   }
 
   // --- single notes -------------------------------------------------------

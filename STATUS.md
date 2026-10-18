@@ -50,6 +50,18 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
 
 ---
 
+## Owner list after TestFlight build 31: arrows, right-handed default, Practice redesign (2026-10-18)
+
+- ✅ **Strum arrows fit the phone and are sharp.** The play-along view no longer sits inside the 720px sideways-scrolling fretboard. Arrows are SVG shapes at native size (no scale animation, which blurred them on iOS) in compact cells grouped in beats ("1 & 2 &"); 8 strums fit on one line at 402px, 16 strums make two lines of 8 (with "1 e & a" counts). The current strum is solid blue with a white arrow. Phones held upright show the chord name + "next" on one line above the arrows. (`js/play-along-view.js`, `css/style.css`)
+- ✅ **Fretboards fit the screen on phones (Songs, Practice).** New fit window in `renderFretboard({ fit: true })`: on screens under 640px it shows about 5 frets scaled to the width, following the shape / scale box / current note, with the string names on the nut side. Landscape and tablets still show the whole neck. Lessons keep the full neck (tap quizzes need every fret); only the fretboard scrolls there, never the arrows. (`js/fretboard.js`, `js/practice-widget.js`)
+- ✅ **Right-handed is the default everywhere.** One-time migration (`jg_lefty_reset_v1`) resets the saved left-handed flag for everyone. The per-screen "↔ Left-handed? Flip it" button now flips for this visit only (sessionStorage); the lasting switch is "Left-handed (mirrored) fretboard" in About & settings. `isLefty()` = this visit's flip if set, otherwise the switch; fretboards, chord diagrams, pictures, tuner and the hand words all use it. (`js/settings.js`, `js/about.js`, `js/lessons-data.js`)
+- ✅ **Practice tab redesign** (`js/practice-ui.js`):
+  - **Chord loop**: your loop as chips (✕ to remove), 12 everyday chords to add, Strum (Downs / Down-up / Pop) and Speed (Slow / Medium / Fast), one big Start. Start plays straight on the fretboard below: chord name, strum arrows and shape, looping until Stop.
+  - **All chords**: 4 rows (Major, Minor, 7th, maj7 · m7 · sus, all 12 keys), each a sideways strip of names; 4 diagrams show the tapped chord and its neighbours (2×2 on phones); tapping plays it and shows it on the fretboard.
+  - **Scales**: compact Scale / Key selects and a Start-at slider; the fretboard window fits the scale box on one screen; when playing, the current string glows (its name lights up), a ring + fret number show the note, the view says "D string, fret 5 · note G" and the next note is faint. The sideways-scrolling tab was removed.
+- ✅ **No sideways scrolling** on Songs or Practice at 402px (document and every element measured; only the All chords strips scroll, on purpose).
+- Tested in headless Chrome at 402×874 and 874×402 (DPR 3, touch): song arrows (8 and 16 strums), All chords, chord loop playing, a scale playing, left-handed migration (old `jg_lefty=1` shows right-handed), session flip, the About switch, all 77 lessons / 393 cards and pages with no page errors; `npm run check` clean.
+
 ## Owner list: Hayden-style course, hands, chat, orientation, web (2026-10-18)
 
 Card numbers are the TestFlight build 30 numbers (Lesson 1 card n = index n-1 in `LESSON1_CARDS`). Tested in headless Chrome: every lesson card/page opened (67 lessons, 287 cards/pages) with left-handed off and on, no page errors; fretboards and chord boxes checked programmatically (low E below high e, string names on the nut side for each mode); screenshots of cards 3, 4, 7, 11, 12, 13, 15, a page lesson, lefty board/diagrams/tuner/guitar. `npm run check` passes. iOS not built.

@@ -229,8 +229,10 @@ table.jg-table { border-collapse: collapse; font-size: 0.88rem; margin: 6px 0; }
 @media (orientation: portrait) and (max-width: 700px) {
   .jg-rotate-tip { display: block; position: fixed; left: 12px; right: 12px; top: calc(8px + env(safe-area-inset-top, 0px)); z-index: 50; animation: jg-tip-out 0.6s ease-in 9s forwards; box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 6px 10px; border: 1px solid var(--jg-border); border-radius: 10px; background: var(--jg-panel); color: var(--jg-text-dim); font-size: 0.82rem; text-align: left; cursor: pointer; }
   .jg-rotate-tip span { float: right; }
-  .jg-instrument-host, .jg-dr-board { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .jg-instrument { min-width: 720px; }
+  /* Only a full-neck fretboard scrolls sideways; the play-along view above
+     it and fit-window fretboards (songs, Practice) always fit the screen. */
+  .jg-fb.jg-fb-full, .jg-dr-board { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .jg-fb.jg-fb-full > svg { min-width: 720px; }
   .jg-header h1 { font-size: 1.4rem; }
   .jg-tab { padding: 6px 12px; }
 }
@@ -853,15 +855,18 @@ body.jg-intro-open { overflow: hidden; }
 .jg-pav-next b { color: var(--jg-text); }
 .jg-pav-chip { display: inline-block; min-width: 1.4em; text-align: center; color: #fff; border-radius: 6px; padding: 0 5px; font-weight: 900; }
 .jg-pav-ready .jg-pav-name { opacity: 0.55; }
-.jg-pav-arrows { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 68px)); gap: 6px; justify-content: center; }
-.jg-pav-slot { display: flex; flex-direction: column; align-items: center; padding: 4px 0 2px; border-radius: 12px; background: var(--jg-bg); border: 2px solid transparent; }
-.jg-pav-slot b { font-size: 2.3rem; line-height: 1.05; font-weight: 900; color: var(--jg-wood); }
-.jg-pav-miss b { opacity: 0.22; }
-.jg-pav-slot small { font-size: 0.8rem; font-weight: 800; color: var(--jg-text-dim); min-height: 1.1em; }
-.jg-pav-on { background: var(--jg-hl-bg); border-color: var(--jg-hl); animation: jg-pav-blink 0.45s ease-out; }
-.jg-pav-on b { color: var(--jg-hl); }
-.jg-pav-on.jg-pav-miss b { opacity: 0.45; }
-@keyframes jg-pav-blink { 0% { transform: scale(1.16); background: #bfe0ff; } 100% { transform: scale(1); } }
+.jg-pav-arrows { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.jg-pav-line { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 12px; }
+.jg-pav-grp { display: flex; gap: 4px; }
+.jg-pav-slot { display: flex; flex-direction: column; align-items: center; width: 54px; padding: 4px 0 2px; border-radius: 10px; background: var(--jg-bg); border: 2px solid transparent; color: var(--jg-wood); }
+.jg-pav-arrow { display: block; width: 30px; height: 40px; fill: none; stroke: currentColor; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
+.jg-pav-miss .jg-pav-arrow { fill: #cdbba4; stroke: none; }
+.jg-pav-slot small { font-size: 0.8rem; font-weight: 800; color: var(--jg-text-dim); min-height: 1.1em; line-height: 1.1; }
+/* The strum now: solid blue with a white arrow (no scaling, so it stays sharp). */
+.jg-pav-on { background: var(--jg-hl); border-color: var(--jg-hl); color: #fff; box-shadow: 0 0 0 3px rgba(42,111,176,0.25); animation: jg-pav-blink 0.4s ease-out; }
+.jg-pav-on small { color: #fff; }
+.jg-pav-on.jg-pav-miss .jg-pav-arrow { fill: #fff; }
+@keyframes jg-pav-blink { from { box-shadow: 0 0 0 7px rgba(42,111,176,0.45); } to { box-shadow: 0 0 0 3px rgba(42,111,176,0.25); } }
 .jg-pav-waiting .jg-pav-on { animation: jg-pav-wait 1.1s ease-in-out infinite; }
 @keyframes jg-pav-wait { 0%, 100% { box-shadow: 0 0 0 0 rgba(42,111,176,0.45); } 50% { box-shadow: 0 0 0 6px rgba(42,111,176,0); } }
 .jg-pav-tab { display: block; width: 100%; max-width: 620px; height: auto; max-height: 104px; margin: 0 auto; }
@@ -880,9 +885,68 @@ body.jg-intro-open { overflow: hidden; }
 @keyframes jg-ring-hit { from { stroke-width: 8; opacity: 1; } to { stroke-width: 3; } }
 .jg-up-view { margin: 6px 0; }
 @media (orientation: landscape) and (max-height: 500px) {
-  .jg-pav { min-height: 74px; padding: 4px 10px; }
+  .jg-pav { min-height: 74px; padding: 4px 10px; grid-template-columns: minmax(96px, 150px) 1fr; }
   .jg-pav-name { font-size: 2rem; }
-  .jg-pav-slot b { font-size: 1.7rem; }
+  .jg-pav-slot { width: 40px; padding: 2px 0 1px; }
+  .jg-pav-arrow { width: 22px; height: 29px; }
   .jg-pav-tab { max-height: 70px; }
 }
+/* Phones held upright: the chord name and "next" on one line, the arrows
+   full width underneath in compact cells (8 fit on one row on a 390-430px
+   phone; 16 wrap onto two rows). */
+@media (max-width: 640px) {
+  .jg-pav { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 6px 8px 8px; min-height: 0; }
+  .jg-pav-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 10px; }
+  .jg-pav-name { font-size: 2.1rem; }
+  .jg-pav-sub, .jg-pav-next { margin-top: 0; }
+  .jg-pav-next { margin-left: auto; }
+  .jg-pav-arrows { gap: 5px; }
+  .jg-pav-line { gap: 5px 8px; }
+  .jg-pav-grp { gap: 3px; }
+  .jg-pav-slot { width: clamp(28px, calc((100vw - 86px) / 8), 46px); padding: 3px 0 1px; border-radius: 8px; }
+  .jg-pav-arrow { width: 22px; height: 30px; stroke-width: 3.6; }
+  .jg-pav-slot small { font-size: 0.72rem; }
+}
 @media (prefers-reduced-motion: reduce) { .jg-pav-on, .jg-pav-waiting .jg-pav-on, .jg-glow-hit .jg-glow-ring { animation: none; } }
+
+/* Fit-window fretboards (phones held upright): the string-name strip and
+   the name of the string that's ringing. */
+.jg-names-bg { fill: var(--jg-bg); }
+.jg-string-name.jg-sn-on { fill: var(--jg-accent); font-size: 20px; }
+
+/* Practice tab (2026-10-18 redesign) ------------------------------------ */
+/* Chord loop: chips you can remove, chords to add, strum + speed, Start. */
+.jg-loopcard { display: flex; flex-direction: column; gap: 6px; }
+.jg-loop-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.jg-loop-head .jg-note { margin: 0; font-size: 0.8rem; }
+.jg-loop-chips { display: flex; flex-wrap: wrap; gap: 6px; min-height: 40px; align-items: center; }
+.jg-loop-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 10px; border: 2px solid var(--jg-accent); background: var(--jg-accent-soft); color: var(--jg-text); font-family: inherit; font-weight: 800; font-size: 1.05rem; line-height: 1; cursor: pointer; }
+.jg-loop-chip span { font-size: 0.75rem; color: var(--jg-text-dim); }
+.jg-loop-sub { font-size: 0.8rem; font-weight: 700; color: var(--jg-text-dim); }
+.jg-loop-add { display: flex; flex-wrap: wrap; gap: 5px; }
+.jg-loop-add .jg-pill { min-width: 44px; font-weight: 700; color: var(--jg-text); }
+.jg-loop-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.jg-loop-ctl .jg-label { min-width: 3.4em; }
+.jg-loop-go { align-self: stretch; font-size: 1.15rem; padding: 12px; margin-top: 4px; }
+.jg-loop-go.jg-loop-stop { background: var(--jg-wood); }
+.jg-loop-go:disabled { opacity: 0.5; }
+/* All chords: four sideways strips of names, four diagrams. */
+.jg-lib-intro { margin: 0 0 6px; font-size: 0.92rem; }
+.jg-lib-row { margin: 6px 0; }
+.jg-lib-rowname { font-size: 0.78rem; font-weight: 800; color: var(--jg-text-dim); margin: 0 0 3px; }
+.jg-chord-strip { display: flex; gap: 6px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding: 2px 2px 4px; }
+.jg-chord-strip::-webkit-scrollbar { display: none; }
+.jg-chord-btn { flex: 0 0 auto; min-width: 52px; min-height: 40px; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--jg-border); background: var(--jg-bg); color: var(--jg-text); font-family: inherit; font-weight: 800; font-size: 1rem; line-height: 1; cursor: pointer; }
+.jg-chord-btn.jg-chord-on { background: var(--jg-accent); border-color: var(--jg-accent); color: #fff; }
+.jg-lib4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.jg-lib4-dg { padding: 4px; border: 2px solid var(--jg-border); border-radius: 12px; cursor: pointer; }
+.jg-lib4-dg .jg-diagram { width: 100%; }
+.jg-lib4-on { border-color: var(--jg-accent); background: #fff6ec; }
+@media (max-width: 640px) { .jg-lib4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Scales: two compact rows of controls. */
+.jg-scale-ctl { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 12px; margin: 4px 0 8px; }
+.jg-scale-ctl label { display: flex; flex-direction: column; gap: 2px; }
+.jg-scale-pos { flex: 1 1 160px; }
+.jg-scale-pos input { width: 100%; }
+.jg-sel { font: inherit; font-size: 0.95rem; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--jg-border); background: var(--jg-panel); color: var(--jg-text); max-width: 100%; }
+@media (orientation: landscape) and (max-height: 500px) { .jg-pav.jg-pav-notes { grid-template-columns: minmax(150px, 250px) 1fr; } }

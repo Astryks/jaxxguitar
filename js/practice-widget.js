@@ -23,9 +23,11 @@ const MODE_LABELS = { listen: ["play", "Listen"], wait: ["hand", "Wait for me"],
 // An instrument: the play-along view on top of a fretboard. Returns
 // { fb, hw, el } (hw = the view; the name is kept from the old highway).
 const NO_VIEW = { load() {}, update() {}, preview() {}, reset() {}, destroy() {} };
-function mountInstrument(container, { frets = 12, highway = true } = {}) {
+// fit: on a phone held upright, show a window of frets that fits the
+// screen (follows the shape / notes) instead of a sideways-scrolling neck.
+function mountInstrument(container, { frets = 12, highway = true, fit = false } = {}) {
   container.innerHTML = `<div class="jg-instrument">${highway ? '<div class="jg-pav-host"></div>' : ""}<div class="jg-fb"></div></div>`;
-  const fb = renderFretboard(container.querySelector(".jg-fb"), { frets });
+  const fb = renderFretboard(container.querySelector(".jg-fb"), { frets, fit });
   const hw = highway ? createPlayAlongView(container.querySelector(".jg-pav-host"), fb, container) : NO_VIEW;
   return { fb, hw, el: container.firstElementChild };
 }

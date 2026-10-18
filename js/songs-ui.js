@@ -224,7 +224,7 @@ function openSong(panel, song, { autoplay = false } = {}) {
     </div>`;
   // Room on the fretboard for the highest solo lick (they sit in box 1, up to fret 17).
   const topFret = Math.max(12, ...(song.solos || []).map((so) => (licksFor(so.scale, { tuningDown: capoDown })?.fret || 0) + 3));
-  const inst = mountInstrument(panel.querySelector(".jg-instrument-host"), { frets: topFret });
+  const inst = mountInstrument(panel.querySelector(".jg-instrument-host"), { frets: topFret, fit: true });
   let pattern = songPattern(song);
   let lickRaf = null;
   let part = "main";
@@ -291,7 +291,7 @@ function openSong(panel, song, { autoplay = false } = {}) {
   mount();
   inst.fb.showShape(chordShape(p.shapes[0]));
   if (autoplay) setTimeout(() => panel.querySelector(".jg-pb-go")?.click(), 400);
-  cleanup = () => { if (lickRaf) cancelAnimationFrame(lickRaf); box && box.destroy(); inst.hw.destroy(); };
+  cleanup = () => { if (lickRaf) cancelAnimationFrame(lickRaf); box && box.destroy(); inst.hw.destroy(); inst.fb.destroy(); };
   panel.querySelector(".jg-exit").addEventListener("click", () => renderSongs(panel));
   wireFlip(panel, () => openSong(panel, song));
   panel.querySelectorAll(".jg-dg-btn").forEach((b) => b.addEventListener("click", () => {

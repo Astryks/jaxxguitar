@@ -1,21 +1,61 @@
 // Small app settings, kept on this device.
 //   Left-handed: every fretboard and chord box is drawn mirrored, the way
 //   a left-handed player sees their own guitar (nut on the right).
+//
+// Right-handed is the default everywhere (owner, 2026-10-18). Two ways to
+// see the mirrored view:
+//   - the "Left-handed fretboard (mirrored)" switch in About & settings
+//     (remembered on this device: for real left-handed players), and
+//   - the "↔ Left-handed? Flip it" button on screens with a guitar, which
+//     only flips the view for this visit (sessionStorage), so one curious
+//     tap can no longer leave the whole course mirrored.
 
-const LEFTY_KEY = "jg_lefty";
+const LEFTY_KEY = "jg_lefty";            // the settings switch ("1" = on)
+const SESSION_KEY = "jg_lefty_session";  // this visit's flip ("1" / "0"), wins over the switch
+const MIGRATION_KEY = "jg_lefty_reset_v1";
 
-function isLefty() {
+// One-time reset (build 32): the old Flip button saved "left-handed" for
+// good, so people who tapped it once saw every fretboard mirrored. Put
+// everyone back on right-handed once; the settings switch turns it on again.
+try {
+  if (localStorage.getItem(MIGRATION_KEY) !== "1") {
+    localStorage.setItem(LEFTY_KEY, "0");
+    localStorage.setItem(MIGRATION_KEY, "1");
+  }
+} catch (e) { /* storage unavailable */ }
+
+function leftySetting() {
   try { return localStorage.getItem(LEFTY_KEY) === "1"; } catch (e) { return false; }
 }
+function sessionFlip() {
+  try { const v = sessionStorage.getItem(SESSION_KEY); return v === "1" ? true : v === "0" ? false : null; } catch (e) { return null; }
+}
 
+// Mirrored view? This visit's flip if there is one, otherwise the setting.
+function isLefty() {
+  const s = sessionFlip();
+  return s === null ? leftySetting() : s;
+}
+
+// The permanent setting (About & settings). Clears any flip for this visit.
 function setLefty(on) {
-  try { localStorage.setItem(LEFTY_KEY, on ? "1" : "0"); } catch (e) { /* storage unavailable */ }
+  try { localStorage.setItem(LEFTY_KEY, on ? "1" : "0"); sessionStorage.removeItem(SESSION_KEY); } catch (e) { /* storage unavailable */ }
+  window.dispatchEvent(new CustomEvent("jg-settings"));
+}
+
+// Flip the view for this visit only (the per-screen button).
+function flipForSession() {
+  const on = !isLefty();
+  try {
+    if (on === leftySetting()) sessionStorage.removeItem(SESSION_KEY);
+    else sessionStorage.setItem(SESSION_KEY, on ? "1" : "0");
+  } catch (e) { /* storage unavailable */ }
   window.dispatchEvent(new CustomEvent("jg-settings"));
 }
 
 // A switch for the left-handed setting. Wire it with wireLeftyToggle(root).
 function leftyToggleHtml() {
-  return `<label class="jg-switch"><input type="checkbox" class="jg-lefty-toggle" ${isLefty() ? "checked" : ""}><span>Left-handed fretboard (mirrored)</span></label>`;
+  return `<label class="jg-switch"><input type="checkbox" class="jg-lefty-toggle" ${leftySetting() ? "checked" : ""}><span>Left-handed (mirrored) fretboard</span></label>`;
 }
 function wireLeftyToggle(root, onChange) {
   root.querySelectorAll(".jg-lefty-toggle").forEach((box) => box.addEventListener("change", () => {
@@ -25,11 +65,10 @@ function wireLeftyToggle(root, onChange) {
 }
 
 // The "↔ Left-handed? Flip it" button, used on every screen with a guitar.
-// When the left-handed view is on it says so loudly (it's remembered, so a
-// tap on one card flips every later card too).
+// It flips the view for this visit only; the lasting switch is in About.
 function flipButtonHtml() {
   return isLefty()
-    ? `<button class="jg-flip-btn jg-flip-on" type="button">↔ Left-handed view is ON · tap for right-handed</button>`
+    ? `<button class="jg-flip-btn jg-flip-on" type="button">↔ Left-handed view · tap for right-handed</button>`
     : `<button class="jg-flip-btn" type="button">↔ Left-handed? Flip it</button>`;
 }
 
@@ -68,7 +107,7 @@ function mirrorSvgTexts(svg) {
   });
 }
 function wireFlip(root, rerender) {
-  root.querySelectorAll(".jg-flip-btn").forEach((b) => b.addEventListener("click", () => { setLefty(!isLefty()); rerender(); }));
+  root.querySelectorAll(".jg-flip-btn").forEach((b) => b.addEventListener("click", () => { flipForSession(); rerender(); }));
 }
 
-export { isLefty, setLefty, leftyToggleHtml, wireLeftyToggle, flipButtonHtml, wireFlip, hands, handName, handSide, mirrorSvgTexts };
+export { isLefty, setLefty, flipForSession, leftySetting, leftyToggleHtml, wireLeftyToggle, flipButtonHtml, wireFlip, hands, handName, handSide, mirrorSvgTexts };

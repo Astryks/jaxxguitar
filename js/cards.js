@@ -149,7 +149,7 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
       if (card.show?.frets) inst.fb.highlightFrets(card.show.frets);
     }
     // Left-handed: the nut is on the right, so start the (scrollable) board there.
-    const showNut = () => { const bd = panel.querySelector(".jg-card-board"); if (isLefty() && bd) requestAnimationFrame(() => { bd.scrollLeft = bd.scrollWidth; }); };
+    const showNut = () => { const bd = panel.querySelector(".jg-card-board .jg-fb"); if (isLefty() && bd) requestAnimationFrame(() => { bd.scrollLeft = bd.scrollWidth; }); };
     showNut();
     if (card.show?.viewer) panel.querySelector(".jg-card-board").insertAdjacentHTML("afterend", `<div class="jg-viewer-wrap">${viewerSvg()}</div>`);
     if (card.show?.guitar) extra.innerHTML = `<div class="jg-guitar-wrap ${isLefty() ? "jg-flipped" : ""}">${guitarSvg()}</div>`;
