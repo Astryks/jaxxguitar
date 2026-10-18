@@ -6,7 +6,7 @@
 // bundled in these same JS files, so no separate data-fetching to
 // worry about). Bump CACHE_NAME on every
 // deploy that changes shell files so old caches are dropped on activate.
-const CACHE_NAME = "jaxx-guitar-v28";
+const CACHE_NAME = "jaxx-guitar-v29";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -37,6 +37,8 @@ const APP_SHELL = [
   "./js/daily-review.js",
   "./js/drums.js",
   "./js/play-along-view.js",
+  "./js/every-note.js",
+  "./js/every-note-view.js",
   "./js/fret-map.js",
   "./js/fretboard.js",
   "./js/fun-facts.js",

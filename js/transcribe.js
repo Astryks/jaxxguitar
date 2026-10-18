@@ -249,7 +249,9 @@ async function decodeNatively(file, ctx) {
   return buf;
 }
 
+let lastModel = null;
 async function transcribeFile(file, onStatus = () => {}) {
+  lastModel = null;
   let audioBuffer;
   const audioCtx = getAudioContext();
   try {
@@ -318,6 +320,9 @@ async function transcribeFile(file, onStatus = () => {}) {
       addPitchBendsToNoteEvents(contours, outputToNotesPoly(frames, onsets))
     );
     const notes = cleanupNotes(rawNotes);
+    // Kept for "Every note" (every-note.js), which re-reads the model's
+    // output with its own guitar-specific settings.
+    lastModel = { frames, onsets, contours, outputToNotesPoly, addPitchBendsToNoteEvents, noteFramesToTime };
     console.log(`Jaxx Guitar: basic-pitch transcription result - ${rawNotes.length} raw notes, ${notes.length} after cleanup`, notes);
     return notes;
   } catch (err) {
@@ -451,10 +456,21 @@ function formatClock(sec) {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
 
+// "Every note": the last upload's notes read with a stricter onset
+// threshold (0.6, vs the library default 0.5) and no cleanup - every-note.js
+// cleans them for a guitar (cleanForGuitar). On three test recordings with
+// known notes this scored better than the default + cleanupNotes() (see
+// STATUS.md, 2026-10-19). null if nothing has been transcribed.
+function detailedNotes() {
+  const m = lastModel;
+  if (!m) return null;
+  return m.noteFramesToTime(m.addPitchBendsToNoteEvents(m.contours, m.outputToNotesPoly(m.frames, m.onsets, 0.6, 0.3, 5)));
+}
+
 // Guess the song from the last upload (iPhone/iPad app only; null on the web).
 function guessLastUpload() {
   return lastDecoded ? recognizeSong(lastDecoded) : Promise.resolve(null);
 }
 const canGuessSongs = () => Boolean(window.Capacitor?.isNativePlatform?.());
 
-export { transcribeFile, estimateBeat, simplifyToChords, guessLastUpload, canGuessSongs };
+export { transcribeFile, detailedNotes, estimateBeat, simplifyToChords, guessLastUpload, canGuessSongs };

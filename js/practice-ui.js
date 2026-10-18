@@ -11,6 +11,7 @@ import { strum, click, getAudioContext, stopAllSound, playNote } from "./guitar-
 import { placeMelody, melodyLine } from "./fret-map.js";
 import { mountInstrument, createPracticeBox } from "./practice-widget.js";
 import { chordTimeline, createGuitarPlayer, timelineEvents, LEAD } from "./guitar-player.js";
+import { mountEveryNote } from "./every-note-view.js";
 import { transcribeFile, estimateBeat, simplifyToChords, guessLastUpload, canGuessSongs } from "./transcribe.js";
 import { SONGS } from "./songs-data.js";
 import { parseChordSymbol } from "./chord-utils.js";
@@ -281,7 +282,7 @@ function renderPractice(panel) {
       panel.querySelector(".jg-below").innerHTML = "";
       try {
         const notes = await transcribeFile(file, (t) => { status.textContent = t; });
-        const hw = notes.map((n) => ({ midi: n.pitchMidi ?? n.midi, time: n.startTimeSeconds ?? n.time, duration: n.durationSeconds ?? n.duration }));
+        const hw = notes.map((n) => ({ midi: n.pitchMidi ?? n.midi, time: n.startTimeSeconds ?? n.time, duration: n.durationSeconds ?? n.duration, velocity: n.amplitude }));
         const beat = estimateBeat(hw);
         // Slow songs can change chord every beat; faster ones every 2 beats.
         const win = beat ? (beat.beatSec >= 0.75 ? beat.beatSec : beat.beatSec * 2) : 1;
@@ -335,7 +336,9 @@ function renderPractice(panel) {
       <button class="jg-upload-bigplay jg-up-play">▶ Play</button>
       <div class="jg-row jg-up-view"><span class="jg-label">Show</span>
         <button class="jg-pill jg-pill-active" data-view="chords">Chords + strums</button>
-        <button class="jg-pill" data-view="notes">The tune (single notes)</button></div>
+        <button class="jg-pill" data-view="notes">The tune (single notes)</button>
+        <button class="jg-pill" data-view="every">Every note</button></div>
+      <div class="jg-up-every"></div>
       <audio class="jg-up-audio" preload="auto"></audio>`;
     // ...everything else below the fretboard.
     below.innerHTML = `
@@ -391,7 +394,16 @@ function renderPractice(panel) {
       return line.map((n, i) => ({ t: n.time, d: n.duration, span: n.duration, string: pos[i].string, fret: pos[i].fret }));
     };
     let evs = [];
+    let every = null; // "Every note" (every-note-view.js) has its own player
     const loadView = () => {
+      if (every) { every.destroy(); every = null; }
+      playBtn.style.display = view === "every" ? "none" : "";
+      res.querySelectorAll("[data-view]").forEach((x) => x.classList.toggle("jg-pill-active", x.dataset.view === view));
+      if (view === "every") {
+        audio.pause(); playBtn.textContent = "▶ Play"; inst.hw.reset();
+        every = mountEveryNote(res.querySelector(".jg-up-every"), { inst, audio, notes: heard, suggestedCapo: capo.capo });
+        return;
+      }
       evs = view === "notes" ? noteEvs() : chordEvs();
       if (!evs.length && view === "notes") { view = "chords"; evs = chordEvs(); }
       inst.hw.preview(evs, { beatSec: beat ? beat.beatSec : 0, beatsPerBar: 4, origin: beat ? beat.offsetSec : 0, hint: "Press Play" });
@@ -454,7 +466,7 @@ function renderPractice(panel) {
         });
       }
     };
-    stopUpload = () => { audio.pause(); if (raf) cancelAnimationFrame(raf); raf = null; URL.revokeObjectURL(url); stopAllSound(); inst.hw.reset(); };
+    stopUpload = () => { if (every) every.destroy(); every = null; audio.pause(); if (raf) cancelAnimationFrame(raf); raf = null; URL.revokeObjectURL(url); stopAllSound(); inst.hw.reset(); };
   }
 
 

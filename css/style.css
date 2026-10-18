@@ -956,3 +956,21 @@ body.jg-intro-open { overflow: hidden; }
 /* Lesson tables fit a phone: wrap long words instead of pushing the page sideways. */
 table.jg-table { width: 100%; table-layout: fixed; overflow-wrap: anywhere; }
 @media (max-width: 640px) { .jg-table th, .jg-table td { padding: 4px 6px; } }
+
+/* ---- Every note (uploads): js/every-note-view.js ---- */
+.jg-en-ctl .jg-row { gap: 6px; flex-wrap: wrap; align-items: center; }
+.jg-en-seekrow input[type="range"] { flex: 1; min-width: 140px; accent-color: var(--jg-accent); }
+.jg-en-barlbl { min-width: 7.5em; }
+.jg-en-more summary { cursor: pointer; font-weight: 700; margin: 6px 0; }
+.jg-en-bar { font-size: 0.85rem; font-weight: 800; color: var(--jg-hl); margin-top: 2px; min-height: 1.1em; }
+.jg-en-tab { max-height: 128px; }
+.jg-en-barline { stroke: var(--jg-text-dim); stroke-width: 1; opacity: 0.6; }
+.jg-en-barno { font: 800 7px -apple-system, sans-serif; fill: var(--jg-text-dim); text-anchor: middle; }
+.jg-en-chord { font: 900 9px -apple-system, sans-serif; fill: var(--jg-text-dim); text-anchor: middle; }
+.jg-en-chord.jg-pav-now { fill: var(--jg-accent); }
+.jg-en-chord.jg-pav-done { opacity: 0.35; }
+.jg-en-tail { stroke: var(--jg-accent); stroke-width: 2.4; stroke-linecap: round; opacity: 0.45; }
+.jg-en-view .jg-pav-sub { line-height: 1.6; }
+.jg-en-view .jg-pav-chip { font-size: 0.8rem; }
+@media (max-width: 560px) { .jg-en-tab { max-height: 104px; } .jg-en-view .jg-pav-name { font-size: 1.8rem; } }
+.jg-en-pos { white-space: nowrap; margin-right: 2px; }
