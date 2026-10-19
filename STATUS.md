@@ -6,7 +6,21 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 
 ---
 
-## ▶ Start here: handoff summary (2026-10-07)
+## ▶ Start here: where things stand (2026-10-19)
+
+**Latest TestFlight build: 33** (uploaded 2026-10-19). Everything requested so far is built, tested in headless Chrome, committed and pushed (0 uncommitted, 0 unpushed). The older handoff below is kept for history; its "Latest build: 23" is out of date.
+
+**In build 33 (since build 23):** the 5-lesson course (4 chords + songs, other chords + single notes, genres, solos, loops), Back at the top, purple chat bubbles in WhatsApp order, right-handed by default with a per-session left-handed flip (words swap too), fretboard always low E at the bottom, the calm play-along view (chord name, next chord, sharp blinking strum arrows, single-note ring), Practice redesign (4 chord rows, chord loop, scales), Hotel California / Stairway to Heaven, Godfather, Parisienne Walkways, Beat It / Man in the Mirror, Songsterr "full solo" links, the sound fix (audio unlock kept alive), uploads → **Every note** (string and fret for every note, beats and bars, tuning/capo, Wait for me, speed, loop) and **Whole song bar by bar for 272 songs** with each section's own strum (34 checked, 238 "our best guide"; The tune note for note for 15 public-domain pieces). Details in the dated sections below.
+
+### Next steps (2026-10-19)
+1. **Owner: test build 33 on a phone** from TestFlight: upload a guitar song → Show: Every note; Whole song on Bohemian Rhapsody and a 6/8 song; left-handed flip on a lesson, then confirm the next lesson is right-handed again; sound after a phone call / other app.
+2. **Owner: App Store.** Check in App Store Connect which build is in review / live. If it is older than 33, decide whether to submit 33 (Claude doesn't submit for review without your OK).
+3. **Ear check worth doing:** the 238 "our best guide" songs (bar counts fitted to the recording length). 8 songs keep their old map: Master of Puppets, La Campanella, Piano Concerto No. 2, Chasse-Neige, Drop It Like It's Hot, Pal Pal Dil Ke Paas, Mouse Loves Rice, Ya Lili.
+4. **Copyright rule stays:** chords and strums only for copyrighted songs; note-for-note solos link out to Songsterr; public-domain tunes in full.
+5. **Offered, not started (say the word):** import Guitar Pro / MusicXML tab files (alphaTab) for exact notes of licensed songs; server-side Demucs to isolate the guitar before listening; more public-domain pieces.
+6. Still from before: Google Search Console + Bing (steps below), Google Play listing, screenshot captions.
+
+## ▶ Start here: older handoff summary (2026-10-07)
 
 **Jaxx Guitar**, repo https://github.com/Astryks/jaxxguitar, site https://jaxxguitar.com, bundle `com.jaxxguitar.app` (App Store Connect app ID 6819445036). Sibling app: Hayden Keys (https://github.com/Astryks/haydenkeys).
 
