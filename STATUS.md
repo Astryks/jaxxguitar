@@ -64,6 +64,9 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
 
 ---
 
+## Upload a song: just "Easy" or "Entire song" (2026-10-19)
+- Owner: "dont make it every note just say either easy or entire song, entire song should automatically pick every note". Practice → Upload a song → Show now has two choices: **Easy** (the chords with strum arrows, as before) and **Entire song** (every note on its string and fret: the former "Every note" view). The separate "The tune (single notes)" option is gone. Tested in headless Chrome with a generated recording: both buttons switch views, Entire song mounts the every-note player, no page errors. Cache v31. Not in TestFlight build 33.
+
 ## Every song bar by bar ("hyper detailed" library, 2026-10-19)
 
 Owner: make every song in the library hyper detailed. Research for 273 songs (published chord charts: Ultimate Guitar, Hooktheory, Musicnotes, SongBPM; scores for public-domain pieces) became `js/song-detail-data.js` via `scripts/build-song-detail.mjs` (`node scripts/build-song-detail.mjs <dir with found-*.json>`; it checks everything and writes nothing if any check fails). Cache v30. iOS not built.

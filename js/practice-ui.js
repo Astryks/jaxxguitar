@@ -8,7 +8,6 @@ import { icon } from "./icons.js";
 import { chordShape, shapeMidis, scaleBox, SCALES, NOTE_NAMES, suggestCapo, midiAt } from "./guitar-theory.js";
 import { chordDiagramSvg } from "./fretboard.js";
 import { strum, click, getAudioContext, stopAllSound, playNote } from "./guitar-audio.js";
-import { placeMelody, melodyLine } from "./fret-map.js";
 import { mountInstrument, createPracticeBox } from "./practice-widget.js";
 import { chordTimeline, createGuitarPlayer, timelineEvents, LEAD } from "./guitar-player.js";
 import { mountEveryNote } from "./every-note-view.js";
@@ -335,9 +334,8 @@ function renderPractice(panel) {
     res.innerHTML = `
       <button class="jg-upload-bigplay jg-up-play">▶ Play</button>
       <div class="jg-row jg-up-view"><span class="jg-label">Show</span>
-        <button class="jg-pill jg-pill-active" data-view="chords">Chords + strums</button>
-        <button class="jg-pill" data-view="notes">The tune (single notes)</button>
-        <button class="jg-pill" data-view="every">Every note</button></div>
+        <button class="jg-pill jg-pill-active" data-view="chords">Easy</button>
+        <button class="jg-pill" data-view="every">Entire song</button></div>
       <div class="jg-up-every"></div>
       <audio class="jg-up-audio" preload="auto"></audio>`;
     // ...everything else below the fretboard.
@@ -366,8 +364,8 @@ function renderPractice(panel) {
     drawDg();
     // Chords: the classic pop strum (D · D U · U D U) on the song's beat,
     // so each chord shows its arrows; one strum per chord if we couldn't
-    // find a beat. The tune: the top note at each moment, placed where
-    // it's easy to play (fret-map.js; the tune ignores the capo).
+    // find a beat. "Entire song" is every note on its string and fret
+    // (every-note-view.js).
     const POP = ["down", null, "down", "up", null, "up", "down", "up"];
     let view = "chords";
     const chordEvs = () => {
@@ -388,11 +386,6 @@ function renderPractice(panel) {
       });
       return out;
     };
-    const noteEvs = () => {
-      const line = melodyLine(heard);
-      const pos = placeMelody(line.map((n) => n.midi));
-      return line.map((n, i) => ({ t: n.time, d: n.duration, span: n.duration, string: pos[i].string, fret: pos[i].fret }));
-    };
     let evs = [];
     let every = null; // "Every note" (every-note-view.js) has its own player
     const loadView = () => {
@@ -404,8 +397,7 @@ function renderPractice(panel) {
         every = mountEveryNote(res.querySelector(".jg-up-every"), { inst, audio, notes: heard, suggestedCapo: capo.capo });
         return;
       }
-      evs = view === "notes" ? noteEvs() : chordEvs();
-      if (!evs.length && view === "notes") { view = "chords"; evs = chordEvs(); }
+      evs = chordEvs();
       inst.hw.preview(evs, { beatSec: beat ? beat.beatSec : 0, beatsPerBar: 4, origin: beat ? beat.offsetSec : 0, hint: "Press Play" });
       const first = evs[0];
       if (first && first.chord) inst.fb.showShape(first.shape);
