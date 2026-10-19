@@ -50,6 +50,7 @@ import { createStrumLoop } from "./strum-loop.js";
 import { guitarSvg, fingerStrumSvg, viewerSvg } from "./guitar-art.js";
 import { isLefty, setLefty, flipButtonHtml, wireFlip, hands } from "./settings.js";
 import { songCardHtml, wireSongCards, findSong } from "./lesson-songs.js";
+import { songDetail } from "./song-detail.js";
 import { wireVideos, videoHtml } from "./media.js";
 import { chordTimeline } from "./guitar-player.js";
 import { teachHtml } from "./teach-videos.js";
@@ -277,7 +278,24 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
 
     // A song in the play-along box: the chords and the strum change with
     // each part of the song, and the list above lights up the part playing.
-    function songPractice(sp) {
+    function songPractice(spIn) {
+      // The song's bar-by-bar chart (song-detail.js), when there is one:
+      // each part that already strums with ups gets the strum the chart has
+      // for that section; the tempo is the record's. (Parts kept to plain
+      // downs for beginners stay that way.)
+      const sp = { ...spIn, parts: spIn.parts.map((x) => ({ ...x })) };
+      const det = songDetail(findSong(sp.title));
+      if (det) {
+        sp.parts.forEach((part) => {
+          if (!part.pattern.includes("up")) return;
+          const sec = det.sections.find((x) => x.name.toLowerCase().startsWith(part.name.toLowerCase()));
+          const st = sec && sec.strum;
+          if (!st || st.kind !== "strum" || st.slotQ !== 0.5 || st.bars.length !== 1 || st.bars[0].length !== 8 || /X/.test(st.bars[0])) return;
+          part.pattern = st.bars[0].split("").map((c) => (c === "D" ? "down" : c === "U" ? "up" : null));
+          part.strumName = `${st.bars[0].split("").map((c) => (c === "-" ? "·" : c)).join(" ")} (the song's own)`;
+        });
+        if (!sp.bpm) sp.bpm = Math.round(det.qb);
+      }
       const ARROW = { down: "↓", up: "↑" };
       const arrows = (pat) => pat.map((d) => `<i class="${d ? "" : "jg-sp-gap"}">${d ? ARROW[d] : "·"}</i>`).join("");
       const info = new Map();

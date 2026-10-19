@@ -147,6 +147,35 @@ function strum(midis, { direction = "down", delay = 0, spread = 0.018, duration 
   order.forEach((m, i) => playNote(m, { delay: delay + i * spread, duration, gain }));
 }
 
+// A muted "chuck": the fretting hand lies across the strings so the strum
+// is a dead, percussive click (an "x" in a strum pattern).
+let chuckNoise = null;
+function mutedStrum(midis, { delay = 0, gain = 0.2 } = {}) {
+  const c = getAudioContext();
+  const t = c.currentTime + delay;
+  if (!chuckNoise || chuckNoise.sampleRate !== c.sampleRate) {
+    chuckNoise = c.createBuffer(1, Math.floor(c.sampleRate * 0.08), c.sampleRate);
+    const d = chuckNoise.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * 0.012));
+  }
+  const src = c.createBufferSource();
+  src.buffer = chuckNoise;
+  const bp = c.createBiquadFilter();
+  bp.type = "bandpass";
+  bp.frequency.value = 1800;
+  bp.Q.value = 0.9;
+  const g = c.createGain();
+  g.gain.setValueAtTime(gain * 1.6, t);
+  src.connect(bp).connect(g).connect(c.destination);
+  src.start(t);
+  src.stop(t + 0.09);
+  const entry = { src, g };
+  live.add(entry);
+  src.onended = () => live.delete(entry);
+  // A trace of pitch under the click, very short.
+  (midis || []).slice(0, 4).forEach((m, i) => playNote(m, { delay: delay + i * 0.006, duration: 0.02, gain: gain * 0.35 }));
+}
+
 // A short metronome tick (accent on the first beat).
 function click(accent = false, delay = 0) {
   const c = getAudioContext();
@@ -162,4 +191,4 @@ function click(accent = false, delay = 0) {
   o.stop(t + 0.06);
 }
 
-export { getAudioContext, playNote, strum, click, stopAllSound };
+export { getAudioContext, playNote, strum, mutedStrum, click, stopAllSound };

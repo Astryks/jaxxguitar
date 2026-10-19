@@ -974,3 +974,22 @@ table.jg-table { width: 100%; table-layout: fixed; overflow-wrap: anywhere; }
 .jg-en-view .jg-pav-chip { font-size: 0.8rem; }
 @media (max-width: 560px) { .jg-en-tab { max-height: 104px; } .jg-en-view .jg-pav-name { font-size: 1.8rem; } }
 .jg-en-pos { white-space: nowrap; margin-right: 2px; }
+
+/* Whole song, bar by bar (song-detail.js, 2026-10-19) */
+.jg-pav-where { font-size: 0.8rem; font-weight: 800; color: var(--jg-accent-2, var(--jg-text-dim)); min-height: 1.1em; text-transform: none; overflow-wrap: anywhere; }
+.jg-pav-where:empty { display: none; }
+.jg-pav-restname { color: var(--jg-text-dim); font-size: 1.9rem; }
+.jg-pav-mute { color: var(--jg-text-dim); }
+.jg-song-check { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; background: #f3ece2; color: var(--jg-text-dim); font-weight: 800; font-size: 0.82rem; }
+.jg-song-checked { background: #e4f5e8; color: #2c7a43; }
+.jg-chart { background: var(--jg-panel); border: 1px solid var(--jg-border); border-radius: 16px; padding: 8px 12px; margin-bottom: 10px; }
+.jg-chart > summary { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--jg-accent); }
+.jg-chart-sec { padding: 6px 0; border-top: 1px dashed var(--jg-border); }
+.jg-chart-head { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 0.9rem; }
+.jg-chart-head span { color: var(--jg-text-dim); font-size: 0.8rem; }
+.jg-chart-strum { font-size: 0.85rem; color: var(--jg-wood); font-weight: 700; letter-spacing: 1px; overflow-wrap: anywhere; margin: 2px 0 4px; }
+.jg-chart-strum small { letter-spacing: 0; font-weight: 600; color: var(--jg-text-dim); }
+.jg-chart-bars { display: flex; flex-wrap: wrap; gap: 4px; }
+.jg-chart-bar { min-width: 40px; padding: 2px 7px; border-left: 2px solid var(--jg-accent-soft); background: #fff; border-radius: 4px; font-weight: 800; font-size: 0.85rem; white-space: nowrap; }
+.jg-chart-bar sub { font-size: 0.65rem; font-weight: 600; color: var(--jg-text-dim); margin-left: 1px; }
+.jg-set-row[hidden], .jg-real-tempo[hidden] { display: none !important; }

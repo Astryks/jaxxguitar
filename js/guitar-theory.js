@@ -107,6 +107,21 @@ const OPEN_SHAPES = {
   "Dm7/C": { frets: [-1, 3, 0, 2, 1, 1], fingers: [0, 3, 0, 2, 1, 1] },
   "G#m/F#": { frets: [2, -1, 1, 1, 0, 4], fingers: [2, 0, 1, 1, 0, 4] },
   "G7/B": { frets: [-1, 2, 0, 0, 0, 1], fingers: [0, 2, 0, 0, 0, 1] },
+  // Added 2026-10-19 for the bar-by-bar song charts (song-detail-data.js).
+  Dadd9: { frets: [-1, 5, 4, 2, 3, 0], fingers: [0, 4, 3, 1, 2, 0] },
+  Eadd9: { frets: [0, 2, 2, 1, 0, 2], fingers: [0, 2, 3, 1, 0, 4] },
+  Fadd9: { frets: [-1, -1, 3, 2, 1, 3], fingers: [0, 0, 3, 2, 1, 4] },
+  Gadd9: { frets: [3, 2, 0, 2, 0, 3], fingers: [2, 1, 0, 3, 0, 4] },
+  E7b9: { frets: [0, 2, 0, 1, 0, 1], fingers: [0, 3, 0, 1, 0, 2] },
+  A7b9: { frets: [-1, 0, 2, 3, 2, 3], fingers: [0, 0, 1, 3, 2, 4] },
+  D7b9: { frets: [-1, 5, 4, 5, 4, -1], fingers: [0, 2, 1, 3, 1, 0] },
+  Am9: { frets: [-1, 0, 2, 4, 1, 3], fingers: [0, 0, 2, 4, 1, 3] },
+  Em9: { frets: [0, 2, 0, 0, 0, 2], fingers: [0, 2, 0, 0, 0, 3] },
+  D7sus4: { frets: [-1, -1, 0, 2, 1, 3], fingers: [0, 0, 0, 2, 1, 4] },
+  G7sus4: { frets: [3, 3, 0, 0, 1, 1], fingers: [3, 4, 0, 0, 1, 1] },
+  AmMaj7: { frets: [-1, 0, 2, 1, 1, 0], fingers: [0, 0, 3, 1, 2, 0] },
+  EmMaj7: { frets: [0, 2, 1, 0, 0, 0], fingers: [0, 2, 1, 0, 0, 0] },
+  "Fmaj9/A": { frets: [-1, 0, 3, 0, 1, 0], fingers: [0, 0, 3, 0, 1, 0] },
 };
 
 // Movable shapes, relative to the root fret r on the 6th (E-shape) or
@@ -119,6 +134,10 @@ const MOVABLE = {
     m7: [0, 2, 0, 0, 0, 0],
     maj7: [0, null, 1, 1, 0, null],
     sus4: [0, 2, 2, 2, 0, 0],
+    "7sus4": [0, 2, 0, 2, 0, 0],
+    mmaj7: [0, 2, 1, 0, 0, 0],
+    "7b9": [0, null, 0, 1, 0, 1], // root, b7, 3rd, 5th, b9
+    add9: [0, null, 2, 1, 0, 2], // root, root, 3rd, 5th, 9th
     aug: [0, null, 2, 1, 1, null], // root, root, 3rd, #5
     "7#5": [0, null, 0, 1, 1, null], // root, b7, 3rd, #5
     "5": [0, 2, 2, null, null, null],
@@ -132,6 +151,11 @@ const MOVABLE = {
     m7b5: [null, 0, 1, 0, 1, null],
     sus2: [null, 0, 2, 2, 0, 0],
     sus4: [null, 0, 2, 2, 3, 0],
+    "7sus4": [null, 0, 2, 0, 3, 0],
+    mmaj7: [null, 0, 2, 1, 1, 0],
+    "7b9": [null, 0, -1, 0, -1, null], // root, 3rd, b7, b9
+    m9: [null, 0, -2, 0, 0, null], // root, b3, b7, 9th
+    add9: [null, 0, 2, 4, 2, 0], // root, 5th, 9th, 3rd, 5th
     "6": [null, 0, 2, 2, 2, 2],
     m6: [null, 0, 2, -1, 1, 2],
     "9": [null, 0, -1, 0, 0, 0],

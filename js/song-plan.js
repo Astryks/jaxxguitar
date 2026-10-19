@@ -19,10 +19,18 @@ function tuningOffset(song) {
 const cache = new Map();
 function songPlan(song) {
   if (cache.has(song.title)) return cache.get(song.title);
-  const down = tuningOffset(song);
-  const chords = (song.chords || []).filter((c) => /^[A-G]/.test(c) && c.length <= 10).map((c) => (down ? transposeSymbol(c, down) : c));
+  const plan = planFor(song.chords, tuningOffset(song));
+  cache.set(song.title, plan);
+  return plan;
+}
+
+// The plan for a list of song chords (concert pitch) with the guitar tuned
+// `down` half steps (e.g. a song page that uses the bar-by-bar chart's
+// tuning, song-detail.js). Not cached.
+function planFor(songChords = [], down = 0) {
+  const chords = (songChords || []).filter((c) => /^[A-G]/.test(c) && c.length <= 10).map((c) => (down ? transposeSymbol(c, down) : c));
   let plan = { playable: false, capo: 0, chords, shapes: [], map: {} };
-  if (chords.length && chords.length === song.chords.length) {
+  if (chords.length && chords.length === songChords.length) {
     const best = suggestCapo(chords);
     const tryCapo = (capo) => {
       const map = Object.fromEntries([...new Set(chords)].map((c) => [c, transposeSymbol(c, -capo)]));
@@ -31,7 +39,6 @@ function songPlan(song) {
     };
     plan = tryCapo(best.capo) || tryCapo(0) || plan;
   }
-  cache.set(song.title, plan);
   return plan;
 }
 
@@ -45,4 +52,4 @@ function songsByTier(tier, { world = false } = {}) {
     .sort((a, b) => (a.popularityRank || 999) - (b.popularityRank || 999));
 }
 
-export { songPlan, playableSongs, songsByTier, tuningOffset };
+export { songPlan, planFor, playableSongs, songsByTier, tuningOffset };

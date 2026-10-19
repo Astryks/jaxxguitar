@@ -34,6 +34,8 @@ const ARROW = {
   down: '<svg class="jg-pav-arrow" viewBox="0 0 24 32" aria-hidden="true"><path d="M12 3v24M4.5 19.5 12 27l7.5-7.5"/></svg>',
   up: '<svg class="jg-pav-arrow" viewBox="0 0 24 32" aria-hidden="true"><path d="M12 29V5M4.5 12.5 12 5l7.5 7.5"/></svg>',
   miss: '<svg class="jg-pav-arrow" viewBox="0 0 24 32" aria-hidden="true"><circle cx="12" cy="16" r="2.6"/></svg>',
+  // A muted "chuck" (x in a strum pattern).
+  mute: '<svg class="jg-pav-arrow" viewBox="0 0 24 32" aria-hidden="true"><path d="M6 10l12 12M18 10 6 22"/></svg>',
 };
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const near = (a, b, tol = 0.06) => Math.abs(a - b) <= tol * Math.max(a, b);
@@ -45,12 +47,15 @@ function buildBlocks(evs, { beatSec = 0, beatsPerBar = 4, origin = null } = {}) 
   const t0 = origin ?? (evs.length ? evs[0].t : 0);
   // Strums of one chord belong together across the pattern's gaps (and
   // across bars when the chord is held); a longer silence starts afresh.
-  const maxGap = beatSec ? beatSec * beatsPerBar : 1.5;
+  // Items may say how long their bar is (beats), e.g. a whole song whose
+  // tempo or bar length changes; otherwise beatsPerBar.
+  const barSecOf = (e) => (beatSec ? (e.barBeats || beatsPerBar) * beatSec : 0);
+  const gapOf = (e) => (beatSec ? barSecOf(e) : 1.5);
   evs.forEach((e, k) => {
     const prev = evs[k - 1];
     const last = blocks[blocks.length - 1];
     const joins = prev && last && (e.chord
-      ? last.kind === "chord" && prev.chord === e.chord && e.t - (prev.t + (prev.span || prev.d)) < maxGap - 0.01
+      ? last.kind === "chord" && prev.chord === e.chord && Boolean(prev.rest) === Boolean(e.rest) && e.t - (prev.t + (prev.span || prev.d)) < gapOf(e) - 0.01
       : last.kind === "notes");
     if (!joins) blocks.push({ kind: e.chord ? "chord" : "notes", chord: e.chord || null, shape: e.shape || null, evs: [] });
     const b = blocks[blocks.length - 1];
@@ -63,7 +68,7 @@ function buildBlocks(evs, { beatSec = 0, beatsPerBar = 4, origin = null } = {}) 
     b.end = lastEv.t + Math.max(lastEv.span || 0, lastEv.d || 0);
     // A pattern that ends on a rest (e.g. ↓ · ↓ · ↓ · ↓ ·) lasts until the next chord.
     const nextT = blocks[bi + 1]?.evs[0].t;
-    if (nextT !== undefined && nextT > b.end && nextT - b.end < maxGap) b.end = nextT;
+    if (nextT !== undefined && nextT > b.end && nextT - b.end < gapOf(lastEv)) b.end = nextT;
     if (b.kind !== "chord") return;
     const first = b.evs[0];
     const step = Math.max(0.05, Math.min(...b.evs.map((e) => e.span || e.d)));
@@ -71,9 +76,10 @@ function buildBlocks(evs, { beatSec = 0, beatsPerBar = 4, origin = null } = {}) 
     const dirs = Array(n).fill(null);
     b.evs.forEach((e) => {
       e.slot = Math.min(n - 1, Math.round((e.t - first.t) / step));
-      dirs[e.slot] = e.strum === "up" ? "up" : "down";
+      dirs[e.slot] = e.strum === "up" ? "up" : e.strum === "mute" ? "mute" : e.strum === "rest" ? null : "down";
     });
-    let barSlots = beatSec ? Math.max(1, Math.round((beatsPerBar * beatSec) / step)) : n;
+    b.rest = Boolean(first.rest);
+    let barSlots = beatSec ? Math.max(1, Math.round(barSecOf(first) / step)) : n;
     if (n <= barSlots) barSlots = n;
     b.dirs = dirs;
     b.barSlots = barSlots;
@@ -81,7 +87,17 @@ function buildBlocks(evs, { beatSec = 0, beatsPerBar = 4, origin = null } = {}) 
     // Counting under the arrows: "1 & 2 &" for eighths, "1 2 3 4" for beats.
     // Sixteenths: "1 e & a".
     const per = beatSec ? (near(step, beatSec / 2) ? 2 : near(step, beatSec) ? 1 : near(step, beatSec / 4) ? 4 : 0) : 0;
+    // Items can bring their own counting (barStart, countBeats: "1 2 3 4 5
+    // 6" in 6/8, "1 & 2 &" in 4/4, through tempo changes).
+    const cb = first.countBeats && beatSec ? first.countBeats * beatSec : 0;
     b.counts = dirs.map((_, j) => {
+      if (cb) {
+        const perBar = Math.max(1, Math.round(barSecOf(first) / cb));
+        const x = (first.t + j * step - (t0 + first.barStart * beatSec)) / cb;
+        const fr = x - Math.floor(x + 1e-3);
+        if (fr < 0.02 || fr > 0.98) return String((((Math.round(x) % perBar) + perBar) % perBar) + 1);
+        return Math.abs(fr - 0.5) < 0.02 ? "&" : Math.abs(fr - 0.25) < 0.02 ? "e" : Math.abs(fr - 0.75) < 0.02 ? "a" : "";
+      }
       if (!per) return "";
       const beats = (first.t - t0) / beatSec + (j * step) / beatSec;
       const whole = Math.round(beats * per) / per;
@@ -98,6 +114,7 @@ function createPlayAlongView(container, fb, root = null) {
   container.setAttribute("aria-live", "polite");
   container.innerHTML = `
     <div class="jg-pav-head">
+      <div class="jg-pav-where"></div>
       <div class="jg-pav-name"></div>
       <div class="jg-pav-sub"></div>
       <div class="jg-pav-next"></div>
@@ -107,6 +124,8 @@ function createPlayAlongView(container, fb, root = null) {
   const subEl = container.querySelector(".jg-pav-sub");
   const nextEl = container.querySelector(".jg-pav-next");
   const mainEl = container.querySelector(".jg-pav-main");
+  const whereEl = container.querySelector(".jg-pav-where");
+  let shownWhere = null;
   const glowG = () => (root || document).querySelector(".jg-glow");
 
   let evs = [];
@@ -139,19 +158,20 @@ function createPlayAlongView(container, fb, root = null) {
 
   // --- chords -------------------------------------------------------------
   function drawChordBlock(b, bi, page) {
-    nameEl.textContent = b.chord;
-    nameEl.className = "jg-pav-name";
+    nameEl.textContent = b.chord === "N.C." ? "No chord" : b.chord;
+    nameEl.className = "jg-pav-name" + (b.rest ? " jg-pav-restname" : "");
     const nb = nextChordBlock(bi);
-    nextEl.innerHTML = nb ? `next: <b>${esc(nb.kind === "chord" ? nb.chord : "single notes")}</b>` : "last one";
+    nextEl.innerHTML = nb ? `next: <b>${esc(nb.kind === "chord" ? (nb.chord === "N.C." ? "rest" : nb.chord) : "single notes")}</b>` : "last one";
     const from = page * b.barSlots;
     const slots = b.dirs.slice(from, from + b.barSlots);
     const counts = b.counts.slice(from, from + b.barSlots);
-    subEl.textContent = b.pages > 1 ? `bar ${page + 1} of ${b.pages}` : "";
+    // (A whole song says its own bar above: "Chorus · bar 3 of 8".)
+    subEl.textContent = b.rest ? (b.chord === "N.C." ? "rest: don't play" : "the guitar rests here") : b.pages > 1 && !b.evs[0].where ? `bar ${page + 1} of ${b.pages}` : "";
     // Compact cells in beat groups (4 = "1 & 2 &") that wrap onto a new
     // row on a narrow phone, so the arrows always fit the screen. Sharp
     // SVG arrows at their real size (no scaling animation: that blurred).
     const g = slots.length > 4 && slots.length % 4 === 0 ? 4 : slots.length > 3 && slots.length % 3 === 0 ? 3 : slots.length;
-    const cell = (d, j) => `<div class="jg-pav-slot ${d ? "jg-pav-" + d : "jg-pav-miss"}" data-j="${from + j}">${ARROW[d || "miss"]}<small>${counts[j] || ""}</small></div>`;
+    const cell = (d, j) => `<div class="jg-pav-slot ${d ? "jg-pav-" + d : "jg-pav-miss"}" data-j="${from + j}">${ARROW[d || "miss"]}<small>${esc(counts[j] || "")}</small></div>`;
     const groups = [];
     for (let i = 0; i < slots.length; i += g) groups.push(`<div class="jg-pav-grp">${slots.slice(i, i + g).map((d, k) => cell(d, i + k)).join("")}</div>`);
     // Two beat groups (8 cells) to a line: 16 strums make two tidy lines.
@@ -228,6 +248,9 @@ function createPlayAlongView(container, fb, root = null) {
     const e = current(now);
     const ready = now < evs[0].t - 0.03;
     const b = blocks[e.block];
+    // Where we are in the song ("Chorus · bar 3 of 8"), when the items say.
+    const where = e.where || "";
+    if (where !== shownWhere) { shownWhere = where; whereEl.textContent = where; }
     const page = b.kind === "chord" ? Math.floor(e.slot / b.barSlots) : Math.floor(e.k / PAGE);
     container.classList.toggle("jg-pav-waiting", Boolean(waiting));
     container.classList.toggle("jg-pav-ready", ready);
@@ -260,7 +283,7 @@ function createPlayAlongView(container, fb, root = null) {
     // note rings for its length.
     const ringing = !ready && !waiting && now >= e.t - 0.03 && now < (b.kind === "chord" ? b.end : e.t + e.d);
     if (!ringing) ring([], "");
-    else if (b.kind === "chord") ring((b.shape?.frets || []).map((f, s) => (f >= 0 ? { string: s, fret: f } : null)).filter(Boolean), `c${e.i0}`);
+    else if (b.kind === "chord") ring(b.rest ? [] : (b.shape?.frets || []).map((f, s) => (f >= 0 ? { string: s, fret: f } : null)).filter(Boolean), `c${e.i0}`);
     else ring([{ string: e.string, fret: e.fret }], `n${e.i0}`);
     return e;
   }
@@ -281,7 +304,8 @@ function createPlayAlongView(container, fb, root = null) {
     load([]);
     if (fb && fb.glow) fb.glow([]);
     mainEl.innerHTML = "";
-    nameEl.textContent = subEl.textContent = nextEl.textContent = "";
+    nameEl.textContent = subEl.textContent = nextEl.textContent = whereEl.textContent = "";
+    shownWhere = null;
   }
 
   return { load, update, preview, reset, destroy: reset };

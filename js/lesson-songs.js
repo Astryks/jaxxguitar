@@ -14,6 +14,7 @@ import { songPlan } from "./song-plan.js";
 import { chordShape } from "./guitar-theory.js";
 import { chordDiagramSvg } from "./fretboard.js";
 import { videoHtml } from "./media.js";
+import { songDetail } from "./song-detail.js";
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
@@ -38,7 +39,22 @@ function teachable(song) {
 
 // A strumming pattern that suits the song (by style and feel), with the
 // beats underneath. A starting point: listen to the video and adjust.
+const SYM = { D: "↓", U: "↑", X: "×", "-": "·" };
 function strumFor(song) {
+  // The song's own chart (song-detail.js): the eighth-note strum most of its
+  // 4/4 bars use, the chorus counting double.
+  const d = songDetail(song);
+  if (d && d.barQ === 4) {
+    const votes = new Map();
+    d.sections.forEach((sec) => {
+      const st = sec.strum;
+      if (st.kind !== "strum" || st.slotQ !== 0.5 || st.bars.length !== 1 || !/[DU]/.test(st.bars[0])) return;
+      const w = sec.bars.length * (/chorus/i.test(sec.name) ? 2 : 1);
+      votes.set(st.bars[0], (votes.get(st.bars[0]) || 0) + w);
+    });
+    const best = [...votes].sort((x, y) => y[1] - x[1])[0];
+    if (best) return { arrows: best[0].split("").map((c) => SYM[c] || "·"), name: `as the song's chart has it${d.verified ? "" : " (our best guide)"}` };
+  }
   const g = `${song.genre || ""} ${song.notes || ""}`;
   if (/Reggae|Dancehall|ska/i.test(g)) return { arrows: ["·", "↑", "·", "↑", "·", "↑", "·", "↑"], name: "off-beat (reggae)" };
   if (/Metal|Punk|Grunge|Hard Rock/i.test(g)) return { arrows: ["↓", "↓", "↓", "↓", "↓", "↓", "↓", "↓"], name: "steady down-strums (rock)" };
@@ -49,7 +65,7 @@ function strumFor(song) {
 function strumHtml(song) {
   const st = strumFor(song);
   const beats = ["1", "&", "2", "&", "3", "&", "4", "&"];
-  return `<b>Strum:</b> ${esc(st.name)}<span class="jg-strum-row">${st.arrows.map((a, i) => `<span class="jg-strum-cell ${a === "·" ? "jg-strum-gap" : ""}"><b>${a}</b><small>${beats[i]}</small></span>`).join("")}</span>`;
+  return `<b>Strum:</b> ${esc(st.name)}<span class="jg-strum-row">${st.arrows.map((a, i) => `<span class="jg-strum-cell ${a === "·" || a === "×" ? "jg-strum-gap" : ""}"><b>${a}</b><small>${beats[i]}</small></span>`).join("")}</span>`;
 }
 
 function shapesOf(song) {

@@ -14,7 +14,7 @@ import { createGuitarPlayer, timelineEvents } from "./guitar-player.js";
 import { enableMic, disableMic, micOn } from "./input-hub.js";
 import { friendlyMicError } from "./pitch.js";
 import { getAudioContext, stopAllSound } from "./guitar-audio.js";
-import { playBeat } from "./drums.js";
+import { playBeat, playBeatIn } from "./drums.js";
 import { icon } from "./icons.js";
 import { starsFor, recordStars, awardXp, completeQuest } from "./storage.js";
 
@@ -51,7 +51,7 @@ function createPracticeBox(host, inst, opts) {
       <div class="jg-row">
         <span class="jg-label">Speed</span>
         ${[0.5, 0.75, 1].map((s) => `<button class="jg-pill" data-speed="${s}">${Math.round(s * 100)}%</button>`).join("")}
-        <span class="jg-label" style="margin-left:8px">${opts.bpm || 80} BPM</span>
+        <span class="jg-label" style="margin-left:8px">${opts.bpmLabel || `${opts.bpm || 80} BPM`}</span>
         <button class="jg-pill jg-pb-loop">${icon("loop", 16)} Loop</button>
         <button class="jg-pill jg-pb-drums">${icon("drum", 16)} Beat</button>
         ${opts.mic || modes.includes("wait") ? `<button class="jg-pill jg-pb-mic">${icon("mic", 16)} Microphone</button>` : ""}
@@ -104,6 +104,28 @@ function createPracticeBox(host, inst, opts) {
   function stopDrums() {
     if (drumTimer) clearInterval(drumTimer);
     drumTimer = null;
+  }
+  // A whole song brings its own drum pulses ({ at: beats, k, n }: pulse k
+  // of n in the bar), so the beat follows its time signature and tempo
+  // changes. They follow the player's clock: they pause while Wait for me
+  // waits and start again when a loop goes round.
+  function startGridDrums(bpm) {
+    const ctx = getAudioContext();
+    const beat = 60 / bpm;
+    const list = opts.drumBeats;
+    let i = 0;
+    let last = -1;
+    drumTimer = setInterval(() => {
+      if (!player) return;
+      const clock = player.clock;
+      if (clock < last - 0.05) i = 0;
+      last = clock;
+      while (i < list.length && 1.6 + list[i].at * beat < clock - 0.02) i++;
+      while (i < list.length && 1.6 + list[i].at * beat < clock + 0.2) {
+        playBeatIn(ctx, list[i].k, list[i].n, ctx.currentTime + Math.max(0, 1.6 + list[i].at * beat - clock));
+        i++;
+      }
+    }, 50);
   }
   function startDrums(bpm) {
     const ctx = getAudioContext();
@@ -178,7 +200,7 @@ function createPracticeBox(host, inst, opts) {
     });
     player.start();
     document.body.classList.add("jg-playing");
-    if (drums) startDrums(bpm * speed);
+    if (drums) (opts.drumBeats ? startGridDrums : startDrums)(bpm * speed);
     goBtn.textContent = "Stop";
   }
 

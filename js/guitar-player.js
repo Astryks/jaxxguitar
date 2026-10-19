@@ -20,7 +20,7 @@
 //   { chord: "G", shape, strum: "down"|"up" } - a strummed chord.
 
 import { onNoteOn } from "./input-hub.js";
-import { playNote, strum } from "./guitar-audio.js";
+import { playNote, strum, mutedStrum } from "./guitar-audio.js";
 import { midiAt, shapeMidis } from "./guitar-theory.js";
 import { parseChordSymbol } from "./chord-utils.js";
 import { buildBlocks } from "./play-along-view.js";
@@ -38,7 +38,7 @@ function timelineEvents(items, { bpm = 80, speed = 1 } = {}) {
     t: it.start * beat + LEAD,
     d: Math.max(0.12, it.dur * beat * 0.95),
     span: it.dur * beat,
-    midis: it.chord ? shapeMidis(it.shape) : [midiAt(it.string, it.fret)],
+    midis: it.chord ? (it.shape ? shapeMidis(it.shape) : []) : [midiAt(it.string, it.fret)],
     pcs: it.chord ? new Set((parseChordSymbol(it.chord)?.intervals || []).map((iv) => (parseChordSymbol(it.chord).root + iv) % 12)) : null,
   }));
 }
@@ -50,7 +50,8 @@ function createGuitarPlayer({ fb, highway, items, bpm = 80, mode = "listen", spe
   highway.load(evs, { beatSec: beat, beatsPerBar, origin: LEAD });
   // Wait mode stops at each new chord (its first strum) and at every note.
   buildBlocks(evs, { beatSec: beat, beatsPerBar, origin: LEAD });
-  const gates = evs.filter((e) => !e.chord || e.k === 0);
+  // (A rest - "N.C.", or a section where the guitar sits out - never waits.)
+  const gates = evs.filter((e) => !e.rest && (!e.chord || e.k === 0));
   const stats = { right: 0, wrong: 0, hits: 0, misses: 0, combo: 0, maxCombo: 0, total: mode === "wait" ? gates.length : evs.length, timing: [] };
   let clock = 0;
   let last = null;
@@ -108,7 +109,9 @@ function createGuitarPlayer({ fb, highway, items, bpm = 80, mode = "listen", spe
       while (nextSound < evs.length && evs[nextSound].t < clock + 0.2) {
         const e = evs[nextSound++];
         const delay = Math.max(0, e.t - clock);
-        if (e.chord) strum(e.midis, { direction: e.strum || "down", delay, duration: e.d + 0.4 });
+        if (e.rest) continue;
+        if (e.strum === "mute") mutedStrum(e.midis, { delay });
+        else if (e.chord) strum(e.strum === "up" ? e.midis.slice(-4) : e.midis, { direction: e.strum === "up" ? "up" : "down", delay, spread: e.roll ? 0.07 : 0.018, duration: e.palm ? 0.12 : e.ring ? e.d + 1.2 : e.d + 0.4, gain: e.palm ? 0.2 : e.strum === "up" ? 0.2 : 0.26 });
         else playNote(e.midis[0], { delay, duration: e.d + 0.3 });
       }
     }
