@@ -8,7 +8,7 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 
 ## ▶ Start here: where things stand (2026-10-19)
 
-**Latest TestFlight build: 34** (uploaded 2026-10-19: build 33 + the Easy / Entire song switch for uploads). Everything requested so far is built, tested in headless Chrome, committed and pushed (0 uncommitted, 0 unpushed). The older handoff below is kept for history; its "Latest build: 23" is out of date.
+**Latest TestFlight build: 36** (uploaded 2026-10-26: Back stays in one place, Skip this lesson). Everything requested so far is built, tested in headless Chrome, committed and pushed (0 uncommitted, 0 unpushed). The older handoff below is kept for history; its "Latest build: 23" is out of date.
 
 **In build 33 (since build 23):** the 5-lesson course (4 chords + songs, other chords + single notes, genres, solos, loops), Back at the top, purple chat bubbles in WhatsApp order, right-handed by default with a per-session left-handed flip (words swap too), fretboard always low E at the bottom, the calm play-along view (chord name, next chord, sharp blinking strum arrows, single-note ring), Practice redesign (4 chord rows, chord loop, scales), Hotel California / Stairway to Heaven, Godfather, Parisienne Walkways, Beat It / Man in the Mirror, Songsterr "full solo" links, the sound fix (audio unlock kept alive), uploads → **Every note** (string and fret for every note, beats and bars, tuning/capo, Wait for me, speed, loop) and **Whole song bar by bar for 272 songs** with each section's own strum (34 checked, 238 "our best guide"; The tune note for note for 15 public-domain pieces). Details in the dated sections below.
 
@@ -621,3 +621,4 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **Back kept moving:** card lessons hid the app header (Back at the very top) while page lessons kept the header and scrolled the panel into view (Back lower down), so pressing Back across lessons made it jump. Now every lesson uses the same full-screen layout (`jg-lesson-open`, scroll to top) and the top bar sticks below the phone's safe area, so Back stays at the same spot (tested at phone width: 9px from the top on card and page lessons, also after scrolling) and pressing it repeatedly walks back card by card to Lesson 1.
 - **Skip this lesson ›** at the bottom of every lesson (card and page lessons) opens the next lesson on the same path (not marked complete).
 - Tested in headless Chrome (skip forward 6 lessons, back to Lesson 1, skip again). Cache bumped.
+- **iOS build 36** uploaded to TestFlight 2026-10-26: Back stays in one place, Skip this lesson.
