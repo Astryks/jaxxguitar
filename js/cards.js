@@ -66,7 +66,7 @@ const SWITCH_TIPS = `<ul class="jg-switch-tips">
   <li><b>👀 Look ahead:</b> look at where your fingers are going, not where they've been.</li>
 </ul>`;
 
-function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onExit, onBackFirst, onOpenLesson, onFinish, changeDrill, courseStart = null, courseTotal = null }) {
+function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onExit, onBackFirst, onSkipLesson, onOpenLesson, onFinish, changeDrill, courseStart = null, courseTotal = null }) {
   const cards = lesson.cards;
   document.body.classList.add("jg-lesson-open");
   let cleanups = [];
@@ -101,6 +101,7 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
         <div class="jg-card-board"></div>
         <div class="jg-card-feed" aria-live="polite"></div>
         <div class="jg-card-controls"></div>
+        ${onSkipLesson ? '<button class="jg-lesson-skip" type="button">Skip this lesson ›</button>' : ""}
       </div>`;
     window.scrollTo(0, 0);
     const thread = panel.querySelector(".jg-cards-thread");
@@ -109,6 +110,7 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
     const extra = panel.querySelector(".jg-card-extra");
     panel.querySelector(".jg-cards-x").addEventListener("click", () => { clean(); if (micByUs) disableMic(); document.body.classList.remove("jg-lesson-open"); onExit(); });
     panel.querySelector(".jg-cards-back")?.addEventListener("click", () => { if (i > 0) return show(i - 1); clean(); onBackFirst(); });
+    panel.querySelector(".jg-lesson-skip")?.addEventListener("click", () => { clean(); if (micByUs) disableMic(); onSkipLesson(); });
     const feed = panel.querySelector(".jg-card-feed");
     // Every new message goes at the very end of its list, under the one
     // before it: questions/answers in the thread (before the task starts),

@@ -529,7 +529,7 @@ body[data-tab="lessons"] .jg-footer, body[data-tab="songs"] .jg-footer { display
 
 /* ===== Simple lesson cards (Jaxx) ===== */
 .jg-cards { max-width: 720px; margin: 0 auto; padding: 0 12px 24px; }
-.jg-cards-top { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 8px; padding: 6px 0 8px; background: linear-gradient(var(--jg-bg) 80%, transparent); }
+.jg-cards-top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; display: flex; align-items: center; gap: 8px; padding: 6px 0 8px; background: linear-gradient(var(--jg-bg) 80%, transparent); }
 .jg-cards-x { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--jg-border); background: #fff; font-size: 1.1rem; cursor: pointer; }
 .jg-cards-back { border: 1px solid var(--jg-border); background: #fff; border-radius: 999px; padding: 8px 14px; cursor: pointer; }
 .jg-cards-title { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
@@ -816,7 +816,7 @@ body.jg-intro-open { overflow: hidden; }
 
 /* 2026-10-18 owner pass ------------------------------------------------- */
 /* Lesson pages: Back, title and card number at the top, like the cards. */
-.jg-page-top { margin: 0 0 6px; }
+.jg-page-top { margin: -6px 0 6px; }
 .jg-lesson-player .jg-controls { justify-content: flex-end; }
 /* Replies to a card's task stack under the task, oldest first. */
 .jg-card-feed { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
@@ -993,3 +993,6 @@ table.jg-table { width: 100%; table-layout: fixed; overflow-wrap: anywhere; }
 .jg-chart-bar { min-width: 40px; padding: 2px 7px; border-left: 2px solid var(--jg-accent-soft); background: #fff; border-radius: 4px; font-weight: 800; font-size: 0.85rem; white-space: nowrap; }
 .jg-chart-bar sub { font-size: 0.65rem; font-weight: 600; color: var(--jg-text-dim); margin-left: 1px; }
 .jg-set-row[hidden], .jg-real-tempo[hidden] { display: none !important; }
+
+/* Skip a whole lesson (owner request 2026-10-26). */
+.jg-lesson-skip { display: block; margin: 14px auto 4px; background: none; border: 0; color: var(--jg-muted, #777); font: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }

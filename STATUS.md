@@ -615,3 +615,9 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 
 ## 2026-10-25: learn from the greats
 - New last page in Lesson 3 "Music has flavours: genres": learn from the greats, learn the details, then make it your own, with John Mayer explaining different styles of blues guitar (aPAzuIZ55Z0, Barstool's Backstage channel, 2.3M views, embeddable). Not built into iOS yet.
+- **iOS build 35** uploaded to TestFlight 2026-10-25: learn-from-the-greats page (John Mayer).
+
+## 2026-10-26: Back stays in one place, Skip this lesson
+- **Back kept moving:** card lessons hid the app header (Back at the very top) while page lessons kept the header and scrolled the panel into view (Back lower down), so pressing Back across lessons made it jump. Now every lesson uses the same full-screen layout (`jg-lesson-open`, scroll to top) and the top bar sticks below the phone's safe area, so Back stays at the same spot (tested at phone width: 9px from the top on card and page lessons, also after scrolling) and pressing it repeatedly walks back card by card to Lesson 1.
+- **Skip this lesson ›** at the bottom of every lesson (card and page lessons) opens the next lesson on the same path (not marked complete).
+- Tested in headless Chrome (skip forward 6 lessons, back to Lesson 1, skip again). Cache bumped.

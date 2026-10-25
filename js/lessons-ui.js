@@ -160,6 +160,13 @@ function prevLesson(lesson) {
   return list[list.findIndex((l) => l.id === lesson.id) - 1] || null;
 }
 const openLastOf = (l) => openLesson(l.id, unitCount(l) - 1);
+// The lesson right after this one on the same path (Skip this lesson goes there).
+function nextInPath(lesson) {
+  const sec = sections().find((x) => x.lessons.some((l) => l.id === lesson.id));
+  const list = sec && (sec.major || sec.name === "Keep going") ? sections().filter((x) => x.major || x.name === "Keep going").flatMap((x) => x.lessons) : (sec ? sec.lessons : []);
+  const i = list.findIndex((l) => l.id === lesson.id);
+  return (i >= 0 && list[i + 1]) || nextAfter(lesson);
+}
 
 // After a "Before you start" lesson, carry on through the basics in order,
 // then into Lesson 1; otherwise the next unfinished lesson.
@@ -215,6 +222,7 @@ function roadmapHtml(currentId) {
 function showHome() {
   ensureLessonsTab();
   runCleanup();
+  document.body.classList.remove("jg-lesson-open");
   const nxt = nextLesson();
   const streak = getStreak();
   const goal = getDailyGoal();
@@ -320,6 +328,7 @@ function openLesson(id, pageIndex = null) {
       onExit: showHome,
       onOpenLesson: (lid) => { runCleanup(); openLesson(lid, 0); },
       onBackFirst: prevLesson(lesson) ? () => { runCleanup(); openLastOf(prevLesson(lesson)); } : null,
+      onSkipLesson: nextInPath(lesson) ? () => { runCleanup(); savePos(null, 0); openLesson(nextInPath(lesson).id, 0); } : null,
       changeDrill,
       onFinish: () => {
         markLessonComplete(lesson.id);
@@ -355,13 +364,17 @@ function openLesson(id, pageIndex = null) {
         <div class="jg-controls">
           <button class="jg-btn jg-btn-primary jg-next">${last ? "Finish lesson ✓" : "Next →"}</button>
         </div>
+        ${nextInPath(lesson) ? '<button class="jg-lesson-skip" type="button">Skip this lesson ›</button>' : ""}
       </div>
     </div>`;
-  panelEl.scrollIntoView?.({ block: "start" });
+  // Same full-screen layout as card lessons, so Back stays in one place.
+  document.body.classList.add("jg-lesson-open");
+  window.scrollTo(0, 0);
   wireVideos(panelEl);
   wireSongCards(panelEl);
   wireCommon();
   panelEl.querySelector(".jg-exit").addEventListener("click", showHome);
+  panelEl.querySelector(".jg-lesson-skip")?.addEventListener("click", () => { savePos(null, 0); openLesson(nextInPath(lesson).id, 0); });
   wireFlip(panelEl, () => openLesson(id, pageIndex));
   panelEl.querySelector(".jg-prev")?.addEventListener("click", () => (pageIndex > 0 ? openLesson(id, pageIndex - 1) : openLastOf(prevLesson(lesson))));
   panelEl.querySelector(".jg-next").addEventListener("click", () => {
@@ -426,6 +439,7 @@ function openLesson(id, pageIndex = null) {
 }
 
 function finishScreen(lesson, nxt) {
+  document.body.classList.remove("jg-lesson-open");
   panelEl.innerHTML = `
     <div class="jg-say"><div class="jg-avatar jg-mascot-celebrate">${puppySvg(nextTrick("yay"), { label: "Celebration" })}</div><div class="jg-bubble">
       <h3>Lesson complete: ${esc(titleOf(lesson))}</h3>
