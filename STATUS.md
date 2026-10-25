@@ -8,7 +8,7 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 
 ## ▶ Start here: where things stand (2026-10-19)
 
-**Latest TestFlight build: 39** (uploaded 2026-10-27: fun animations). Everything requested so far is built, tested in headless Chrome, committed and pushed (0 uncommitted, 0 unpushed). The older handoff below is kept for history; its "Latest build: 23" is out of date.
+**Latest TestFlight build: 39** (uploaded 2026-10-26: fun animations). Everything requested so far is built, tested in headless Chrome, committed and pushed (0 uncommitted, 0 unpushed). The older handoff below is kept for history; its "Latest build: 23" is out of date.
 
 **In build 33 (since build 23):** the 5-lesson course (4 chords + songs, other chords + single notes, genres, solos, loops), Back at the top, purple chat bubbles in WhatsApp order, right-handed by default with a per-session left-handed flip (words swap too), fretboard always low E at the bottom, the calm play-along view (chord name, next chord, sharp blinking strum arrows, single-note ring), Practice redesign (4 chord rows, chord loop, scales), Hotel California / Stairway to Heaven, Godfather, Parisienne Walkways, Beat It / Man in the Mirror, Songsterr "full solo" links, the sound fix (audio unlock kept alive), uploads → **Every note** (string and fret for every note, beats and bars, tuning/capo, Wait for me, speed, loop) and **Whole song bar by bar for 272 songs** with each section's own strum (34 checked, 238 "our best guide"; The tune note for note for 15 public-domain pieces). Details in the dated sections below.
 
@@ -639,6 +639,6 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **Fun facts:** the "Did you know?" pop-up showed on about half of all celebrations (roughly every other card) and a guitar-legend fact was attached to random cards. Now one pop-up every 12 celebrations and at most one legend fact every 12 cards.
 - **iOS build 38** uploaded to TestFlight 2026-10-26: full-width cards, flip only where relevant, chat-style tables, looking-down picture, in-order lessons, fewer fun facts.
 
-## 2026-10-27: fun animations merged
+## 2026-10-26: fun animations merged
 - Legend tribute scenes, string shimmer when tapped, beagle micro-moves (PR #1 from 15 Oct, brought up to date with main, tested in a browser: page and lessons load with no errors). Quick, transform/opacity only, off under reduced motion.
-- **iOS build 39** uploaded to TestFlight 2026-10-27: fun animations.
+- **iOS build 39** uploaded to TestFlight 2026-10-26: fun animations.
