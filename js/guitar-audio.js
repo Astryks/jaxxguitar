@@ -30,10 +30,28 @@ function freshAudioContext() {
   ctx = null;
   return getAudioContext();
 }
+// iOS can leave the engine saying "running" but silent after the audio mode
+// changes (microphone on/off, a YouTube video, a call). Two checks catch it:
+// the microphone code marks the sound "dirty" whenever it switches the mode,
+// and a running engine whose clock has stopped moving is stuck. Either way the
+// next tap swaps in a fresh engine (owner report 2026-10-26: sound died after
+// a few lessons).
+let lastWall = 0, lastTime = 0, lastFresh = -Infinity;
+function stalled(c) {
+  const now = performance.now();
+  const stuck = c.state === "running" && lastWall > 0 && now - lastWall > 600 && c.currentTime - lastTime < 0.02;
+  lastWall = now; lastTime = c.currentTime;
+  return stuck;
+}
 function unlockAudio() {
   let c = getAudioContext();
+  const dirty = typeof window !== "undefined" && window.__audioDirty;
   // Inside a tap, iOS lets a new engine start straight away.
-  if (c.state === "interrupted" || c.state === "closed") { c = freshAudioContext(); c.resume?.().catch(() => {}); }
+  if (c.state === "interrupted" || c.state === "closed" || ((dirty || stalled(c)) && performance.now() - lastFresh > 1500)) {
+    if (dirty) window.__audioDirty = false;
+    lastFresh = performance.now(); lastWall = 0;
+    c = freshAudioContext(); c.resume?.().catch(() => {});
+  }
   try {
     const b = c.createBuffer(1, 1, c.sampleRate);
     const s = c.createBufferSource();
@@ -47,7 +65,8 @@ function unlockAudio() {
     setTimeout(() => { if (ctx === c && c.state !== "running") freshAudioContext(); }, 400);
   }
 }
-if (typeof document !== "undefined") document.addEventListener("visibilitychange", () => { if (!document.hidden) getAudioContext(); });
+// Back from another app (YouTube, a call): the next tap gets a fresh engine.
+if (typeof document !== "undefined") document.addEventListener("visibilitychange", () => { if (!document.hidden) { window.__audioDirty = true; getAudioContext(); } });
 if (typeof window !== "undefined") window.addEventListener("pageshow", () => getAudioContext());
 if (typeof window !== "undefined") ["touchend", "pointerdown", "keydown"].forEach((t) => window.addEventListener(t, unlockAudio, true));
 

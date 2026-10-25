@@ -622,3 +622,9 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **Skip this lesson ›** at the bottom of every lesson (card and page lessons) opens the next lesson on the same path (not marked complete).
 - Tested in headless Chrome (skip forward 6 lessons, back to Lesson 1, skip again). Cache bumped.
 - **iOS build 36** uploaded to TestFlight 2026-10-26: Back stays in one place, Skip this lesson.
+
+## 2026-10-26: sound dying after a few lessons (both apps), real fix attempt
+- **Owner report:** the sound stops after a few lessons, every time, in Hayden and Jaxx.
+- **Likely cause:** iOS changes the audio mode whenever the microphone turns on or off (Wait for me, chord listening, tuner), when a YouTube video plays (in the app or in the YouTube app) and after calls. Afterwards WebKit can leave the Web Audio engine reporting "running" while it is actually silent (its clock stops). The app only replaced engines that iOS reported as "interrupted" or "closed", so a silent "running" engine was never replaced and sound stayed dead until the app restarted.
+- **Fix:** the microphone code marks the sound "dirty" every time it switches the audio mode; tapping a video and coming back to the app do the same; and a running engine whose clock stops advancing counts as stuck. On the next tap (inside the tap, where iOS allows a new engine to start) a fresh engine replaces it (at most once every 1.5 s; Hayden also reloads the piano samples into it).
+- **Tested:** in desktop Chrome, healthy taps keep the same engine (no false alarms), a dirty flag swaps in a fresh running engine that plays. The real iOS behaviour can only be confirmed on a phone: please test several lessons in a row with Wait for me / the microphone and a video.

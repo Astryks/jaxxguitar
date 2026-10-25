@@ -108,7 +108,7 @@ let openMics = 0;
 function releaseMicSession() {
   openMics = Math.max(0, openMics - 1);
   if (openMics === 0) {
-    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) { /* older Safari */ }
+    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; window.__audioDirty = true; } catch (e) { /* older Safari */ }
   }
 }
 
@@ -121,7 +121,7 @@ async function openMicStream() {
 async function openMicStreamRaw() {
   const reason = micUnavailableReason();
   if (reason) throw new Error(reason);
-  try { if (navigator.audioSession) navigator.audioSession.type = "play-and-record"; } catch (e) { /* older Safari */ }
+  try { if (navigator.audioSession) navigator.audioSession.type = "play-and-record"; window.__audioDirty = true; } catch (e) { /* older Safari */ }
   const ask = async (c) => {
     try { return await navigator.mediaDevices.getUserMedia(c); } catch (e) {
       // Some devices reject the processing switches; plain audio still works.
