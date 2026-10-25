@@ -201,6 +201,7 @@ const PEOPLE = {
  }
 };
 const VIDEOS = {
+ "greats-mayer-blues": {"id": "aPAzuIZ55Z0", "title": "John Mayer Explains Different Styles of Blues Guitar: Barstool Backstage", "author_name": "Backstage", "kind": "teacher"},
  "teach-hold": {"id": "MlV6WhM9YhE", "title": "How to (Really) Hold a Guitar When Playing", "author_name": "JustinGuitar", "kind": "teacher"},
  "teach-four-chords": {"id": "4uwPUO7LNpY", "title": "Guitar Lesson - How to play chords in the key of G (G, C, D, Em)", "author_name": "Worship Tutorials", "kind": "teacher"},
  "teach-changing": {"id": "VaegrntyEgk", "title": "Change Chords FASTER on Guitar for Beginners", "author_name": "Andy Guitar", "kind": "teacher"},

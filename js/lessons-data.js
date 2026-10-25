@@ -636,6 +636,10 @@ const BEGINNER = [
           <li><strong>Rock</strong> and its big solos: that's <strong>Lesson 4</strong>.</li>
         </ul>
         <p>Pick songs from the style you love most and you'll practise more. Find them in <strong>Songs</strong>, or upload any song in <strong>Practice</strong>.</p>` },
+      { html: `<h3>Learn from the greats, then make it yours 🌟</h3>
+        <p>Every great guitarist started by <strong>studying the greats before them</strong>: listening closely, copying licks, asking "how did they do that?"</p>
+        <p>In this short video, <strong>John Mayer</strong> plays and explains <strong>different styles of blues guitar</strong>, the players he learned from and how each one feels different. He learned from heroes like <strong>B.B. King</strong>, then made the sound his own.</p>
+        <p><strong>Two steps:</strong> 1️⃣ learn the details properly (the right frets, chords and strum, slowly). 2️⃣ Then <strong>wander and have fun</strong> 🎈: bend a note, play it slower, softer or louder, change the rhythm. Don't be afraid to make it your own.</p>`, video: "greats-mayer-blues" },
     ],
   },
 ];

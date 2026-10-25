@@ -612,3 +612,6 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **iOS build 31** uploaded to TestFlight 2026-10-18: the lessons/layout pass and the new calm play-along view (merged).
 - **iOS build 32** uploaded to TestFlight 2026-10-18: arrows fit and sharp, right-handed default (one-time reset), Practice redesign, Godfather / Parisienne Walkways / Beat It / Man in the Mirror, Songsterr full-solo links.
 - **iOS build 33** uploaded to TestFlight 2026-10-19: Every note view for uploads, and bar-by-bar Whole song for 272 songs with per-section strums (+ The tune for 15 public-domain pieces).
+
+## 2026-10-25: learn from the greats
+- New last page in Lesson 3 "Music has flavours: genres": learn from the greats, learn the details, then make it your own, with John Mayer explaining different styles of blues guitar (aPAzuIZ55Z0, Barstool's Backstage channel, 2.3M views, embeddable). Not built into iOS yet.
