@@ -629,3 +629,11 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **Fix:** the microphone code marks the sound "dirty" every time it switches the audio mode; tapping a video and coming back to the app do the same; and a running engine whose clock stops advancing counts as stuck. On the next tap (inside the tap, where iOS allows a new engine to start) a fresh engine replaces it (at most once every 1.5 s; Hayden also reloads the piano samples into it).
 - **Tested:** in desktop Chrome, healthy taps keep the same engine (no false alarms), a dirty flag swaps in a fresh running engine that plays. The real iOS behaviour can only be confirmed on a phone: please test several lessons in a row with Wait for me / the microphone and a video.
 - **iOS build 37** uploaded to TestFlight 2026-10-26: sound recovery fix (silent engine after mic/video/app switches).
+
+## 2026-10-26 (later): readable cards, lesson order, fewer fun facts, looking-down picture
+- **Text squeezed to half the screen:** the scene picture beside each chat bubble is hidden; bubbles use the full width.
+- **"Left-handed? Flip it" only where relevant:** on card and page lessons it now shows only when there's a fretboard, chord, guitar, viewer or strum picture (e.g. not on "You don't need an expensive guitar").
+- **Tables in lessons** (guitar types, etc.) are shown as chat-style cards, one per row, built at render time from the existing tables.
+- **"Looking down" picture redrawn:** a perspective view down the neck: the thin high e is furthest away (top, small), the thick low E closest to you (bottom, big), strings light up one by one from E to e; card text says the same. Mirrored for left-handed view.
+- **Lesson order:** finishing a lesson now goes to the next lesson on the same path (not the first unfinished lesson anywhere, which jumped back to skipped lessons). The optional "Before you start" basics run in order (Basics 1/10 … 10/10, shown in the counter) and then into Lesson 1 (1/227). Tested end to end at phone width.
+- **Fun facts:** the "Did you know?" pop-up showed on about half of all celebrations (roughly every other card) and a guitar-legend fact was attached to random cards. Now one pop-up every 12 celebrations and at most one legend fact every 12 cards.

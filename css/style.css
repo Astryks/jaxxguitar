@@ -996,3 +996,13 @@ table.jg-table { width: 100%; table-layout: fixed; overflow-wrap: anywhere; }
 
 /* Skip a whole lesson (owner request 2026-10-26). */
 .jg-lesson-skip { display: block; margin: 14px auto 4px; background: none; border: 0; color: var(--jg-muted, #777); font: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }
+
+/* Chat cards use the full width: no picture beside the bubbles (owner 2026-10-26). */
+.jg-cmsg .jg-cavatar { display: none; }
+.jg-cmsg .jg-cbubble { flex: 1 1 auto; min-width: 0; }
+/* Tables in lessons shown as chat-style cards (owner 2026-10-26). */
+.jg-tcards { display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
+.jg-tcard { background: #fff; border: 2px solid var(--jg-accent-soft); border-radius: 16px; padding: 10px 14px; }
+.jg-tcard > b { display: block; font-size: 1.05rem; margin-bottom: 4px; }
+.jg-tcard > div { font-size: 0.95rem; line-height: 1.4; }
+.jg-tcard > div > span { color: var(--jg-muted, #777); font-weight: 700; }

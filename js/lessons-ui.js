@@ -165,7 +165,16 @@ function nextInPath(lesson) {
   const sec = sections().find((x) => x.lessons.some((l) => l.id === lesson.id));
   const list = sec && (sec.major || sec.name === "Keep going") ? sections().filter((x) => x.major || x.name === "Keep going").flatMap((x) => x.lessons) : (sec ? sec.lessons : []);
   const i = list.findIndex((l) => l.id === lesson.id);
-  return (i >= 0 && list[i + 1]) || nextAfter(lesson);
+  if (i >= 0 && list[i + 1]) return list[i + 1];
+  // Last of the basics: on to Lesson 1.
+  if (lesson.pre) return sections().find((x) => x.major)?.lessons[0] || null;
+  return nextAfter(lesson);
+}
+// "Basics 3/10" for the optional "Before you start" lessons, which sit outside the course counter.
+function basicsLabel(lesson) {
+  const pre = sections()[0].lessons;
+  const k = pre.findIndex((l) => l.id === lesson.id);
+  return lesson.pre && k >= 0 ? `Basics ${k + 1}/${pre.length}` : null;
 }
 
 // After a "Before you start" lesson, carry on through the basics in order,
@@ -334,7 +343,7 @@ function openLesson(id, pageIndex = null) {
         markLessonComplete(lesson.id);
         savePos(null, 0);
         runCleanup();
-        finishScreen(lesson, nextAfter(lesson));
+        finishScreen(lesson, nextInPath(lesson));
       },
     });
     cleanup.push(stop);
@@ -350,14 +359,14 @@ function openLesson(id, pageIndex = null) {
           <button class="jg-cards-x jg-exit" aria-label="Close lesson">✕</button>
           ${pageIndex > 0 || prevLesson(lesson) ? '<button class="jg-cards-back jg-prev">← Back</button>' : "<span></span>"}
           <b class="jg-cards-title">${esc(titleOf(lesson))}</b>
-          <span class="jg-cards-count" title="Card number in the whole course">${courseCard(lesson, pageIndex) ? `${courseCard(lesson, pageIndex).n}/${courseCard(lesson, pageIndex).total}` : `${pageIndex + 1}/${lesson.pages.length}`}</span>
+          <span class="jg-cards-count" title="Card number in the whole course">${courseCard(lesson, pageIndex) ? `${courseCard(lesson, pageIndex).n}/${courseCard(lesson, pageIndex).total}` : basicsLabel(lesson) ? `${basicsLabel(lesson)} · ${pageIndex + 1}/${lesson.pages.length}` : `${pageIndex + 1}/${lesson.pages.length}`}</span>
         </div>
         <div class="jg-lesson-content">
           <div class="jg-say">${mascot(MASCOT_BY_LESSON[lesson.id] || (lesson.world ? "singing-mic" : lesson.song ? "playing-guitar" : "happy-guitar"))}<div class="jg-bubble">${hands(page.html || "")}${teachHtml(lesson.id, pageIndex)}${lessonInspireHtml(lesson.id, pageIndex)}${page.shape ? PHONE_NOTE : ""}${peopleHtml(page.people)}${videoHtml(page.video)}${page.song && findSong(page.song) ? songCardHtml(findSong(page.song), { n: page.songN, of: page.songOf }) : ""}${lesson.fullSolo ? fullSoloLinkHtml(lesson.fullSolo) : ""}</div></div>
           ${page.diagrams ? `<div class="jg-diagram-row">${page.diagrams.map((c, i) => { const d = diagramOf(c); return `<button class="jg-btn jg-dg-btn" data-dg="${i}" title="Show ${esc(d.name)} on the fretboard">${chordDiagramSvg(d.shape, d.name)}</button>`; }).join("")}</div><p class="jg-note">Tap a chord box to see it on the fretboard and hear it.</p>` : ""}
           ${page.tab ? `<div class="jg-tab-wrap">${tabSvg(page.tab.items, { beatsPerBar: page.tab.beatsPerBar, bars: page.tab.bars })}</div><div class="jg-row"><button class="jg-btn jg-tab-play" type="button">${icon("speaker", 18)} Hear it</button></div>` : ""}
           <div class="jg-extra"></div>
-          ${flipButtonHtml()}
+          ${needsBoard || page.guitar || page.viewer ? flipButtonHtml() : ""}
           <div class="jg-instrument-host"></div>
           <div class="jg-practice-host"></div>
         </div>
@@ -367,6 +376,17 @@ function openLesson(id, pageIndex = null) {
         ${nextInPath(lesson) ? '<button class="jg-lesson-skip" type="button">Skip this lesson ›</button>' : ""}
       </div>
     </div>`;
+  // Tables read badly on a phone: show each row as a chat-style card.
+  panelEl.querySelectorAll("table.jg-table").forEach((t) => {
+    const rows = [...t.rows];
+    if (rows.length < 2) return;
+    const head = [...rows[0].cells].map((c) => c.innerHTML.trim());
+    const cards = rows.slice(1).map((r) => {
+      const cells = [...r.cells].map((c) => c.innerHTML.trim());
+      return `<div class="jg-tcard"><b>${cells[0]}</b>${cells.slice(1).map((c, k) => (c ? `<div>${head[k + 1] ? `<span>${head[k + 1]}:</span> ` : ""}${c}</div>` : "")).join("")}</div>`;
+    });
+    t.outerHTML = `<div class="jg-tcards">${cards.join("")}</div>`;
+  });
   // Same full-screen layout as card lessons, so Back stays in one place.
   document.body.classList.add("jg-lesson-open");
   window.scrollTo(0, 0);
@@ -382,7 +402,7 @@ function openLesson(id, pageIndex = null) {
     markLessonComplete(lesson.id);
     savePos(null, 0);
     if (lesson.song) markSongStatus(lesson.song.title, "completed");
-    const nxt = nextAfter(lesson);
+    const nxt = nextInPath(lesson);
     runCleanup();
     finishScreen(lesson, nxt);
   });

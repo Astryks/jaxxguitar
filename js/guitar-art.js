@@ -123,29 +123,34 @@ function viewerSvg() {
     <path d="M140 106 l-9.5 -0.5 l4 -7 z" fill="#2f8f83"/>
     ${T(97, 254, "The thick low E string is", { size: 11, w: 800, fill: "#2f8f83" })}
     ${T(97, 268, "on top, nearest your eyes 👀", { size: 11, w: 800, fill: "#2f8f83" })}`;
-  // Right: what you see looking down.
+  // Right: what you see looking down the neck (owner request 2026-10-26).
+  // Perspective: the thick low E is nearest your eyes (bottom, big), the thin
+  // high e is furthest away (top, small). The strings light up one by one,
+  // from the nearest (E) to the furthest (e).
   const names = ["E", "A", "D", "G", "B", "e"];
-  const sy = (s) => 84 + (5 - s) * 13; // low E at the bottom
+  const sy = (s) => 150 - s * 13.2 + s * s * 0.55; // nearer strings further apart
+  const nearL = 0, nearR = 140, farL = 16, farR = 126, topY = 72, botY = 160;
+  const edgeL = (y) => nearL + (farL - nearL) * (botY - y) / (botY - topY);
+  const edgeR = (y) => nearR + (farR - nearR) * (botY - y) / (botY - topY);
+  const fretX = [26, 58, 86, 110];
   const view = `
-    <rect x="12" y="62" width="128" height="86" rx="4" fill="#6b3f1f"/>
-    <rect x="12" y="60" width="6" height="90" fill="#f1ead9"/>
-    ${[50, 82, 112].map((x) => `<line x1="${x}" x2="${x}" y1="62" y2="148" stroke="#d9d2c4" stroke-width="2"/>`).join("")}
-    <circle cx="97" cy="105" r="4" fill="#e8dcc0"/>
-    ${names.map((n, s) => `<line x1="12" x2="140" y1="${sy(s)}" y2="${sy(s)}" stroke="#efe6d2" stroke-width="${(3.2 - s * 0.45).toFixed(2)}"/>`).join("")}
-    ${names.map((n, s) => T(4, sy(s) + 4, n, { size: 11, w: s === 0 ? 900 : 700, fill: s === 0 ? "#2f8f83" : "#4a3420", anchor: "middle" })).join("")}
-    ${[["1", 34], ["2", 66], ["3", 97]].map(([n, x]) => T(x, 162, n, { size: 10, w: 700, fill: "#7a6a58" })).join("")}`;
+    <path d="M${nearL} ${botY} L${nearR} ${botY} L${farR} ${topY} L${farL} ${topY} Z" fill="#6b3f1f"/>
+    <path d="M${nearL} ${botY} L${farL} ${topY} L${farL + 5} ${topY} L${nearL + 7} ${botY} Z" fill="#f1ead9"/>
+    ${fretX.map((x) => { const xt = farL + (x - nearL) * (farR - farL) / (nearR - nearL); return `<line x1="${x}" y1="${botY}" x2="${xt.toFixed(1)}" y2="${topY}" stroke="#d9d2c4" stroke-width="2"/>`; }).join("")}
+    ${names.map((n, s) => { const y = sy(s); const w = (3.6 - s * 0.5).toFixed(2); return `<line x1="${edgeL(y).toFixed(1)}" x2="${edgeR(y).toFixed(1)}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#efe6d2" stroke-width="${w}"><animate attributeName="stroke" values="#efe6d2;#ffd34d;#efe6d2" keyTimes="0;0.08;0.2" dur="6s" begin="${(s * 0.5).toFixed(1)}s" repeatCount="indefinite"/></line>`; }).join("")}
+    ${names.map((n, s) => T(edgeR(sy(s)) + 9, sy(s) + 4, n, { size: s === 0 ? 13 : 10, w: s === 0 || s === 5 ? 900 : 700, fill: s === 0 ? "#2f8f83" : s === 5 ? "#b5532a" : "#4a3420", anchor: "middle" })).join("")}`;
   const right = `
     <rect x="198" y="22" width="158" height="262" rx="16" fill="#fff7ec" stroke="#ead7bd"/>
-    ${T(277, 40, "2. What you see", { size: 13, w: 800, fill: "#3b2410" })}
-    ${T(277, 54, "looking down", { size: 13, w: 800, fill: "#3b2410" })}
-    <g transform="translate(${lefty ? 344 : 210} 0)${lefty ? " scale(-1 1)" : ""}">${lefty ? mirrorSvgTexts(view) : view}</g>
-    ${T(277, 182, "low E at the bottom:", { size: 11, w: 800, fill: "#2f8f83" })}
-    ${T(277, 196, "the string nearest you", { size: 11, w: 800, fill: "#2f8f83" })}
-    <path d="M277 222 L277 208" stroke="#3b2410" stroke-width="2"/><path d="M271 212 l6 -7 l6 7" fill="none" stroke="#3b2410" stroke-width="2"/>
-    <ellipse cx="277" cy="236" rx="14" ry="8.5" fill="#fff" stroke="#3b2410" stroke-width="2"/><circle cx="277" cy="236" r="4.8" fill="#3b2410"/>
-    ${T(277, 262, "You are here (at the", { size: 10.5, w: 700, fill: "#7a6a58" })}
-    ${T(277, 275, "bottom), looking down", { size: 10.5, w: 700, fill: "#7a6a58" })}`;
-  return `<svg viewBox="0 0 360 292" class="jg-viewer" role="img" aria-label="Left: a person seen from the side holding a guitar; the thick low E string is the top string, nearest their eyes. Right: what they see looking down: the fretboard with the nut on the ${lefty ? "right" : "left"} and the low E string at the bottom, nearest them.">${side}${right}</svg>`;
+    ${T(277, 40, "2. Looking down", { size: 13, w: 800, fill: "#3b2410" })}
+    ${T(277, 54, "the neck", { size: 13, w: 800, fill: "#3b2410" })}
+    ${T(277, 70, "thin e: furthest away", { size: 10.5, w: 800, fill: "#b5532a" })}
+    <g transform="translate(${lefty ? 344 : 207} 6)${lefty ? " scale(-1 1)" : ""}">${lefty ? mirrorSvgTexts(view) : view}</g>
+    ${T(277, 186, "thick E: closest to you", { size: 11, w: 800, fill: "#2f8f83" })}
+    <path d="M277 222 L277 198" stroke="#3b2410" stroke-width="2"/><path d="M271 202 l6 -7 l6 7" fill="none" stroke="#3b2410" stroke-width="2"/>
+    <ellipse cx="277" cy="236" rx="14" ry="8.5" fill="#fff" stroke="#3b2410" stroke-width="2"/><circle cx="277" cy="236" r="4.8" fill="#3b2410"><animate attributeName="cy" values="236;239;236" dur="3s" repeatCount="indefinite"/></circle>
+    ${T(277, 262, "Your eyes, looking down", { size: 10.5, w: 700, fill: "#7a6a58" })}
+    ${T(277, 275, "at the strings", { size: 10.5, w: 700, fill: "#7a6a58" })}`;
+  return `<svg viewBox="0 0 360 292" class="jg-viewer" role="img" aria-label="Left: a person seen from the side holding a guitar; the thick low E string is the top string, nearest their eyes. Right: looking down the neck: the thick low E string is closest to you (bottom) and the thin high e string is furthest away (top), with the nut on the ${lefty ? "right" : "left"}.">${side}${right}</svg>`;
 }
 
 export { guitarSvg, headstockSvg, fingerStrumSvg, viewerSvg };

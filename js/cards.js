@@ -82,7 +82,13 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
     const needsBoard = w.string !== undefined || w.pos || w.chord || w.practice || w.songPractice || w.changes || w.compare || w.morph || w.strum || w.loop || card.show?.shape || card.show?.notes || card.show?.frets || (card.show && !card.show.guitar && !card.show.fingerStrum && Object.keys(card.show).filter((k) => k !== "viewer").length === 0);
     // One animation per card, never the same as the last few (scenes.js).
     const scene = pickScene(`${lesson.title} ${card.say || ""}`);
-    const legend = scene.startsWith("legend-") ? LEGENDS[scene.slice(7)] : null;
+    // A guitar-legend fun fact at most once every 12 cards (owner 2026-10-26: "one in 10-15 lessons", not every card).
+    let legend = scene.startsWith("legend-") ? LEGENDS[scene.slice(7)] : null;
+    try {
+      const gap = Number(localStorage.getItem("jg_fact_gap") || "0") + 1;
+      if (legend && gap >= 12) localStorage.setItem("jg_fact_gap", "0");
+      else { localStorage.setItem("jg_fact_gap", String(gap)); legend = null; }
+    } catch (e) { legend = null; }
     const count = courseTotal ? `${courseStart + i}/${courseTotal}` : `${i + 1}/${cards.length}`;
     panel.innerHTML = `
       <div class="jg-cards">
@@ -162,9 +168,11 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
       controls.insertAdjacentHTML("beforebegin", `<button class="jg-basics-link" type="button">New to guitar? Start with the basics ›</button>`);
       panel.querySelector(".jg-basics-link").addEventListener("click", () => { clean(); document.body.classList.remove("jg-lesson-open"); onOpenLesson(card.basics); });
     }
-    // On every card, so left-handed players can flip at any point.
-    panel.querySelector(".jg-card-board").insertAdjacentHTML("beforebegin", flipButtonHtml());
-    wireFlip(panel, () => show(i));
+    // Only where there's something to mirror: a fretboard, chord, guitar or viewer picture.
+    if (needsBoard || card.show?.guitar || card.show?.viewer || card.show?.fingerStrum) {
+      panel.querySelector(".jg-card-board").insertAdjacentHTML("beforebegin", flipButtonHtml());
+      wireFlip(panel, () => show(i));
+    }
     if (card.show?.fingerStrum) extra.innerHTML = `<div class="jg-fingerstrum-wrap">${fingerStrumSvg()}</div>`;
 
     let finished = false;
