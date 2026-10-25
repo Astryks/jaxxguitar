@@ -1,21 +1,22 @@
 // Fretboard, chord diagrams and tab for Jaxx Guitar.
 //
 // renderFretboard(): a horizontal fretboard the way a right-handed
-// player sees it looking down at their own guitar: the thickest low E
-// string (the one nearest your chin) on TOP, the thin high e at the
-// bottom, the nut on the left and the fret numbers along the bottom.
+// player sees it looking down at their own guitar: the thin high e at
+// the top and the thickest low E string (the one nearest your chin) at
+// the BOTTOM, nearest you, the nut on the left and the fret numbers along the bottom.
 // Fret spacing follows a real guitar's (each fret ~5.6% narrower than
 // the last, the 12th fret halfway to the bridge), squeezed a little so
 // the first frets aren't huge. Tapping a string at a fret plays it and
 // reports the note (input-hub), so every input path (screen, mic) works
 // the same. With the left-handed setting on, the whole board is mirrored
 // (nut on the right) and its text is flipped back so it still reads
-// normally (css: .jg-lefty text).
+// normally (settings.js mirrorSvgTexts: plain SVG attributes, so the iOS
+// web view draws it exactly like Chrome).
 
 import { TUNING, STRING_NAMES, midiAt, noteName } from "./guitar-theory.js";
 import { playNote } from "./guitar-audio.js";
 import { emitNoteOn } from "./input-hub.js";
-import { isLefty } from "./settings.js";
+import { isLefty, mirrorSvgTexts } from "./settings.js";
 
 const STRING_COLORS = ["#e0625b", "#f0a24b", "#e8d24b", "#5bbf72", "#4fa3e0", "#9b78e0"]; // 6th → 1st
 const INLAYS = [3, 5, 7, 9, 15, 17];
@@ -29,7 +30,13 @@ function fretX(n, frets) {
   return 0.55 * r + 0.45 * (n / frets);
 }
 
-function renderFretboard(container, { frets = 12, height = 196 } = {}) {
+// fit: on a narrow screen (a phone held upright) show only a window of
+// about 5 frets, scaled to the screen width, instead of a fretboard that
+// scrolls sideways. The window follows whatever is shown (a chord shape,
+// a scale box, the note being played) and keeps the string names on its
+// left edge. On wider screens the whole neck shows as before.
+const FIT_BELOW = 640;
+function renderFretboard(container, { frets = 12, height = 196, fit = false, span = 5 } = {}) {
   container.innerHTML = "";
   container.classList.add("jg-fretboard");
   const W = 1000;
@@ -53,12 +60,18 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
   }
   for (let s = 0; s < 6; s++) {
     parts.push(`<line x1="${openW}" x2="${W - 8}" y1="${stringY(s)}" y2="${stringY(s)}" class="jg-string" style="stroke-width:${3.4 - s * 0.45}"/>`);
-    parts.push(`<text x="4" y="${stringY(s) + 6}" class="jg-string-name">${STRING_NAMES[s]}</text>`);
   }
   for (let f = 1; f <= frets; f++) parts.push(`<text x="${center(f)}" y="${H - 8}" class="jg-fret-num" data-fn="${f}">${f}</text>`);
+  // The string names sit in a strip that moves with the fit window, so
+  // they stay on the window's nut side (and cover the frets left of it).
+  const names = [`<rect x="0" y="0" width="${openW}" height="${H}" class="jg-names-bg"/>`];
+  for (let s = 0; s < 6; s++) names.push(`<text x="4" y="${stringY(s) + 6}" class="jg-string-name" data-s="${s}">${STRING_NAMES[s]}</text>`);
+  parts.push(`<g class="jg-names">${names.join("")}</g>`);
   const lefty = isLefty();
-  container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="jg-fretboard-svg ${lefty ? "jg-lefty" : ""}" role="img" aria-label="Guitar fretboard, low E string at the bottom${lefty ? ", mirrored for left-handed players" : ""}"><g${lefty ? ` transform="translate(${W} 0) scale(-1 1)"` : ""}><g>${parts.join("")}</g><g class="jg-glow"></g><g class="jg-marks"></g><g class="jg-hits"></g></g></svg>`;
+  const fix = (html) => (lefty ? mirrorSvgTexts(html) : html);
+  container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="jg-fretboard-svg ${lefty ? "jg-lefty" : ""}" role="img" aria-label="Guitar fretboard, low E string at the bottom, nut on the ${lefty ? "right (mirrored for left-handed players)" : "left"}"><g${lefty ? ` transform="translate(${W} 0) scale(-1 1)"` : ""}><g>${fix(parts.join(""))}</g><g class="jg-glow"></g><g class="jg-marks"></g><g class="jg-hits"></g></g></svg>`;
   const svg = container.querySelector("svg");
+  const namesG = svg.querySelector(".jg-names");
   const marks = svg.querySelector(".jg-marks");
   const hits = svg.querySelector(".jg-hits");
   const hl = svg.querySelector(".jg-fret-hl");
@@ -97,9 +110,65 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
     setTimeout(() => c.remove(), 350);
   }
 
+  // --- the fit window (phones held upright) ------------------------------
+  let fitOn = false;
+  let winA = 0; // content x where the window starts (0 = the nut end)
+  let winW = W;
+  let lastNeed = [];
+  const baseW = xOf(Math.min(span, frets)) + 8;
+  const inView = (f) => (f <= 0 ? winA === 0 : xOf(f - 1) >= winA + openW - 1 && xOf(f) <= winA + winW + 1);
+  function applyView() {
+    const vx = lefty ? W - winA - winW : winA;
+    svg.setAttribute("viewBox", `${vx} 0 ${winW} ${H}`);
+    namesG.setAttribute("transform", `translate(${winA} 0)`);
+    container.classList.toggle("jg-fb-fit", fitOn);
+    container.classList.toggle("jg-fb-full", !fitOn);
+  }
+  // Make sure these frets are in view (moving the window only if needed).
+  function frame(need = [], force = false) {
+    const fs = need.filter((f) => Number.isFinite(f) && f >= 0 && f <= frets);
+    if (fs.length) lastNeed = fs;
+    if (!fitOn) { if (winA || winW !== W) { winA = 0; winW = W; applyView(); } return; }
+    if (!fs.length && !force) return;
+    const use = fs.length ? fs : lastNeed;
+    if (!force && use.every(inView)) return;
+    const lo = use.length ? Math.min(...use) : 0;
+    const hi = use.length ? Math.max(...use) : 0;
+    let a = lo <= 1 ? 0 : xOf(lo - 1) - openW;
+    // One fret of room before the lowest note when it still fits.
+    if (lo >= 2) {
+      const a2 = lo === 2 ? 0 : xOf(lo - 2) - openW;
+      if (xOf(Math.max(hi, 1)) + 4 <= a2 + baseW) a = a2;
+    }
+    a = Math.max(0, Math.min(a, W - baseW));
+    winA = a;
+    winW = Math.max(baseW, xOf(Math.max(hi, 1)) + 8 - a);
+    applyView();
+  }
+  function measureFit() {
+    const wpx = container.clientWidth || container.parentElement?.clientWidth || window.innerWidth;
+    const want = Boolean(fit) && wpx < FIT_BELOW;
+    if (want === fitOn && svg.hasAttribute("data-fit-ready")) return false;
+    svg.setAttribute("data-fit-ready", "1");
+    fitOn = want;
+    winA = 0;
+    winW = fitOn ? baseW : W;
+    applyView();
+    frame(lastNeed, true);
+    return true;
+  }
+  measureFit();
+  let ro = null;
+  if (fit && typeof ResizeObserver !== "undefined") {
+    ro = new ResizeObserver(() => { if (measureFit()) redraw?.(); });
+    ro.observe(container);
+  }
+  let redraw = null; // re-draws the marks when the window jumps (mutes follow it)
+
   // Shade whole fret spaces (e.g. "today we only need frets 1 to 3") and
   // make their numbers along the bottom stand out.
   function highlightFrets(list = []) {
+    if (list.length) frame(list);
     hl.innerHTML = list.map((f) => `<rect x="${xOf(f - 1)}" y="${top - 20}" width="${xOf(f) - xOf(f - 1)}" height="${H - top + 20}" rx="6" class="jg-fret-hl-box"/>`).join("");
     svg.querySelectorAll(".jg-fret-num").forEach((t) => t.classList.toggle("jg-fret-num-hl", list.includes(Number(t.dataset.fn))));
   }
@@ -118,12 +187,14 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
   // "root" | "note" | "ghost" | "good" | "bad" | "lit". muted: string indexes (x).
   function show(positions = [], { muted = [], barre = null, keep = false } = {}) {
     if (!keep) stopAnim();
+    frame(positions.map((q) => q.fret));
+    redraw = () => show(positions, { muted, barre, keep: true });
     const p = [];
     if (barre) {
       const strs = positions.filter((q) => q.fret === barre.fret).map((q) => q.string);
       if (strs.length) p.push(barreRect(barre.fret, strs, barre.lit ? "jg-barre jg-barre-lit" : "jg-barre"));
     }
-    muted.forEach((s) => p.push(`<text x="${openW - 20}" y="${stringY(s) + 6}" class="jg-mute">×</text>`));
+    muted.forEach((s) => p.push(`<text x="${winA + openW - 20}" y="${stringY(s) + 6}" class="jg-mute">×</text>`));
     positions.forEach((q) => {
       const x = center(q.fret);
       const y = stringY(q.string);
@@ -136,7 +207,7 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
       const lab = q.label ?? (q.finger ? String(q.finger) : "");
       if (lab) p.push(`<text x="${x}" y="${y + 4.5}" class="jg-dot-label ${q.pop ? "jg-pop" : ""}">${lab}</text>`);
     });
-    marks.innerHTML = p.join("");
+    marks.innerHTML = fix(p.join(""));
   }
 
   // Show a chord shape ({frets, fingers, barre}) with finger numbers, all
@@ -163,6 +234,7 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
     stopAnim();
     if (!shape) return show([]);
     const { positions, muted } = shapeParts(shape);
+    frame(positions.map((q) => q.fret));
     const pressed = positions.filter((q) => q.fret > 0);
     const order = [...new Set(pressed.map((q) => q.finger || 1))].sort();
     const run = () => {
@@ -178,6 +250,7 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
           t.setAttribute("y", stringY(q.string) - 14);
           t.setAttribute("class", "jg-finger-tag");
           t.textContent = `${fg} = ${FINGER_NAMES[fg] || "finger"}${isBarre ? " (flat across)" : ""}`;
+          if (lefty) { t.setAttribute("transform", `matrix(-1 0 0 1 ${2 * (center(q.fret) + 20)} 0)`); t.style.textAnchor = "end"; }
           marks.appendChild(t);
         }
         onStep?.(fg, i);
@@ -198,22 +271,23 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
       shape.frets.forEach((f, s) => { const fg = shape.fingers?.[s]; if (f > 0 && fg && !m.has(fg)) m.set(fg, { string: s, fret: f }); });
       return m;
     };
+    frame([...a.frets, ...b.frets].filter((f) => f >= 0));
     const A = fingerPos(a);
     const B = fingerPos(b);
     const all = [...new Set([...A.keys(), ...B.keys()])].sort();
     const same = (p, q) => p && q && p.string === q.string && p.fret === q.fret;
-    const mutes = (shape) => shape.frets.map((f, s) => (f < 0 ? `<text x="${openW - 20}" y="${stringY(s) + 6}" class="jg-mute">×</text>` : "")).join("");
-    marks.innerHTML = `<g class="jg-morph-mutes">${mutes(a)}</g>` + all.map((fg) => {
+    const mutes = (shape) => shape.frets.map((f, s) => (f < 0 ? `<text x="${winA + openW - 20}" y="${stringY(s) + 6}" class="jg-mute">×</text>` : "")).join("");
+    marks.innerHTML = fix(`<g class="jg-morph-mutes">${mutes(a)}</g>` + all.map((fg) => {
       const p = A.get(fg) || B.get(fg);
       const anchor = same(A.get(fg), B.get(fg));
       return `<g class="jg-morph-f ${anchor ? "jg-morph-anchor" : ""}" data-fg="${fg}" style="transform:translate(${center(p.fret)}px,${stringY(p.string)}px);opacity:${A.get(fg) ? 1 : 0}">
         ${anchor ? '<circle r="18" class="jg-anchor-ring"/>' : ""}<circle r="12" class="jg-dot jg-lit"/><text y="4.5" class="jg-dot-label">${fg}</text></g>`;
-    }).join("");
+    }).join(""));
     const groups = [...marks.querySelectorAll(".jg-morph-f")];
     const go = (toB) => {
       const src = toB ? A : B;
       const dst = toB ? B : A;
-      marks.querySelector(".jg-morph-mutes").innerHTML = mutes(toB ? b : a);
+      marks.querySelector(".jg-morph-mutes").innerHTML = fix(mutes(toB ? b : a));
       groups.forEach((g) => {
         const fg = Number(g.dataset.fg);
         const p = dst.get(fg) || src.get(fg);
@@ -238,6 +312,9 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
     const key = notes.map((n) => `${n.string}:${n.fret}`).sort().join(",");
     if (key === glowKey) return;
     glowKey = key;
+    if (notes.length) frame(notes.map((n) => n.fret));
+    // The ringing string's name lights up too ("A string").
+    namesG.querySelectorAll(".jg-string-name").forEach((t) => t.classList.toggle("jg-sn-on", notes.some((n) => n.string === Number(t.dataset.s))));
     glowG.innerHTML = notes.map((n) => {
       const y = stringY(n.string), x1 = n.fret > 0 ? center(n.fret) : openW;
       return `<line x1="${x1}" x2="${W - 8}" y1="${y}" y2="${y}" class="jg-glow-string" style="stroke-width:${5.5 - n.string * 0.5}"/>` +
@@ -248,13 +325,14 @@ function renderFretboard(container, { frets = 12, height = 196 } = {}) {
 
   return {
     show, showShape, placeFingers, morph, highlightFrets, stopAnim, glow, clear: () => show([]), onTap: (cb) => { tapHandler = cb; },
+    destroy: () => { ro?.disconnect(); }, isFit: () => fitOn,
     xFrac: (f) => (lefty ? 1 - center(f) / W : center(f) / W), widthFrac: (f) => (f === 0 ? openW : xOf(f) - xOf(f - 1)) / W,
     stringColor: (s) => STRING_COLORS[s], frets,
   };
 }
 
 // Chord diagram, drawn the same way round as the fretboard (and as you see
-// your own guitar looking down): low E on top, high e at the bottom, the
+// your own guitar looking down): high e on top, low E at the bottom, the
 // nut on the left, fret numbers along the bottom, × / ○ before the nut,
 // pressed frets in the app's colour with finger numbers.
 function chordDiagramSvg(shape, name = "") {
@@ -298,7 +376,7 @@ function chordDiagramSvg(shape, name = "") {
     }
   });
   const lefty = isLefty();
-  return `<svg viewBox="0 0 ${w} ${h}" class="jg-diagram ${lefty ? "jg-lefty" : ""}" role="img" aria-label="${name} chord diagram, low E string at the bottom"><g${lefty ? ` transform="translate(${w} 0) scale(-1 1)"` : ""}>${p.join("")}</g></svg>`;
+  return `<svg viewBox="0 0 ${w} ${h}" class="jg-diagram ${lefty ? "jg-lefty" : ""}" role="img" aria-label="${name} chord diagram, low E string at the bottom, high e on top"><g${lefty ? ` transform="translate(${w} 0) scale(-1 1)"` : ""}>${lefty ? mirrorSvgTexts(p.join("")) : p.join("")}</g></svg>`;
 }
 
 // Tab: six lines (high e on top), fret numbers at their beat positions.

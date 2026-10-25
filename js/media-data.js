@@ -201,9 +201,15 @@ const PEOPLE = {
  }
 };
 const VIDEOS = {
+ "greats-mayer-blues": {"id": "aPAzuIZ55Z0", "title": "John Mayer Explains Different Styles of Blues Guitar: Barstool Backstage", "author_name": "Backstage", "kind": "teacher"},
  "teach-hold": {"id": "MlV6WhM9YhE", "title": "How to (Really) Hold a Guitar When Playing", "author_name": "JustinGuitar", "kind": "teacher"},
  "teach-four-chords": {"id": "4uwPUO7LNpY", "title": "Guitar Lesson - How to play chords in the key of G (G, C, D, Em)", "author_name": "Worship Tutorials", "kind": "teacher"},
  "teach-changing": {"id": "VaegrntyEgk", "title": "Change Chords FASTER on Guitar for Beginners", "author_name": "Andy Guitar", "kind": "teacher"},
+ "teach-changes-justin": {"id": "mAgc7hr44WM", "title": "Get FASTER Chord Changes On Guitar!", "author_name": "JustinGuitar", "kind": "teacher", "views": "1,235,154 (checked 2026-10-18)"},
+ "ed-sheeran-looper": {"id": "lNPJBHUePl0", "title": "Ed Sheeran - Azizam (Looper Performance Live from Old Delhi)", "author_name": "Ed Sheeran", "views": "2,671,717 (checked 2026-10-18)"},
+ "ed-fallon-looping": {"id": "yuq8Iggweck", "title": "Ed Sheeran and Jimmy Build \"Shape of You\" Using a Looping Station | The Tonight Show", "author_name": "The Tonight Show Starring Jimmy Fallon", "views": "1,963,055 (checked 2026-10-18)"},
+ "wah-paul-davids": {"id": "NW9Yq99FeTU", "title": "This is why the WAH PEDAL is awesome!", "author_name": "Paul Davids", "kind": "teacher", "views": "2,127,038 (checked 2026-10-18)"},
+ "song-out-of-reach": {"id": "uxfAIVfmRa8", "title": "Gabrielle - Out Of Reach", "author_name": "GabrielleVEVO", "views": "46,501,744 (checked 2026-10-18)"},
  "teach-finger-strum": {"id": "j-ljksb6oIY", "title": "How to Strum a Guitar WITHOUT a Pick", "author_name": "JustinGuitar", "kind": "teacher"},
  "teach-strum-patterns": {"id": "ely9LaJJJr4", "title": "Beginner Strumming Patterns For Acoustic Guitar Pattern 1 - Beginner Guitar Lessons", "author_name": "Marty Music", "kind": "teacher"},
  "teach-barre": {"id": "qPJKtFi2PmQ", "title": "How to REALLY Play Bar Chords - A Beginner Guitar Tutorial", "author_name": "swiftlessons", "kind": "teacher"},
@@ -663,7 +669,11 @@ const VIDEOS = {
  "song-i-don-t-want-to-talk-about-it": {"id": "esUHMBHJsn8", "title": "Rod Stewart - I Don't Want To Talk About It (Official Video)", "author_name": "Rod Stewart"},
  "song-save-your-tears": {"id": "XXYlFuWEuKI", "title": "The Weeknd - Save Your Tears (Official Music Video)", "author_name": "TheWeekndVEVO"},
  "song-where-is-my-mind": {"id": "OJ62RzJkYUo", "title": "Pixies - Where Is My Mind? (Official Lyric Video)", "author_name": "PixiesOfficial"},
- "song-beanie": {"id": "tERTBPdVivc", "title": "Chezile - Beanie (Official Visualizer)", "author_name": "Chezile"}
+ "song-beanie": {"id": "tERTBPdVivc", "title": "Chezile - Beanie (Official Visualizer)", "author_name": "Chezile"},
+ "song-godfather-love-theme": {"id": "Flb01Ni3p3M", "title": "Love Theme From \"The Godfather\"", "author_name": "Nino Rota - Topic"},
+ "song-parisienne-walkways": {"id": "lUBCXGeK694", "title": "Parisienne Walkways", "author_name": "Gary Moore - Topic"},
+ "song-beat-it": {"id": "oRdxUFDoQe0", "title": "Michael Jackson - Beat It (Official 4K Video)", "author_name": "michaeljacksonVEVO"},
+ "song-man-in-the-mirror": {"id": "PivWY9wn5ps", "title": "Michael Jackson - Man In The Mirror (Official Video)", "author_name": "michaeljacksonVEVO"},
 };
 const SONG_VIDEOS = {
  "Bamboléo": "bambol-o-live-v2",
@@ -682,6 +692,7 @@ const SONG_VIDEOS = {
  "My Funny Valentine": "my-funny-valentine",
  "Bad Guy": "song-bad-guy",
  "Last Christmas": "song-last-christmas",
+ "Out of Reach": "song-out-of-reach",
  "All I Want for Christmas Is You": "song-all-i-want-for-christmas-is-you",
  "Die With a Smile": "die-with-a-smile-live-v2",
  "Blinding Lights": "song-blinding-lights",
@@ -941,6 +952,10 @@ const SONG_VIDEOS = {
  "I Don't Want to Talk About It": "song-i-don-t-want-to-talk-about-it",
  "Save Your Tears": "song-save-your-tears",
  "Where Is My Mind?": "song-where-is-my-mind",
- "Beanie": "song-beanie"
+ "Beanie": "song-beanie",
+ "Love Theme from The Godfather": "song-godfather-love-theme",
+ "Parisienne Walkways": "song-parisienne-walkways",
+ "Beat It": "song-beat-it",
+ "Man in the Mirror": "song-man-in-the-mirror",
 };
 export { PEOPLE, VIDEOS, SONG_VIDEOS };

@@ -30,10 +30,28 @@ function freshAudioContext() {
   ctx = null;
   return getAudioContext();
 }
+// iOS can leave the engine saying "running" but silent after the audio mode
+// changes (microphone on/off, a YouTube video, a call). Two checks catch it:
+// the microphone code marks the sound "dirty" whenever it switches the mode,
+// and a running engine whose clock has stopped moving is stuck. Either way the
+// next tap swaps in a fresh engine (owner report 2026-10-26: sound died after
+// a few lessons).
+let lastWall = 0, lastTime = 0, lastFresh = -Infinity;
+function stalled(c) {
+  const now = performance.now();
+  const stuck = c.state === "running" && lastWall > 0 && now - lastWall > 600 && c.currentTime - lastTime < 0.02;
+  lastWall = now; lastTime = c.currentTime;
+  return stuck;
+}
 function unlockAudio() {
   let c = getAudioContext();
+  const dirty = typeof window !== "undefined" && window.__audioDirty;
   // Inside a tap, iOS lets a new engine start straight away.
-  if (c.state === "interrupted" || c.state === "closed") { c = freshAudioContext(); c.resume?.().catch(() => {}); }
+  if (c.state === "interrupted" || c.state === "closed" || ((dirty || stalled(c)) && performance.now() - lastFresh > 1500)) {
+    if (dirty) window.__audioDirty = false;
+    lastFresh = performance.now(); lastWall = 0;
+    c = freshAudioContext(); c.resume?.().catch(() => {});
+  }
   try {
     const b = c.createBuffer(1, 1, c.sampleRate);
     const s = c.createBufferSource();
@@ -47,7 +65,8 @@ function unlockAudio() {
     setTimeout(() => { if (ctx === c && c.state !== "running") freshAudioContext(); }, 400);
   }
 }
-if (typeof document !== "undefined") document.addEventListener("visibilitychange", () => { if (!document.hidden) getAudioContext(); });
+// Back from another app (YouTube, a call): the next tap gets a fresh engine.
+if (typeof document !== "undefined") document.addEventListener("visibilitychange", () => { if (!document.hidden) { window.__audioDirty = true; getAudioContext(); } });
 if (typeof window !== "undefined") window.addEventListener("pageshow", () => getAudioContext());
 if (typeof window !== "undefined") ["touchend", "pointerdown", "keydown"].forEach((t) => window.addEventListener(t, unlockAudio, true));
 
@@ -147,6 +166,35 @@ function strum(midis, { direction = "down", delay = 0, spread = 0.018, duration 
   order.forEach((m, i) => playNote(m, { delay: delay + i * spread, duration, gain }));
 }
 
+// A muted "chuck": the fretting hand lies across the strings so the strum
+// is a dead, percussive click (an "x" in a strum pattern).
+let chuckNoise = null;
+function mutedStrum(midis, { delay = 0, gain = 0.2 } = {}) {
+  const c = getAudioContext();
+  const t = c.currentTime + delay;
+  if (!chuckNoise || chuckNoise.sampleRate !== c.sampleRate) {
+    chuckNoise = c.createBuffer(1, Math.floor(c.sampleRate * 0.08), c.sampleRate);
+    const d = chuckNoise.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * 0.012));
+  }
+  const src = c.createBufferSource();
+  src.buffer = chuckNoise;
+  const bp = c.createBiquadFilter();
+  bp.type = "bandpass";
+  bp.frequency.value = 1800;
+  bp.Q.value = 0.9;
+  const g = c.createGain();
+  g.gain.setValueAtTime(gain * 1.6, t);
+  src.connect(bp).connect(g).connect(c.destination);
+  src.start(t);
+  src.stop(t + 0.09);
+  const entry = { src, g };
+  live.add(entry);
+  src.onended = () => live.delete(entry);
+  // A trace of pitch under the click, very short.
+  (midis || []).slice(0, 4).forEach((m, i) => playNote(m, { delay: delay + i * 0.006, duration: 0.02, gain: gain * 0.35 }));
+}
+
 // A short metronome tick (accent on the first beat).
 function click(accent = false, delay = 0) {
   const c = getAudioContext();
@@ -162,4 +210,4 @@ function click(accent = false, delay = 0) {
   o.stop(t + 0.06);
 }
 
-export { getAudioContext, playNote, strum, click, stopAllSound };
+export { getAudioContext, playNote, strum, mutedStrum, click, stopAllSound };

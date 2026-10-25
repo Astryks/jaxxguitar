@@ -18,6 +18,8 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; touch-action: man
   --jg-bad: #c94a4a;
   --jg-purple: #7d5bc9;
   --jg-purple-soft: #ece4fb;
+  --jg-chat: #8a63d2;        /* Hayden Keys' purple (--hk-purple), for the chat bubbles and chips */
+  --jg-chat-2: #7550c2;      /* a shade deeper: white text stays readable (over 5:1) */
   --jg-hl: #2a6fb0;          /* highlighted words: pastel-blue family, 4.6:1 or better on its own background */
   --jg-hl-bg: #e3f2fd;       /* pastel light blue highlighter */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -227,8 +229,10 @@ table.jg-table { border-collapse: collapse; font-size: 0.88rem; margin: 6px 0; }
 @media (orientation: portrait) and (max-width: 700px) {
   .jg-rotate-tip { display: block; position: fixed; left: 12px; right: 12px; top: calc(8px + env(safe-area-inset-top, 0px)); z-index: 50; animation: jg-tip-out 0.6s ease-in 9s forwards; box-shadow: 0 4px 16px rgba(0,0,0,0.15); padding: 6px 10px; border: 1px solid var(--jg-border); border-radius: 10px; background: var(--jg-panel); color: var(--jg-text-dim); font-size: 0.82rem; text-align: left; cursor: pointer; }
   .jg-rotate-tip span { float: right; }
-  .jg-instrument-host, .jg-dr-board { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .jg-instrument { min-width: 720px; }
+  /* Only a full-neck fretboard scrolls sideways; the play-along view above
+     it and fit-window fretboards (songs, Practice) always fit the screen. */
+  .jg-fb.jg-fb-full, .jg-dr-board { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .jg-fb.jg-fb-full > svg { min-width: 720px; }
   .jg-header h1 { font-size: 1.4rem; }
   .jg-tab { padding: 6px 12px; }
 }
@@ -525,7 +529,7 @@ body[data-tab="lessons"] .jg-footer, body[data-tab="songs"] .jg-footer { display
 
 /* ===== Simple lesson cards (Jaxx) ===== */
 .jg-cards { max-width: 720px; margin: 0 auto; padding: 0 12px 24px; }
-.jg-cards-top { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 8px; padding: 6px 0 8px; background: linear-gradient(var(--jg-bg) 80%, transparent); }
+.jg-cards-top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; display: flex; align-items: center; gap: 8px; padding: 6px 0 8px; background: linear-gradient(var(--jg-bg) 80%, transparent); }
 .jg-cards-x { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--jg-border); background: #fff; font-size: 1.1rem; cursor: pointer; }
 .jg-cards-back { border: 1px solid var(--jg-border); background: #fff; border-radius: 999px; padding: 8px 14px; cursor: pointer; }
 .jg-cards-title { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
@@ -536,10 +540,10 @@ body[data-tab="lessons"] .jg-footer, body[data-tab="songs"] .jg-footer { display
 .jg-cbubble { background: #fff; border: 2px solid var(--jg-accent-soft); border-radius: 20px; border-bottom-left-radius: 6px; padding: 12px 16px; font-size: 1.08rem; line-height: 1.45; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); }
 .jg-cbubble b { color: var(--jg-hl); background: var(--jg-hl-bg); border-radius: 5px; padding: 0 3px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 .jg-cme { justify-content: flex-end; }
-.jg-cme .jg-cbubble { background: linear-gradient(135deg, #f2994a, var(--jg-accent)); color: #fff; border: none; border-radius: 20px 20px 6px 20px; }
+.jg-cme .jg-cbubble { background: linear-gradient(135deg, var(--jg-chat), var(--jg-chat-2)); color: #fff; border: none; border-radius: 20px 20px 6px 20px; }
 .jg-cmore { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; margin: 8px 0; }
-.jg-chip-hint { font-size: 0.85rem; font-weight: 700; color: var(--jg-accent); }
-.jg-chip { background: linear-gradient(135deg, #f2994a, var(--jg-accent)); color: #fff; border: none; border-radius: 22px 22px 6px 22px; padding: 12px 18px; font-size: 1.05rem; font-weight: 800; cursor: pointer; box-shadow: 0 6px 16px rgba(196, 106, 31, 0.3); }
+.jg-chip-hint { font-size: 0.85rem; font-weight: 700; color: var(--jg-chat-2); }
+.jg-chip { background: linear-gradient(135deg, var(--jg-chat), var(--jg-chat-2)); color: #fff; border: none; border-radius: 22px 22px 6px 22px; padding: 12px 18px; font-size: 1.05rem; font-weight: 800; cursor: pointer; box-shadow: 0 6px 16px rgba(110, 76, 190, 0.3); }
 @media (prefers-reduced-motion: no-preference) { .jg-chip { animation: jg-chip-pulse 1.6s ease-in-out infinite; } }
 @keyframes jg-chip-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 @keyframes jg-card-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
@@ -579,7 +583,6 @@ div.jg-funfact-img { width: 110px; height: 124px; float: right; }
 .jg-fret-num-hl { fill: var(--jg-hl); font-size: 18px; }
 .jg-finger-tag { font-size: 15px; font-weight: 800; fill: #fff; paint-order: stroke; stroke: var(--jg-wood); stroke-width: 4px; pointer-events: none; }
 /* Left-handed setting: the board is mirrored, each label flipped back in place. */
-.jg-lefty text { transform-box: fill-box; transform-origin: center; transform: scaleX(-1); }
 .jg-lefty text.jg-pop { animation: none; }
 .jg-switch { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; cursor: pointer; padding: 6px 0; }
 .jg-switch input { width: 22px; height: 22px; accent-color: var(--jg-accent, #c46a1f); }
@@ -778,7 +781,7 @@ body.jg-intro-open { overflow: hidden; }
 /* Left-handed flip: a button on fretboard cards, and the mirrored guitar picture (text kept readable). */
 .jg-flip-btn { display: block; margin: 4px 0 6px auto; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--jg-border, #e3d6c6); background: #fff; font: 600 13px/1.2 system-ui, sans-serif; color: #2a6fb0; cursor: pointer; }
 .jg-flipped svg { transform: scaleX(-1); }
-.jg-flipped svg text { transform-box: fill-box; transform-origin: center; transform: scaleX(-1); }
+.jg-flipped svg text.jg-pop { animation: none; }
 /* Strumming pattern on song cards: arrows over the beats. */
 .jg-songcard-strum { margin: 6px 0; }
 .jg-strum-row { display: flex; gap: 4px; margin-top: 4px; }
@@ -809,3 +812,197 @@ body.jg-intro-open { overflow: hidden; }
 .jg-viewer .jg-viewer-txt { font: 600 11px system-ui, sans-serif; fill: #5a3a1f; text-anchor: middle; }
 .jg-viewer .jg-viewer-strong { font-weight: 800; fill: #3b2410; }
 .jg-card-skip { display: block; margin: 8px 0 0 auto; background: none; border: 0; color: var(--jg-muted, #777); font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; }
+.jg-basics-link { display: block; margin: 6px auto 4px; padding: 8px 14px; border-radius: 999px; border: 1px dashed #c98f4a; background: #fff8ee; color: #8a4f17; font: 600 14px/1.2 system-ui, sans-serif; cursor: pointer; }
+
+/* 2026-10-18 owner pass ------------------------------------------------- */
+/* Lesson pages: Back, title and card number at the top, like the cards. */
+.jg-page-top { margin: -6px 0 6px; }
+.jg-lesson-player .jg-controls { justify-content: flex-end; }
+/* Replies to a card's task stack under the task, oldest first. */
+.jg-card-feed { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.jg-card-feed:empty { display: none; }
+/* Left-handed view on: say so clearly (it's remembered on every card). */
+.jg-flip-btn.jg-flip-on { background: var(--jg-purple-soft); border-color: var(--jg-chat); color: #4b2f94; }
+/* The side view + "what you see" picture (guitar-art.js viewerSvg). */
+.jg-viewer-wrap .jg-viewer { width: min(380px, 100%); border-radius: 16px; }
+/* A song in the play-along box: its parts, chords and strums. */
+.jg-songmap { background: #fff; border: 1px solid var(--jg-border); border-radius: 16px; padding: 10px 12px; margin: 8px 0; }
+.jg-sp-now { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 6px 10px; margin-bottom: 6px; border-radius: 12px; background: var(--jg-purple-soft); }
+.jg-sp-part { font-weight: 800; color: #4b2f94; }
+.jg-sp-chord { font-size: 1.5rem; color: var(--jg-text); min-width: 2.2em; text-align: center; }
+.jg-sp-strum { display: inline-flex; gap: 3px; font-style: normal; }
+.jg-sp-strum i { font-style: normal; font-weight: 900; width: 1.05em; text-align: center; color: var(--jg-text); }
+.jg-sp-strum i.jg-sp-gap { color: #c9bca9; }
+.jg-sp-row { display: grid; grid-template-columns: 4.2em 1fr; gap: 2px 8px; align-items: center; padding: 5px 8px; border-radius: 10px; font-size: 0.92rem; }
+.jg-sp-row small { grid-column: 2; color: var(--jg-text-dim); }
+.jg-sp-row .jg-sp-strum { grid-column: 2; }
+.jg-sp-row.jg-sp-on { background: #f4effd; outline: 2px solid var(--jg-chat); }
+/* Web: the About & FAQ text stays hidden under the app (like the iOS app) until asked for. */
+.jg-faq-link { background: none; border: 0; padding: 0; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
+/* ==========================================================================
+   Calm play-along view (2026-10-18, js/play-along-view.js). Replaces the
+   dark scrolling tab panel: nothing scrolls. Chord name + "next" on the
+   left, the chord's strum arrows (current one blinks) or the next notes as
+   fret numbers on the right; the fretboard below shows the shape / the
+   note's ring and glow.
+   ========================================================================== */
+.jg-pav { display: grid; grid-template-columns: minmax(120px, 200px) 1fr; gap: 12px; align-items: center; min-height: 100px; padding: 8px 14px; background: var(--jg-panel); border: 1px solid var(--jg-border); border-bottom: 0; border-radius: 12px 12px 0 0; }
+.jg-pav-empty { display: none; }
+.jg-pav-head { min-width: 0; }
+.jg-pav-name { font-size: 2.7rem; font-weight: 900; line-height: 1; color: var(--jg-accent); letter-spacing: -0.5px; overflow-wrap: anywhere; }
+.jg-pav-sub { font-size: 0.85rem; font-weight: 700; color: var(--jg-text-dim); min-height: 1.1em; margin-top: 2px; }
+.jg-pav-next { font-size: 0.95rem; color: var(--jg-text-dim); margin-top: 2px; }
+.jg-pav-next b { color: var(--jg-text); }
+.jg-pav-chip { display: inline-block; min-width: 1.4em; text-align: center; color: #fff; border-radius: 6px; padding: 0 5px; font-weight: 900; }
+.jg-pav-ready .jg-pav-name { opacity: 0.55; }
+.jg-pav-arrows { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.jg-pav-line { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 12px; }
+.jg-pav-grp { display: flex; gap: 4px; }
+.jg-pav-slot { display: flex; flex-direction: column; align-items: center; width: 54px; padding: 4px 0 2px; border-radius: 10px; background: var(--jg-bg); border: 2px solid transparent; color: var(--jg-wood); }
+.jg-pav-arrow { display: block; width: 30px; height: 40px; fill: none; stroke: currentColor; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
+.jg-pav-miss .jg-pav-arrow { fill: #cdbba4; stroke: none; }
+.jg-pav-slot small { font-size: 0.8rem; font-weight: 800; color: var(--jg-text-dim); min-height: 1.1em; line-height: 1.1; }
+/* The strum now: solid blue with a white arrow (no scaling, so it stays sharp). */
+.jg-pav-on { background: var(--jg-hl); border-color: var(--jg-hl); color: #fff; box-shadow: 0 0 0 3px rgba(42,111,176,0.25); animation: jg-pav-blink 0.4s ease-out; }
+.jg-pav-on small { color: #fff; }
+.jg-pav-on.jg-pav-miss .jg-pav-arrow { fill: #fff; }
+@keyframes jg-pav-blink { from { box-shadow: 0 0 0 7px rgba(42,111,176,0.45); } to { box-shadow: 0 0 0 3px rgba(42,111,176,0.25); } }
+.jg-pav-waiting .jg-pav-on { animation: jg-pav-wait 1.1s ease-in-out infinite; }
+@keyframes jg-pav-wait { 0%, 100% { box-shadow: 0 0 0 0 rgba(42,111,176,0.45); } 50% { box-shadow: 0 0 0 6px rgba(42,111,176,0); } }
+.jg-pav-tab { display: block; width: 100%; max-width: 620px; height: auto; max-height: 104px; margin: 0 auto; }
+.jg-pav-tabline { stroke-width: 1.3; opacity: 0.75; }
+.jg-pav-tabname { font: 800 8px -apple-system, sans-serif; fill: var(--jg-text-dim); text-anchor: middle; }
+.jg-pav-tn circle { fill: #fff; stroke: #cdbba4; stroke-width: 1; }
+.jg-pav-tn text { font: 800 9.5px -apple-system, sans-serif; fill: var(--jg-text); text-anchor: middle; }
+.jg-pav-tn.jg-pav-now circle { fill: var(--jg-accent); stroke: #ffb45c; stroke-width: 2.5; filter: drop-shadow(0 0 3px #ff9a3c); }
+.jg-pav-tn.jg-pav-now text { fill: #fff; }
+.jg-pav-tn.jg-pav-soon circle { stroke: var(--jg-accent); stroke-dasharray: 2 2; }
+.jg-pav-tn.jg-pav-done { opacity: 0.35; }
+.jg-pav-waiting .jg-pav-tn.jg-pav-now circle { animation: jg-pav-ring 1.1s ease-in-out infinite; }
+@keyframes jg-pav-ring { 0%, 100% { stroke-width: 2.5; } 50% { stroke-width: 5; } }
+/* Each new strum or note flashes the glowing ring on the fretboard. */
+.jg-glow-hit .jg-glow-ring { animation: jg-ring-hit 0.35s ease-out; }
+@keyframes jg-ring-hit { from { stroke-width: 8; opacity: 1; } to { stroke-width: 3; } }
+.jg-up-view { margin: 6px 0; }
+@media (orientation: landscape) and (max-height: 500px) {
+  .jg-pav { min-height: 74px; padding: 4px 10px; grid-template-columns: minmax(96px, 150px) 1fr; }
+  .jg-pav-name { font-size: 2rem; }
+  .jg-pav-slot { width: 40px; padding: 2px 0 1px; }
+  .jg-pav-arrow { width: 22px; height: 29px; }
+  .jg-pav-tab { max-height: 70px; }
+}
+/* Phones held upright: the chord name and "next" on one line, the arrows
+   full width underneath in compact cells (8 fit on one row on a 390-430px
+   phone; 16 wrap onto two rows). */
+@media (max-width: 640px) {
+  .jg-pav { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 6px 8px 8px; min-height: 0; }
+  .jg-pav-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 10px; }
+  .jg-pav-name { font-size: 2.1rem; }
+  .jg-pav-sub, .jg-pav-next { margin-top: 0; }
+  .jg-pav-next { margin-left: auto; }
+  .jg-pav-arrows { gap: 5px; }
+  .jg-pav-line { gap: 5px 8px; }
+  .jg-pav-grp { gap: 3px; }
+  .jg-pav-slot { width: clamp(28px, calc((100vw - 86px) / 8), 46px); padding: 3px 0 1px; border-radius: 8px; }
+  .jg-pav-arrow { width: 22px; height: 30px; stroke-width: 3.6; }
+  .jg-pav-slot small { font-size: 0.72rem; }
+}
+@media (prefers-reduced-motion: reduce) { .jg-pav-on, .jg-pav-waiting .jg-pav-on, .jg-glow-hit .jg-glow-ring { animation: none; } }
+
+/* Fit-window fretboards (phones held upright): the string-name strip and
+   the name of the string that's ringing. */
+.jg-names-bg { fill: var(--jg-bg); }
+.jg-string-name.jg-sn-on { fill: var(--jg-accent); font-size: 20px; }
+
+/* Practice tab (2026-10-18 redesign) ------------------------------------ */
+/* Chord loop: chips you can remove, chords to add, strum + speed, Start. */
+.jg-loopcard { display: flex; flex-direction: column; gap: 6px; }
+.jg-loop-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.jg-loop-head .jg-note { margin: 0; font-size: 0.8rem; }
+.jg-loop-chips { display: flex; flex-wrap: wrap; gap: 6px; min-height: 40px; align-items: center; }
+.jg-loop-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 10px; border: 2px solid var(--jg-accent); background: var(--jg-accent-soft); color: var(--jg-text); font-family: inherit; font-weight: 800; font-size: 1.05rem; line-height: 1; cursor: pointer; }
+.jg-loop-chip span { font-size: 0.75rem; color: var(--jg-text-dim); }
+.jg-loop-sub { font-size: 0.8rem; font-weight: 700; color: var(--jg-text-dim); }
+.jg-loop-add { display: flex; flex-wrap: wrap; gap: 5px; }
+.jg-loop-add .jg-pill { min-width: 44px; font-weight: 700; color: var(--jg-text); }
+.jg-loop-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.jg-loop-ctl .jg-label { min-width: 3.4em; }
+.jg-loop-go { align-self: stretch; font-size: 1.15rem; padding: 12px; margin-top: 4px; }
+.jg-loop-go.jg-loop-stop { background: var(--jg-wood); }
+.jg-loop-go:disabled { opacity: 0.5; }
+/* All chords: four sideways strips of names, four diagrams. */
+.jg-lib-intro { margin: 0 0 6px; font-size: 0.92rem; }
+.jg-lib-row { margin: 6px 0; }
+.jg-lib-rowname { font-size: 0.78rem; font-weight: 800; color: var(--jg-text-dim); margin: 0 0 3px; }
+.jg-chord-strip { display: flex; gap: 6px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding: 2px 2px 4px; }
+.jg-chord-strip::-webkit-scrollbar { display: none; }
+.jg-chord-btn { flex: 0 0 auto; min-width: 52px; min-height: 40px; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--jg-border); background: var(--jg-bg); color: var(--jg-text); font-family: inherit; font-weight: 800; font-size: 1rem; line-height: 1; cursor: pointer; }
+.jg-chord-btn.jg-chord-on { background: var(--jg-accent); border-color: var(--jg-accent); color: #fff; }
+.jg-lib4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.jg-lib4-dg { padding: 4px; border: 2px solid var(--jg-border); border-radius: 12px; cursor: pointer; }
+.jg-lib4-dg .jg-diagram { width: 100%; }
+.jg-lib4-on { border-color: var(--jg-accent); background: #fff6ec; }
+@media (max-width: 640px) { .jg-lib4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Scales: two compact rows of controls. */
+.jg-scale-ctl { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 12px; margin: 4px 0 8px; }
+.jg-scale-ctl label { display: flex; flex-direction: column; gap: 2px; }
+.jg-scale-pos { flex: 1 1 160px; }
+.jg-scale-pos input { width: 100%; }
+.jg-sel { font: inherit; font-size: 0.95rem; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--jg-border); background: var(--jg-panel); color: var(--jg-text); max-width: 100%; }
+@media (orientation: landscape) and (max-height: 500px) { .jg-pav.jg-pav-notes { grid-template-columns: minmax(150px, 250px) 1fr; } }
+/* "Full solo, note for note" link to Songsterr (licensed tabs). */
+.jg-fullsolo { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin: 6px 0; padding: 8px 12px; border-radius: 12px; border: 1px solid var(--jg-hl); background: var(--jg-hl-bg); color: var(--jg-hl); font-weight: 800; text-decoration: none; }
+.jg-fullsolo small { font-weight: 600; color: var(--jg-text-dim); }
+/* Lesson tables fit a phone: wrap long words instead of pushing the page sideways. */
+table.jg-table { width: 100%; table-layout: fixed; overflow-wrap: anywhere; }
+@media (max-width: 640px) { .jg-table th, .jg-table td { padding: 4px 6px; } }
+
+/* ---- Every note (uploads): js/every-note-view.js ---- */
+.jg-en-ctl .jg-row { gap: 6px; flex-wrap: wrap; align-items: center; }
+.jg-en-seekrow input[type="range"] { flex: 1; min-width: 140px; accent-color: var(--jg-accent); }
+.jg-en-barlbl { min-width: 7.5em; }
+.jg-en-more summary { cursor: pointer; font-weight: 700; margin: 6px 0; }
+.jg-en-bar { font-size: 0.85rem; font-weight: 800; color: var(--jg-hl); margin-top: 2px; min-height: 1.1em; }
+.jg-en-tab { max-height: 128px; }
+.jg-en-barline { stroke: var(--jg-text-dim); stroke-width: 1; opacity: 0.6; }
+.jg-en-barno { font: 800 7px -apple-system, sans-serif; fill: var(--jg-text-dim); text-anchor: middle; }
+.jg-en-chord { font: 900 9px -apple-system, sans-serif; fill: var(--jg-text-dim); text-anchor: middle; }
+.jg-en-chord.jg-pav-now { fill: var(--jg-accent); }
+.jg-en-chord.jg-pav-done { opacity: 0.35; }
+.jg-en-tail { stroke: var(--jg-accent); stroke-width: 2.4; stroke-linecap: round; opacity: 0.45; }
+.jg-en-view .jg-pav-sub { line-height: 1.6; }
+.jg-en-view .jg-pav-chip { font-size: 0.8rem; }
+@media (max-width: 560px) { .jg-en-tab { max-height: 104px; } .jg-en-view .jg-pav-name { font-size: 1.8rem; } }
+.jg-en-pos { white-space: nowrap; margin-right: 2px; }
+
+/* Whole song, bar by bar (song-detail.js, 2026-10-19) */
+.jg-pav-where { font-size: 0.8rem; font-weight: 800; color: var(--jg-accent-2, var(--jg-text-dim)); min-height: 1.1em; text-transform: none; overflow-wrap: anywhere; }
+.jg-pav-where:empty { display: none; }
+.jg-pav-restname { color: var(--jg-text-dim); font-size: 1.9rem; }
+.jg-pav-mute { color: var(--jg-text-dim); }
+.jg-song-check { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; background: #f3ece2; color: var(--jg-text-dim); font-weight: 800; font-size: 0.82rem; }
+.jg-song-checked { background: #e4f5e8; color: #2c7a43; }
+.jg-chart { background: var(--jg-panel); border: 1px solid var(--jg-border); border-radius: 16px; padding: 8px 12px; margin-bottom: 10px; }
+.jg-chart > summary { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--jg-accent); }
+.jg-chart-sec { padding: 6px 0; border-top: 1px dashed var(--jg-border); }
+.jg-chart-head { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 0.9rem; }
+.jg-chart-head span { color: var(--jg-text-dim); font-size: 0.8rem; }
+.jg-chart-strum { font-size: 0.85rem; color: var(--jg-wood); font-weight: 700; letter-spacing: 1px; overflow-wrap: anywhere; margin: 2px 0 4px; }
+.jg-chart-strum small { letter-spacing: 0; font-weight: 600; color: var(--jg-text-dim); }
+.jg-chart-bars { display: flex; flex-wrap: wrap; gap: 4px; }
+.jg-chart-bar { min-width: 40px; padding: 2px 7px; border-left: 2px solid var(--jg-accent-soft); background: #fff; border-radius: 4px; font-weight: 800; font-size: 0.85rem; white-space: nowrap; }
+.jg-chart-bar sub { font-size: 0.65rem; font-weight: 600; color: var(--jg-text-dim); margin-left: 1px; }
+.jg-set-row[hidden], .jg-real-tempo[hidden] { display: none !important; }
+
+/* Skip a whole lesson (owner request 2026-10-26). */
+.jg-lesson-skip { display: block; margin: 14px auto 4px; background: none; border: 0; color: var(--jg-muted, #777); font: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }
+
+/* Chat cards use the full width: no picture beside the bubbles (owner 2026-10-26). */
+.jg-cmsg .jg-cavatar { display: none; }
+.jg-cmsg .jg-cbubble { flex: 1 1 auto; min-width: 0; }
+/* Tables in lessons shown as chat-style cards (owner 2026-10-26). */
+.jg-tcards { display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
+.jg-tcard { background: #fff; border: 2px solid var(--jg-accent-soft); border-radius: 16px; padding: 10px 14px; }
+.jg-tcard > b { display: block; font-size: 1.05rem; margin-bottom: 4px; }
+.jg-tcard > div { font-size: 0.95rem; line-height: 1.4; }
+.jg-tcard > div > span { color: var(--jg-muted, #777); font-weight: 700; }

@@ -2192,6 +2192,20 @@ const SONGS = [
     oneFiveSixFourMatch: false,
     difficulty: "Beginner",
     notes: "Chris Martin from Coldplay sings with The Chainsmokers on this big, happy dance anthem. Almost the whole song loops the same four chords, G, A, Bm and back to A, so once you learn them you can play along from start to finish.",
+  },  {
+    title: "Out of Reach",
+    artist: "Gabrielle",
+    genre: "Pop/R&B",
+    popularityRank: 136,
+    year: 2001,
+    key: "B major",
+    bpm: 92,
+    chords: ["B", "G#m", "F#", "E"],
+    degreeSequence: "I - vi - V - IV",
+    confidence: "needs-verification",
+    oneFiveSixFourMatch: false,
+    difficulty: "Beginner",
+    notes: "From the film Bridget Jones's Diary (2001). The chorus goes round B, G#m, F# and E; with a capo on fret 4 those are the Lesson 1 shapes G, Em, D and C. The verses add a C# here and there (an A shape with the capo).",
   },
 ];
 // Precomputed, honestly-reported summary for the Lesson 1 payoff screen.
@@ -4864,6 +4878,15 @@ const SONG_STRUCTURES = {
     { section: "Verse 4", chords: ["F", "C", "C7", "F", "Bb", "F", "C7", "F"], bars: 18 },
     { section: "Coda (na-na-na singalong, repeats to fade)", chords: ["F", "Eb", "Bb", "F"], bars: 76 },
   ],
+  "Out of Reach": [
+    { section: "Intro", chords: ["G#m", "E", "F#", "B"], bars: 4 },
+    { section: "Verse 1", chords: ["G#m", "F#", "E", "B"], bars: 8 },
+    { section: "Chorus 1", chords: ["B", "G#m", "F#", "E"], bars: 8 },
+    { section: "Verse 2", chords: ["G#m", "F#", "E", "B"], bars: 8 },
+    { section: "Chorus 2", chords: ["B", "G#m", "F#", "E"], bars: 8 },
+    { section: "Bridge", chords: ["G#m", "C#", "E", "F#"], bars: 4 },
+    { section: "Chorus 3", chords: ["B", "G#m", "F#", "E"], bars: 16 },
+  ],
   "Take Me Home, Country Roads": [
     { section: "Intro", chords: ["G"], bars: 4 },
     { section: "Verse 1", chords: ["G", "Em", "D", "C", "G"], bars: 8 },
@@ -5218,13 +5241,116 @@ function getDifficulty(song) {
 // Item 60: the optional "World songs" section - popular songs in 10
 // other languages (world-songs.js), part of the library (Discover,
 // Practice) but taught only in their own skippable lessons at the end.
+// Added 2026-10-18 (owner): the Godfather love theme, Parisienne Walkways and two
+// Michael Jackson songs. Whole-song maps are in song-verified.js.
+SONGS.push(...[
+  {
+    "title": "Love Theme from The Godfather",
+    "artist": "Nino Rota",
+    "genre": "Film / Classical",
+    "popularityRank": 131,
+    "key": "C minor",
+    "chords": [
+      "Cm",
+      "Fm",
+      "Eb",
+      "G",
+      "Bb",
+      "Db",
+      "Ddim",
+      "D"
+    ],
+    "degreeSequence": "i - iv - i - III - iv - i - V - i (middle: VII - III - II - ii° - II - V)",
+    "confidence": "needs-verification",
+    "oneFiveSixFourMatch": false,
+    "difficulty": "Intermediate",
+    "notes": "Nino Rota's love theme from the 1972 film. With a capo on fret 3 it's the easy A minor shapes: Am, Dm, E (and C, G, F, Bb in the middle). Find the tune by ear with the video, then try it with tremolo picking."
+  },
+  {
+    "title": "Parisienne Walkways",
+    "artist": "Gary Moore",
+    "genre": "Blues Rock",
+    "popularityRank": 132,
+    "key": "A minor",
+    "chords": [
+      "Am",
+      "Dm7",
+      "Dm7/G",
+      "Cmaj7",
+      "F",
+      "Fmaj7",
+      "Bm7b5",
+      "E7sus4",
+      "E7",
+      "A5",
+      "A",
+      "D/A",
+      "Esus4",
+      "E",
+      "Asus4",
+      "B7"
+    ],
+    "degreeSequence": "i - iv7 - VII - IIImaj7 - VImaj7 - ii7b5 - V7 (round the circle of fifths)",
+    "confidence": "needs-verification",
+    "oneFiveSixFourMatch": false,
+    "difficulty": "Advanced",
+    "notes": "Gary Moore and Phil Lynott, 1978. The chords walk round the circle of fifths (A D G C F B E) back to Am. Slow 12/8 feel; the solo is A minor pentatonic and A natural minor, with one famously long held note."
+  },
+  {
+    "title": "Beat It",
+    "artist": "Michael Jackson",
+    "genre": "Pop / Rock",
+    "popularityRank": 133,
+    "key": "Eb minor",
+    "chords": [
+      "Ebm",
+      "Db",
+      "B"
+    ],
+    "degreeSequence": "i - VII (verse turn: VI - VII)",
+    "confidence": "needs-verification",
+    "oneFiveSixFourMatch": false,
+    "difficulty": "Beginner",
+    "notes": "Thriller, 1982. Guitars tuned down half a step, so you play Em and D shapes (or E5 and D5 power chords), with C for the turn. Eddie Van Halen played the solo."
+  },
+  {
+    "title": "Man in the Mirror",
+    "artist": "Michael Jackson",
+    "genre": "Pop / Gospel",
+    "popularityRank": 134,
+    "key": "G major (last choruses in Ab major)",
+    "chords": [
+      "G",
+      "D/F#",
+      "Em",
+      "D",
+      "C",
+      "Am7",
+      "C/B",
+      "G/B",
+      "A/C#",
+      "Ab",
+      "Ab/C",
+      "Db",
+      "Eb",
+      "Bb/D",
+      "Eb/G",
+      "Fm"
+    ],
+    "degreeSequence": "I - V/7 - vi - V - IV; chorus I - I/3 - IV - V",
+    "confidence": "needs-verification",
+    "oneFiveSixFourMatch": false,
+    "difficulty": "Beginner",
+    "notes": "Bad, 1987. Lesson 1's G, D, Em and C plus Am7, with bass-note slash chords (D/F#, C/B, G/B) that walk down. The last choruses jump up half a step to Ab."
+  }
+]);
 SONGS.push(...WORLD_SONGS);
 SONGS.forEach((s) => {
   if (WORLD_ALSO[s.title]) s.alsoWorld = WORLD_ALSO[s.title];
 });
 
 // Song maps researched in Oct 2026 from chord charts; the form may differ slightly from the recording.
-const APPROX_STRUCTURES = new Set(["Bad Guy", "Last Christmas", "Die With a Smile", "Blinding Lights", "Starboy", "As It Was", "Someone You Loved", "Sunflower", "One Dance", "Stay", "Believer", "I Wanna Be Yours", "Heat Waves", "Yellow", "The Night We Met", "Closer", "Lucid Dreams", "You Belong With Me", "Lover", "Shake It Off", "Shallow", "Million Reasons", "Always Remember Us This Way", "Have Yourself a Merry Little Christmas", "Thinking Out Loud", "The A Team", "Galway Girl", "Gin and Juice", "Despacito", "Knockin' on Heaven's Door", "Wonderwall", "Love Yourself", "Count on Me", "Zombie", "Hey Soul Sister", "Viva La Vida", "Budapest", "Sweet Home Alabama", "Wonderful Tonight", "Over the Rainbow", "Chasing Cars", "Sweet Caroline", "Livin' on a Prayer", "I Will Survive", "Mr. Brightside", "Autumn Leaves", "All the Things You Are", "So What", "Blue Monk", "Amazing Grace", "Break My Heart Again", "Can't Help Falling in Love", "Just the Way You Are", "Sweet Child O' Mine", "Hotel California", "Summer of '69", "Hallelujah", "Imagine", "Happy Birthday to You", "Twinkle Twinkle Little Star", "Brown Eyed Girl", "Three Little Birds", "Jingle Bells", "Hey Jude", "Take Me Home, Country Roads", "Autumn Leaves (Chet Baker, simplified)", "Clocks", "Piano Man", "Hello", "Counting Stars", "Comptine d'un autre été", "River Flows in You", "Radioactive", "Billie Jean", "Sweet Dreams (Are Made of This)", "Fly Me to the Moon", "Take Five", "All of Me (jazz standard)", "Summertime", "Satin Doll", "Cantaloupe Island", "Prelude in C major, BWV 846", "Hungarian Rhapsody No. 2", "While My Guitar Gently Weeps", "Stairway to Heaven", "Blank Space", "Bad Romance", "What Was I Made For?", "Ocean Eyes", "When the Party's Over", "Karma Police", "No Surprises", "Everything In Its Right Place", "Pyramid Song", "I Want It That Way", "Man! I Feel Like a Woman!", "Total Eclipse of the Heart", "Take On Me", "Like a Prayer", "Valerie", "Before He Cheats", "Pata Pata", "Hava Nagila", "Hoppípolla", "Dilemma", "Hot in Herre", "I'm Like a Bird", "Bubbly", "Like a Star", "Anak", "Tadhana", "Sukiyaki", "Kal Ho Naa Ho", "Volare (Nel blu, dipinto di blu)", "Dragostea Din Tei", "Jerusalema", "Vintersaga", "Ode to Joy", "Minuet in G Major", "Für Elise", "Canon in D", "Symphony No. 5 (Theme)", "Morning Mood", "Moonlight Sonata (3rd Movement)", "La Campanella", "Fantaisie-Impromptu", "Piano Concerto No. 2", "Chasse-Neige", "Clair de Lune", "Nocturne in E-flat Major, Op. 9 No. 2", "Rondo alla Turca", "Revolutionary Étude", "Tennessee Whiskey", "Angels", "My Way", "Lose Control", "Aïcha", "Shchedryk", "Zorba's Dance", "Şımarık", "Enter Sandman", "Nothing Else Matters", "Master of Puppets", "One", "For Whom the Bell Tolls", "The Unforgiven", "Whiskey in the Jar", "Sad but True", "Fade to Black", "Fuel", "Seek & Destroy", "Wherever I May Roam", "Paranoid", "Iron Man", "Crazy Train", "Breaking the Law", "Run to the Hills", "The Trooper", "Fear of the Dark", "In the End", "Numb", "What I've Done", "Bring Me to Life", "Snuff", "The Sound of Silence", "Drown", "Bamboléo", "Young, Wild & Free", "Can You Feel the Love Tonight", "There Will Never Be Another You", "When I Was Your Man", "Set Fire to the Rain", "Heart and Soul", "All I Want for Christmas Is You", "Let Her Go", "Dancing Queen", "Misty", "Say You Won't Let Go", "Somebody's Me", "My Funny Valentine (easy version)", "Sweater Weather", "A Horse With No Name", "Summer Nights", "Take the A Train", "Die for You", "Still D.R.E.", "Gymnopédie No. 1", "Levitating", "Let It Go", "Africa", "Stella by Starlight", "All of Me", "25 Minutes", "The Blue Danube (waltz)", "Wildest Dreams", "Happy", "Bohemian Rhapsody", "My Funny Valentine", "November Rain", "Someday", "Drop It Like It's Hot", "Banana Pancakes", "Blue Bossa", "Almost Blue", "Make You Feel My Love", "My Love Mine All Mine", "Papaoutai", "Vivir Mi Vida", "Nel blu, dipinto di blu (Volare)", "Atemlos durch die Nacht", "Kesariya", "Sekai ni Hitotsu Dake no Hana", "Eight", "Tamally Maak", "La Vie en rose", "Mas Que Nada", "Bella Ciao", "Tage wie diese", "Agar Tum Saath Ho", "Plastic Love", "The Moon Represents My Heart (Yuèliàng Dàibiǎo Wǒ de Xīn)", "Habibi Ya Nour El Ein", "Non, je ne regrette rien", "Ai Se Eu Te Pego", "L'Italiano", "Auf uns", "Pal Pal Dil Ke Paas", "Spring Day", "Tián Mì Mì", "Ya Lili", "La Bamba", "Trem-Bala", "Felicità", "Stille Nacht, heilige Nacht", "Ue o Muite Arukō (Sukiyaki)", "Love Scenario", "Sunny Day (Qíng Tiān)", "Ya Rayah", "Les Champs-Elysées", "Guantanamera", "Tempo Perdido", "Sarà perché ti amo", "Tum Hi Ho", "Lemon", "Through the Night", "Fairy Tale (Tóng Huà)", "Lamma Bada Yatathanna", "Je veux", "Bailando", "Evidências", "99 Luftballons", "Channa Mereya", "Marigold", "Stay With Me", "Mouse Loves Rice (Lǎoshǔ Ài Dàmǐ)", "Glory Box", "I Don't Want to Talk About It", "Save Your Tears", "Where Is My Mind?", "Beanie"]);
+const APPROX_STRUCTURES = new Set(["Out of Reach", "Bad Guy", "Last Christmas", "Die With a Smile", "Blinding Lights", "Starboy", "As It Was", "Someone You Loved", "Sunflower", "One Dance", "Stay", "Believer", "I Wanna Be Yours", "Heat Waves", "Yellow", "The Night We Met", "Closer", "Lucid Dreams", "You Belong With Me", "Lover", "Shake It Off", "Shallow", "Million Reasons", "Always Remember Us This Way", "Have Yourself a Merry Little Christmas", "Thinking Out Loud", "The A Team", "Galway Girl", "Gin and Juice", "Despacito", "Knockin' on Heaven's Door", "Wonderwall", "Love Yourself", "Count on Me", "Zombie", "Hey Soul Sister", "Viva La Vida", "Budapest", "Sweet Home Alabama", "Wonderful Tonight", "Over the Rainbow", "Chasing Cars", "Sweet Caroline", "Livin' on a Prayer", "I Will Survive", "Mr. Brightside", "Autumn Leaves", "All the Things You Are", "So What", "Blue Monk", "Amazing Grace", "Break My Heart Again", "Can't Help Falling in Love", "Just the Way You Are", "Sweet Child O' Mine", "Hotel California", "Summer of '69", "Hallelujah", "Imagine", "Happy Birthday to You", "Twinkle Twinkle Little Star", "Brown Eyed Girl", "Three Little Birds", "Jingle Bells", "Hey Jude", "Take Me Home, Country Roads", "Autumn Leaves (Chet Baker, simplified)", "Clocks", "Piano Man", "Hello", "Counting Stars", "Comptine d'un autre été", "River Flows in You", "Radioactive", "Billie Jean", "Sweet Dreams (Are Made of This)", "Fly Me to the Moon", "Take Five", "All of Me (jazz standard)", "Summertime", "Satin Doll", "Cantaloupe Island", "Prelude in C major, BWV 846", "Hungarian Rhapsody No. 2", "While My Guitar Gently Weeps", "Stairway to Heaven", "Blank Space", "Bad Romance", "What Was I Made For?", "Ocean Eyes", "When the Party's Over", "Karma Police", "No Surprises", "Everything In Its Right Place", "Pyramid Song", "I Want It That Way", "Man! I Feel Like a Woman!", "Total Eclipse of the Heart", "Take On Me", "Like a Prayer", "Valerie", "Before He Cheats", "Pata Pata", "Hava Nagila", "Hoppípolla", "Dilemma", "Hot in Herre", "I'm Like a Bird", "Bubbly", "Like a Star", "Anak", "Tadhana", "Sukiyaki", "Kal Ho Naa Ho", "Volare (Nel blu, dipinto di blu)", "Dragostea Din Tei", "Jerusalema", "Vintersaga", "Ode to Joy", "Minuet in G Major", "Für Elise", "Canon in D", "Symphony No. 5 (Theme)", "Morning Mood", "Moonlight Sonata (3rd Movement)", "La Campanella", "Fantaisie-Impromptu", "Piano Concerto No. 2", "Chasse-Neige", "Clair de Lune", "Nocturne in E-flat Major, Op. 9 No. 2", "Rondo alla Turca", "Revolutionary Étude", "Tennessee Whiskey", "Angels", "My Way", "Lose Control", "Aïcha", "Shchedryk", "Zorba's Dance", "Şımarık", "Enter Sandman", "Nothing Else Matters", "Master of Puppets", "One", "For Whom the Bell Tolls", "The Unforgiven", "Whiskey in the Jar", "Sad but True", "Fade to Black", "Fuel", "Seek & Destroy", "Wherever I May Roam", "Paranoid", "Iron Man", "Crazy Train", "Breaking the Law", "Run to the Hills", "The Trooper", "Fear of the Dark", "In the End", "Numb", "What I've Done", "Bring Me to Life", "Snuff", "The Sound of Silence", "Drown", "Bamboléo", "Young, Wild & Free", "Can You Feel the Love Tonight", "There Will Never Be Another You", "When I Was Your Man", "Set Fire to the Rain", "Heart and Soul", "All I Want for Christmas Is You", "Let Her Go", "Dancing Queen", "Misty", "Say You Won't Let Go", "Somebody's Me", "My Funny Valentine (easy version)", "Sweater Weather", "A Horse With No Name", "Summer Nights", "Take the A Train", "Die for You", "Still D.R.E.", "Gymnopédie No. 1", "Levitating", "Let It Go", "Africa", "Stella by Starlight", "All of Me", "25 Minutes", "The Blue Danube (waltz)", "Wildest Dreams", "Happy", "Bohemian Rhapsody", "My Funny Valentine", "November Rain", "Someday", "Drop It Like It's Hot", "Banana Pancakes", "Blue Bossa", "Almost Blue", "Make You Feel My Love", "My Love Mine All Mine", "Papaoutai", "Vivir Mi Vida", "Nel blu, dipinto di blu (Volare)", "Atemlos durch die Nacht", "Kesariya", "Sekai ni Hitotsu Dake no Hana", "Eight", "Tamally Maak", "La Vie en rose", "Mas Que Nada", "Bella Ciao", "Tage wie diese", "Agar Tum Saath Ho", "Plastic Love", "The Moon Represents My Heart (Yuèliàng Dàibiǎo Wǒ de Xīn)", "Habibi Ya Nour El Ein", "Non, je ne regrette rien", "Ai Se Eu Te Pego", "L'Italiano", "Auf uns", "Pal Pal Dil Ke Paas", "Spring Day", "Tián Mì Mì", "Ya Lili", "La Bamba", "Trem-Bala", "Felicità", "Stille Nacht, heilige Nacht", "Ue o Muite Arukō (Sukiyaki)", "Love Scenario", "Sunny Day (Qíng Tiān)", "Ya Rayah", "Les Champs-Elysées", "Guantanamera", "Tempo Perdido", "Sarà perché ti amo", "Tum Hi Ho", "Lemon", "Through the Night", "Fairy Tale (Tóng Huà)", "Lamma Bada Yatathanna", "Je veux", "Bailando", "Evidências", "99 Luftballons", "Channa Mereya", "Marigold", "Stay With Me", "Mouse Loves Rice (Lǎoshǔ Ài Dàmǐ)", "Glory Box", "I Don't Want to Talk About It", "Save Your Tears", "Where Is My Mind?", "Beanie"]);
 // Verified 2026-10-07 against the original recordings (song-verified.js):
 // the real key, tempo and whole-song map, plus solo guides for guitar.
 // It replaces the older data above for every song it covers; only songs

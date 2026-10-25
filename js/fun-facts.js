@@ -1,7 +1,6 @@
 import { puppySvg, nextPuppyScene } from "./puppy.js";
 // "Did you know?" - a quirky guitar fact, written for young learners,
-// that pops up at random between lessons (about half the time a lesson
-// is finished): how a guitar is built, why it rings, and legendary
+// that pops up between lessons (once every 12 celebrations): how a guitar is built, why it rings, and legendary
 // players. Each fact is shown once before any repeats. Kept to what's
 // well documented.
 
@@ -130,11 +129,15 @@ function showFunFact(fact = nextFact()) {
   card.addEventListener("click", (e) => { if (e.target === card) close(); });
 }
 
-// About half the time a lesson is finished - always the first time.
+// One fact every 12 celebrations (finished cards and lessons), not every
+// other one (owner 2026-10-26: "one in 10-15 lessons").
+const GAP_KEY = "jg_fun_fact_gap";
+const EVERY = 12;
 function maybeShowFunFact() {
-  let shown = 0;
-  try { shown = JSON.parse(localStorage.getItem(KEY) || "[]").length; } catch (e) { /* ignore */ }
-  if (shown === 0 || Math.random() < 0.5) setTimeout(() => showFunFact(), 1400);
+  let gap = 0;
+  try { gap = Number(localStorage.getItem(GAP_KEY) || "0") + 1; } catch (e) { return; }
+  if (gap >= EVERY) { gap = 0; setTimeout(() => showFunFact(), 1400); }
+  try { localStorage.setItem(GAP_KEY, String(gap)); } catch (e) { /* ignore */ }
 }
 
 export { FACTS, showFunFact, maybeShowFunFact };

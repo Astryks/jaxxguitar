@@ -1,12 +1,26 @@
 # Jaxx Guitar - status
 
-_Last updated 2026-10-13._ This file is the checklist of everything requested for Jaxx Guitar, so nothing gets missed. ✅ done · 🟡 in progress / waiting on something · ⬜ not started.
+_Last updated 2026-10-19._ This file is the checklist of everything requested for Jaxx Guitar, so nothing gets missed. ✅ done · 🟡 in progress / waiting on something · ⬜ not started.
 
 Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (GitHub Pages) · iOS bundle: `com.jaxxguitar.app`
 
 ---
 
-## ▶ Start here: handoff summary (2026-10-07)
+## ▶ Start here: where things stand (2026-10-19)
+
+**Latest TestFlight build: 38** (uploaded 2026-10-26: cards, order, fun facts, looking-down picture). Everything requested so far is built, tested in headless Chrome, committed and pushed (0 uncommitted, 0 unpushed). The older handoff below is kept for history; its "Latest build: 23" is out of date.
+
+**In build 33 (since build 23):** the 5-lesson course (4 chords + songs, other chords + single notes, genres, solos, loops), Back at the top, purple chat bubbles in WhatsApp order, right-handed by default with a per-session left-handed flip (words swap too), fretboard always low E at the bottom, the calm play-along view (chord name, next chord, sharp blinking strum arrows, single-note ring), Practice redesign (4 chord rows, chord loop, scales), Hotel California / Stairway to Heaven, Godfather, Parisienne Walkways, Beat It / Man in the Mirror, Songsterr "full solo" links, the sound fix (audio unlock kept alive), uploads → **Every note** (string and fret for every note, beats and bars, tuning/capo, Wait for me, speed, loop) and **Whole song bar by bar for 272 songs** with each section's own strum (34 checked, 238 "our best guide"; The tune note for note for 15 public-domain pieces). Details in the dated sections below.
+
+### Next steps (2026-10-19)
+1. **Owner: test build 33 on a phone** from TestFlight: upload a guitar song → Show: Every note; Whole song on Bohemian Rhapsody and a 6/8 song; left-handed flip on a lesson, then confirm the next lesson is right-handed again; sound after a phone call / other app.
+2. **Owner: App Store.** Check in App Store Connect which build is in review / live. If it is older than 33, decide whether to submit 33 (Claude doesn't submit for review without your OK).
+3. **Ear check worth doing:** the 238 "our best guide" songs (bar counts fitted to the recording length). 8 songs keep their old map: Master of Puppets, La Campanella, Piano Concerto No. 2, Chasse-Neige, Drop It Like It's Hot, Pal Pal Dil Ke Paas, Mouse Loves Rice, Ya Lili.
+4. **Copyright rule stays:** chords and strums only for copyrighted songs; note-for-note solos link out to Songsterr; public-domain tunes in full.
+5. **Offered, not started (say the word):** import Guitar Pro / MusicXML tab files (alphaTab) for exact notes of licensed songs; server-side Demucs to isolate the guitar before listening; more public-domain pieces.
+6. Still from before: Google Search Console + Bing (steps below), Google Play listing, screenshot captions.
+
+## ▶ Start here: older handoff summary (2026-10-07)
 
 **Jaxx Guitar**, repo https://github.com/Astryks/jaxxguitar, site https://jaxxguitar.com, bundle `com.jaxxguitar.app` (App Store Connect app ID 6819445036). Sibling app: Hayden Keys (https://github.com/Astryks/haydenkeys).
 
@@ -47,6 +61,141 @@ ExportOptionsUpload.plist: method `app-store-connect`, destination `upload`, tea
 ### Rules we keep
 - Never print song lyrics or copyrighted melodies/tabs: chords, keys and song maps only. Videos are official uploads, verified with YouTube oEmbed.
 - Payments: only the optional Tip jar (Apple In-App Purchase, unlocks nothing, app only). Don't submit for review until the owner says so. The owner types all passwords.
+
+---
+
+## Upload a song: just "Easy" or "Entire song" (2026-10-19)
+- Owner: "dont make it every note just say either easy or entire song, entire song should automatically pick every note". Practice → Upload a song → Show now has two choices: **Easy** (the chords with strum arrows, as before) and **Entire song** (every note on its string and fret: the former "Every note" view). The separate "The tune (single notes)" option is gone. Tested in headless Chrome with a generated recording: both buttons switch views, Entire song mounts the every-note player, no page errors. Cache v31. Not in TestFlight build 33.
+
+## Every song bar by bar ("hyper detailed" library, 2026-10-19)
+
+Owner: make every song in the library hyper detailed. Research for 273 songs (published chord charts: Ultimate Guitar, Hooktheory, Musicnotes, SongBPM; scores for public-domain pieces) became `js/song-detail-data.js` via `scripts/build-song-detail.mjs` (`node scripts/build-song-detail.mjs <dir with found-*.json>`; it checks everything and writes nothing if any check fails). Cache v30. iOS not built.
+
+1. ✅ **Counts:** 272 of the 280 library songs have a bar-by-bar chart: 2,538 sections, 27,937 bars, 12 section tempo changes. **34 checked** against the recording's charts (shown "Bar by bar, checked" and "Whole song ✓"), **238 "our best guide"** (sources agreed on the chords but bar counts or strums are estimates). 15 public-domain pieces have the tune note for note (Ode to Joy, Minuet in G, Für Elise, Rondo alla Turca, Prelude in C, Canon in D, Gymnopédie No. 1, Symphony No. 5 motto, Blue Danube, Amazing Grace, Jingle Bells, Twinkle Twinkle, Happy Birthday, Stille Nacht, Shchedryk). One research entry (Linger) isn't in the Jaxx library and was left out.
+2. ✅ **The 8 songs that keep their old whole-song map** (research found no reliable bar-by-bar chart): Master of Puppets, La Campanella, Piano Concerto No. 2, Chasse-Neige, Drop It Like It's Hot, Pal Pal Dil Ke Paas, Mouse Loves Rice, Ya Lili.
+3. ✅ **Checks in the build:** every bar adds up to its time signature (compound meters: bars in eighths or dotted quarters, tempo in the unit the record is quoted in); every chord has a validated guitar shape at the capo the song page uses (song-plan.js, in the chart's tuning); tempos 0.5-9 s a bar; strums parse; the tune fits the song; lyric snippets removed from section names. New shapes in `js/guitar-theory.js`: add9 (D, E, F, G, movable E/A), 7b9 (E, A, D, movable E/A), m9 (Am, Em, movable A), 7sus4 (D, G, movable E/A), m(maj7) (Am, Em, movable E/A), Fmaj9/A. A few chart-only colours play as the nearest checked chord (E13 as E7, G7alt as G7#5...), the chart name still shown. `npm run check` now also checks all 272 charts (0 problems).
+4. ✅ **Whole song** (Songs → a song → Whole song): bar by bar at the record's tempo, section tempo changes included (Bohemian Rhapsody's opera and hard rock sections, Hungarian Rhapsody's friska...), in its time signature (3/4, 6/8, 9/8, 12/8, 5/4, 10/8...), each section's own strum driving the arrows and the sound (D/U, gaps, × muted chucks, palm-muted eighths, fingerpicked rolls, sections where the guitar rests, "N.C." rests that never wait), the chord changing on its beat, "Chorus · bar 3 of 8" above the chord, counts "1 & 2 &" (6/8 counted 1-6), the drum beat following the bars (and pausing in Wait for me). Shown as the shapes you play with the page's capo and tuning (e.g. Valerie and Lemon: half step down, as the charts play them). Strum: "Each section's own" or "Downs only". Solo sections still play our practice licks.
+5. ✅ **The tune** (15 public-domain pieces): every note with the single-note view (string glow, ring, fret number) placed by `js/fret-map.js`, Listen / Wait for me / Play in time.
+6. ✅ **Song page:** key, tempo with its unit and time signature, checked / best-guide badge, "The chords in this song" from the chart, and "Every bar, section by section" (all bars with beats, each section's strum and tempo, sources). Main part, speed, loop, Wait for me, left-handed flip unchanged.
+7. ✅ **Lessons:** song cards (and the Main part strum) use the strum the song's chart has most; Lesson 1's Country Roads play-along uses the chart's verse and chorus strums at the record's 82 BPM (the intro stays 4 gentle downs).
+8. ✅ **Tested** in headless Chrome (fresh profile, service worker unregistered, 402 px phone): every library song opened and Whole song played (chord and arrows advance, no page errors); 3/4 (Can't Help Falling in Love), 12/8 (Perfect), 6/8 (Beanie), tempo changes (Bohemian Rhapsody), capo (Wonderwall), half step down (Sweet Child O' Mine), Ode to Joy's tune; all 78 lessons (401 cards/pages) open without errors; no sideways scroll; screenshots checked.
+
+## Upload a song: "Every note", string and fret for every note (2026-10-19)
+
+Owner: "when users upload an mp3 it should be super detailed": every note, which string and which fret, not just chords. Tested in headless Chrome (upload → Every note → Listen, jump to bar 9, loop 4 bars at 50%, Wait for me answered note by note) on desktop and phone width, screenshots checked, no page errors; `npm run check` and the new `npm run test:every-note` pass. iOS not built. Cache v29.
+
+1. ✅ **Every note view** (Practice → Upload a song → Show: **Every note**; `js/every-note-view.js`). All of Basic Pitch's notes (chords, bass and tune), with their onsets, lengths and loudness. Above the fretboard: the current moment big (fret number, or the chord it spells: "G", "Am7", "D/F#", "E5"), each note as "B string, fret 7" chips, **"Bar 5 · beat 2 &"**, and "next: ...". A strip of the next 8 moments as fret numbers on their strings (a page that turns over, never scrolls), with bar lines and bar numbers, chord names on top, louder notes bolder and a tail for how long each rings. On the fretboard: the moment's notes as dots with their fret numbers, their strings glowing with rings while they ring, the next moment faint. Controls: Listen / Wait for me (stops at every moment until the mic hears one of its notes, any octave, or you tap it), 50 / 75 / 100% speed (pitch kept), Loop 4 bars from here, a bar slider to jump anywhere, Sound: song / our guitar / both, Tuning and capo.
+2. ✅ **Tablature algorithm** (`js/every-note.js` `assignTab`): dynamic programming (Viterbi) over every playable fingering of each moment, the "optimum path" approach (Sayegh 1989, *Computer Music Journal* 13(3); Radisavljevic & Driessen 2004, ICMC; playability rules as in Tuohy & Potter 2005, Barbancho et al. 2012, Yazawa et al. 2013). Candidates: each note on a different string, fretted notes within 4 frets, at most 4 fingers (a barre counts as one), frets 0-15 from the capo; notes out of range move by an octave; a moment no hand can hold drops octave doublings first, then the quietest inner note (counted in the summary). Hold cost: higher positions, stretches, fingers, a barre, skipped strings, crossed strings. Move cost: how far the hand's 4-fret window shifts, more in fast passages; open strings leave the hand where it is; the same pitch prefers the same string. ~12 ms for a 30 s song. Result on the test songs: open C / G / E / A / B7 shapes, scale runs in position.
+3. ✅ **Tuning and capo**: tuning heard from notes below E2 (standard, half step down, drop D, whole step down; a bass guitar in the mix = standard), switchable; capo 0/2/3/4/5 and the capo that fits the chords. Fret numbers count from the capo, as in tab.
+4. ✅ **Beats and bars** (`trackBeats`, `quantizeGroups`): tempo by autocorrelation, beat times by dynamic programming (Ellis 2007, *J. New Music Research* 36(1)), downbeats where the harmony in the bar before and after differs most (bars start on chord changes), then each moment moves 60% of the way to the nearest 16th (at most 40 ms, never past a neighbour, so every bar keeps the presses the recording has).
+5. ✅ **Cleaner notes for a guitar** (`cleanForGuitar`, `transcribe.js` `detailedNotes`): Every note re-reads the model output with onset threshold 0.6 and drops harmonics of a louder ringing note (octave, 12th, 2 octaves, 17th, 19th, 3 octaves), sub-octave ghosts, short quiet blips and pitches above D6. The chord and tune views are unchanged.
+6. ✅ **Accuracy**, three synthesized guitar recordings with known notes (Karplus-Strong, the app's own pluck algorithm; Ode to Joy and Twinkle Twinkle, both public domain, with strummed chords, bass walks and 8th-note scale runs, ±12 ms human timing; one tuned a half step down). Note F1 (pitch exact, onset within 50 ms):
+
+   | Recording | Before (app cleanup) P / R / F | Every note P / R / F | Tempo | Bars and beats right | Unplayable positions |
+   |---|---|---|---|---|---|
+   | Ode to Joy, 100 BPM | 64 / 90 / 75 | 75 / 90 / 82 | 100 | 100% | 0 |
+   | Twinkle, full strums, 84 BPM | 69 / 61 / 65 | 89 / 72 / 80 | 85 | 100% | 0 |
+   | Twinkle, half step down | 71 / 61 / 66 | 87 / 71 / 78 (tuning found) | 85 | 100% | 0 |
+
+   Every position sounds the right pitch in the chosen tuning; max span 4 frets. Timing vs the score 7-9 ms before and 7-8 ms after quantizing. Caveat: the cleanup thresholds were tuned on these same recordings; real band mixes (drums, vocals, distortion) will be noticeably worse.
+7. ✅ **A better model? Not added.** Checked open guitar transcription models for one that runs on-device in TF.js / ONNX-web, is licensed for commercial use and clearly beats Basic Pitch (Apache-2.0, ~17K parameters, GuitarSet note F1 ~79%): Riley, Edwards & Dixon 2024 ("High Resolution Guitar Transcription via Domain Adaptation", ICASSP; ~87-90% F1, ~20M parameters) has no released weights or licence; MT3 (90%, Apache-2.0) is a 77M-parameter T5, far too big for a phone web view; TabCNN (Wiggins & Kim 2019) and FretNet score lower note F1 than Basic Pitch (58% / 66% in Riley et al.'s table), and the one ONNX export of TabCNN has no clear licence; NoodleGP / TART have no released web models. So Basic Pitch stays; revisit if Riley et al. publish weights under a permissive licence.
+
+Known limits: a group of notes counts as one "moment" when they start within 75 ms; 4/4 only (3/4 songs get bars of 4); Wait for me's microphone hears one note at a time, so for a chord any one of its notes moves on; notes too close together for one hand are left out and counted; tuning detection needs the low strings to be heard.
+
+## Owner additions: Godfather theme, Parisienne Walkways, Michael Jackson, full solos on Songsterr (2026-10-18)
+
+- ✅ **Love Theme from The Godfather** (Nino Rota, 1972): library entry (C minor, capo 3 = Am shapes; whole-song map Intro / Theme A / Theme B / Theme A) and the song card on the Italian tremolo page of "Guitar around the world" (chords + "find the tune by ear with the video"). Video: Nino Rota - Topic, `Flb01Ni3p3M` (4.8M views, embeddable). Marked "our best guide": published sheet music for the film theme is also sold in D minor.
+- ✅ **Parisienne Walkways** (Gary Moore, 1978): library entry (A minor, 12/8 feel at 59, whole-song map incl. both solos) and a new **Lesson 4 lesson "Solo study: Parisienne Walkways"** (after November Rain): the circle-of-fifths chords under the solo (Dm7 Dm7/G Cmaj7 Fmaj7 Bm7♭5 E7 → Am), A minor pentatonic box 1 at fret 5 + A natural minor, our own climb-and-hold lick, and the long sustained note / vibrato. Video: Gary Moore - Topic, `lUBCXGeK694` (1.8M views).
+- ✅ **Michael Jackson**: **Beat It** (E♭m, tuned down half a step: Em D C shapes) as a new page + song card in Lesson 2's power-chord lesson, with a labelled beginner version (E5 D5 C5); **Man in the Mirror** (G, last choruses in A♭) added to the strumming lesson's songs (Lesson 1 chords + Am7 and slash chords). Videos: michaeljacksonVEVO `oRdxUFDoQe0` (1.5B views) and `PivWY9wn5ps` (217M views). Billie Jean was already in the library.
+- ✅ **Exact chords** in the library / whole-song maps (slash chords and 7ths kept; simplification only on the labelled beginner page). New open shapes: E7sus4, C/B, A/C#, D/A, Dm7/G.
+- ✅ **"Full solo, note for note ›" → Songsterr** (licensed tabs) on every song with a solo (67 songs) and on the solo/song-study lessons (Hotel California, November Rain, Parisienne Walkways, Sweet Child O' Mine, Stairway to Heaven, While My Guitar Gently Weeps). 56 direct tab URLs found with Songsterr's song search and each page title checked; the jazz standards with no matching tab use a Songsterr search link. Opens outside the app like YouTube. (`js/songsterr-links.js`)
+- ✅ Lesson tables (e.g. "Get a guitar") no longer push the page sideways on a phone.
+- **Chord sources** (chord names/progressions only, no lyrics): Godfather: GuitarTuna/Yousician "Speak Softly Love" chart (capo 3, Am shapes), cross-checked with e-chords (Am, Dm, E7 family). Parisienne Walkways: Spy Tunes section-by-section chart, Ultimate Guitar chords (Am Dm7 G11 Cmaj7 Fmaj7 Bm7b5 E7 Am), ChordWiki (A minor, 12/8, 59 BPM). Beat It: Heartwood Guitar chart (Em D, C turn), Cifra Club (E♭m, half step down), Wikipedia (E♭ minor, ~139 BPM). Man in the Mirror: Songsterr chords chart (s74748, incl. the A♭ key change), Hooktheory (G major, 100 BPM, verse I–V6–vi–V–IV, pre-chorus ii7–I6–IV). Bar counts are our best guide (marked so in the app).
+- Tested: the four song pages (whole song playing, no sideways scroll at 402px), the new lesson pages, all 78 lessons / 401 cards and pages with no page errors, `npm run check` (147 chords, 0 problems).
+
+## Owner list after TestFlight build 31: arrows, right-handed default, Practice redesign (2026-10-18)
+
+- ✅ **Strum arrows fit the phone and are sharp.** The play-along view no longer sits inside the 720px sideways-scrolling fretboard. Arrows are SVG shapes at native size (no scale animation, which blurred them on iOS) in compact cells grouped in beats ("1 & 2 &"); 8 strums fit on one line at 402px, 16 strums make two lines of 8 (with "1 e & a" counts). The current strum is solid blue with a white arrow. Phones held upright show the chord name + "next" on one line above the arrows. (`js/play-along-view.js`, `css/style.css`)
+- ✅ **Fretboards fit the screen on phones (Songs, Practice).** New fit window in `renderFretboard({ fit: true })`: on screens under 640px it shows about 5 frets scaled to the width, following the shape / scale box / current note, with the string names on the nut side. Landscape and tablets still show the whole neck. Lessons keep the full neck (tap quizzes need every fret); only the fretboard scrolls there, never the arrows. (`js/fretboard.js`, `js/practice-widget.js`)
+- ✅ **Right-handed is the default everywhere.** One-time migration (`jg_lefty_reset_v1`) resets the saved left-handed flag for everyone. The per-screen "↔ Left-handed? Flip it" button now flips for this visit only (sessionStorage); the lasting switch is "Left-handed (mirrored) fretboard" in About & settings. `isLefty()` = this visit's flip if set, otherwise the switch; fretboards, chord diagrams, pictures, tuner and the hand words all use it. (`js/settings.js`, `js/about.js`, `js/lessons-data.js`)
+- ✅ **Practice tab redesign** (`js/practice-ui.js`):
+  - **Chord loop**: your loop as chips (✕ to remove), 12 everyday chords to add, Strum (Downs / Down-up / Pop) and Speed (Slow / Medium / Fast), one big Start. Start plays straight on the fretboard below: chord name, strum arrows and shape, looping until Stop.
+  - **All chords**: 4 rows (Major, Minor, 7th, maj7 · m7 · sus, all 12 keys), each a sideways strip of names; 4 diagrams show the tapped chord and its neighbours (2×2 on phones); tapping plays it and shows it on the fretboard.
+  - **Scales**: compact Scale / Key selects and a Start-at slider; the fretboard window fits the scale box on one screen; when playing, the current string glows (its name lights up), a ring + fret number show the note, the view says "D string, fret 5 · note G" and the next note is faint. The sideways-scrolling tab was removed.
+- ✅ **No sideways scrolling** on Songs or Practice at 402px (document and every element measured; only the All chords strips scroll, on purpose).
+- Tested in headless Chrome at 402×874 and 874×402 (DPR 3, touch): song arrows (8 and 16 strums), All chords, chord loop playing, a scale playing, left-handed migration (old `jg_lefty=1` shows right-handed), session flip, the About switch, all 77 lessons / 393 cards and pages with no page errors; `npm run check` clean.
+
+## Owner list: Hayden-style course, hands, chat, orientation, web (2026-10-18)
+
+Card numbers are the TestFlight build 30 numbers (Lesson 1 card n = index n-1 in `LESSON1_CARDS`). Tested in headless Chrome: every lesson card/page opened (67 lessons, 287 cards/pages) with left-handed off and on, no page errors; fretboards and chord boxes checked programmatically (low E below high e, string names on the nut side for each mode); screenshots of cards 3, 4, 7, 11, 12, 13, 15, a page lesson, lefty board/diagrams/tuner/guitar. `npm run check` passes. iOS not built.
+
+1. ✅ **Back at the top on page lessons.** Page lessons now use the same top bar as the cards: ✕, ← Back, "Lesson 2.3 · title", card counter. Next stays at the bottom (`js/lessons-ui.js` openLesson).
+2. ✅ **Card 4 picture** (the "looking down" art; it is on card 4, with the fretboard). `viewerSvg()` redrawn: 1) a person from the side holding the guitar, the six strings shown as a column of dots in a zoom circle, thick low E on top nearest the eyes, dashed sight line; 2) "What you see looking down": the app's fretboard picture, nut on the left, low E at the bottom labelled "the string nearest you", an eye under it ("You are here"). Mirrored inset for left-handed.
+3. ✅ **Hands swap for left-handed players.** `settings.js` `hands()` / `handName()` / `handSide()`: lesson text uses `{{fret}}` / `{{strum}}` / `{{handed}}`; applied to every card message, question, answer, tip, done, quiz text and every page. Fixed texts: Lesson 1 hold card ("Neck on the {{fret}}, strum on the {{strum}}"), card 4 answer, strumming cards, p-parts (nut side), p-hands, p-hold (leg, strap shoulder), classical (leg), single-notes lesson. The whole-guitar picture's labels ("Left hand presses the frets" / "Right hand strums") and caption swap too.
+4. ✅ **Chat in order + purple.** Questions and answers are inserted in order above the "tap the bubble" chip; replies to the task (oops, tips, "Yes!") now go in a feed right under the task, oldest first, instead of jumping up into the thread above the fretboard. Chips and "me" bubbles use Hayden Keys' purple (`--hk-purple` #8a63d2 → #7550c2, white text over 5:1); hint now says "Tap the purple bubble".
+5. ✅ **Fretboard the right way round.** The default renderer was already right-handed (nut left, fret 1 left, low E bottom); the mirrored board came from the left-handed setting, which is remembered, so tapping "Left-handed? Flip it" on card 3 flipped every later card. Now: the flip button shouts "Left-handed view is ON · tap for right-handed" (purple), left-handed boards start scrolled to the nut, and mirrored text is drawn with plain SVG transforms instead of CSS `transform-box` (which the iOS web view can draw differently).
+6. ✅ **Card 7 = G**, then Em, C, D (also the comparison card, the switching pairs and the loop G → Em → C → D).
+7. ✅ **Chord boxes**: every renderer goes through `chordDiagramSvg` (cards compare, page diagrams, song cards, change drill, barre mover, daily review, Practice/Songs): high e on top, low E at the bottom, nut left (right for lefties), verified in Chrome in both modes. Same text-mirroring fix as item 5.
+8. ✅ **Card 13**: JustinGuitar "Get FASTER Chord Changes On Guitar!" (mAgc7hr44WM, 1,235,154 views, embeddable, oEmbed 200) plus "find any video that works for you" and "just 2 minutes a day". **Card 15**: Country Roads in the practice box (new `songPractice` card type in `js/cards.js`, using `createPracticeBox` unchanged): intro / verse / chorus each with their chords (from the verified song map, capo 2) and their own strum, with a part list that lights up and a "now" strip showing the part, chord and strum as it plays.
+9. ✅ **Course restructured like Hayden Keys** (`COURSE`/`MORE` in `js/lessons-data.js`, sections in `js/lessons-ui.js`, labels "Lesson 2.3"):
+   - Lesson 1: 4 chords, 3 songs: chords G Em C D, switching, loop, Country Roads (play-along), Perfect, Stand By Me, quiz (I'm Yours, Zombie, Let It Be, Out of Reach), then "find any other song with these 4 chords". "Start with the basics" link still on card 1.
+   - Lesson 2: More chords, and one note at a time: strumming + smooth changes (old Strumming and Changing chords merged, trimmed), E A Am Dm (+ the C→Am anchor), baby F, barre, power chords, jargon chords, capo, and "One note at a time": chords vs tune, tab, Twinkle Twinkle, Ode to Joy, Jingle Bells (all public domain) and how to find your favourite tune by ear.
+   - Lesson 3: Genres: Out of Reach (Gabrielle, 2001: B G#m F# E = G Em D C with capo 4; song added to the library with its official video, no lyrics), Last Christmas, Love Story, metal (Metallica: Enter Sandman power chords, Nothing Else Matters), blues, jazz, reggae; then Fingerpicking, Classical, Guitar around the world.
+   - Lesson 4: Solos: pentatonic, lead techniques, Hotel California (+ our own Bm→F#7 lick), November Rain (+ chords under the outro solo Bm G A and our own lick), "Just for fun: get yourself a wah pedal" (what it is and does; Paul Davids video NW9Yq99FeTU, 2,127,038 views), Sweet Child O' Mine (chords, our own picking pattern in the riff's style, E minor pentatonic 12th fret for the wah solo, official video).
+   - Lesson 5: Loops: loop pedal or a friend; Ed Sheeran looping live (official: "Azizam (Looper Performance Live from Old Delhi)", lNPJBHUePl0, 2,671,717 views) and Ed Sheeran + Jimmy Fallon building Shape of You on a looper (yuq8Iggweck, 1,963,055 views, The Tonight Show channel); Knockin' on Heaven's Door in 2 parts: part 1 strummed loop, part 2 our own picked part (tab), both together, loop pedal how-to and gear, rhythm + lead.
+   - Keep going: Les Paul, Red Special, Creep, scales, all chords, Stairway, Greensleeves, CAGED, modes, Prince/WMGGW, Ear Gym; then Master a song, World songs. Removed as separate lessons (merged): "Which songs use these chords?" (into Lesson 1), "Changing chords" (into 2.1/2.2). Bamboléo page dropped from Classical (it is in Guitar around the world). Lessons that teach their own songs set `songCount: 0`.
+   - All videos above checked on the watch page (viewCount, playableInEmbed true) and oEmbed 200 on 2026-10-18.
+10. ✅ **Web looks like the app.** Once the app script runs, `html.jg-app` hides the SEO/FAQ section (still in the HTML for search engines and no-JS visitors); a new footer link "About & FAQ" toggles it open and scrolls to it. Rule added in `scripts/build-seo.mjs` too so regenerating keeps it.
+11. ✅ **Lessons restarting from 1 after Practice.** Cause: nothing remembered where you were inside a lesson; tapping Lessons (or the home card) always opened the next unfinished lesson at card 1. Now the current lesson and card are saved on every card/page (`jg_lesson_pos`) and reopening the lesson carries on there (checked: card 9 → Practice → Lessons = card 9, also after a reload).
+
+## Curriculum audit and missing-topics pass (2026-10-16)
+
+Read every lesson card and page in course order (Lesson 1 to Chord Ear Gym), checked the chords and notes against `js/guitar-theory.js`, and compared the course with what well-known teachers recommend.
+
+**Flow problems fixed:**
+- ✅ Reading tab said tab is "upside down compared with our fretboard pictures". Since the low E moved to the bottom, they're the same way round. Text fixed.
+- ✅ Lesson 1 "the top one on your guitar" (the low E) reworded to "the one nearest your chin as you hold the guitar", so nothing says "top" for the low E. Stale code comments in `js/fretboard.js` (said low E on top) fixed.
+- ✅ More open chords: "Am: same shape as E, moved down one string" (the thin strings are at the top of our pictures now) is now "moved over one string, towards the thin strings".
+- ✅ Wonderwall (Jargon alert) said ring and pinky stay on fret 3 of the B and e strings, but the diagrams showed Em7 022000, G 320003 and A7sus4 x02030. It now uses the real anchored shapes (Em7 022033, G 320033, Dsus4 xx0233, A7sus4 x02033), all checked with `validateShape`.
+- ✅ Jargon alert (7th chords) now comes **before** Music has flavours (Genres), which uses A7/D7/E7 and Dm7/G7/Cmaj7. The 12-bar blues was taught twice; it now lives only in Genres.
+- ✅ Baby F was described after Fmaj7 ("same as the baby F…"). Order swapped, with Andy Guitar's caution that Fmaj7 works best in the key of C.
+- ✅ Creep: "from C to Cm only one finger moves" was wrong for the fingerings shown; now "only one note changes: the B string drops one fret".
+- ✅ How to practise scales mentioned hammer-ons before they're taught; now says "(next lesson)".
+- ✅ Power-chord riff now has Wait for me, not only Listen; text explains the 3-note version the diagrams show.
+
+**Topics added (short, same patterns as the existing cards/pages):**
+- Lesson 1: "How do I strum?" on the Em card (strumming is used before the Strumming lesson); "My fingertips hurt!" on the G card (calluses, 10–15 min a day).
+- Strumming: a first card of **4 down-strums** on G (hand still swings up), before D · D U · U D U.
+- Changing chords: **never stop the strum** (strum open strings on the last strum while fingers move), the **rock-star G family** (G 4-finger, Cadd9, Dsus4, Em7 with fingers 3 and 4 anchored) as a card comparison, and a **10-minutes-a-day** routine card. (`js/cards.js` `compare` now accepts custom shapes too.)
+- Capo: a **Capo tricks** page (where to clip it, capo maths, fit your voice, sparkle).
+- Power chords: **notes on the low E and A strings** (to find any power/barre chord) and **mute with both hands** (palm mute, fret-hand mute, the acoustic "chuck") with a palm-muted E5 play-along.
+- Lead techniques: **hammer-on / pull-off** play-along (our own exercise in the A minor pentatonic box).
+- Fingerpicking: **Travis picking** play-along (our own pattern over C and G).
+- Chord Ear Gym: **work out a song by ear** (find the home note on the low E, likely chords per key).
+
+**Research findings (what top teachers stress) and sources:**
+- One-minute changes and anchor fingers (already taught; kept): justinguitar.com/guitar-lessons/one-minute-changes-exercise-b1-110 · community.justinguitar.com/t/how-to-use-anchor-fingers/1779 · andyguitar.co.uk/lessons/03-changing-between-e-a-chords
+- G / Cadd9 family with fingers 3+4 anchored (added): andyguitar.co.uk/videos/the-cadd9-chord-when-to-use-it-beginner-electric · community.justinguitar.com/t/c-vs-cadd9/208561
+- Easy F: Fmaj7 / mini F (already taught; caveat added): andyguitar.co.uk/videos/02-easy-f-chord-fmaj7 · nationalguitaracademy.com/lessons/f-guitar-chord/
+- Strumming hand never stops; start with downs, then D-DU-UDU (added the downs card): blog.guitar-pro.com/?p=49330 · goodguitarist.com/guitar-strumming-tips-for-beginners
+- Palm and fret-hand muting, the percussive chuck (added): fretjam.com/palm-mute-guitar.html · laurenbateman.com/?p=4248 · community.justinguitar.com/t/the-backbeat-hit/2477/29
+- Capo transposing / fit your voice (added): rhymebook.com/tools/capo-chart · musicademy.com/lesson/using-a-capo-part-2-transposing-basics/
+- Power chords and note names on the E and A strings (added): goodguitarist.com/power-chords-guitar · justinguitar.com/guitar-lessons/IM-111
+- Calluses, short daily sessions (added): fender.com/articles/techniques/5-tips-to-fight-finger-pain · fender.com/articles/techniques/how-to-minimize-finger-pain-playing-guitar
+- Practice routine, slow with a metronome, +4–5 BPM (beginner card added; scale routine already there): learn.truefire.com/how-to-use-a-metronome-for-guitar · musicradar.com/how-to/10-ways-to-improve-your-guitar-practice-now
+- Playing by ear: find the home note, the last chord is usually the key (added): guitarlessons.com/guitar-lessons/guitar-lessons-for-beginners/instantly-find-the-key-of-your-favorite-song · andyguitar.co.uk/videos/live-replay-how-to-work-out-songs-by-ear
+- Travis picking, thumb alternating bass first (added): fender.com/articles/techniques/travis-picking-on-guitar · premierguitar.com/articles/19838-twang-101-travis-picking-essentials
+- Hammer-ons / pull-offs / slides / bends (play-along added): guitar.com/lessons/lesson-basic-guitar-technique-hammer-on-pull-off-bend-slide/
+- I–IV–V, I–V–vi–IV, 12-bar blues (already taught in Lesson 1, Open/barre, Genres): musiciangoods.com/en-ca/blogs/guitar/i-iv-v-chord-progression-guitar
+- Note: JustinGuitar's lesson pages blocked fetching (403), so those points come from search results and his community forum.
+
+**Not changed (on purpose):**
+- "Before you start" lessons (p-guitar … p-pick) are not reachable from the app any more (home doesn't list the course, and Back from Lesson 1 doesn't go there). Their key tips (pressing, sore fingers, strumming) are now in the Beginner cards instead. Owner: decide whether to show them again or delete them.
+- PRE has three tuner pages (Get a guitar, Tune, Six strings); left alone because PRE isn't shown.
+- No new teacher videos (none were verified over 1M views in this pass).
+- Song cards for Wonderwall still show the library's standard Em7/G shapes; the lesson page above them shows the anchored ones.
+
+**Tested:** headless Chrome stepped through all 67 non-world lessons (290 cards/pages) with `openLesson(id, i)`: no page errors, no empty cards; spot checks of each changed card/page (4 down-strum slots, rock-star compare renders and plays, baby F order, capo tricks, notes page, muting play-along, Wonderwall shapes, hammer-ons, Travis, by-ear page, Jargon before Genres). `npm run check`: 141 chords, 0 problems. Cache `jaxx-guitar-v23`.
 
 ---
 
@@ -446,3 +595,46 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 - **Left-handed flip everywhere**: the "↔ Left-handed? Flip it" button is on every lesson card and page, every song page, Practice and the Tuner (the tuner's headstock mirrors too); one tap flips every fretboard, chord box and guitar picture (`flipButtonHtml()` / `wireFlip()` in js/settings.js).
 - **"Looking down at your guitar" picture** redrawn as a clear cartoon over a guitar hero's shoulder (long dark hair, black embroidered jacket, warm acoustic guitar, sunny desert colours; seen from behind, not a likeness of anyone): his hand on the neck running up to the right, the other strumming over the sound hole, caption "This is you, looking down at your guitar: the thick low E string is the one nearest you".
 - **iOS build 28** uploaded to TestFlight 2026-10-15 with these fixes.
+- **iOS build 29** uploaded to TestFlight 2026-10-17 (includes the 2026-10-16 full lesson audit).
+
+## 2026-10-17: "Before you start" reachable again (iOS build 30)
+- The 10 "Before you start" lessons (get a guitar, tune it, parts, strings, fretboard, pressing a fret, which hand, holding it, picks…) were unreachable after the course list left home. Lesson 1's first card now has an optional "New to guitar? Start with the basics ›" link; it opens them in order (finishing one offers the next basics lesson, and the last one leads back to Lesson 1). Home still shows no course list.
+
+## 2026-10-18: calm play-along view (replaces the scrolling dark tab panel)
+- **Owner request**: the dark "tetris-like" panel racing across the top was hard to follow. Every play-along (lesson practice boxes, every song's Main part / Whole song, the Practice tab chord loop and scales, uploaded songs) now uses one calm view that never scrolls (`js/play-along-view.js`, driven by `js/guitar-player.js`; `js/fret-highway.js` removed).
+- **Chords**: the chord's name (big) and "next: C" on the left, one row of strum arrows for that chord on the right (↓ · ↓ ↑ · ↑ ↓ ↑ with the count 1 & 2 & ... underneath; · = the hand swings but misses). The current arrow lights up and blinks in time. The fretboard shows the chord's shape (finger numbers, open ○ and muted ×), and the ringing strings glow, flashing on each strum. When the chord changes, shape, name and arrows change together. A chord held for more than a bar shows its bar's pattern once with "bar 2 of 3"; patterns with more than 4 strums show all of them (e.g. the 16-slot rasgueado).
+- **Strum per song**: songs now default to their own style's pattern (`strumFor()` in js/lesson-songs.js: pop D·DU·UDU, rock/country, steady downs for metal, slow ballad, reggae off-beats), with D·DU·UDU and Downs as alternatives.
+- **Single notes** (solos, riffs, melodies, scales, tab lessons): the fret number big, its string (coloured chip), the note name and "next: B string, fret 1"; a short tab strip of the next 8 notes as fret numbers on their strings (a page that turns over, not a scroll). On the fretboard: the current note's dot with its fret number and a glowing ring, its string glowing from the fret to the body while it rings, and the next note shown faintly.
+- **Solos in songs**: a new "Solo licks" part plays our practice licks for the song's solo (Listen / Wait for me / Play in time); "Whole song" plays those licks as single notes in the solo sections and strums the rest. Licks are counted from the capo; song fretboards grow to 15-17 frets when a lick sits that high. The lick buttons under each solo also light up the notes on the fretboard.
+- **Uploaded songs**: "Show: Chords + strums" (the detected chords with the classic pop strum on the detected beat) or "The tune (single notes)": the top line of the transcription, moved by octaves to sit in open position and placed at playable frets (lowest reasonable position, frets 0-12, hand kept in one 4-fret position; `js/fret-map.js`).
+- **Wait for me** now waits at each new chord (any note of the chord, or a tap on a lit dot, moves it on; then it runs through that chord's strums while you strum) and at every single note, with the arrows / ring pulsing while it waits. Listen, Play in time (single notes), speed, loop, beat and microphone unchanged.
+- Tested in headless Chrome: Country Roads (chords G Em D C change with the music, lit arrow advances 1 & 2 & ...), Enter Sandman whole song (reaches the solo, ring follows the lick), Comfortably Numb solo licks (listen + wait for me with a tap), Ode to Joy lesson, rasgueado / 3/4 / power-chord lessons, Practice chord loop and scales, an uploaded WAV in both views, left-handed landscape phone; all 77 lessons (396 steps, 116 practice boxes started) and all 275 playable songs (Main / Whole / Solo) opened with 0 page errors; `npm run check` 0 problems.
+- **iOS build 31** uploaded to TestFlight 2026-10-18: the lessons/layout pass and the new calm play-along view (merged).
+- **iOS build 32** uploaded to TestFlight 2026-10-18: arrows fit and sharp, right-handed default (one-time reset), Practice redesign, Godfather / Parisienne Walkways / Beat It / Man in the Mirror, Songsterr full-solo links.
+- **iOS build 33** uploaded to TestFlight 2026-10-19: Every note view for uploads, and bar-by-bar Whole song for 272 songs with per-section strums (+ The tune for 15 public-domain pieces).
+
+## 2026-10-25: learn from the greats
+- New last page in Lesson 3 "Music has flavours: genres": learn from the greats, learn the details, then make it your own, with John Mayer explaining different styles of blues guitar (aPAzuIZ55Z0, Barstool's Backstage channel, 2.3M views, embeddable). Not built into iOS yet.
+- **iOS build 35** uploaded to TestFlight 2026-10-25: learn-from-the-greats page (John Mayer).
+
+## 2026-10-26: Back stays in one place, Skip this lesson
+- **Back kept moving:** card lessons hid the app header (Back at the very top) while page lessons kept the header and scrolled the panel into view (Back lower down), so pressing Back across lessons made it jump. Now every lesson uses the same full-screen layout (`jg-lesson-open`, scroll to top) and the top bar sticks below the phone's safe area, so Back stays at the same spot (tested at phone width: 9px from the top on card and page lessons, also after scrolling) and pressing it repeatedly walks back card by card to Lesson 1.
+- **Skip this lesson ›** at the bottom of every lesson (card and page lessons) opens the next lesson on the same path (not marked complete).
+- Tested in headless Chrome (skip forward 6 lessons, back to Lesson 1, skip again). Cache bumped.
+- **iOS build 36** uploaded to TestFlight 2026-10-26: Back stays in one place, Skip this lesson.
+
+## 2026-10-26: sound dying after a few lessons (both apps), real fix attempt
+- **Owner report:** the sound stops after a few lessons, every time, in Hayden and Jaxx.
+- **Likely cause:** iOS changes the audio mode whenever the microphone turns on or off (Wait for me, chord listening, tuner), when a YouTube video plays (in the app or in the YouTube app) and after calls. Afterwards WebKit can leave the Web Audio engine reporting "running" while it is actually silent (its clock stops). The app only replaced engines that iOS reported as "interrupted" or "closed", so a silent "running" engine was never replaced and sound stayed dead until the app restarted.
+- **Fix:** the microphone code marks the sound "dirty" every time it switches the audio mode; tapping a video and coming back to the app do the same; and a running engine whose clock stops advancing counts as stuck. On the next tap (inside the tap, where iOS allows a new engine to start) a fresh engine replaces it (at most once every 1.5 s; Hayden also reloads the piano samples into it).
+- **Tested:** in desktop Chrome, healthy taps keep the same engine (no false alarms), a dirty flag swaps in a fresh running engine that plays. The real iOS behaviour can only be confirmed on a phone: please test several lessons in a row with Wait for me / the microphone and a video.
+- **iOS build 37** uploaded to TestFlight 2026-10-26: sound recovery fix (silent engine after mic/video/app switches).
+
+## 2026-10-26 (later): readable cards, lesson order, fewer fun facts, looking-down picture
+- **Text squeezed to half the screen:** the scene picture beside each chat bubble is hidden; bubbles use the full width.
+- **"Left-handed? Flip it" only where relevant:** on card and page lessons it now shows only when there's a fretboard, chord, guitar, viewer or strum picture (e.g. not on "You don't need an expensive guitar").
+- **Tables in lessons** (guitar types, etc.) are shown as chat-style cards, one per row, built at render time from the existing tables.
+- **"Looking down" picture redrawn:** a perspective view down the neck: the thin high e is furthest away (top, small), the thick low E closest to you (bottom, big), strings light up one by one from E to e; card text says the same. Mirrored for left-handed view.
+- **Lesson order:** finishing a lesson now goes to the next lesson on the same path (not the first unfinished lesson anywhere, which jumped back to skipped lessons). The optional "Before you start" basics run in order (Basics 1/10 … 10/10, shown in the counter) and then into Lesson 1 (1/227). Tested end to end at phone width.
+- **Fun facts:** the "Did you know?" pop-up showed on about half of all celebrations (roughly every other card) and a guitar-legend fact was attached to random cards. Now one pop-up every 12 celebrations and at most one legend fact every 12 cards.
+- **iOS build 38** uploaded to TestFlight 2026-10-26: full-width cards, flip only where relevant, chat-style tables, looking-down picture, in-order lessons, fewer fun facts.

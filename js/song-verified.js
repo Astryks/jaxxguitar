@@ -39817,6 +39817,551 @@ const VERIFIED = {
     "bars": 8
    }
   ]
+ },
+ // Added 2026-10-18; chord sources are cited in STATUS.md.
+ "Love Theme from The Godfather": {
+  "status": "uncertain",
+  "key": "C minor (capo 3: Am shapes)",
+  "capoNote": "Optional: capo 3, Am shapes",
+  "bpm": 76,
+  "beatsPerBar": 4,
+  "durationSec": 159,
+  "chords": [
+   "Cm",
+   "Fm",
+   "Eb",
+   "G",
+   "Bb",
+   "Db",
+   "Ddim",
+   "D"
+  ],
+  "structure": [
+   {
+    "section": "Intro",
+    "chords": [
+     "Cm",
+     "Fm",
+     "G",
+     "Cm"
+    ]
+   },
+   {
+    "section": "Theme A",
+    "chords": [
+     "Cm",
+     "Fm",
+     "Cm",
+     "Eb",
+     "Fm",
+     "Cm",
+     "G",
+     "Cm"
+    ]
+   },
+   {
+    "section": "Theme B (the middle)",
+    "chords": [
+     "Bb",
+     "Eb",
+     "Db",
+     "Ddim",
+     "D",
+     "G",
+     "G",
+     "G"
+    ]
+   },
+   {
+    "section": "Theme A again",
+    "chords": [
+     "Cm",
+     "Eb",
+     "Fm",
+     "Cm",
+     "G",
+     "Cm",
+     "Cm",
+     "Cm"
+    ]
+   }
+  ]
+ },
+ "Parisienne Walkways": {
+  "status": "uncertain",
+  "key": "A minor",
+  "bpm": 59,
+  "beatsPerBar": 4,
+  "durationSec": 201,
+  "chords": [
+   "Am",
+   "Dm7",
+   "Dm7/G",
+   "Cmaj7",
+   "F",
+   "Fmaj7",
+   "Bm7b5",
+   "E7sus4",
+   "E7",
+   "A5",
+   "A",
+   "D/A",
+   "Esus4",
+   "E",
+   "Asus4",
+   "B7"
+  ],
+  "structure": [
+   {
+    "section": "Intro (guitar melody)",
+    "chords": [
+     "Am",
+     "Am",
+     "Dm7",
+     "Dm7",
+     "Dm7/G",
+     "Dm7/G",
+     "Cmaj7",
+     "Cmaj7",
+     "F",
+     "F",
+     "Bm7b5",
+     "Bm7b5",
+     "E7sus4",
+     "E7",
+     "A5",
+     "A5"
+    ],
+    "per": 0.5
+   },
+   {
+    "section": "Verse 1",
+    "chords": [
+     "Am",
+     "Am",
+     "Dm7",
+     "Dm7",
+     "Dm7/G",
+     "Dm7/G",
+     "Cmaj7",
+     "Cmaj7",
+     "F",
+     "F",
+     "Bm7b5",
+     "E7",
+     "A",
+     "D/A",
+     "A5",
+     "A5"
+    ],
+    "per": 0.5
+   },
+   {
+    "section": "Guitar solo 1",
+    "chords": [
+     "Dm7",
+     "Dm7",
+     "Dm7/G",
+     "Dm7/G",
+     "Cmaj7",
+     "Cmaj7",
+     "Fmaj7",
+     "Fmaj7",
+     "Bm7b5",
+     "Bm7b5",
+     "Esus4",
+     "E",
+     "Asus4",
+     "D/A",
+     "A5",
+     "A5"
+    ],
+    "per": 0.5
+   },
+   {
+    "section": "Verse 2",
+    "chords": [
+     "Dm7",
+     "Dm7",
+     "Dm7/G",
+     "Dm7/G",
+     "Cmaj7",
+     "Cmaj7",
+     "Fmaj7",
+     "Fmaj7",
+     "Bm7b5",
+     "Bm7b5",
+     "B7",
+     "B7",
+     "E",
+     "F",
+     "E",
+     "E"
+    ],
+    "per": 0.5
+   },
+   {
+    "section": "Guitar solo 2 (the long held note)",
+    "chords": [
+     "Dm7",
+     "Dm7",
+     "Dm7/G",
+     "Dm7/G",
+     "Cmaj7",
+     "Cmaj7",
+     "Fmaj7",
+     "Fmaj7",
+     "Bm7b5",
+     "E7"
+    ],
+    "per": 0.5
+   },
+   {
+    "section": "Outro solo",
+    "chords": [
+     "Am",
+     "Dm7",
+     "Am",
+     "F",
+     "E",
+     "E"
+    ],
+    "bars": 18,
+    "per": 0.5
+   }
+  ],
+  "solos": [
+   {
+    "section": "Guitar solo 1",
+    "scale": "A minor pentatonic, box 1 at 5th fret, plus A natural minor (Aeolian) for the sweet notes",
+    "tips": "Think melody, not speed: every phrase sings over the chord under it (lean on F over Fmaj7, on B over Bm7b5, G# over E7). Gary's tone is a Les Paul through a loud amp: slow, wide vibrato and long notes.",
+    "chords": [
+     "Dm7",
+     "Dm7/G",
+     "Cmaj7",
+     "Fmaj7",
+     "Bm7b5",
+     "E7"
+    ]
+   },
+   {
+    "section": "Guitar solo 2 (the long held note)",
+    "scale": "A minor pentatonic and A natural minor, up around the 12th-17th frets",
+    "tips": "The famous moment: Gary holds one note for a very long time (around 15-20 seconds live), keeping it alive with a loud amp, feedback and steady vibrato. Practise holding a note for 4 beats with even vibrato, then 8.",
+    "chords": [
+     "Dm7",
+     "Dm7/G",
+     "Cmaj7",
+     "Fmaj7",
+     "Bm7b5",
+     "E7"
+    ]
+   }
+  ]
+ },
+ "Beat It": {
+  "status": "uncertain",
+  "key": "Eb minor",
+  "tuning": "half step down",
+  "bpm": 139,
+  "beatsPerBar": 4,
+  "durationSec": 258,
+  "chords": [
+   "Ebm",
+   "Db",
+   "B"
+  ],
+  "structure": [
+   {
+    "section": "Intro (riff)",
+    "chords": [
+     "Ebm",
+     "Db"
+    ],
+    "bars": 8,
+    "per": 0.5
+   },
+   {
+    "section": "Verse 1",
+    "chords": [
+     "Ebm",
+     "Db",
+     "Ebm",
+     "Db",
+     "B",
+     "Db",
+     "Ebm",
+     "Db"
+    ],
+    "bars": 16,
+    "per": 0.5
+   },
+   {
+    "section": "Chorus",
+    "chords": [
+     "Ebm",
+     "Db"
+    ],
+    "bars": 8,
+    "per": 0.5
+   },
+   {
+    "section": "Verse 2",
+    "chords": [
+     "Ebm",
+     "Db",
+     "Ebm",
+     "Db",
+     "B",
+     "Db",
+     "Ebm",
+     "Db"
+    ],
+    "bars": 16,
+    "per": 0.5
+   },
+   {
+    "section": "Chorus",
+    "chords": [
+     "Ebm",
+     "Db"
+    ],
+    "bars": 8,
+    "per": 0.5
+   },
+   {
+    "section": "Guitar solo",
+    "chords": [
+     "Ebm",
+     "Db"
+    ],
+    "bars": 16,
+    "per": 0.5
+   },
+   {
+    "section": "Verse 3",
+    "chords": [
+     "Ebm",
+     "Db",
+     "Ebm",
+     "Db",
+     "B",
+     "Db",
+     "Ebm",
+     "Db"
+    ],
+    "bars": 16,
+    "per": 0.5
+   },
+   {
+    "section": "Chorus x2 and outro",
+    "chords": [
+     "Ebm",
+     "Db"
+    ],
+    "bars": 32,
+    "per": 0.5
+   }
+  ],
+  "solos": [
+   {
+    "section": "Guitar solo",
+    "scale": "Eb minor pentatonic (E minor pentatonic shapes on a guitar tuned down half a step)",
+    "tips": "Eddie Van Halen's solo is fast tapping and whammy-bar dives - learn the riff and chords first. Over the Ebm-Db vamp any note of the minor pentatonic works; start with our licks.",
+    "chords": [
+     "Ebm",
+     "Db"
+    ]
+   }
+  ]
+ },
+ "Man in the Mirror": {
+  "status": "uncertain",
+  "key": "G major (last choruses in Ab major)",
+  "bpm": 100,
+  "beatsPerBar": 4,
+  "durationSec": 304,
+  "chords": [
+   "G",
+   "D/F#",
+   "Em",
+   "D",
+   "C",
+   "Am7",
+   "C/B",
+   "G/B",
+   "A/C#",
+   "Ab",
+   "Ab/C",
+   "Db",
+   "Eb",
+   "Bb/D",
+   "Eb/G",
+   "Fm"
+  ],
+  "structure": [
+   {
+    "section": "Intro",
+    "chords": [
+     "G",
+     "D/F#",
+     "Em",
+     "D",
+     "C",
+     "C",
+     "C",
+     "C"
+    ],
+    "per": 0.5
+   },
+   {
+    "section": "Verse 1",
+    "chords": [
+     "G",
+     "D/F#",
+     "Em",
+     "D",
+     "C",
+     "C",
+     "C",
+     "C"
+    ],
+    "bars": 12,
+    "per": 0.5
+   },
+   {
+    "section": "Pre-chorus",
+    "chords": [
+     "Am7",
+     "C/B",
+     "C",
+     "C/B",
+     "Am7",
+     "C/B",
+     "C",
+     "D"
+    ]
+   },
+   {
+    "section": "Chorus",
+    "chords": [
+     "G",
+     "G/B",
+     "C",
+     "D",
+     "G",
+     "G/B",
+     "C",
+     "D",
+     "G",
+     "G/B",
+     "C",
+     "A/C#",
+     "D",
+     "D",
+     "G",
+     "D/F#",
+     "Em",
+     "D",
+     "C",
+     "D"
+    ],
+    "per": 0.5
+   },
+   {
+    "section": "Verse 2",
+    "chords": [
+     "G",
+     "D/F#",
+     "Em",
+     "D",
+     "C",
+     "C",
+     "C",
+     "C"
+    ],
+    "bars": 8,
+    "per": 0.5
+   },
+   {
+    "section": "Pre-chorus",
+    "chords": [
+     "Am7",
+     "C/B",
+     "C",
+     "C/B",
+     "Am7",
+     "C/B",
+     "C",
+     "D"
+    ]
+   },
+   {
+    "section": "Chorus",
+    "chords": [
+     "G",
+     "G/B",
+     "C",
+     "D",
+     "G",
+     "G/B",
+     "C",
+     "D",
+     "G",
+     "G/B",
+     "C",
+     "A/C#",
+     "D",
+     "D",
+     "G",
+     "D/F#",
+     "Em",
+     "D",
+     "C",
+     "D"
+    ],
+    "per": 0.5
+   },
+   {
+    "section": "Key change: chorus in Ab",
+    "chords": [
+     "Ab",
+     "Ab/C",
+     "Db",
+     "Eb",
+     "Ab",
+     "Ab/C",
+     "Db",
+     "Eb",
+     "Ab",
+     "Ab/C",
+     "Db",
+     "Bb/D",
+     "Eb",
+     "Eb",
+     "Ab",
+     "Eb/G",
+     "Fm",
+     "Eb",
+     "Db",
+     "Eb"
+    ],
+    "per": 0.5
+   },
+   {
+    "section": "Outro (choir, ad lib)",
+    "chords": [
+     "Ab",
+     "Eb/G",
+     "Fm",
+     "Eb",
+     "Db",
+     "Eb"
+    ],
+    "bars": 24,
+    "per": 0.5
+   }
+  ]
  }
 };
 

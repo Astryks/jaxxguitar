@@ -4,7 +4,7 @@ import { icon } from "./icons.js";
 // lessons-data.js. Song lessons ("Master a song") and the optional
 // World songs lessons are generated from the song library.
 
-import { PRE, BEGINNER, INTERMEDIATE, ADVANCED, strumItems } from "./lessons-data.js";
+import { PRE, COURSE, MORE, strumItems } from "./lessons-data.js";
 import { chordShape, midiAt, noteName, STRING_NAMES, shapeMidis } from "./guitar-theory.js";
 import { chordDiagramSvg, tabSvg } from "./fretboard.js";
 import { strum, playNote, stopAllSound } from "./guitar-audio.js";
@@ -19,11 +19,12 @@ import { teachHtml } from "./teach-videos.js";
 import { lessonInspireHtml } from "./inspire.js";
 import { runCards } from "./cards.js";
 import { withSongs, songCardHtml, wireSongCards, findSong } from "./lesson-songs.js";
+import { fullSoloLinkHtml } from "./songsterr-links.js";
 import { startChordListening } from "./chord-detect.js";
 import { friendlyMicError } from "./pitch.js";
 import { puppySvg, nextTrick, nextPuppyScene } from "./puppy.js";
 import { homeGuitar, nextHomeGuitar, LEGENDS, sceneSvg } from "./scenes.js";
-import { leftyToggleHtml, wireLeftyToggle, flipButtonHtml, wireFlip } from "./settings.js";
+import { leftyToggleHtml, wireLeftyToggle, flipButtonHtml, wireFlip, hands, isLefty } from "./settings.js";
 import { tipJarHtml, wireTipJar } from "./tipjar.js";
 // One guitar per visit on the home screen.
 let homeGuitarThisVisit = null;
@@ -105,37 +106,46 @@ function tierSongLessons(tier) {
 }
 
 let SECTIONS = null;
-let COURSE = null; // { total, start: Map(lessonId -> first card number) }
+let COURSE_INFO = null; // { total, start: Map(lessonId -> first card number) }
 function sections() {
   if (SECTIONS) return SECTIONS;
-  // The main course, in order. Every lesson ends with 3 songs to learn
-  // (lesson-songs.js), except the "Master: <song>" lessons, which already
-  // are a song.
-  const main = withSongs([...BEGINNER, ...tierSongLessons("Beginner"), ...INTERMEDIATE, ...tierSongLessons("Intermediate"), ...ADVANCED, ...tierSongLessons("Advanced")], { skip: (l) => Boolean(l.song) });
+  // The main course, in order: Lessons 1 to 5 (each a few parts), then
+  // "Keep going" and the "Master a song" lessons. Lessons end with songs
+  // to learn (lesson-songs.js) unless they teach their own.
+  const songLessons = [...tierSongLessons("Beginner"), ...tierSongLessons("Intermediate"), ...tierSongLessons("Advanced")];
+  const main = withSongs([...COURSE.flatMap((c) => c.lessons), ...MORE, ...songLessons], { skip: (l) => Boolean(l.song) });
   const byId = new Map(main.map((l) => [l.id, l]));
   const pick = (list) => list.map((l) => byId.get(l.id) || l);
   SECTIONS = [
     { name: "Before you start", note: "Optional. Skip ahead if you've played before", lessons: PRE },
-    { name: "Beginner", lessons: pick([...BEGINNER, ...tierSongLessons("Beginner")]) },
-    { name: "Intermediate", lessons: pick([...INTERMEDIATE, ...tierSongLessons("Intermediate")]) },
-    { name: "Advanced", lessons: pick([...ADVANCED, ...tierSongLessons("Advanced")]) },
+    ...COURSE.map((c) => ({ name: c.name, major: c.major, lessons: pick(c.lessons) })),
+    { name: "Keep going", note: "More topics and song studies, in any order", lessons: pick(MORE) },
+    { name: "Master a song", note: "Whole songs, one at a time", lessons: pick(songLessons) },
     { name: "World songs", note: "Optional: popular songs in 10 languages. Skip any you like.", lessons: worldLessons(), optional: true },
   ];
-  // One card counter for the whole course (like a game: 4/185), starting
-  // at Lesson 1. Optional lessons count on their own.
+  // One card counter for the whole course (like a game: 4/250), starting
+  // at Lesson 1 and running through Lesson 5 and Keep going.
   let n = 1;
   const start = new Map();
-  SECTIONS.slice(1, 4).forEach((sec) => sec.lessons.forEach((l) => { start.set(l.id, n); n += unitCount(l); }));
-  COURSE = { total: n - 1, start };
+  SECTIONS.filter((sec) => sec.major || sec.name === "Keep going").forEach((sec) => sec.lessons.forEach((l) => { start.set(l.id, n); n += unitCount(l); }));
+  COURSE_INFO = { total: n - 1, start };
   return SECTIONS;
 }
 const unitCount = (l) => (l.cards ? l.cards.length : l.pages.length);
-// "Card 17/185" for a lesson's card/page i, or null for optional lessons.
+// "Card 17/250" for a lesson's card/page i, or null for optional lessons.
 function courseCard(lesson, i = 0) {
   sections();
-  const s = COURSE.start.get(lesson.id);
-  return s ? { n: s + i, total: COURSE.total } : null;
+  const s = COURSE_INFO.start.get(lesson.id);
+  return s ? { n: s + i, total: COURSE_INFO.total } : null;
 }
+// "Lesson 2.3" for the 3rd part of Lesson 2 ("Lesson 1" when it has one part).
+function lessonLabel(lesson) {
+  const sec = sections().find((x) => x.major && x.lessons.some((l) => l.id === lesson.id));
+  if (!sec) return "";
+  const k = sec.lessons.findIndex((l) => l.id === lesson.id);
+  return sec.lessons.length > 1 ? `Lesson ${sec.major}.${k + 1}` : `Lesson ${sec.major}`;
+}
+const titleOf = (lesson) => (lessonLabel(lesson) ? `${lessonLabel(lesson)} · ${lesson.title}` : lesson.title);
 function allLessons() {
   return sections().flatMap((s) => s.lessons);
 }
@@ -145,11 +155,38 @@ const PHONE_NOTE = `<p class="jg-phone-note">${icon("guitar", 18)}<span>I know i
 // The lesson just before this one in its section (Back on a first card goes there).
 function prevLesson(lesson) {
   const sec = sections().find((x) => x.lessons.some((l) => l.id === lesson.id));
-  const list = sec ? sec.lessons : [];
+  // Lessons 1 to 5 and Keep going are one path: Back runs straight through them.
+  const list = sec && (sec.major || sec.name === "Keep going") ? sections().filter((x) => x.major || x.name === "Keep going").flatMap((x) => x.lessons) : (sec ? sec.lessons : []);
   return list[list.findIndex((l) => l.id === lesson.id) - 1] || null;
 }
 const openLastOf = (l) => openLesson(l.id, unitCount(l) - 1);
+// The lesson right after this one on the same path (Skip this lesson goes there).
+function nextInPath(lesson) {
+  const sec = sections().find((x) => x.lessons.some((l) => l.id === lesson.id));
+  const list = sec && (sec.major || sec.name === "Keep going") ? sections().filter((x) => x.major || x.name === "Keep going").flatMap((x) => x.lessons) : (sec ? sec.lessons : []);
+  const i = list.findIndex((l) => l.id === lesson.id);
+  if (i >= 0 && list[i + 1]) return list[i + 1];
+  // Last of the basics: on to Lesson 1.
+  if (lesson.pre) return sections().find((x) => x.major)?.lessons[0] || null;
+  return nextAfter(lesson);
+}
+// "Basics 3/10" for the optional "Before you start" lessons, which sit outside the course counter.
+function basicsLabel(lesson) {
+  const pre = sections()[0].lessons;
+  const k = pre.findIndex((l) => l.id === lesson.id);
+  return lesson.pre && k >= 0 ? `Basics ${k + 1}/${pre.length}` : null;
+}
 
+// After a "Before you start" lesson, carry on through the basics in order,
+// then into Lesson 1; otherwise the next unfinished lesson.
+function nextAfter(lesson) {
+  if (lesson.pre) {
+    const pre = sections()[0].lessons;
+    const i = pre.findIndex((l) => l.id === lesson.id);
+    if (i >= 0 && pre[i + 1]) return pre[i + 1];
+  }
+  return nextLesson();
+}
 function nextLesson() {
   return allLessons().find((l) => !l.pre && !l.world && !isLessonComplete(l.id)) || null;
 }
@@ -183,7 +220,7 @@ function roadmapHtml(currentId) {
     ${sec.optional ? `<details><summary class="jg-btn jg-btn-small">Show ${sec.lessons.length} optional lessons</summary>` : ""}
     ${sec.lessons.map((l) => {
       const done = isLessonComplete(l.id);
-      const num = l.pre || l.world ? (done ? "✓" : "•") : (done ? "✓" : ++n);
+      const num = l.pre || l.world ? (done ? "✓" : "•") : (done ? "✓" : (lessonLabel(l).replace("Lesson ", "") || ++n));
       const cls = ["jg-node", done ? "jg-node-done" : "", (currentId ? l.id === currentId : nxt && l.id === nxt.id) ? "jg-node-current" : ""].join(" ");
       const cc = courseCard(l);
       return `<button class="${cls}" data-lesson="${l.id}"><span class="jg-node-num">${num}</span><span class="jg-node-text">${esc(l.title)}${l.fun ? '<span class="jg-tag">fun</span>' : ""}<span class="jg-sub">${esc(l.subtitle || "")}</span></span>${cc ? `<span class="jg-node-card" title="This lesson starts at card ${cc.n} of ${cc.total}">${cc.n}/${cc.total}</span>` : ""}</button>`;
@@ -194,6 +231,7 @@ function roadmapHtml(currentId) {
 function showHome() {
   ensureLessonsTab();
   runCleanup();
+  document.body.classList.remove("jg-lesson-open");
   const nxt = nextLesson();
   const streak = getStreak();
   const goal = getDailyGoal();
@@ -212,8 +250,8 @@ function showHome() {
     <button class="jg-hero-card" data-lesson="${nxt.id}">
       ${heroArt}
       <span class="jg-hero-body">
-        <span class="jg-hero-kicker">${done ? `Lesson ${number} of ${total}${courseCard(nxt) ? ` · card ${courseCard(nxt).n}/${courseCard(nxt).total}` : ""}` : "Start here"}</span>
-        <span class="jg-hero-title">${esc(done ? nxt.title : "4 chords, 100+ songs")}</span>
+        <span class="jg-hero-kicker">${done ? `${lessonLabel(nxt) || `Lesson ${number} of ${total}`}${courseCard(nxt) ? ` · card ${courseCard(nxt).n}/${courseCard(nxt).total}` : ""}` : "Start here"}</span>
+        <span class="jg-hero-title">${esc(done ? nxt.title : "Lesson 1: 4 chords, 3 songs")}</span>
         <span class="jg-hero-bar"><span style="width:${Math.max(3, pct)}%"></span></span>
         ${streak.count ? `<span class="jg-hero-meta">${icon("flame", 16)} ${streak.count}-day streak</span>` : ""}
         <span class="jg-hero-cta">${done ? "Continue ▶" : "Start now ▶"}</span>
@@ -266,25 +304,46 @@ function ensureLessonsTab() {
   if (!panelEl || panel.classList.contains("jg-hidden")) document.querySelector('.jg-tab[data-tab="lessons"]')?.click();
 }
 
-function openLesson(id, pageIndex = 0) {
+// Where you are in a lesson, kept on this device, so leaving for Practice
+// or Songs (or closing the app) and coming back carries on from the same
+// card instead of starting the lesson again from card 1.
+const POS_KEY = "jg_lesson_pos";
+function savePos(id, i) { try { localStorage.setItem(POS_KEY, JSON.stringify({ id, i })); } catch (e) { /* storage unavailable */ } }
+function savedPos(id) {
+  try { const p = JSON.parse(localStorage.getItem(POS_KEY) || "null"); return p && p.id === id ? p.i : null; } catch (e) { return null; }
+}
+
+// pageIndex: a card/page number, or leave it out to carry on where you were.
+function openLesson(id, pageIndex = null) {
   ensureLessonsTab();
   const lesson = allLessons().find((l) => l.id === id);
   if (!lesson) return showHome();
+  if (pageIndex === null) {
+    const at = savedPos(id);
+    pageIndex = at !== null && at > 0 && at < unitCount(lesson) && !isLessonComplete(id) ? at : 0;
+  }
+  pageIndex = Math.max(0, Math.min(unitCount(lesson) - 1, pageIndex));
+  savePos(id, pageIndex);
   runCleanup();
   // Beginner lessons are simple cards (js/cards.js).
   if (lesson.cards) {
     const cc = courseCard(lesson);
     const stop = runCards(panelEl, lesson, {
       start: pageIndex,
+      title: titleOf(lesson),
+      onShow: (i) => savePos(lesson.id, i),
       courseStart: cc ? cc.n : null,
       courseTotal: cc ? cc.total : null,
       onExit: showHome,
+      onOpenLesson: (lid) => { runCleanup(); openLesson(lid, 0); },
       onBackFirst: prevLesson(lesson) ? () => { runCleanup(); openLastOf(prevLesson(lesson)); } : null,
+      onSkipLesson: nextInPath(lesson) ? () => { runCleanup(); savePos(null, 0); openLesson(nextInPath(lesson).id, 0); } : null,
       changeDrill,
       onFinish: () => {
         markLessonComplete(lesson.id);
+        savePos(null, 0);
         runCleanup();
-        finishScreen(lesson, nextLesson());
+        finishScreen(lesson, nextInPath(lesson));
       },
     });
     cleanup.push(stop);
@@ -296,35 +355,54 @@ function openLesson(id, pageIndex = 0) {
   panelEl.innerHTML = `
     <div class="jg-lessons-layout">
       <div class="jg-lesson-main jg-lesson-player">
+        <div class="jg-cards-top jg-page-top">
+          <button class="jg-cards-x jg-exit" aria-label="Close lesson">✕</button>
+          ${pageIndex > 0 || prevLesson(lesson) ? '<button class="jg-cards-back jg-prev">← Back</button>' : "<span></span>"}
+          <b class="jg-cards-title">${esc(titleOf(lesson))}</b>
+          <span class="jg-cards-count" title="Card number in the whole course">${courseCard(lesson, pageIndex) ? `${courseCard(lesson, pageIndex).n}/${courseCard(lesson, pageIndex).total}` : basicsLabel(lesson) ? `${basicsLabel(lesson)} · ${pageIndex + 1}/${lesson.pages.length}` : `${pageIndex + 1}/${lesson.pages.length}`}</span>
+        </div>
         <div class="jg-lesson-content">
-          <button class="jg-exit">← All lessons</button>
-          <div class="jg-step">${esc(lesson.title)} · <span class="jg-cards-count" title="Card number in the whole course">${courseCard(lesson, pageIndex) ? `${courseCard(lesson, pageIndex).n}/${courseCard(lesson, pageIndex).total}` : `${pageIndex + 1}/${lesson.pages.length}`}</span></div>
-          <div class="jg-say">${mascot(MASCOT_BY_LESSON[lesson.id] || (lesson.world ? "singing-mic" : lesson.song ? "playing-guitar" : "happy-guitar"))}<div class="jg-bubble">${page.html || ""}${teachHtml(lesson.id, pageIndex)}${lessonInspireHtml(lesson.id, pageIndex)}${page.shape ? PHONE_NOTE : ""}${peopleHtml(page.people)}${videoHtml(page.video)}${page.song && findSong(page.song) ? songCardHtml(findSong(page.song), { n: page.songN, of: page.songOf }) : ""}</div></div>
+          <div class="jg-say">${mascot(MASCOT_BY_LESSON[lesson.id] || (lesson.world ? "singing-mic" : lesson.song ? "playing-guitar" : "happy-guitar"))}<div class="jg-bubble">${hands(page.html || "")}${teachHtml(lesson.id, pageIndex)}${lessonInspireHtml(lesson.id, pageIndex)}${page.shape ? PHONE_NOTE : ""}${peopleHtml(page.people)}${videoHtml(page.video)}${page.song && findSong(page.song) ? songCardHtml(findSong(page.song), { n: page.songN, of: page.songOf }) : ""}${lesson.fullSolo ? fullSoloLinkHtml(lesson.fullSolo) : ""}</div></div>
           ${page.diagrams ? `<div class="jg-diagram-row">${page.diagrams.map((c, i) => { const d = diagramOf(c); return `<button class="jg-btn jg-dg-btn" data-dg="${i}" title="Show ${esc(d.name)} on the fretboard">${chordDiagramSvg(d.shape, d.name)}</button>`; }).join("")}</div><p class="jg-note">Tap a chord box to see it on the fretboard and hear it.</p>` : ""}
           ${page.tab ? `<div class="jg-tab-wrap">${tabSvg(page.tab.items, { beatsPerBar: page.tab.beatsPerBar, bars: page.tab.bars })}</div><div class="jg-row"><button class="jg-btn jg-tab-play" type="button">${icon("speaker", 18)} Hear it</button></div>` : ""}
           <div class="jg-extra"></div>
-          ${flipButtonHtml()}
+          ${needsBoard || page.guitar || page.viewer ? flipButtonHtml() : ""}
           <div class="jg-instrument-host"></div>
           <div class="jg-practice-host"></div>
         </div>
         <div class="jg-controls">
-          ${pageIndex > 0 || prevLesson(lesson) ? '<button class="jg-btn jg-prev">← Back</button>' : ""}
           <button class="jg-btn jg-btn-primary jg-next">${last ? "Finish lesson ✓" : "Next →"}</button>
         </div>
+        ${nextInPath(lesson) ? '<button class="jg-lesson-skip" type="button">Skip this lesson ›</button>' : ""}
       </div>
     </div>`;
-  panelEl.scrollIntoView?.({ block: "start" });
+  // Tables read badly on a phone: show each row as a chat-style card.
+  panelEl.querySelectorAll("table.jg-table").forEach((t) => {
+    const rows = [...t.rows];
+    if (rows.length < 2) return;
+    const head = [...rows[0].cells].map((c) => c.innerHTML.trim());
+    const cards = rows.slice(1).map((r) => {
+      const cells = [...r.cells].map((c) => c.innerHTML.trim());
+      return `<div class="jg-tcard"><b>${cells[0]}</b>${cells.slice(1).map((c, k) => (c ? `<div>${head[k + 1] ? `<span>${head[k + 1]}:</span> ` : ""}${c}</div>` : "")).join("")}</div>`;
+    });
+    t.outerHTML = `<div class="jg-tcards">${cards.join("")}</div>`;
+  });
+  // Same full-screen layout as card lessons, so Back stays in one place.
+  document.body.classList.add("jg-lesson-open");
+  window.scrollTo(0, 0);
   wireVideos(panelEl);
   wireSongCards(panelEl);
   wireCommon();
   panelEl.querySelector(".jg-exit").addEventListener("click", showHome);
+  panelEl.querySelector(".jg-lesson-skip")?.addEventListener("click", () => { savePos(null, 0); openLesson(nextInPath(lesson).id, 0); });
   wireFlip(panelEl, () => openLesson(id, pageIndex));
   panelEl.querySelector(".jg-prev")?.addEventListener("click", () => (pageIndex > 0 ? openLesson(id, pageIndex - 1) : openLastOf(prevLesson(lesson))));
   panelEl.querySelector(".jg-next").addEventListener("click", () => {
     if (!last) return openLesson(id, pageIndex + 1);
     markLessonComplete(lesson.id);
+    savePos(null, 0);
     if (lesson.song) markSongStatus(lesson.song.title, "completed");
-    const nxt = nextLesson();
+    const nxt = nextInPath(lesson);
     runCleanup();
     finishScreen(lesson, nxt);
   });
@@ -339,6 +417,9 @@ function openLesson(id, pageIndex = 0) {
   if (needsBoard) {
     inst = mountInstrument(panelEl.querySelector(".jg-instrument-host"), { frets: page.caged || page.barreMover ? 15 : 12, highway: Boolean(page.practice) });
     cleanup.push(() => inst.hw.destroy());
+    // Left-handed: the nut is on the right, so start the (scrollable) board there.
+    const host = panelEl.querySelector(".jg-instrument-host .jg-fb");
+    if (isLefty() && host) requestAnimationFrame(() => { host.scrollLeft = host.scrollWidth; });
     restore();
   }
   // Tab pages: play the tab's notes, one beat each at 80 BPM.
@@ -378,9 +459,10 @@ function openLesson(id, pageIndex = 0) {
 }
 
 function finishScreen(lesson, nxt) {
+  document.body.classList.remove("jg-lesson-open");
   panelEl.innerHTML = `
     <div class="jg-say"><div class="jg-avatar jg-mascot-celebrate">${puppySvg(nextTrick("yay"), { label: "Celebration" })}</div><div class="jg-bubble">
-      <h3>Lesson complete: ${esc(lesson.title)}</h3>
+      <h3>Lesson complete: ${esc(titleOf(lesson))}</h3>
       <p>Nice work! ${lesson.song ? "Song added to your learned list." : ""}</p>
       <div class="jg-row">
         ${nxt ? `<button class="jg-btn jg-btn-primary" data-lesson="${nxt.id}">Next: ${esc(nxt.title)} →</button>` : ""}

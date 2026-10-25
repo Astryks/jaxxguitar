@@ -5,23 +5,33 @@ import { icon } from "./icons.js";
 // tempo, and "upload a song" - the app works out the chords from your
 // own recording and shows the guitar shapes in time with it.
 
-import { chordShape, shapeMidis, scaleBox, SCALES, NOTE_NAMES, suggestCapo } from "./guitar-theory.js";
+import { chordShape, shapeMidis, scaleBox, SCALES, NOTE_NAMES, suggestCapo, midiAt } from "./guitar-theory.js";
 import { chordDiagramSvg } from "./fretboard.js";
-import { strum, click, getAudioContext, stopAllSound } from "./guitar-audio.js";
+import { strum, click, getAudioContext, stopAllSound, playNote } from "./guitar-audio.js";
 import { mountInstrument, createPracticeBox } from "./practice-widget.js";
-import { chordTimeline } from "./guitar-player.js";
+import { chordTimeline, createGuitarPlayer, timelineEvents, LEAD } from "./guitar-player.js";
+import { mountEveryNote } from "./every-note-view.js";
 import { transcribeFile, estimateBeat, simplifyToChords, guessLastUpload, canGuessSongs } from "./transcribe.js";
 import { SONGS } from "./songs-data.js";
 import { parseChordSymbol } from "./chord-utils.js";
 import { openSongByTitle } from "./songs-ui.js";
 
-const CHORDS = ["G", "C", "D", "Em", "Am", "E", "A", "Dm", "F", "Bm", "E7", "A7", "D7", "G7", "B7", "Cmaj7", "Am7", "Em7", "Dsus4", "Asus2", "E5", "A5"];
+// Chord loop: the everyday chords to pick from, three strums, three speeds.
+const LOOP_CHORDS = ["G", "C", "D", "Em", "Am", "E", "A", "Dm", "F", "E7", "A7", "D7"];
 const PATTERNS = {
-  "D·DU·UDU": ["down", null, "down", "up", null, "up", "down", "up"],
-  "Down ×4": ["down", "down", "down", "down"],
-  "Down-up ×4": ["down", "up", "down", "up", "down", "up", "down", "up"],
-  "Waltz (3/4)": ["down", "down", "down"],
+  "Downs": ["down", "down", "down", "down"],
+  "Down-up": ["down", "up", "down", "up", "down", "up", "down", "up"],
+  "Pop": ["down", null, "down", "up", null, "up", "down", "up"],
 };
+const SPEEDS = [["Slow", 60], ["Medium", 80], ["Fast", 100]];
+// All chords: four rows, each a sideways strip of chord names.
+const ROOTS = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+const LIB_ROWS = [
+  ["Major", ROOTS.map((r) => r)],
+  ["Minor", ROOTS.map((r) => r + "m")],
+  ["7th", ROOTS.map((r) => r + "7")],
+  ["maj7 · m7 · sus", ROOTS.flatMap((r) => ["maj7", "m7", "sus2", "sus4"].map((q) => r + q))],
+].map(([label, list]) => [label, list.filter((c) => chordShape(c))]);
 const SCALE_OPTS = [
   ["Minor pentatonic", "minorPentatonic"], ["Major pentatonic", "majorPentatonic"], ["Blues", "blues"],
   ["Major", "major"], ["Natural minor", "naturalMinor"], ["Harmonic minor", "harmonicMinor"],
@@ -36,13 +46,13 @@ function leavePractice() {
 
 function renderPractice(panel) {
   leavePractice();
-  const st = { chords: ["G", "D", "Em", "C"], pattern: "D·DU·UDU", bpm: 80, root: 9, scale: "minorPentatonic", pos: 5, section: "chords" };
+  const st = { chords: ["G", "D", "Em", "C"], pattern: "Downs", bpm: 80, root: 9, scale: "minorPentatonic", pos: 5, section: "chords", lib: [0, 7] };
   panel.innerHTML = `
     <div class="jg-row">
       <div class="jg-inline-mascot">${puppySvg("rockout")}</div>
       <button class="jg-pill jg-pill-active" data-sec="chords">${icon("guitar", 16)} Chord loop</button>
-      <button class="jg-pill" data-sec="scales">${icon("song", 16)} Scales</button>
       <button class="jg-pill" data-sec="library">${icon("star", 16)} All chords</button>
+      <button class="jg-pill" data-sec="scales">${icon("song", 16)} Scales</button>
       <button class="jg-pill" data-sec="metronome">${icon("tuner", 16)} Metronome</button>
       <button class="jg-pill" data-sec="upload">${icon("cassette", 16)} Upload a song</button>
     </div>
@@ -51,9 +61,9 @@ function renderPractice(panel) {
     <div class="jg-instrument-host"></div>
     <div class="jg-below"></div>`;
   const sec = panel.querySelector(".jg-sec");
-  const inst = mountInstrument(panel.querySelector(".jg-instrument-host"), { frets: 15 });
+  const inst = mountInstrument(panel.querySelector(".jg-instrument-host"), { frets: 15, fit: true });
   wireFlip(panel, () => renderPractice(panel));
-  cleanup.push(() => inst.hw.destroy());
+  cleanup.push(() => { inst.hw.destroy(); inst.fb.destroy(); });
   let box = null;
   let stopMetro = null;
   let stopUpload = null;
@@ -65,60 +75,109 @@ function renderPractice(panel) {
     if (stopUpload) stopUpload();
     stopUpload = null;
     inst.fb.clear();
-    inst.hw.render(0, []);
+    inst.hw.reset();
     panel.querySelector(".jg-below").innerHTML = "";
   };
   cleanup.push(clearSec);
 
+  // Chord loop: pick chords, press Start. The play-along view above the
+  // fretboard shows the chord's name, its strum arrows and (on the
+  // fretboard) its shape, round and round until Stop.
   function chordsSection() {
     sec.innerHTML = `
-      <div class="jg-card">
-        <p><strong>Your loop:</strong> <span class="jg-loop"></span> <button class="jg-btn jg-btn-small jg-clear">Clear</button></p>
-        <div class="jg-row">${CHORDS.map((c) => `<button class="jg-pill" data-add="${c}">${c}</button>`).join("")}</div>
-        <div class="jg-row"><span class="jg-label">Strum</span>${Object.keys(PATTERNS).map((k) => `<button class="jg-pill ${k === st.pattern ? "jg-pill-active" : ""}" data-pat="${k}">${k}</button>`).join("")}</div>
-        <div class="jg-row"><span class="jg-label">Tempo</span><input type="range" min="40" max="160" value="${st.bpm}" class="jg-bpm"><span class="jg-bpm-v">${st.bpm} BPM</span></div>
-        <div class="jg-diagram-row jg-loop-dg"></div>
-      </div>
-      <div class="jg-box"></div>`;
-    const mount = () => {
-      if (box) box.destroy();
-      sec.querySelector(".jg-loop").textContent = st.chords.join(" – ") || "(tap chords below)";
-      sec.querySelector(".jg-loop-dg").innerHTML = [...new Set(st.chords)].map((c) => chordDiagramSvg(chordShape(c), c)).join("");
-      if (!st.chords.length) { sec.querySelector(".jg-box").innerHTML = ""; return; }
-      const pat = PATTERNS[st.pattern];
-      const items = () => chordTimeline(st.chords.map((c) => ({ chord: c, shape: chordShape(c) })), { beatsPerChord: pat.length === 3 ? 3 : 4, pattern: pat });
-      box = createPracticeBox(sec.querySelector(".jg-box"), inst, { items, bpm: st.bpm, modes: ["listen", "wait"], label: "Chord loop", drums: pat.length !== 3, key: null, restore: () => inst.fb.showShape(chordShape(st.chords[0])) });
+      <div class="jg-card jg-loopcard">
+        <div class="jg-loop-head"><b>Your loop</b><span class="jg-note">Tap ✕ to take a chord out</span></div>
+        <div class="jg-loop-chips"></div>
+        <div class="jg-loop-sub">Add a chord</div>
+        <div class="jg-loop-add">${LOOP_CHORDS.map((c) => `<button class="jg-pill" data-add="${c}">${c}</button>`).join("")}</div>
+        <div class="jg-loop-ctl">
+          <span class="jg-label">Strum</span>${Object.keys(PATTERNS).map((k) => `<button class="jg-pill ${k === st.pattern ? "jg-pill-active" : ""}" data-pat="${k}">${k}</button>`).join("")}
+        </div>
+        <div class="jg-loop-ctl">
+          <span class="jg-label">Speed</span>${SPEEDS.map(([n, v]) => `<button class="jg-pill ${v === st.bpm ? "jg-pill-active" : ""}" data-bpm="${v}">${n}</button>`).join("")}
+        </div>
+        <button class="jg-btn jg-btn-primary jg-loop-go">▶ Start</button>
+      </div>`;
+    const goBtn = sec.querySelector(".jg-loop-go");
+    let player = null;
+    // The loop played 4 times over, looping, so there's no pause each time round.
+    const items = () => chordTimeline(Array(4).fill(st.chords).flat().map((c) => ({ chord: c, shape: chordShape(c) })), { beatsPerChord: 4, pattern: PATTERNS[st.pattern] });
+    const preview = () => {
+      if (!st.chords.length) { inst.hw.reset(); inst.fb.clear(); return; }
+      inst.hw.preview(timelineEvents(items(), { bpm: st.bpm }), { beatSec: 60 / st.bpm, beatsPerBar: 4, origin: LEAD, hint: "Press Start" });
       inst.fb.showShape(chordShape(st.chords[0]));
     };
+    const stop = () => {
+      if (player) { player.stop(); stopAllSound(); }
+      player = null;
+      document.body.classList.remove("jg-playing");
+      goBtn.textContent = "▶ Start";
+      goBtn.classList.remove("jg-loop-stop");
+      preview();
+    };
+    const start = () => {
+      if (!st.chords.length) return;
+      getAudioContext().resume?.();
+      player = createGuitarPlayer({ fb: inst.fb, highway: inst.hw, items: items(), bpm: st.bpm, mode: "listen", loop: true, beatsPerBar: 4, onFinish: () => stop() });
+      player.start();
+      document.body.classList.add("jg-playing");
+      goBtn.textContent = "■ Stop";
+      goBtn.classList.add("jg-loop-stop");
+      // Bring the chord name, arrows and fretboard into view.
+      const host = panel.querySelector(".jg-instrument-host");
+      const r = host.getBoundingClientRect();
+      if (r.bottom > window.innerHeight || r.top < 0) host.scrollIntoView({ behavior: "smooth", block: "end" });
+    };
+    const drawChips = () => {
+      sec.querySelector(".jg-loop-chips").innerHTML = st.chords.length
+        ? st.chords.map((c, i) => `<button class="jg-loop-chip" data-del="${i}" aria-label="Remove ${c}">${c}<span aria-hidden="true">✕</span></button>`).join("")
+        : '<span class="jg-note">Tap chords below to build your loop.</span>';
+      goBtn.disabled = !st.chords.length;
+    };
+    const changed = () => { const was = Boolean(player); if (player) stop(); drawChips(); preview(); if (was) start(); };
+    box = { destroy: () => { if (player) { player.stop(); stopAllSound(); } player = null; document.body.classList.remove("jg-playing"); } };
     sec.onclick = (e) => {
       const b = e.target.closest("button");
       if (!b) return;
       if (b.dataset.add) {
         if (st.chords.length >= 8) st.chords.shift();
         st.chords.push(b.dataset.add);
-        strum(shapeMidis(chordShape(b.dataset.add)));
-        mount();
-      } else if (b.classList.contains("jg-clear")) { st.chords = []; mount(); }
-      else if (b.dataset.pat) {
+        if (!player) strum(shapeMidis(chordShape(b.dataset.add)));
+        changed();
+      } else if (b.dataset.del !== undefined) {
+        st.chords.splice(Number(b.dataset.del), 1);
+        changed();
+      } else if (b.dataset.pat) {
         st.pattern = b.dataset.pat;
         sec.querySelectorAll("[data-pat]").forEach((x) => x.classList.toggle("jg-pill-active", x === b));
-        mount();
+        changed();
+      } else if (b.dataset.bpm) {
+        st.bpm = Number(b.dataset.bpm);
+        sec.querySelectorAll("[data-bpm]").forEach((x) => x.classList.toggle("jg-pill-active", x === b));
+        changed();
+      } else if (b === goBtn) {
+        if (player) stop(); else start();
       }
     };
-    const r = sec.querySelector(".jg-bpm");
-    r.addEventListener("input", () => { sec.querySelector(".jg-bpm-v").textContent = `${r.value} BPM`; });
-    r.addEventListener("change", () => { st.bpm = Number(r.value); mount(); });
-    mount();
+    drawChips();
+    preview();
   }
 
+  // Scales: the scale box on a fretboard window that fits the screen; when
+  // it plays, the current note's string glows with a ring and its fret
+  // number, the view says "A string, fret 5", the next note shows faintly.
   function scalesSection() {
     sec.innerHTML = `
-      <div class="jg-card">
-        <div class="jg-row"><span class="jg-label">Scale</span>${SCALE_OPTS.map(([n, k]) => `<button class="jg-pill ${k === st.scale ? "jg-pill-active" : ""}" data-scale="${k}">${n}</button>`).join("")}</div>
-        <div class="jg-row"><span class="jg-label">Key</span>${NOTE_NAMES.map((n, i) => `<button class="jg-pill ${i === st.root ? "jg-pill-active" : ""}" data-root="${i}">${n}</button>`).join("")}</div>
-        <div class="jg-row"><span class="jg-label">Start at</span><input type="range" min="0" max="12" value="${st.pos}" class="jg-pos"><span class="jg-pos-v">fret ${st.pos}</span>
-          <button class="jg-btn jg-btn-small jg-auto">Jump to the root</button></div>
-        <p class="jg-note">One finger per fret. Orange dots are the root note. Go slowly with Wait for me: clean first, then fast.</p>
+      <div class="jg-card jg-scalecard">
+        <div class="jg-scale-ctl">
+          <label><span class="jg-label">Scale</span><select class="jg-sel jg-scale-sel">${SCALE_OPTS.map(([n, k]) => `<option value="${k}" ${k === st.scale ? "selected" : ""}>${n}</option>`).join("")}</select></label>
+          <label><span class="jg-label">Key</span><select class="jg-sel jg-root-sel">${NOTE_NAMES.map((n, i) => `<option value="${i}" ${i === st.root ? "selected" : ""}>${n}</option>`).join("")}</select></label>
+        </div>
+        <div class="jg-scale-ctl">
+          <label class="jg-scale-pos"><span class="jg-label">Start at <b class="jg-pos-v">fret ${st.pos}</b></span><input type="range" min="0" max="12" value="${st.pos}" class="jg-pos"></label>
+          <button class="jg-btn jg-btn-small jg-auto">Root on low E</button>
+        </div>
+        <p class="jg-note">One finger per fret. Orange dots are the root note. Press Start: the glowing string and ring show each note.</p>
       </div>
       <div class="jg-box"></div>`;
     const mount = () => {
@@ -129,25 +188,18 @@ function renderPractice(panel) {
       const seq = [...notes, ...[...notes].reverse().slice(1)];
       box = createPracticeBox(sec.querySelector(".jg-box"), inst, {
         items: () => seq.map((n, i) => ({ string: n.string, fret: n.fret, start: i * 0.5, dur: 0.5 })),
-        bpm: 70, modes: ["listen", "wait", "timed"], mic: true, showTab: true,
+        bpm: 70, modes: ["listen", "wait", "timed"], mic: true,
         label: `${NOTE_NAMES[st.root]} ${SCALE_OPTS.find((o) => o[1] === st.scale)[0].toLowerCase()} · fret ${st.pos}`,
         key: `scale:${st.root}:${st.scale}:${st.pos}`, restore: show,
       });
     };
-    sec.onclick = (e) => {
-      const b = e.target.closest("button");
-      if (!b) return;
-      if (b.dataset.scale) st.scale = b.dataset.scale;
-      else if (b.dataset.root) st.root = Number(b.dataset.root);
-      else if (b.classList.contains("jg-auto")) {
-        // Index finger on the root on the low E string
-        st.pos = ((st.root - 4 + 12) % 12) || 12;
-        if (st.pos > 12) st.pos -= 12;
-      } else return;
-      scalesSection();
-    };
+    sec.querySelector(".jg-scale-sel").addEventListener("change", (e) => { st.scale = e.target.value; mount(); });
+    sec.querySelector(".jg-root-sel").addEventListener("change", (e) => { st.root = Number(e.target.value); mount(); });
     const r = sec.querySelector(".jg-pos");
-    r.addEventListener("input", () => { st.pos = Number(r.value); sec.querySelector(".jg-pos-v").textContent = `fret ${st.pos}`; mount(); });
+    const setPos = (v) => { st.pos = v; r.value = v; sec.querySelector(".jg-pos-v").textContent = `fret ${v}`; mount(); };
+    r.addEventListener("input", () => setPos(Number(r.value)));
+    // Index finger on the root on the low E string.
+    sec.querySelector(".jg-auto").addEventListener("click", () => setPos(((st.root - 4 + 12) % 12) || 12));
     mount();
   }
 
@@ -229,7 +281,7 @@ function renderPractice(panel) {
       panel.querySelector(".jg-below").innerHTML = "";
       try {
         const notes = await transcribeFile(file, (t) => { status.textContent = t; });
-        const hw = notes.map((n) => ({ midi: n.pitchMidi ?? n.midi, time: n.startTimeSeconds ?? n.time, duration: n.durationSeconds ?? n.duration }));
+        const hw = notes.map((n) => ({ midi: n.pitchMidi ?? n.midi, time: n.startTimeSeconds ?? n.time, duration: n.durationSeconds ?? n.duration, velocity: n.amplitude }));
         const beat = estimateBeat(hw);
         // Slow songs can change chord every beat; faster ones every 2 beats.
         const win = beat ? (beat.beatSec >= 0.75 ? beat.beatSec : beat.beatSec * 2) : 1;
@@ -240,7 +292,7 @@ function renderPractice(panel) {
         if (!chords.length) throw new Error("No chords found. Try a clearer recording.");
         const capo = suggestCapo(chords.map((c) => c.chord));
         status.textContent = `Found ${chords.length} chord changes${beat ? ` · about ${beat.bpm} BPM` : ""}.`;
-        showUpload(file, chords, capo, beat);
+        showUpload(file, chords, capo, beat, hw);
       } catch (err) {
         status.textContent = err.message;
       }
@@ -270,7 +322,7 @@ function renderPractice(panel) {
     }).sort((a, b) => (b.confidence === "confirmed") - (a.confidence === "confirmed") || (a.popularityRank || 999) - (b.popularityRank || 999));
   }
 
-  function showUpload(file, chords, capo, beat) {
+  function showUpload(file, chords, capo, beat, heard) {
     const res = sec.querySelector(".jg-up-result");
     const below = panel.querySelector(".jg-below");
     const unique = [...new Set(chords.map((c) => c.chord))];
@@ -281,7 +333,10 @@ function renderPractice(panel) {
     // Play first, right above the fretboard...
     res.innerHTML = `
       <button class="jg-upload-bigplay jg-up-play">▶ Play</button>
-      <div class="jg-big jg-up-now"></div>
+      <div class="jg-row jg-up-view"><span class="jg-label">Show</span>
+        <button class="jg-pill jg-pill-active" data-view="chords">Easy</button>
+        <button class="jg-pill" data-view="every">Entire song</button></div>
+      <div class="jg-up-every"></div>
       <audio class="jg-up-audio" preload="auto"></audio>`;
     // ...everything else below the fretboard.
     below.innerHTML = `
@@ -307,25 +362,66 @@ function renderPractice(panel) {
     let lastIdx = -1;
     const drawDg = () => { below.querySelector(".jg-up-dg").innerHTML = unique.map((c) => chordDiagramSvg(chordShape(shapeFor(c)), shapeFor(c) + (useCapo ? ` (${c})` : ""))).join(""); };
     drawDg();
-    const notesFor = () => chords.flatMap((c) => {
-      const sh = chordShape(shapeFor(c.chord));
-      return sh ? sh.frets.map((f, s) => (f >= 0 ? { string: s, fret: f, time: c.time, duration: Math.max(0.2, c.end - c.time - 0.05) } : null)).filter(Boolean) : [];
+    // Chords: the classic pop strum (D · D U · U D U) on the song's beat,
+    // so each chord shows its arrows; one strum per chord if we couldn't
+    // find a beat. "Entire song" is every note on its string and fret
+    // (every-note-view.js).
+    const POP = ["down", null, "down", "up", null, "up", "down", "up"];
+    let view = "chords";
+    const chordEvs = () => {
+      const out = [];
+      const slot = beat ? beat.beatSec / 2 : 0;
+      chords.forEach((c) => {
+        const sym = shapeFor(c.chord);
+        const shape = chordShape(sym);
+        const before = out.length;
+        if (slot) {
+          for (let j = Math.ceil((c.time - beat.offsetSec) / slot - 1e-6); beat.offsetSec + j * slot < c.end - 0.02; j++) {
+            const dir = POP[((j % 8) + 8) % 8];
+            const t = beat.offsetSec + j * slot;
+            if (dir) out.push({ t, d: slot * 0.95, span: slot, chord: sym, shape, strum: dir });
+          }
+        }
+        if (out.length === before) out.push({ t: c.time, d: Math.max(0.2, c.end - c.time - 0.05), span: c.end - c.time, chord: sym, shape, strum: "down" });
+      });
+      return out;
+    };
+    let evs = [];
+    let every = null; // "Every note" (every-note-view.js) has its own player
+    const loadView = () => {
+      if (every) { every.destroy(); every = null; }
+      playBtn.style.display = view === "every" ? "none" : "";
+      res.querySelectorAll("[data-view]").forEach((x) => x.classList.toggle("jg-pill-active", x.dataset.view === view));
+      if (view === "every") {
+        audio.pause(); playBtn.textContent = "▶ Play"; inst.hw.reset();
+        every = mountEveryNote(res.querySelector(".jg-up-every"), { inst, audio, notes: heard, suggestedCapo: capo.capo });
+        return;
+      }
+      evs = chordEvs();
+      inst.hw.preview(evs, { beatSec: beat ? beat.beatSec : 0, beatsPerBar: 4, origin: beat ? beat.offsetSec : 0, hint: "Press Play" });
+      const first = evs[0];
+      if (first && first.chord) inst.fb.showShape(first.shape);
+      else if (first) inst.fb.show([{ string: first.string, fret: first.fret, tone: "root", label: String(first.fret) }]);
+      res.querySelectorAll("[data-view]").forEach((x) => x.classList.toggle("jg-pill-active", x.dataset.view === view));
+      lastIdx = -1;
+    };
+    loadView();
+    res.querySelector(".jg-up-view").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-view]");
+      if (!b) return;
+      view = b.dataset.view;
+      loadView();
     });
-    let notes = notesFor();
     const tick = () => {
       const t = audio.currentTime;
-      const idx = chords.findIndex((c) => t >= c.time && t < c.end);
-      if (idx !== lastIdx) {
-        lastIdx = idx;
-        const c = chords[idx];
-        if (c) {
-          const sh = chordShape(shapeFor(c.chord));
-          inst.fb.showShape(sh);
-          res.querySelector(".jg-up-now").textContent = shapeFor(c.chord);
-          if (snd !== "song" && sh && !audio.paused) strum(shapeMidis(sh), { duration: Math.min(3, c.end - c.time) });
+      const e = inst.hw.update(t);
+      if (e && e.i0 !== lastIdx && t >= e.t - 0.03) {
+        lastIdx = e.i0;
+        if (snd !== "song" && !audio.paused) {
+          if (e.chord && e.shape) { const m = shapeMidis(e.shape); strum(e.strum === "up" ? m.slice(-4) : m, { direction: e.strum, duration: e.d + 0.3 }); }
+          else if (!e.chord) playNote(midiAt(e.string, e.fret), { duration: e.d + 0.2 });
         }
       }
-      inst.hw.render(t, notes, { chordLabel: "" });
       raf = requestAnimationFrame(tick);
     };
     const setVolume = () => { audio.volume = snd === "guitar" ? 0 : snd === "both" ? 0.6 : 1; audio.muted = snd === "guitar"; };
@@ -343,7 +439,7 @@ function renderPractice(panel) {
     below.onclick = (e) => {
       const b = e.target.closest("button");
       if (!b) return;
-      if (b.dataset.capo !== undefined) { useCapo = b.dataset.capo === "1"; below.querySelectorAll("[data-capo]").forEach((x) => x.classList.toggle("jg-pill-active", x === b)); drawDg(); notes = notesFor(); lastIdx = -1; }
+      if (b.dataset.capo !== undefined) { useCapo = b.dataset.capo === "1"; below.querySelectorAll("[data-capo]").forEach((x) => x.classList.toggle("jg-pill-active", x === b)); drawDg(); loadView(); }
       if (b.dataset.snd) { snd = b.dataset.snd; below.querySelectorAll("[data-snd]").forEach((x) => x.classList.toggle("jg-pill-active", x === b)); setVolume(); }
       if (b.dataset.song) openSongByTitle(b.dataset.song);
       if (b.classList.contains("jg-up-guess")) {
@@ -362,41 +458,44 @@ function renderPractice(panel) {
         });
       }
     };
-    stopUpload = () => { audio.pause(); if (raf) cancelAnimationFrame(raf); raf = null; URL.revokeObjectURL(url); stopAllSound(); };
+    stopUpload = () => { if (every) every.destroy(); every = null; audio.pause(); if (raf) cancelAnimationFrame(raf); raf = null; URL.revokeObjectURL(url); stopAllSound(); inst.hw.reset(); };
   }
 
 
+  // All chords: 4 rows (major, minor, 7th, maj7/m7/sus), each a strip of
+  // chord names you scroll sideways. Four diagrams show at a time: the
+  // chord you tapped and its neighbours in that row. Tapping one plays it
+  // and puts it on the fretboard.
   function librarySection() {
-    const QUALITIES = [["", "major"], ["m", "minor"], ["7", "7"], ["maj7", "maj7"], ["m7", "m7"], ["sus2", "sus2"], ["sus4", "sus4"], ["5", "power"], ["dim", "dim"], ["6", "6"]];
-    const ROOTS = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
-    let root = "C";
     sec.innerHTML = `
-      <div class="jg-card">
-        <p><strong>Every common chord, in every key.</strong> Pick a note, then tap a chord to see it and hear it.</p>
-        <div class="jg-row">${ROOTS.map((r) => `<button class="jg-pill ${r === root ? "jg-pill-active" : ""}" data-root="${r}">${r}</button>`).join("")}</div>
-        <div class="jg-diagram-row jg-lib"></div>
+      <div class="jg-card jg-libcard">
+        <p class="jg-lib-intro"><strong>Every chord in the app.</strong> Tap a name to see it, hear it and put it on the fretboard. Scroll a row sideways for more.</p>
+        ${LIB_ROWS.map(([label, list], ri) => `<div class="jg-lib-row"><div class="jg-lib-rowname">${label}</div>
+          <div class="jg-chord-strip" data-row="${ri}">${list.map((c, i) => `<button class="jg-chord-btn" data-r="${ri}" data-i="${i}">${c}</button>`).join("")}</div></div>`).join("")}
+        <div class="jg-lib4"></div>
       </div>`;
-    const draw = () => {
-      sec.querySelector(".jg-lib").innerHTML = QUALITIES.map(([q, label]) => {
-        const sym = root + q;
-        const sh = chordShape(sym);
-        return sh ? `<button class="jg-btn jg-dg-btn" data-chord="${sym}" title="${sym} (${label})">${chordDiagramSvg(sh, sym)}</button>` : "";
-      }).join("");
+    const select = (ri, i, { play = true, scroll = true } = {}) => {
+      st.lib = [ri, i];
+      const list = LIB_ROWS[ri][1];
+      const from = Math.max(0, Math.min(i, list.length - 4));
+      sec.querySelector(".jg-lib4").innerHTML = list.slice(from, from + 4).map((c, k) =>
+        `<button class="jg-dg-btn jg-lib4-dg ${from + k === i ? "jg-lib4-on" : ""}" data-r="${ri}" data-i="${from + k}" aria-label="${c}">${chordDiagramSvg(chordShape(c), c)}</button>`).join("");
+      sec.querySelectorAll(".jg-chord-btn").forEach((b) => b.classList.toggle("jg-chord-on", Number(b.dataset.r) === ri && Number(b.dataset.i) === i));
+      if (scroll) {
+        const strip = sec.querySelector(`.jg-chord-strip[data-row="${ri}"]`);
+        const btn = strip.querySelector(`[data-i="${i}"]`);
+        strip.scrollTo({ left: Math.max(0, btn.offsetLeft - strip.offsetLeft - 8), behavior: "smooth" });
+      }
+      const sh = chordShape(list[i]);
+      inst.fb.showShape(sh);
+      if (play) strum(shapeMidis(sh));
     };
     sec.onclick = (e) => {
-      const b = e.target.closest("button");
+      const b = e.target.closest("[data-r]");
       if (!b) return;
-      if (b.dataset.root) {
-        root = b.dataset.root;
-        sec.querySelectorAll("[data-root]").forEach((x) => x.classList.toggle("jg-pill-active", x === b));
-        draw();
-      } else if (b.dataset.chord) {
-        const sh = chordShape(b.dataset.chord);
-        inst.fb.showShape(sh);
-        strum(shapeMidis(sh));
-      }
+      select(Number(b.dataset.r), Number(b.dataset.i), { scroll: !b.classList.contains("jg-chord-btn") });
     };
-    draw();
+    select(st.lib[0], st.lib[1], { play: false });
   }
   const SECTIONS = { library: librarySection, chords: chordsSection, scales: scalesSection, metronome: metronomeSection, upload: uploadSection };
   panel.querySelectorAll("[data-sec]").forEach((b) => b.addEventListener("click", () => {

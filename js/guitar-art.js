@@ -5,8 +5,10 @@
 //   guitarSvg()            the whole guitar, with where each hand goes
 //   headstockSvg(opts)     the tuning pegs, one per string (tuner)
 //   fingerStrumSvg()       strumming with a finger instead of a pick
-//   viewerSvg()            a soft shadow of your head under the fretboard,
-//                          looking down at it (why low E is at the bottom)
+//   viewerSvg()            side view + "what you see looking down" (why
+//                          low E is at the bottom)
+
+import { isLefty, mirrorSvgTexts, handSide } from "./settings.js";
 
 const STR = ["E", "A", "D", "G", "B", "e"];
 
@@ -15,7 +17,10 @@ function guitarSvg() {
   const frets = [];
   let x = 92;
   for (let f = 1; f <= 14; f++) { x += 22 - f * 0.55; frets.push(x); }
-  return `<svg viewBox="0 0 640 290" class="jg-guitar-art" role="img" aria-label="A whole acoustic guitar, drawn for a right-handed player: neck on the left, body on the right">
+  const lefty = isLefty();
+  const fh = handSide("fret"), sh = handSide("strum");
+  const cap = (w) => w[0].toUpperCase() + w.slice(1);
+  const svg = `<svg viewBox="0 0 640 290" class="jg-guitar-art" role="img" aria-label="A whole acoustic guitar, drawn for a ${lefty ? "left" : "right"}-handed player: neck on the ${fh}, body on the ${sh}. ${cap(fh)} hand presses the frets, ${sh} hand strums.">
     <defs><radialGradient id="jgBody" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#f3c27a"/><stop offset="1" stop-color="#c9843c"/></radialGradient></defs>
     <g transform="translate(0 20)">
     <path d="M14 92 L88 84 L88 136 L14 128 Q6 110 14 92 Z" class="jg-ga-head"/>
@@ -27,12 +32,13 @@ function guitarSvg() {
     <circle cx="440" cy="110" r="30" class="jg-ga-hole"/>
     <rect x="556" y="94" width="14" height="32" rx="3" class="jg-ga-bridge"/>
     ${STR.map((n, s) => `<line x1="40" x2="562" y1="${sy(s)}" y2="${sy(s)}" class="jg-ga-string" style="stroke-width:${2.2 - s * 0.28}"/>`).join("")}
-    <text x="96" y="${sy(0) + 22}" class="jg-ga-small">low E (thickest) at the bottom: nearest you</text>
+    <text x="96" y="${sy(0) + 22}" class="jg-ga-small jg-ga-left">low E (thickest) at the bottom: nearest you</text>
     </g>
-    <g class="jg-ga-label"><path d="M200 152 L200 174" class="jg-ga-arrow"/><text x="200" y="196">Left hand</text><text x="200" y="214" class="jg-ga-small">presses the frets</text></g>
-    <g class="jg-ga-label"><path d="M440 154 L440 222" class="jg-ga-arrow"/><text x="440" y="244">Right hand</text><text x="440" y="262" class="jg-ga-small">strums over the hole</text></g>
-    <text x="320" y="284" class="jg-ga-small jg-ga-mid">Drawn for right-handed players, as you see it looking down at your guitar</text>
+    <g class="jg-ga-label"><path d="M200 152 L200 174" class="jg-ga-arrow"/><text x="200" y="196">${cap(fh)} hand</text><text x="200" y="214" class="jg-ga-small">presses the frets</text></g>
+    <g class="jg-ga-label"><path d="M440 154 L440 222" class="jg-ga-arrow"/><text x="440" y="244">${cap(sh)} hand</text><text x="440" y="262" class="jg-ga-small">strums over the hole</text></g>
+    <text x="320" y="284" class="jg-ga-small jg-ga-mid">${lefty ? "Flipped for left-handed players" : "Drawn for right-handed players"}, as you see it looking down at your guitar</text>
   </svg>`;
+  return lefty ? mirrorSvgTexts(svg) : svg;
 }
 
 // Tuner: the headstock with six pegs (3 on each side, like most
@@ -60,7 +66,8 @@ function headstockSvg({ active = 0, done = new Set(), ok = false, names = STR } 
     p.push(`<g class="${cls}" data-s="${s}" role="button" tabindex="0" aria-label="${n} string"><circle cx="${pegX[s]}" cy="${pegY(s)}" r="19"/><text x="${pegX[s]}" y="${pegY(s) + 6}">${n}${done.has(s) ? "✓" : ""}</text></g>`);
     p.push(`<text x="534" y="${sy(s) + 5}" class="jg-hs-name ${s === active ? "jg-hs-name-active" : ""}">${n}</text>`);
   });
-  return `<svg viewBox="0 0 560 220" class="jg-headstock" role="img" aria-label="Guitar headstock: tap a peg to tune that string">${p.join("")}</svg>`;
+  const body = isLefty() ? mirrorSvgTexts(p.join("")) : p.join("");
+  return `<svg viewBox="0 0 560 220" class="jg-headstock" role="img" aria-label="Guitar headstock: tap a peg to tune that string">${body}</svg>`;
 }
 
 // A finger brushing down across the strings (back of the nail), then
@@ -77,44 +84,73 @@ function fingerStrumSvg() {
   </svg>`;
 }
 
-// Looking over a guitarist's shoulder (a cartoon in the style of a cool
-// desert-movie guitar hero: long dark hair, black embroidered jacket, warm
-// acoustic guitar; seen from behind, not a likeness of anyone): the neck
-// runs up to the right with his hand on it, the other hand strums over the
-// sound hole. This is what you see looking down at your own guitar, and the
-// thick low E string is the one nearest your face.
+// Why the thick low E string is drawn at the BOTTOM (owner request
+// 2026-10-18: a simple picture anyone gets). Left: a person seen from the
+// side, holding the guitar upright. Seen from the side, the six strings are
+// a little column of dots, thickest on top, nearest the eyes; a dashed line
+// shows them looking down. Right: what they see looking down, the same
+// fretboard picture used all through the app: nut on the left, low E at
+// the bottom, nearest them (an eye under the picture shows where they are).
+// Left-handed: the "what you see" picture is mirrored, like every fretboard.
 function viewerSvg() {
-  return `<svg viewBox="0 0 320 284" class="jg-viewer" role="img" aria-label="Over a guitarist's shoulder, looking down at the guitar in his lap: the thick low E string is the one nearest his face">
-    <defs><radialGradient id="vw-sun" cx="80%" cy="15%" r="85%"><stop offset="0" stop-color="#ffe6b0"/><stop offset="0.55" stop-color="#f6cf96"/><stop offset="1" stop-color="#e3aa72"/></radialGradient>
-      <linearGradient id="vw-top" x1="0" x2="1"><stop offset="0" stop-color="#ebba73"/><stop offset="1" stop-color="#cf9350"/></linearGradient></defs>
-    <rect x="0" y="0" width="320" height="250" rx="18" fill="url(#vw-sun)"/>
-    <path d="M0 214 Q80 198 160 206 T320 196 V232 Q320 250 302 250 H18 Q0 250 0 232 Z" fill="#d79b62" opacity="0.5"/>
-    <g transform="translate(160 176) rotate(-34) scale(1.05)">
-      <path d="M150 12 L138 64" class="vw-sleeve" style="stroke-width:20"/>
-      <ellipse cx="150" cy="16" rx="14" ry="10" class="vw-skin"/>
-      <ellipse cx="-22" cy="0" rx="60" ry="48" class="vw-side"/><ellipse cx="38" cy="0" rx="44" ry="37" class="vw-side"/>
-      <ellipse cx="-22" cy="0" rx="55" ry="43" fill="url(#vw-top)"/><ellipse cx="38" cy="0" rx="39" ry="32" fill="url(#vw-top)"/>
-      <circle cx="22" cy="0" r="17" class="vw-ring"/><circle cx="22" cy="0" r="13" class="vw-hole"/>
-      <rect x="-56" y="-15" width="11" height="30" rx="3" class="vw-bridge"/>
-      <rect x="68" y="-9.5" width="126" height="19" rx="2" class="vw-board"/>
-      <path d="M194 -11 L228 -15 L228 15 L194 11 Z" class="vw-head"/><circle cx="198" cy="-14" r="3.2" class="vw-peg"/><circle cx="198" cy="14" r="3.2" class="vw-peg"/><circle cx="209" cy="-14" r="3.2" class="vw-peg"/><circle cx="209" cy="14" r="3.2" class="vw-peg"/><circle cx="220" cy="-14" r="3.2" class="vw-peg"/><circle cx="220" cy="14" r="3.2" class="vw-peg"/>
-      <line x1="90" x2="90" y1="-9" y2="9" class="vw-fret"/><line x1="110" x2="110" y1="-9" y2="9" class="vw-fret"/><line x1="128" x2="128" y1="-9" y2="9" class="vw-fret"/><line x1="144" x2="144" y1="-9" y2="9" class="vw-fret"/><line x1="158" x2="158" y1="-9" y2="9" class="vw-fret"/><line x1="170" x2="170" y1="-9" y2="9" class="vw-fret"/><line x1="180" x2="180" y1="-9" y2="9" class="vw-fret"/>
-      <line x1="66" x2="66" y1="-10" y2="10" class="vw-nut"/>
-      <line x1="-46" x2="194" y1="-7.5" y2="-7.5" class="vw-str" style="stroke-width:1.90"/><line x1="-46" x2="194" y1="-4.5" y2="-4.5" class="vw-str" style="stroke-width:1.65"/><line x1="-46" x2="194" y1="-1.5" y2="-1.5" class="vw-str" style="stroke-width:1.40"/><line x1="-46" x2="194" y1="1.5" y2="1.5" class="vw-str" style="stroke-width:1.15"/><line x1="-46" x2="194" y1="4.5" y2="4.5" class="vw-str" style="stroke-width:0.90"/><line x1="-46" x2="194" y1="7.5" y2="7.5" class="vw-str" style="stroke-width:0.65"/>
-      <path d="M138 18 L137 -3 M149 19 L149 -5 M160 18 L160 -4 M170 16 L171 -1" class="vw-finger"/>
-    </g>
-    <path d="M40 156 Q92 172 128 190" class="vw-sleeve" style="stroke-width:30"/>
-    <path d="M40 156 Q92 172 128 190" class="vw-trim"/>
-    <ellipse cx="136" cy="194" rx="15" ry="11" transform="rotate(-30 136 194)" class="vw-skin"/>
-    <path d="M131 200 l10 9 l4 -11 z" fill="#c0392b"/>
-    <path d="M0 250 L0 92 C16 58 66 50 108 72 C130 88 124 128 100 152 C82 170 58 200 50 250 Z" class="vw-jacket"/>
-    <path d="M16 104 q14 -14 32 -6 q-10 10 -4 22 M64 80 q16 -6 28 6 q-14 2 -16 16 M24 140 q12 -8 22 2" class="vw-embroidery"/>
-    <path d="M84 96 L106 100 L94 118 Z" fill="#f4efe6"/>
-    <path d="M30 72 C18 34 52 4 88 12 C122 20 132 54 118 82 C114 96 112 112 116 130 C104 124 98 110 96 98 C92 116 94 132 100 146 C86 140 80 124 80 108 C74 122 76 140 82 156 C66 146 62 128 64 110 C56 126 56 142 60 158 C44 144 44 124 48 106 C40 116 32 122 22 124 C32 108 34 90 30 72 Z" class="vw-hair"/>
-    <path d="M44 28 C62 18 84 24 100 38 M38 52 C58 42 82 48 102 62 M56 76 C70 70 86 80 92 98 M70 92 C76 108 78 124 84 140" class="vw-strand"/>
-    <text x="160" y="266" class="jg-viewer-txt">This is you, looking down at your guitar:</text>
-    <text x="160" y="281" class="jg-viewer-txt jg-viewer-strong">the thick low E string is the one nearest you</text>
-  </svg>`;
+  const lefty = isLefty();
+  const T = (x, y, txt, { size = 11, w = 600, fill = "#4a3420", anchor = "middle" } = {}) =>
+    `<text x="${x}" y="${y}" style="font:${w} ${size}px system-ui,-apple-system,sans-serif;fill:${fill};text-anchor:${anchor}">${txt}</text>`;
+  const sizes = [3.4, 2.9, 2.4, 2.0, 1.6, 1.25]; // low E (thick) ... high e (thin)
+  // Left: side view. Strings (dots) stacked low E on top.
+  const dotsSmall = sizes.map((r, k) => `<circle cx="101" cy="${116 + k * 6.4}" r="${r * 0.8}" fill="#c9a24a"/>`).join("");
+  const dotsBig = sizes.map((r, k) => `<circle cx="150" cy="${108 + k * 9.6}" r="${r * 1.35}" fill="#c9a24a" stroke="#8a6a22" stroke-width="0.6"/>`).join("");
+  const side = `
+    <rect x="4" y="22" width="186" height="262" rx="16" fill="#fff7ec" stroke="#ead7bd"/>
+    ${T(97, 40, "1. From the side", { size: 13, w: 800, fill: "#3b2410" })}
+    <path d="M22 236 C22 170 26 122 42 104 C50 96 66 96 72 104 C80 118 84 170 84 236 Z" fill="#7b5cd6"/>
+    <rect x="40" y="88" width="14" height="16" rx="5" fill="#e3b08c"/>
+    <circle cx="48" cy="72" r="20" fill="#e8b994"/>
+    <path d="M28 68 C28 48 48 42 62 50 C66 52 68 56 68 60 C58 58 48 60 40 68 C38 76 34 82 30 82 Z" fill="#4a3022"/>
+    <ellipse cx="61" cy="70" rx="2.6" ry="3" fill="#2b1a10"/>
+    <path d="M67 74 l5 4 l-5 2" fill="none" stroke="#c48a64" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M86 128 C92 150 92 196 86 226 C84 234 70 236 68 228 C62 196 62 150 68 128 C70 120 84 120 86 128 Z" fill="#c9843c" stroke="#8a5a33" stroke-width="2"/>
+    <rect x="84" y="112" width="9" height="42" rx="2" fill="#3b2416"/>
+    ${dotsSmall.replace(/cx="101"/g, 'cx="97"')}
+    <path d="M60 116 C70 150 80 176 92 190" fill="none" stroke="#6a4bc4" stroke-width="11" stroke-linecap="round"/>
+    <circle cx="93" cy="191" r="6" fill="#e3b08c"/>
+    <circle cx="146" cy="134" r="34" fill="#fff" stroke="#7b5cd6" stroke-width="2.5"/>
+    <line x1="100" y1="114" x2="122" y2="108" stroke="#7b5cd6" stroke-width="1.5"/><line x1="100" y1="152" x2="122" y2="160" stroke="#7b5cd6" stroke-width="1.5"/>
+    <rect x="132" y="104" width="9" height="60" rx="2" fill="#3b2416"/>
+    ${dotsBig.replace(/cy="(\d+(\.\d+)?)"/g, (m, y) => `cy="${Number(y) + 2}"`)}
+    ${T(164, 114, "E", { size: 12, w: 900, fill: "#2f8f83", anchor: "start" })}${T(164, 164, "e", { size: 12, w: 900, fill: "#3b2410", anchor: "start" })}
+    <path d="M63 71 L138 105" stroke="#2f8f83" stroke-width="2.2" stroke-dasharray="5 4" fill="none"/>
+    <path d="M140 106 l-9.5 -0.5 l4 -7 z" fill="#2f8f83"/>
+    ${T(97, 254, "The thick low E string is", { size: 11, w: 800, fill: "#2f8f83" })}
+    ${T(97, 268, "on top, nearest your eyes 👀", { size: 11, w: 800, fill: "#2f8f83" })}`;
+  // Right: what you see looking down the neck (owner request 2026-10-26).
+  // Perspective: the thick low E is nearest your eyes (bottom, big), the thin
+  // high e is furthest away (top, small). The strings light up one by one,
+  // from the nearest (E) to the furthest (e).
+  const names = ["E", "A", "D", "G", "B", "e"];
+  const sy = (s) => 150 - s * 13.2 + s * s * 0.55; // nearer strings further apart
+  const nearL = 0, nearR = 140, farL = 16, farR = 126, topY = 72, botY = 160;
+  const edgeL = (y) => nearL + (farL - nearL) * (botY - y) / (botY - topY);
+  const edgeR = (y) => nearR + (farR - nearR) * (botY - y) / (botY - topY);
+  const fretX = [26, 58, 86, 110];
+  const view = `
+    <path d="M${nearL} ${botY} L${nearR} ${botY} L${farR} ${topY} L${farL} ${topY} Z" fill="#6b3f1f"/>
+    <path d="M${nearL} ${botY} L${farL} ${topY} L${farL + 5} ${topY} L${nearL + 7} ${botY} Z" fill="#f1ead9"/>
+    ${fretX.map((x) => { const xt = farL + (x - nearL) * (farR - farL) / (nearR - nearL); return `<line x1="${x}" y1="${botY}" x2="${xt.toFixed(1)}" y2="${topY}" stroke="#d9d2c4" stroke-width="2"/>`; }).join("")}
+    ${names.map((n, s) => { const y = sy(s); const w = (3.6 - s * 0.5).toFixed(2); return `<line x1="${edgeL(y).toFixed(1)}" x2="${edgeR(y).toFixed(1)}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#efe6d2" stroke-width="${w}"><animate attributeName="stroke" values="#efe6d2;#ffd34d;#efe6d2" keyTimes="0;0.08;0.2" dur="6s" begin="${(s * 0.5).toFixed(1)}s" repeatCount="indefinite"/></line>`; }).join("")}
+    ${names.map((n, s) => T(edgeR(sy(s)) + 9, sy(s) + 4, n, { size: s === 0 ? 13 : 10, w: s === 0 || s === 5 ? 900 : 700, fill: s === 0 ? "#2f8f83" : s === 5 ? "#b5532a" : "#4a3420", anchor: "middle" })).join("")}`;
+  const right = `
+    <rect x="198" y="22" width="158" height="262" rx="16" fill="#fff7ec" stroke="#ead7bd"/>
+    ${T(277, 40, "2. Looking down", { size: 13, w: 800, fill: "#3b2410" })}
+    ${T(277, 54, "the neck", { size: 13, w: 800, fill: "#3b2410" })}
+    ${T(277, 70, "thin e: furthest away", { size: 10.5, w: 800, fill: "#b5532a" })}
+    <g transform="translate(${lefty ? 344 : 207} 6)${lefty ? " scale(-1 1)" : ""}">${lefty ? mirrorSvgTexts(view) : view}</g>
+    ${T(277, 186, "thick E: closest to you", { size: 11, w: 800, fill: "#2f8f83" })}
+    <path d="M277 222 L277 198" stroke="#3b2410" stroke-width="2"/><path d="M271 202 l6 -7 l6 7" fill="none" stroke="#3b2410" stroke-width="2"/>
+    <ellipse cx="277" cy="236" rx="14" ry="8.5" fill="#fff" stroke="#3b2410" stroke-width="2"/><circle cx="277" cy="236" r="4.8" fill="#3b2410"><animate attributeName="cy" values="236;239;236" dur="3s" repeatCount="indefinite"/></circle>
+    ${T(277, 262, "Your eyes, looking down", { size: 10.5, w: 700, fill: "#7a6a58" })}
+    ${T(277, 275, "at the strings", { size: 10.5, w: 700, fill: "#7a6a58" })}`;
+  return `<svg viewBox="0 0 360 292" class="jg-viewer" role="img" aria-label="Left: a person seen from the side holding a guitar; the thick low E string is the top string, nearest their eyes. Right: looking down the neck: the thick low E string is closest to you (bottom) and the thin high e string is furthest away (top), with the nut on the ${lefty ? "right" : "left"}.">${side}${right}</svg>`;
 }
 
 export { guitarSvg, headstockSvg, fingerStrumSvg, viewerSvg };

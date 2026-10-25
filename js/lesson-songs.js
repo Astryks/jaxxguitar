@@ -14,6 +14,7 @@ import { songPlan } from "./song-plan.js";
 import { chordShape } from "./guitar-theory.js";
 import { chordDiagramSvg } from "./fretboard.js";
 import { videoHtml } from "./media.js";
+import { songDetail } from "./song-detail.js";
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
@@ -38,7 +39,22 @@ function teachable(song) {
 
 // A strumming pattern that suits the song (by style and feel), with the
 // beats underneath. A starting point: listen to the video and adjust.
+const SYM = { D: "↓", U: "↑", X: "×", "-": "·" };
 function strumFor(song) {
+  // The song's own chart (song-detail.js): the eighth-note strum most of its
+  // 4/4 bars use, the chorus counting double.
+  const d = songDetail(song);
+  if (d && d.barQ === 4) {
+    const votes = new Map();
+    d.sections.forEach((sec) => {
+      const st = sec.strum;
+      if (st.kind !== "strum" || st.slotQ !== 0.5 || st.bars.length !== 1 || !/[DU]/.test(st.bars[0])) return;
+      const w = sec.bars.length * (/chorus/i.test(sec.name) ? 2 : 1);
+      votes.set(st.bars[0], (votes.get(st.bars[0]) || 0) + w);
+    });
+    const best = [...votes].sort((x, y) => y[1] - x[1])[0];
+    if (best) return { arrows: best[0].split("").map((c) => SYM[c] || "·"), name: `as the song's chart has it${d.verified ? "" : " (our best guide)"}` };
+  }
   const g = `${song.genre || ""} ${song.notes || ""}`;
   if (/Reggae|Dancehall|ska/i.test(g)) return { arrows: ["·", "↑", "·", "↑", "·", "↑", "·", "↑"], name: "off-beat (reggae)" };
   if (/Metal|Punk|Grunge|Hard Rock/i.test(g)) return { arrows: ["↓", "↓", "↓", "↓", "↓", "↓", "↓", "↓"], name: "steady down-strums (rock)" };
@@ -49,7 +65,7 @@ function strumFor(song) {
 function strumHtml(song) {
   const st = strumFor(song);
   const beats = ["1", "&", "2", "&", "3", "&", "4", "&"];
-  return `<b>Strum:</b> ${esc(st.name)}<span class="jg-strum-row">${st.arrows.map((a, i) => `<span class="jg-strum-cell ${a === "·" ? "jg-strum-gap" : ""}"><b>${a}</b><small>${beats[i]}</small></span>`).join("")}</span>`;
+  return `<b>Strum:</b> ${esc(st.name)}<span class="jg-strum-row">${st.arrows.map((a, i) => `<span class="jg-strum-cell ${a === "·" || a === "×" ? "jg-strum-gap" : ""}"><b>${a}</b><small>${beats[i]}</small></span>`).join("")}</span>`;
 }
 
 function shapesOf(song) {
@@ -63,7 +79,7 @@ function lessonChords(lesson) {
   (lesson.cards || []).forEach((c) => {
     const w = c.want || {};
     if (w.chord) out.add(w.chord);
-    (w.compare || []).forEach((x) => out.add(x));
+    (w.compare || []).forEach((x) => typeof x === "string" && out.add(x));
     (w.loop?.chords || []).forEach((x) => out.add(x));
   });
   (lesson.pages || []).forEach((p) => {
@@ -110,9 +126,11 @@ function withSongs(lessons, { count = 3, skip = () => false } = {}) {
   return lessons.map((lesson) => {
     const fresh = lessonChords(lesson);
     fresh.forEach((c) => known.add(c));
-    if (skip(lesson)) return lesson;
+    // songCount: 0 for lessons that already teach their own songs.
+    const want = lesson.songCount ?? count;
+    if (skip(lesson) || want === 0) return lesson;
     let picks = (lesson.songs || []).map(findSong).filter(teachable);
-    if (picks.length < count) {
+    if (picks.length < want) {
       const fits = (s) => shapesOf(s).every((c) => known.has(c));
       const usesNew = (s) => shapesOf(s).some((c) => fresh.has(c));
       const notWorld = (s) => !(s.genre || "").startsWith("World");
@@ -125,14 +143,14 @@ function withSongs(lessons, { count = 3, skip = () => false } = {}) {
       ];
       for (const ok of tiers) {
         for (const s of pool) {
-          if (picks.length >= count) break;
+          if (picks.length >= want) break;
           if (used.has(s.title) || picks.includes(s) || !ok(s)) continue;
           picks.push(s);
         }
-        if (picks.length >= count) break;
+        if (picks.length >= want) break;
       }
     }
-    picks = picks.slice(0, count);
+    picks = picks.slice(0, want);
     picks.forEach((s) => used.add(s.title));
     if (!picks.length) return lesson;
     if (lesson.cards) {
@@ -148,4 +166,4 @@ function withSongs(lessons, { count = 3, skip = () => false } = {}) {
   });
 }
 
-export { withSongs, songCardHtml, wireSongCards, findSong, teachable, strumHtml };
+export { withSongs, songCardHtml, wireSongCards, findSong, teachable, strumHtml, strumFor };

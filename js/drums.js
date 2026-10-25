@@ -71,4 +71,12 @@ function playBeat(ctx, beatIndexInBar, time) {
   playHihat(ctx, time);
 }
 
-export { playBeat };
+// Beat k of n in a bar (any time signature): kick on the first, a snare
+// backbeat in 2 and 4 pulse bars (and on 4 in 5/4), hi-hat on every pulse.
+function playBeatIn(ctx, k, n, time) {
+  if (k === 0) playKick(ctx, time);
+  if ((n === 4 && k === 2) || (n === 2 && k === 1) || (n === 5 && k === 3)) playSnare(ctx, time);
+  playHihat(ctx, time);
+}
+
+export { playBeat, playBeatIn };

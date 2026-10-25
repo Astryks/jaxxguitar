@@ -11,7 +11,7 @@ function renderAbout(panel) {
       <p>Jaxx Guitar is a free guitar course. No account, no ads, no tracking: your progress is saved on this device only.</p>
       <h3>Settings</h3>
       <p>${leftyToggleHtml()}</p>
-      <p class="jg-note">For a left-handed guitar: every fretboard and chord box flips to match yours.</p>
+      <p class="jg-note">For a left-handed guitar: every fretboard, chord box and picture is mirrored to match yours (nut on the right). Off = right-handed, the usual view. The “Flip it” buttons only flip the view until you close the app.</p>
       <h3>What's inside</h3>
       <ul>
         <li><strong>Lessons:</strong> from holding the guitar to chords, strumming, barre chords, scales and solos.</li>
