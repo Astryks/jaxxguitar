@@ -26,8 +26,12 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Jaxx Guitar uses your camera only if you choose to record a video to upload in Practice &gt; Upload a song, so it can work out the chords on your device. Nothing is sent anywhere.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Jaxx Guitar uses your microphone only to hear your guitar strings, nothing else: when you use the tuner, Wait for me or Play in time. It works out which notes you played on your device. Nothing is recorded, saved or sent anywhere.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Jaxx Guitar opens your library only when you pick a song or video to upload in Practice &gt; Upload a song. It is read on your device; nothing is sent anywhere.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

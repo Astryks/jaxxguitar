@@ -8,7 +8,7 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 
 ## ▶ Start here: where things stand (2026-10-19)
 
-**Latest TestFlight build: 39** (uploaded 2026-10-26: fun animations). Everything requested so far is built, tested in headless Chrome, committed and pushed (0 uncommitted, 0 unpushed). The older handoff below is kept for history; its "Latest build: 23" is out of date.
+**Latest TestFlight build: 40** (uploaded 2026-10-28: App Review fixes). Everything requested so far is built, tested in headless Chrome, committed and pushed (0 uncommitted, 0 unpushed). The older handoff below is kept for history; its "Latest build: 23" is out of date.
 
 **In build 33 (since build 23):** the 5-lesson course (4 chords + songs, other chords + single notes, genres, solos, loops), Back at the top, purple chat bubbles in WhatsApp order, right-handed by default with a per-session left-handed flip (words swap too), fretboard always low E at the bottom, the calm play-along view (chord name, next chord, sharp blinking strum arrows, single-note ring), Practice redesign (4 chord rows, chord loop, scales), Hotel California / Stairway to Heaven, Godfather, Parisienne Walkways, Beat It / Man in the Mirror, Songsterr "full solo" links, the sound fix (audio unlock kept alive), uploads → **Every note** (string and fret for every note, beats and bars, tuning/capo, Wait for me, speed, loop) and **Whole song bar by bar for 272 songs** with each section's own strum (34 checked, 238 "our best guide"; The tune note for note for 15 public-domain pieces). Details in the dated sections below.
 
@@ -642,3 +642,7 @@ Done 2026-10-07. Principle: every new set of chords is followed straight away by
 ## 2026-10-26: fun animations merged
 - Legend tribute scenes, string shimmer when tapped, beagle micro-moves (PR #1 from 15 Oct, brought up to date with main, tested in a browser: page and lessons load with no errors). Quick, transform/opacity only, off under reduced motion.
 - **iOS build 39** uploaded to TestFlight 2026-10-26: fun animations.
+
+## 2026-10-28: App Review fixes
+- Rejected 27 Oct (2.3.7 name had "Free"; 2.1 crash or IAP not found; 1.5 support URL for Hayden). Added camera + photo library permission texts (iOS crashes when the upload's "Take video" opens the camera without one: Jaxx had none), a real support page at /support.html (contact support@astryks.com, FAQ incl. where the Tip jar is) linked in the footer.
+- **iOS build 40** uploaded to TestFlight 2026-10-28 with these fixes, for resubmission.
