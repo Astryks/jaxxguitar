@@ -55,7 +55,8 @@ import { wireVideos, videoHtml } from "./media.js";
 import { chordTimeline } from "./guitar-player.js";
 import { teachHtml } from "./teach-videos.js";
 import { lessonInspireHtml } from "./inspire.js";
-import { friendlyMicError } from "./pitch.js";
+import { friendlyMicError, ignoreMicFor } from "./pitch.js";
+import { startChordListening } from "./chord-detect.js";
 
 const PHONE = `<div class="jg-card-phone">${icon("guitar", 18)}<span>I know it's hard to play a chord on the app! Tap the dots one at a time here. The real practice is on <b>your guitar</b>: press all the strings and strum them together.</span></div>`;
 const STRING_NAME = ["low E (6th, thickest)", "A (5th)", "D (4th)", "G (3rd)", "B (2nd)", "high e (1st, thinnest)"];
@@ -65,6 +66,17 @@ const SWITCH_TIPS = `<ul class="jg-switch-tips">
   <li><b>🙌 Lift together:</b> the other fingers lift a tiny bit, move as one shape, and land at the same time.</li>
   <li><b>👀 Look ahead:</b> look at where your fingers are going, not where they've been.</li>
 </ul>`;
+
+// The app's own sounds: the microphone ignores them for a moment, so a
+// "Hear it" never counts as you playing.
+let lastSoundAt = 0;
+function sound(...args) {
+  lastSoundAt = Date.now();
+  try { ignoreMicFor(1500); } catch (e) { /* mic off */ }
+  return strum(...args);
+}
+// Chords the microphone tells apart from the one you're learning.
+const NEIGHBOURS = ["G", "C", "D", "Em", "Am", "E", "A", "Dm", "F"];
 
 function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onExit, onBackFirst, onSkipLesson, skipLabel = "Skip this lesson ›", onOpenLesson, onFinish, changeDrill, courseStart = null, courseTotal = null, countLabel = null }) {
   const cards = lesson.cards;
@@ -184,7 +196,7 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
       controls.innerHTML = (w.chord ? `<button class="jg-btn jg-card-again">${icon("speaker", 18)} Strum it again</button>` : "") + `<button class="jg-btn jg-btn-primary jg-card-next ${stay ? "" : "jg-card-next-auto"}">${label}</button>`;
       const go = () => show(i + 1);
       controls.querySelector(".jg-card-next").addEventListener("click", go);
-      controls.querySelector(".jg-card-again")?.addEventListener("click", () => { const sh = chordShape(w.chord); inst.fb.showShape(sh); strum(shapeMidis(sh), { direction: "down" }); });
+      controls.querySelector(".jg-card-again")?.addEventListener("click", () => { const sh = chordShape(w.chord); inst.fb.showShape(sh); sound(shapeMidis(sh), { direction: "down" }); });
       if (!stay) {
         const t = setTimeout(() => { if (panel.contains(controls)) go(); }, card.tip ? 3400 : 2200);
         cleanups.push(() => clearTimeout(t));
@@ -221,7 +233,7 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
     function chordTask() {
       const shape = chordShape(w.chord);
       // How it should sound, to compare with your own guitar.
-      const hearIt = () => strum(shapeMidis(shape), { direction: "down" });
+      const hearIt = () => sound(shapeMidis(shape), { direction: "down" });
       const hearBtn = () => `<button class="jg-btn jg-card-hear">${icon("speaker", 18)} Hear ${w.chord}</button>`;
       // 1. Watch: the fingers land one at a time (our own animation).
       const watch = () => {
@@ -250,7 +262,7 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
         // 3. It stays on screen: "That's the G chord", then Next chord.
         const strumNow = () => {
           inst.fb.showShape(shape);
-          strum(shapeMidis(shape), { direction: "down" });
+          sound(shapeMidis(shape), { direction: "down" });
           success({ stay: true, next: card.next || "Next chord →" });
         };
         const prompt = () => {
@@ -261,7 +273,11 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
             controls.innerHTML = `<button class="jg-btn jg-btn-primary jg-card-strum">${icon("guitar", 20)} Strum it!</button>` + hearBtn() + micButton();
             controls.querySelector(".jg-card-strum").addEventListener("click", strumNow);
           }
-          wireMic();
+          const mb = controls.querySelector(".jg-card-mic");
+          if (mb) {
+            if (stopChord) { mb.innerHTML = `${icon("mic", 18)} Listening: strum your ${w.chord}`; mb.disabled = true; }
+            mb.addEventListener("click", () => listenForChord(mb));
+          }
           controls.querySelector(".jg-card-hear")?.addEventListener("click", hearIt);
           draw();
         };
@@ -271,7 +287,31 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
           if (string === q.string && fret === q.fret) { placed.push(q); k++; prompt(); }
           else oops(`Almost! Look for the glowing dot: ${STRING_NAME[q.string]} string, fret ${q.fret}.`);
         });
-        // On your real guitar: the right note (or, once placed, notes of the chord) counts.
+        // On your real guitar: strum the chord and the microphone hears it
+        // (a strum has no single note, so this listens for the whole chord).
+        let stopChord = null;
+        const listenForChord = async (btn) => {
+          if (stopChord) return;
+          btn.disabled = true;
+          try {
+            stopChord = await startChordListening({
+              candidates: [w.chord, ...NEIGHBOURS.filter((c) => c !== w.chord)],
+              onChord: (heardChord) => {
+                if (finished || Date.now() - lastSoundAt < 1500) return;
+                if (!heardChord) return reply("I heard a strum, but not clearly. Let every string ring 🎸", "idle");
+                if (heardChord === w.chord) { k = steps.length; placed.splice(0, placed.length, ...steps); strumNow(); }
+                else oops(`That sounded like <b>${heardChord}</b>. Check each finger against the dots, then strum again.`);
+              },
+            });
+            btn.innerHTML = `${icon("mic", 18)} Listening: strum your ${w.chord}`;
+            reply(`I'm listening 👂 Place your fingers, then <b>strum ${w.chord}</b> on your guitar.`, "idle");
+          } catch (err) {
+            btn.disabled = false;
+            reply(`The microphone didn't start: ${friendlyMicError(err)}. You can tap the fretboard instead.`, "oops");
+          }
+        };
+        cleanups.push(() => { stopChord?.(); stopChord = null; });
+        // Single notes (plucked one at a time) count too.
         const heard = [];
         const off = onNoteOn((midi, src) => {
           if (src !== "mic" || finished) return;
@@ -353,7 +393,7 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
         extra.innerHTML = song ? songCardHtml(song) : "";
         wireVideos(extra);
         wireSongCards(extra);
-        extra.querySelectorAll("[data-dgc]").forEach((b) => b.addEventListener("click", () => strum(shapeMidis(chordShape(b.dataset.dgc)))));
+        extra.querySelectorAll("[data-dgc]").forEach((b) => b.addEventListener("click", () => sound(shapeMidis(chordShape(b.dataset.dgc)))));
         controls.innerHTML = `<button class="jg-btn jg-btn-primary">${w.tap || "Next song →"}</button>`;
         controls.firstElementChild.addEventListener("click", () => success());
       } else if (w.compare) {
@@ -365,7 +405,7 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
           extra.querySelectorAll("[data-c]").forEach((b) => b.classList.toggle("jg-compare-on", Number(b.dataset.c) === k));
           inst.fb.showShape(shapeOf(w.compare[k]));
         };
-        extra.querySelectorAll("[data-c]").forEach((b) => b.addEventListener("click", () => { const k = Number(b.dataset.c); pick(k); strum(shapeMidis(shapeOf(w.compare[k]))); }));
+        extra.querySelectorAll("[data-c]").forEach((b) => b.addEventListener("click", () => { const k = Number(b.dataset.c); pick(k); sound(shapeMidis(shapeOf(w.compare[k]))); }));
         pick(0);
         controls.innerHTML = `<button class="jg-btn jg-btn-primary">${w.tap || "Got it 👍"}</button>`;
         controls.firstElementChild.addEventListener("click", () => success());
@@ -379,7 +419,7 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
           extra.querySelectorAll("[data-m]").forEach((x) => x.classList.toggle("jg-pill-active", Number(x.dataset.m) === k));
           inst.fb.morph(chordShape(a), chordShape(b), { onPhase: (p) => {
             phase.innerHTML = p === "toB" ? `<b>${a} → ${b}</b>: the ringed fingers stay put ⚓, the others move together` : `and back: <b>${b} → ${a}</b>`;
-            strum(shapeMidis(chordShape(p === "toB" ? b : a)), { delay: 0.75 });
+            sound(shapeMidis(chordShape(p === "toB" ? b : a)), { delay: 0.75 });
           } });
           phase.innerHTML = `Starting on <b>${a}</b>…`;
         };

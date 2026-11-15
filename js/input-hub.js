@@ -75,33 +75,47 @@ function onMidiStatus(cb) {
 }
 
 // --- Microphone (single notes) --------------------------------------------
-// A note counts once the same pitch is heard on 3 consecutive analysis
-// frames (≈50ms) and in tune within ±40 cents; it can't fire again until
-// the pitch changes or there's a gap, so one held note is one press.
-let stopMic = null;
-async function enableMic() {
-  if (stopMic) return true;
+// The live reading (pitch.js: noise gate + median of recent frames) is
+// already steady, so a note counts once the same note is read on 3
+// frames in a row (~0.1 s). It can't fire again while that note keeps
+// ringing (or drops out for a frame or two), but a fresh pluck of the
+// same note (the tracker's `onset`: the sound got suddenly louder) or a
+// gap re-arms it, so playing the same note twice counts twice. No "within N cents" check: a slightly
+// out-of-tune guitar still plays the right note.
+// Pure (no microphone) so node can test it: feed it tracker readings.
+function createMicNoteGate(emit, { frames: need = 3 } = {}) {
   let candidate = null;
   let frames = 0;
   let lastEmitted = null;
+  let gap = 0;
+  return (r) => {
+    if (!r) {
+      candidate = null;
+      frames = 0;
+      // A real gap (~0.15 s of nothing) ends the note; one dropped frame
+      // in a ringing note doesn't.
+      if (++gap >= 4) lastEmitted = null;
+      return;
+    }
+    gap = 0;
+    if (r.onset) lastEmitted = null;
+    if (r.noteMidi === candidate) frames++;
+    else {
+      candidate = r.noteMidi;
+      frames = 1;
+    }
+    if (frames >= need && candidate !== lastEmitted) {
+      lastEmitted = candidate;
+      emit(candidate);
+    }
+  };
+}
+
+let stopMic = null;
+async function enableMic() {
+  if (stopMic) return true;
   try {
-    stopMic = await startLivePitchDetection((r) => {
-      if (!r || Math.abs(r.cents) >= 40) {
-        candidate = null;
-        frames = 0;
-        if (!r) lastEmitted = null;
-        return;
-      }
-      if (r.noteMidi === candidate) frames++;
-      else {
-        candidate = r.noteMidi;
-        frames = 1;
-      }
-      if (frames >= 3 && candidate !== lastEmitted) {
-        lastEmitted = candidate;
-        emitNoteOn(candidate, "mic");
-      }
-    });
+    stopMic = await startLivePitchDetection(createMicNoteGate((midi) => emitNoteOn(midi, "mic")));
     return true;
   } catch (e) {
     stopMic = null;
@@ -128,4 +142,5 @@ export {
   enableMic,
   disableMic,
   micOn,
+  createMicNoteGate,
 };

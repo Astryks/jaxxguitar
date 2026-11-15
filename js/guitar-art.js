@@ -5,8 +5,8 @@
 //   guitarSvg()            the whole guitar, with where each hand goes
 //   headstockSvg(opts)     the tuning pegs, one per string (tuner)
 //   fingerStrumSvg()       strumming with a finger instead of a pick
-//   viewerSvg()            side view + "what you see looking down" (why
-//                          low E is at the bottom)
+//   viewerSvg()            over-the-shoulder view down onto the neck (why
+//                          low E is at the bottom: it's nearest you)
 
 import { isLefty, mirrorSvgTexts, handSide } from "./settings.js";
 
@@ -84,73 +84,89 @@ function fingerStrumSvg() {
   </svg>`;
 }
 
-// Why the thick low E string is drawn at the BOTTOM (owner request
-// 2026-10-18: a simple picture anyone gets). Left: a person seen from the
-// side, holding the guitar upright. Seen from the side, the six strings are
-// a little column of dots, thickest on top, nearest the eyes; a dashed line
-// shows them looking down. Right: what they see looking down, the same
-// fretboard picture used all through the app: nut on the left, low E at
-// the bottom, nearest them (an eye under the picture shows where they are).
-// Left-handed: the "what you see" picture is mirrored, like every fretboard.
+// Why the thick low E string is drawn at the BOTTOM of every fretboard
+// (owner request 2026-11): one picture, over the player's shoulder. We
+// stand behind them: the back of their head and their shoulders are at
+// the bottom, and we look down past their head at the guitar they hold,
+// so the neck runs across the picture with the six strings showing. The
+// thick low E is the nearest string (bottom, next to their head), the
+// thin high e the furthest (top). Headstock on the left, like the
+// fretboard; left-handed players get it mirrored (text kept readable).
 function viewerSvg() {
   const lefty = isLefty();
-  const T = (x, y, txt, { size = 11, w = 600, fill = "#4a3420", anchor = "middle" } = {}) =>
+  const T = (x, y, txt, { size = 11, w = 700, fill = "#4a3420", anchor = "middle" } = {}) =>
     `<text x="${x}" y="${y}" style="font:${w} ${size}px system-ui,-apple-system,sans-serif;fill:${fill};text-anchor:${anchor}">${txt}</text>`;
-  const sizes = [3.4, 2.9, 2.4, 2.0, 1.6, 1.25]; // low E (thick) ... high e (thin)
-  // Left: side view. Strings (dots) stacked low E on top.
-  const dotsSmall = sizes.map((r, k) => `<circle cx="101" cy="${116 + k * 6.4}" r="${r * 0.8}" fill="#c9a24a"/>`).join("");
-  const dotsBig = sizes.map((r, k) => `<circle cx="150" cy="${108 + k * 9.6}" r="${r * 1.35}" fill="#c9a24a" stroke="#8a6a22" stroke-width="0.6"/>`).join("");
-  const side = `
-    <rect x="4" y="22" width="186" height="262" rx="16" fill="#fff7ec" stroke="#ead7bd"/>
-    ${T(97, 40, "1. From the side", { size: 13, w: 800, fill: "#3b2410" })}
-    <path d="M22 236 C22 170 26 122 42 104 C50 96 66 96 72 104 C80 118 84 170 84 236 Z" fill="#7b5cd6"/>
-    <rect x="40" y="88" width="14" height="16" rx="5" fill="#e3b08c"/>
-    <circle cx="48" cy="72" r="20" fill="#e8b994"/>
-    <path d="M28 68 C28 48 48 42 62 50 C66 52 68 56 68 60 C58 58 48 60 40 68 C38 76 34 82 30 82 Z" fill="#4a3022"/>
-    <ellipse cx="61" cy="70" rx="2.6" ry="3" fill="#2b1a10"/>
-    <path d="M67 74 l5 4 l-5 2" fill="none" stroke="#c48a64" stroke-width="1.6" stroke-linecap="round"/>
-    <path d="M86 128 C92 150 92 196 86 226 C84 234 70 236 68 228 C62 196 62 150 68 128 C70 120 84 120 86 128 Z" fill="#c9843c" stroke="#8a5a33" stroke-width="2"/>
-    <rect x="84" y="112" width="9" height="42" rx="2" fill="#3b2416"/>
-    ${dotsSmall.replace(/cx="101"/g, 'cx="97"')}
-    <path d="M60 116 C70 150 80 176 92 190" fill="none" stroke="#6a4bc4" stroke-width="11" stroke-linecap="round"/>
-    <circle cx="93" cy="191" r="6" fill="#e3b08c"/>
-    <circle cx="146" cy="134" r="34" fill="#fff" stroke="#7b5cd6" stroke-width="2.5"/>
-    <line x1="100" y1="114" x2="122" y2="108" stroke="#7b5cd6" stroke-width="1.5"/><line x1="100" y1="152" x2="122" y2="160" stroke="#7b5cd6" stroke-width="1.5"/>
-    <rect x="132" y="104" width="9" height="60" rx="2" fill="#3b2416"/>
-    ${dotsBig.replace(/cy="(\d+(\.\d+)?)"/g, (m, y) => `cy="${Number(y) + 2}"`)}
-    ${T(164, 114, "E", { size: 12, w: 900, fill: "#2f8f83", anchor: "start" })}${T(164, 164, "e", { size: 12, w: 900, fill: "#3b2410", anchor: "start" })}
-    <path d="M63 71 L138 105" stroke="#2f8f83" stroke-width="2.2" stroke-dasharray="5 4" fill="none"/>
-    <path d="M140 106 l-9.5 -0.5 l4 -7 z" fill="#2f8f83"/>
-    ${T(97, 254, "The thick low E string is", { size: 11, w: 800, fill: "#2f8f83" })}
-    ${T(97, 268, "on top, nearest your eyes 👀", { size: 11, w: 800, fill: "#2f8f83" })}`;
-  // Right: what you see looking down the neck (owner request 2026-10-26).
-  // Perspective: the thick low E is nearest your eyes (bottom, big), the thin
-  // high e is furthest away (top, small). The strings light up one by one,
-  // from the nearest (E) to the furthest (e).
   const names = ["E", "A", "D", "G", "B", "e"];
-  const sy = (s) => 150 - s * 13.2 + s * s * 0.55; // nearer strings further apart
-  const nearL = 0, nearR = 140, farL = 16, farR = 126, topY = 72, botY = 160;
-  const edgeL = (y) => nearL + (farL - nearL) * (botY - y) / (botY - topY);
-  const edgeR = (y) => nearR + (farR - nearR) * (botY - y) / (botY - topY);
-  const fretX = [26, 58, 86, 110];
-  const view = `
-    <path d="M${nearL} ${botY} L${nearR} ${botY} L${farR} ${topY} L${farL} ${topY} Z" fill="#6b3f1f"/>
-    <path d="M${nearL} ${botY} L${farL} ${topY} L${farL + 5} ${topY} L${nearL + 7} ${botY} Z" fill="#f1ead9"/>
-    ${fretX.map((x) => { const xt = farL + (x - nearL) * (farR - farL) / (nearR - nearL); return `<line x1="${x}" y1="${botY}" x2="${xt.toFixed(1)}" y2="${topY}" stroke="#d9d2c4" stroke-width="2"/>`; }).join("")}
-    ${names.map((n, s) => { const y = sy(s); const w = (3.6 - s * 0.5).toFixed(2); return `<line x1="${edgeL(y).toFixed(1)}" x2="${edgeR(y).toFixed(1)}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#efe6d2" stroke-width="${w}"><animate attributeName="stroke" values="#efe6d2;#ffd34d;#efe6d2" keyTimes="0;0.08;0.2" dur="6s" begin="${(s * 0.5).toFixed(1)}s" repeatCount="indefinite"/></line>`; }).join("")}
-    ${names.map((n, s) => T(edgeR(sy(s)) + 9, sy(s) + 4, n, { size: s === 0 ? 13 : 10, w: s === 0 || s === 5 ? 900 : 700, fill: s === 0 ? "#2f8f83" : s === 5 ? "#b5532a" : "#4a3420", anchor: "middle" })).join("")}`;
-  const right = `
-    <rect x="198" y="22" width="158" height="262" rx="16" fill="#fff7ec" stroke="#ead7bd"/>
-    ${T(277, 40, "2. Looking down", { size: 13, w: 800, fill: "#3b2410" })}
-    ${T(277, 54, "the neck", { size: 13, w: 800, fill: "#3b2410" })}
-    ${T(277, 70, "thin e: furthest away", { size: 10.5, w: 800, fill: "#b5532a" })}
-    <g transform="translate(${lefty ? 344 : 207} 6)${lefty ? " scale(-1 1)" : ""}">${lefty ? mirrorSvgTexts(view) : view}</g>
-    ${T(277, 186, "thick E: closest to you", { size: 11, w: 800, fill: "#2f8f83" })}
-    <path d="M277 222 L277 198" stroke="#3b2410" stroke-width="2"/><path d="M271 202 l6 -7 l6 7" fill="none" stroke="#3b2410" stroke-width="2"/>
-    <ellipse cx="277" cy="236" rx="14" ry="8.5" fill="#fff" stroke="#3b2410" stroke-width="2"/><circle cx="277" cy="236" r="4.8" fill="#3b2410"><animate attributeName="cy" values="236;239;236" dur="3s" repeatCount="indefinite"/></circle>
-    ${T(277, 262, "Your eyes, looking down", { size: 10.5, w: 700, fill: "#7a6a58" })}
-    ${T(277, 275, "at the strings", { size: 10.5, w: 700, fill: "#7a6a58" })}`;
-  return `<svg viewBox="0 0 360 292" class="jg-viewer" role="img" aria-label="Left: a person seen from the side holding a guitar; the thick low E string is the top string, nearest their eyes. Right: looking down the neck: the thick low E string is closest to you (bottom) and the thin high e string is furthest away (top), with the nut on the ${lefty ? "right" : "left"}.">${side}${right}</svg>`;
+  const NEAR = "#2f8f83", FAR = "#b5532a";
+  const sy = (s) => 144 - s * 12.4 + s * s * 0.14; // low E nearest (bottom), a touch wider apart
+  const nutX = 60, joinX = 238, top = 79, bot = 151;
+  const frets = [98, 134, 167, 197, 224];
+  // Tuning posts on the headstock: low E, A, D on the near side, G, B, e far.
+  const post = [[24, 143], [36, 141], [48, 139], [48, 90], [36, 88], [24, 86]];
+  const strings = names.map((n, s) => {
+    const y = sy(s).toFixed(1);
+    const wound = s < 3;
+    return `<path d="M${post[s][0]} ${post[s][1]} L${nutX} ${y} L372 ${y}" fill="none" stroke="${wound ? "#d9b46a" : "#eeebe4"}" stroke-width="${(3.6 - s * 0.48).toFixed(2)}" stroke-linecap="round"/>`;
+  }).join("");
+  const tags = names.map((n, s) => {
+    const y = sy(s);
+    const c = s === 0 ? NEAR : s === 5 ? FAR : "#5a4632";
+    return `<rect x="73" y="${(y - 5.6).toFixed(1)}" width="15" height="11.2" rx="3.5" fill="#fffaf2" stroke="${c}" stroke-width="${s === 0 || s === 5 ? 1.6 : 0.8}"/>${T(80.5, (y + 3.6).toFixed(1), n, { size: 9.5, w: 900, fill: c })}`;
+  }).join("");
+  const scene = `
+    <!-- guitar body (upper bout) and sound hole -->
+    <path d="M232 76 C250 42 320 34 376 46 L376 196 C334 208 290 204 266 186 C250 174 240 166 234 158 Z" fill="#e3a95f" stroke="#a8692f" stroke-width="2"/>
+    <path d="M240 80 C256 52 318 44 376 54" fill="none" stroke="#f3cf95" stroke-width="2"/>
+    <circle cx="308" cy="114" r="33" fill="none" stroke="#a8692f" stroke-width="3"/>
+    <circle cx="308" cy="114" r="26" fill="#3a2414"/>
+    <!-- headstock, neck and frets -->
+    <path d="M${nutX} ${top} L20 70 Q8 115 20 160 L${nutX} ${bot} Z" fill="#6b3f1f"/>
+    ${[[24, 64], [36, 62], [48, 60]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="5" ry="7" fill="#d8c79a" stroke="#9c8a5c"/>`).join("")}
+    ${[[24, 166], [36, 168], [48, 170]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="5" ry="7" fill="#d8c79a" stroke="#9c8a5c"/>`).join("")}
+    ${post.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3" fill="#d8c79a"/>`).join("")}
+    <rect x="${nutX}" y="${bot}" width="${joinX - nutX}" height="7" fill="#c9843c"/>
+    <rect x="${nutX}" y="${top}" width="${joinX - nutX}" height="${bot - top}" fill="#4a2e1a"/>
+    ${frets.map((x) => `<line x1="${x}" y1="${top}" x2="${x}" y2="${bot}" stroke="#d9d2c4" stroke-width="2.2"/>`).join("")}
+    ${[150, 210].map((x) => `<circle cx="${x}" cy="${(top + bot) / 2}" r="4" fill="#efe6d2" opacity="0.8"/>`).join("")}
+    <rect x="${nutX - 3}" y="${top - 1}" width="6" height="${bot - top + 2}" rx="1.5" fill="#f4eee0"/>
+    ${strings}
+    ${tags}
+    <!-- the player, from behind: shoulders, arms, back of the head -->
+    <path d="M40 352 C44 300 104 276 190 276 C276 276 336 300 340 350 Z" fill="#d9638f"/>
+    <path d="M108 300 C84 290 66 270 62 238" fill="none" stroke="#d9638f" stroke-width="28" stroke-linecap="round"/>
+    <path d="M62 238 C68 206 90 182 110 166" fill="none" stroke="#e8b994" stroke-width="17" stroke-linecap="round"/>
+    <ellipse cx="114" cy="160" rx="14" ry="10" fill="#e8b994" stroke="#c48a64" stroke-width="1.2"/>
+    <ellipse cx="117" cy="148.5" rx="6" ry="4.5" fill="#e8b994" stroke="#c48a64" stroke-width="1.2"/>
+    <path d="M272 300 C298 292 322 272 332 240" fill="none" stroke="#d9638f" stroke-width="28" stroke-linecap="round"/>
+    <path d="M332 240 C330 206 312 176 298 158" fill="none" stroke="#e8b994" stroke-width="17" stroke-linecap="round"/>
+    <ellipse cx="294" cy="150" rx="15" ry="11" fill="#e8b994" stroke="#c48a64" stroke-width="1.2"/>
+    <path d="M288 140 L300 140 L294 131 Z" fill="#c46a1f"/>
+    <g transform="translate(0 14)">
+    <path d="M172 244 L208 244 L210 268 L170 268 Z" fill="#e0ad88"/>
+    <path d="M160 268 C172 280 208 280 220 268" fill="none" stroke="#6a4bc4" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="152" cy="226" rx="6.5" ry="11" fill="#e8b994" stroke="#c48a64" stroke-width="1.2"/>
+    <ellipse cx="228" cy="226" rx="6.5" ry="11" fill="#e8b994" stroke="#c48a64" stroke-width="1.2"/>
+    <ellipse cx="190" cy="220" rx="38" ry="42" fill="#4a3022"/>
+    <path d="M190 182 C176 196 170 222 172 252 M198 186 C200 206 206 230 204 254 M178 190 C162 206 158 228 160 246 M205 192 C218 206 222 228 218 246" fill="none" stroke="#6b4630" stroke-width="2" stroke-linecap="round"/>
+    <path d="M194 200 c-6 -2 -8 6 -2 7 c6 1 8 -8 0 -10" fill="none" stroke="#7a5238" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    <!-- labels -->
+    <path d="M176 165 L176 ${sy(0) + 6}" stroke="${NEAR}" stroke-width="2"/><path d="M171 ${sy(0) + 11} l5 -6 l5 6" fill="none" stroke="${NEAR}" stroke-width="2"/>
+    ${T(178, 178, "low E – closest to you", { size: 12, w: 900, fill: NEAR })}
+    ${T(166, 68, "high e – furthest away", { size: 12, w: 900, fill: FAR })}
+    <path d="M166 71 L166 ${sy(5) - 5}" stroke="${FAR}" stroke-width="2"/><path d="M161 ${sy(5) - 10} l5 6 l5 -6" fill="none" stroke="${FAR}" stroke-width="2"/>
+    ${T(190, 334, "You, seen from behind", { size: 11.5, w: 700, fill: "#ffffff" })}`;
+  const body = lefty ? `<g transform="translate(360 0) scale(-1 1)">${mirrorSvgTexts(scene)}</g>` : scene;
+  return `<svg viewBox="0 0 360 350" class="jg-viewer" role="img" aria-label="Looking over your own shoulder at the guitar you're holding: the back of your head is at the bottom, the neck runs across with the headstock on the ${lefty ? "right" : "left"}. The thick low E string is the closest string to you (bottom) and the thin high e string is the furthest away (top).">
+    <defs><clipPath id="jgViewerClip"><rect x="0" y="0" width="360" height="350" rx="18"/></clipPath></defs>
+    <g clip-path="url(#jgViewerClip)">
+      <rect x="0" y="0" width="360" height="350" fill="#fff7ec"/>
+      ${body}
+    </g>
+    <rect x="0.75" y="0.75" width="358.5" height="348.5" rx="18" fill="none" stroke="#ead7bd" stroke-width="1.5"/>
+    ${T(180, 22, "Looking down at your guitar", { size: 14, w: 800, fill: "#3b2410" })}
+    ${T(180, 38, "(over your own shoulder)", { size: 11, w: 600, fill: "#7a6a58" })}
+  </svg>`;
 }
 
 export { guitarSvg, headstockSvg, fingerStrumSvg, viewerSvg };
