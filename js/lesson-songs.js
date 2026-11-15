@@ -102,7 +102,8 @@ function songCardHtml(song, { n, of } = {}) {
       ${videoHtml(SONG_VIDEOS[song.title])}
       <p class="jg-songcard-strum">${strumHtml(song)}</p>
       <p class="jg-note">Watch the video, then strum along. Sing the words if you know them!</p>
-      <button class="jg-btn jg-songcard-open" data-open-song="${esc(song.title)}" type="button">Play along in Songs ›</button>
+      <div class="jg-row"><button class="jg-btn jg-songcard-open" data-open-song="${esc(song.title)}" type="button">Play along in Songs ›</button>
+        <a class="jg-btn jg-songcard-acoustic" href="https://www.youtube.com/results?search_query=${encodeURIComponent(`${song.title} ${song.artist} acoustic`)}" target="_blank" rel="noopener">🎸 Acoustic versions ›</a></div>
     </div>`;
 }
 
@@ -129,17 +130,20 @@ function withSongs(lessons, { count = 3, skip = () => false } = {}) {
     // songCount: 0 for lessons that already teach their own songs.
     const want = lesson.songCount ?? count;
     if (skip(lesson) || want === 0) return lesson;
+    // Only songs you can already play: every chord in them has been taught
+    // by now. A song a lesson names that still needs a new chord waits for a
+    // later lesson (it goes back in the pool).
+    const fits = (s) => shapesOf(s).every((c) => known.has(c));
     let picks = (lesson.songs || []).map(findSong).filter(teachable);
+    picks.filter((s) => !fits(s)).forEach((s) => used.delete(s.title));
+    picks = picks.filter(fits);
     if (picks.length < want) {
-      const fits = (s) => shapesOf(s).every((c) => known.has(c));
       const usesNew = (s) => shapesOf(s).some((c) => fresh.has(c));
       const notWorld = (s) => !(s.genre || "").startsWith("World");
       const tiers = [
         (s) => fits(s) && usesNew(s) && notWorld(s),
         (s) => fits(s) && notWorld(s),
         (s) => fits(s),
-        (s) => notWorld(s),
-        () => true,
       ];
       for (const ok of tiers) {
         for (const s of pool) {

@@ -66,7 +66,7 @@ const SWITCH_TIPS = `<ul class="jg-switch-tips">
   <li><b>👀 Look ahead:</b> look at where your fingers are going, not where they've been.</li>
 </ul>`;
 
-function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onExit, onBackFirst, onSkipLesson, onOpenLesson, onFinish, changeDrill, courseStart = null, courseTotal = null }) {
+function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onExit, onBackFirst, onSkipLesson, skipLabel = "Skip this lesson ›", onOpenLesson, onFinish, changeDrill, courseStart = null, courseTotal = null, countLabel = null }) {
   const cards = lesson.cards;
   document.body.classList.add("jg-lesson-open");
   let cleanups = [];
@@ -89,7 +89,7 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
       if (legend && gap >= 12) localStorage.setItem("jg_fact_gap", "0");
       else { localStorage.setItem("jg_fact_gap", String(gap)); legend = null; }
     } catch (e) { legend = null; }
-    const count = courseTotal ? `${courseStart + i}/${courseTotal}` : `${i + 1}/${cards.length}`;
+    const count = countLabel ? countLabel(i) : courseTotal ? `${courseStart + i}/${courseTotal}` : `${i + 1}/${cards.length}`;
     panel.innerHTML = `
       <div class="jg-cards">
         <div class="jg-cards-top">
@@ -100,14 +100,14 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
         </div>
         <div class="jg-cards-thread">
           <div class="jg-cmsg"><div class="jg-cavatar jg-avatar-scene">${sceneSvg(scene, { label: "Jaxx Guitar" })}</div><div class="jg-cbubble">${hands(card.say)}${card.video ? videoHtml(card.video) : ""}${teachHtml(lesson.id, i)}${lessonInspireHtml(lesson.id, i)}${legend ? `<div class="jg-legend-fact">🎸 <b>${legend.name}</b> (${legend.who}): ${legend.fact}</div>` : ""}</div></div>
-          <div class="jg-cmore"></div>
         </div>
         ${w.chord ? PHONE : ""}
         <div class="jg-card-extra"></div>
         <div class="jg-card-board"></div>
         <div class="jg-card-feed" aria-live="polite"></div>
+        <div class="jg-cmore"></div>
         <div class="jg-card-controls"></div>
-        ${onSkipLesson ? '<button class="jg-lesson-skip" type="button">Skip this lesson ›</button>' : ""}
+        ${onSkipLesson ? `<button class="jg-lesson-skip" type="button">${skipLabel}</button>` : ""}
       </div>`;
     window.scrollTo(0, 0);
     const thread = panel.querySelector(".jg-cards-thread");
@@ -116,7 +116,9 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
     const extra = panel.querySelector(".jg-card-extra");
     panel.querySelector(".jg-cards-x").addEventListener("click", () => { clean(); if (micByUs) disableMic(); document.body.classList.remove("jg-lesson-open"); onExit(); });
     panel.querySelector(".jg-cards-back")?.addEventListener("click", () => { if (i > 0) return show(i - 1); clean(); onBackFirst(); });
-    panel.querySelector(".jg-lesson-skip")?.addEventListener("click", () => { clean(); if (micByUs) disableMic(); onSkipLesson(); });
+    // Ignore taps in the first second: a double tap used to skip two lessons at once.
+    const shownAt = Date.now();
+    panel.querySelector(".jg-lesson-skip")?.addEventListener("click", () => { if (Date.now() - shownAt < 1200) return; clean(); if (micByUs) disableMic(); onSkipLesson(); });
     const feed = panel.querySelector(".jg-card-feed");
     // Every new message goes at the very end of its list, under the one
     // before it: questions/answers in the thread (before the task starts),
@@ -126,27 +128,23 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
       list.lastElementChild.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
     };
 
-    // "Tell me more" questions, one tap at a time; the task waits until they're read.
+    // Optional "Tell me more" questions, one at a time, under the task. The
+    // task is there straight away (nobody has to read them to carry on), and
+    // each question and its answer go at the bottom, like a chat.
     const more = [...(card.more || [])];
     const moreEl = panel.querySelector(".jg-cmore");
-    const holdTask = () => more.length > 0;
     function nextMore() {
       moreEl.innerHTML = "";
-      if (!more.length) return setupTask();
+      if (!more.length) return;
       const [q, a] = more.shift();
-      // The next question always sits right under the latest message.
-      thread.appendChild(moreEl);
-      moreEl.innerHTML = `<div class="jg-chip-hint">Tap the purple bubble to keep going 👇</div><button class="jg-chip">${hands(q)} <span>›</span></button><button class="jg-chip-skip" type="button">Skip ›</button>`;
+      moreEl.innerHTML = `<button class="jg-chip" type="button">${hands(q)} <span>›</span></button>`;
       moreEl.querySelector(".jg-chip").addEventListener("click", () => {
         moreEl.innerHTML = "";
-        // Question, then its answer, appended in order before the (moved) chip.
-        moreEl.insertAdjacentHTML("beforebegin", `<div class="jg-cmsg jg-cme"><div class="jg-cbubble">${hands(q)}</div></div>`);
-        moreEl.insertAdjacentHTML("beforebegin", `<div class="jg-cmsg"><div class="jg-cbubble">${hands(a)}</div></div>`);
-        moreEl.previousElementSibling.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+        feed.insertAdjacentHTML("beforeend", `<div class="jg-cmsg jg-cme"><div class="jg-cbubble">${hands(q)}</div></div>`);
+        feed.insertAdjacentHTML("beforeend", `<div class="jg-cmsg"><div class="jg-cbubble">${hands(a)}</div></div>`);
+        feed.lastElementChild.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
         nextMore();
       });
-      moreEl.querySelector(".jg-chip-skip").addEventListener("click", () => { more.length = 0; nextMore(); });
-      moreEl.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
     }
 
     let inst = null;
@@ -170,7 +168,7 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
     }
     // Only where there's something to mirror: a fretboard, chord, guitar or viewer picture.
     if (needsBoard || card.show?.guitar || card.show?.viewer || card.show?.fingerStrum) {
-      panel.querySelector(".jg-card-board").insertAdjacentHTML("beforebegin", flipButtonHtml());
+      panel.querySelector(".jg-card-feed").insertAdjacentHTML("beforebegin", flipButtonHtml());
       wireFlip(panel, () => show(i));
     }
     if (card.show?.fingerStrum) extra.innerHTML = `<div class="jg-fingerstrum-wrap">${fingerStrumSvg()}</div>`;
@@ -222,14 +220,19 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
 
     function chordTask() {
       const shape = chordShape(w.chord);
+      // How it should sound, to compare with your own guitar.
+      const hearIt = () => strum(shapeMidis(shape), { direction: "down" });
+      const hearBtn = () => `<button class="jg-btn jg-card-hear">${icon("speaker", 18)} Hear ${w.chord}</button>`;
       // 1. Watch: the fingers land one at a time (our own animation).
       const watch = () => {
         controls.innerHTML = `<span class="jg-card-step jg-card-watch">Watch where each finger goes 👀</span>
           <button class="jg-btn jg-card-replay">${icon("play", 18)} Show me again</button>
+          <button class="jg-btn jg-card-hear">${icon("speaker", 18)} Hear ${w.chord}</button>
           <button class="jg-btn jg-btn-primary jg-card-try">Now you try →</button>`;
         const step = controls.querySelector(".jg-card-watch");
         inst.fb.placeFingers(shape, { stepMs: 1100, onStep: (fg) => { step.innerHTML = `Finger <b>${fg}</b> (${FINGER_NAMES[fg] || "finger"}) goes here 👇`; } });
         controls.querySelector(".jg-card-replay").addEventListener("click", watch);
+        controls.querySelector(".jg-card-hear").addEventListener("click", hearIt);
         controls.querySelector(".jg-card-try").addEventListener("click", () => { inst.fb.stopAnim(); placeTask(); });
       };
       watch();
@@ -253,12 +256,13 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
         const prompt = () => {
           if (k < steps.length) {
             const q = steps[k];
-            controls.innerHTML = `<span class="jg-card-step">${q.finger ? `Finger <b>${q.finger}</b> (${FINGER_NAMES[q.finger]}): ` : ""}${STRING_NAME[q.string]} string, fret <b>${q.fret}</b>${steps.length > 1 ? ` (${k + 1} of ${steps.length})` : ""}</span>` + micButton();
+            controls.innerHTML = `<span class="jg-card-step">${q.finger ? `Finger <b>${q.finger}</b> (${FINGER_NAMES[q.finger]}): ` : ""}${STRING_NAME[q.string]} string, fret <b>${q.fret}</b>${steps.length > 1 ? ` (${k + 1} of ${steps.length})` : ""}</span>` + hearBtn() + micButton();
           } else {
-            controls.innerHTML = `<button class="jg-btn jg-btn-primary jg-card-strum">${icon("guitar", 20)} Strum it!</button>` + micButton();
+            controls.innerHTML = `<button class="jg-btn jg-btn-primary jg-card-strum">${icon("guitar", 20)} Strum it!</button>` + hearBtn() + micButton();
             controls.querySelector(".jg-card-strum").addEventListener("click", strumNow);
           }
           wireMic();
+          controls.querySelector(".jg-card-hear")?.addEventListener("click", hearIt);
           draw();
         };
         inst.fb.onTap(({ string, fret }) => {
@@ -468,7 +472,8 @@ function runCards(panel, lesson, { start = 0, title = lesson.title, onShow, onEx
       controls.insertAdjacentHTML("afterend", `<button class="jg-card-skip" type="button">Skip ›</button>`);
       panel.querySelector(".jg-card-skip").addEventListener("click", () => success());
     }
-    if (holdTask()) nextMore(); else setupTask();
+    setupTask();
+    nextMore();
   }
   show(start);
   return () => { clean(); if (micByUs) disableMic(); document.body.classList.remove("jg-lesson-open"); };

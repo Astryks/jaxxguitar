@@ -1006,3 +1006,6 @@ table.jg-table { width: 100%; table-layout: fixed; overflow-wrap: anywhere; }
 .jg-tcard > b { display: block; font-size: 1.05rem; margin-bottom: 4px; }
 .jg-tcard > div { font-size: 0.95rem; line-height: 1.4; }
 .jg-tcard > div > span { color: var(--jg-muted, #777); font-weight: 700; }
+
+/* Optional "tell me more" questions sit under the task: quieter than the main button. */
+.jg-cmore .jg-chip { background: #fff; color: var(--jg-chat-2); border: 2px solid var(--jg-chat-2); box-shadow: none; animation: none; font-size: 0.95rem; padding: 8px 14px; border-radius: 18px 18px 6px 18px; }

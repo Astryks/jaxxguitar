@@ -117,7 +117,7 @@ function sections() {
   const byId = new Map(main.map((l) => [l.id, l]));
   const pick = (list) => list.map((l) => byId.get(l.id) || l);
   SECTIONS = [
-    { name: "Before you start", note: "Optional. Skip ahead if you've played before", lessons: PRE },
+    { name: "Before you start", note: "Optional. Skip ahead if you've played before", lessons: PRE.filter((l) => l.pre) },
     ...COURSE.map((c) => ({ name: c.name, major: c.major, lessons: pick(c.lessons) })),
     { name: "Keep going", note: "More topics and song studies, in any order", lessons: pick(MORE) },
     { name: "Master a song", note: "Whole songs, one at a time", lessons: pick(songLessons) },
@@ -171,10 +171,25 @@ function nextInPath(lesson) {
   return nextAfter(lesson);
 }
 // "Basics 3/10" for the optional "Before you start" lessons, which sit outside the course counter.
-function basicsLabel(lesson) {
+function basicsLabel(lesson, page = 0) {
   const pre = sections()[0].lessons;
   const k = pre.findIndex((l) => l.id === lesson.id);
-  return lesson.pre && k >= 0 ? `Basics ${k + 1}/${pre.length}` : null;
+  if (!lesson.pre || k < 0) return null;
+  const before = pre.slice(0, k).reduce((n, l) => n + unitCount(l), 0);
+  const total = pre.reduce((n, l) => n + unitCount(l), 0);
+  return `1-${before + page + 1}/${total}`;
+}
+// The basics are a detour from Lesson 1's first card: when they're done
+// (or skipped) you carry on from Lesson 1's second card, the tuning check.
+const LESSON1_AFTER_BASICS = 1;
+const backToLesson1 = () => openLesson("lesson-1", LESSON1_AFTER_BASICS);
+// "Skip to Lesson 2.1 (card 20) ›": says where the skip goes.
+function skipLabelFor(lesson) {
+  if (lesson.pre) return "Skip the basics: back to Lesson 1 ›";
+  const nx = nextInPath(lesson);
+  if (!nx) return null;
+  const cc = courseCard(nx);
+  return `Skip to ${lessonLabel(nx) || nx.title}${cc ? ` (card ${cc.n})` : ""} ›`;
 }
 
 // After a "Before you start" lesson, carry on through the basics in order,
@@ -338,6 +353,7 @@ function openLesson(id, pageIndex = null) {
       onOpenLesson: (lid) => { runCleanup(); openLesson(lid, 0); },
       onBackFirst: prevLesson(lesson) ? () => { runCleanup(); openLastOf(prevLesson(lesson)); } : null,
       onSkipLesson: nextInPath(lesson) ? () => { runCleanup(); savePos(null, 0); openLesson(nextInPath(lesson).id, 0); } : null,
+      skipLabel: skipLabelFor(lesson) || undefined,
       changeDrill,
       onFinish: () => {
         markLessonComplete(lesson.id);
@@ -357,9 +373,9 @@ function openLesson(id, pageIndex = null) {
       <div class="jg-lesson-main jg-lesson-player">
         <div class="jg-cards-top jg-page-top">
           <button class="jg-cards-x jg-exit" aria-label="Close lesson">✕</button>
-          ${pageIndex > 0 || prevLesson(lesson) ? '<button class="jg-cards-back jg-prev">← Back</button>' : "<span></span>"}
+          ${pageIndex > 0 || prevLesson(lesson) || lesson.pre ? '<button class="jg-cards-back jg-prev">← Back</button>' : "<span></span>"}
           <b class="jg-cards-title">${esc(titleOf(lesson))}</b>
-          <span class="jg-cards-count" title="Card number in the whole course">${courseCard(lesson, pageIndex) ? `${courseCard(lesson, pageIndex).n}/${courseCard(lesson, pageIndex).total}` : basicsLabel(lesson) ? `${basicsLabel(lesson)} · ${pageIndex + 1}/${lesson.pages.length}` : `${pageIndex + 1}/${lesson.pages.length}`}</span>
+          <span class="jg-cards-count" title="Card number in the whole course">${courseCard(lesson, pageIndex) ? `${courseCard(lesson, pageIndex).n}/${courseCard(lesson, pageIndex).total}` : basicsLabel(lesson, pageIndex) || `${pageIndex + 1}/${lesson.pages.length}`}</span>
         </div>
         <div class="jg-lesson-content">
           <div class="jg-say">${mascot(MASCOT_BY_LESSON[lesson.id] || (lesson.world ? "singing-mic" : lesson.song ? "playing-guitar" : "happy-guitar"))}<div class="jg-bubble">${hands(page.html || "")}${teachHtml(lesson.id, pageIndex)}${lessonInspireHtml(lesson.id, pageIndex)}${page.shape ? PHONE_NOTE : ""}${peopleHtml(page.people)}${videoHtml(page.video)}${page.song && findSong(page.song) ? songCardHtml(findSong(page.song), { n: page.songN, of: page.songOf }) : ""}${lesson.fullSolo ? fullSoloLinkHtml(lesson.fullSolo) : ""}</div></div>
@@ -373,7 +389,7 @@ function openLesson(id, pageIndex = null) {
         <div class="jg-controls">
           <button class="jg-btn jg-btn-primary jg-next">${last ? "Finish lesson ✓" : "Next →"}</button>
         </div>
-        ${nextInPath(lesson) ? '<button class="jg-lesson-skip" type="button">Skip this lesson ›</button>' : ""}
+        ${skipLabelFor(lesson) ? `<button class="jg-lesson-skip" type="button">${esc(skipLabelFor(lesson))}</button>` : ""}
       </div>
     </div>`;
   // Tables read badly on a phone: show each row as a chat-style card.
@@ -394,13 +410,25 @@ function openLesson(id, pageIndex = null) {
   wireSongCards(panelEl);
   wireCommon();
   panelEl.querySelector(".jg-exit").addEventListener("click", showHome);
-  panelEl.querySelector(".jg-lesson-skip")?.addEventListener("click", () => { savePos(null, 0); openLesson(nextInPath(lesson).id, 0); });
+  const shownAt = Date.now();
+  panelEl.querySelector(".jg-lesson-skip")?.addEventListener("click", () => {
+    if (Date.now() - shownAt < 1200) return; // a double tap used to skip two lessons
+    savePos(null, 0);
+    if (lesson.pre) return backToLesson1();
+    openLesson(nextInPath(lesson).id, 0);
+  });
   wireFlip(panelEl, () => openLesson(id, pageIndex));
-  panelEl.querySelector(".jg-prev")?.addEventListener("click", () => (pageIndex > 0 ? openLesson(id, pageIndex - 1) : openLastOf(prevLesson(lesson))));
+  panelEl.querySelector(".jg-prev")?.addEventListener("click", () => (pageIndex > 0 ? openLesson(id, pageIndex - 1) : prevLesson(lesson) ? openLastOf(prevLesson(lesson)) : openLesson("lesson-1", 0)));
   panelEl.querySelector(".jg-next").addEventListener("click", () => {
     if (!last) return openLesson(id, pageIndex + 1);
     markLessonComplete(lesson.id);
     savePos(null, 0);
+    // The basics run straight on, page after page, then back into Lesson 1.
+    if (lesson.pre) {
+      const pre = sections()[0].lessons;
+      const nx = pre[pre.findIndex((l) => l.id === lesson.id) + 1];
+      return nx ? openLesson(nx.id, 0) : backToLesson1();
+    }
     if (lesson.song) markSongStatus(lesson.song.title, "completed");
     const nxt = nextInPath(lesson);
     runCleanup();

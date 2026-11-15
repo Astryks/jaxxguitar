@@ -126,13 +126,10 @@ const PRE = [
           <li><strong>A cable</strong> (about $20–30), a <strong>clip-on tuner</strong> (about $18–38), a few <strong>picks</strong> and a <strong>strap</strong>.</li>
         </ul>
         <p class="jg-note">Tip: a <strong>starter pack</strong> (guitar, amp, cable, strap, picks, tuner and bag in one box) is often the easiest way to buy everything at once. Prices from Sweetwater, 2026.</p>` },
-      { html: `<h3>Now let's make sure it's in tune 🎵</h3>
-        <p>Tap a peg to <strong>hear</strong> the note. Then tap <strong>Start listening</strong>, play that string and turn the peg until it goes <strong>green</strong>. It moves to the next string by itself.</p>`, tuner: true },
-
     ],
   },
   {
-    id: "p-tune", pre: true, title: "Tune your guitar (free tuner)", subtitle: "Every string, one by one",
+    id: "p-tune", pre: false, offPath: true, title: "Tune your guitar (free tuner)", subtitle: "Every string, one by one",
     pages: [
       { html: `<h3>Tune up before you play - every time</h3>
         <p>An out-of-tune guitar makes even perfect chords sound wrong, so guitarists tune before every practice. This app has a <strong>free tuner</strong> built in - it listens through your microphone.</p>
@@ -194,15 +191,13 @@ const PRE = [
     ],
   },
   {
-    id: "p-strings", pre: true, title: "The six strings - and tuning", subtitle: "E A D G B E",
+    id: "p-strings", pre: true, title: "The six strings", subtitle: "E A D G B E",
     pages: [
       { html: `<h3>Six strings, thickest to thinnest: E A D G B E.</h3>
         <p>A popular way to remember it: <strong>E</strong>ddie <strong>A</strong>te <strong>D</strong>ynamite, <strong>G</strong>ood <strong>B</strong>ye <strong>E</strong>ddie.</p>
         <p>Guitarists number them backwards: the <strong>thickest</strong> (lowest-sounding) string is the <strong>6th</strong>, the thinnest (highest) is the <strong>1st</strong>. Both outside strings are E - two octaves apart.</p>
         <p class="jg-note">On the fretboard below, the thick low E string is at the bottom: the way you see your guitar looking down at it, with your head below the picture. (Tab, which comes later, is drawn the same way round.)</p>`,
         notes: [0, 1, 2, 3, 4, 5].map((s) => ({ string: s, fret: 0, label: STRING_NAMES[s] })) },
-      { html: `<h3>Tune up every time you play.</h3>
-        <p>Strings drift out of tune all the time. Pick a string, tap <strong>Start listening</strong>, play it and turn the peg slowly until it goes <strong>green</strong>.</p>`, tuner: true },
     ],
   },
   {
@@ -374,6 +369,14 @@ const OPEN_CARDS = [
   { say: `Now a loop with the new chords: <b>Am → Dm → E → Am</b> 🔁<br>Tap <b>Play</b> and strum along.`, show: {}, want: { loop: { chords: ["Am", "Dm", "E", "Am"], bpm: 66, label: "Am – Dm – E – Am" }, ok: "I played it! ✓" }, done: "Spooky and cool! 🏆" },
 ];
 
+// Every barre chord, A to G: the E shape (root on low E) or A shape (root on A).
+const eBarre = (name, f, minor) => ({ name: `${name} (fret ${f})`, frets: minor ? [f, f + 2, f + 2, f, f, f] : [f, f + 2, f + 2, f + 1, f, f], fingers: minor ? [1, 3, 4, 1, 1, 1] : [1, 3, 4, 2, 1, 1], barre: f });
+const aBarre = (name, f, minor) => ({ name: `${name} (fret ${f})`, frets: minor ? [-1, f, f + 2, f + 2, f + 1, f] : [-1, f, f + 2, f + 2, f + 2, f], fingers: minor ? [0, 1, 3, 4, 2, 1] : [0, 1, 2, 3, 4, 1], barre: f });
+const BARRE_AT = [["A", "E", 5], ["B", "A", 2], ["C", "A", 3], ["D", "A", 5], ["E", "A", 7], ["F", "E", 1], ["G", "E", 3]];
+const BARRE_SET = [
+  ...BARRE_AT.map(([n, sh, f]) => (sh === "E" ? eBarre : aBarre)(n, f, false)),
+  ...BARRE_AT.map(([n, sh, f]) => (sh === "E" ? eBarre : aBarre)(`${n}m`, f, true)),
+];
 const CREEP = {
   G: { name: "G (barre, fret 3)", frets: [3, 5, 5, 4, 3, 3], fingers: [1, 3, 4, 2, 1, 1], barre: 3 },
   B: { name: "B (barre, fret 2)", frets: [-1, 2, 4, 4, 4, 2], fingers: [0, 1, 2, 3, 4, 1], barre: 2 },
@@ -392,7 +395,6 @@ const BEGINNER = [
   {
     id: "lesson-strum", title: "Strumming and smooth changes", subtitle: "Your fingers or a pick, and the one-minute challenge",
     cards: STRUM_CARDS,
-    songs: ["Brown Eyed Girl", "Man in the Mirror", "Ocean Eyes", "Sweet Caroline"],
     pages: [],
   },
   {
@@ -484,7 +486,7 @@ const BEGINNER = [
   },
   {
     id: "lesson-power", title: "Power chords and palm muting", subtitle: "The rock sound",
-    songs: ["Where Is My Mind?", "Beat It"],
+    songs: ["Where Is My Mind?"],
     pages: [
       { html: `<h3>Two notes, huge sound.</h3>
         <p>A <strong>power chord</strong> is just a root and the note a fifth above it - no third, so it's neither major nor minor, and it sounds great with distortion. Shape: index on the root (6th or 5th string), ring finger two frets higher on the next string. Written "E5", "A5", "G5". For a fuller sound, add your pinky (or flatten your ring finger) on the next string too, at the same fret: that's the 3-note version in the boxes below.</p>
@@ -550,6 +552,15 @@ const BEGINNER = [
         <p>Barre at the 2nd fret and make the <strong>Am</strong> shape in front of it: that's <strong>Bm</strong>. This shape takes its name from the <strong>A string</strong> (the 2nd thickest). Slide it to fret 3 for Cm, fret 5 for Dm.</p>`,
         diagrams: ["Bm"], shape: "Bm",
         practice: { items: strumItems(["G", "Bm", "C", "D"]), bpm: 66, modes: ["listen", "wait"], label: "G – Bm – C – D" } },
+      { html: `<h3>Every barre chord, A to G 📋</h3>
+        <p>With the two shapes you can play <strong>any</strong> major or minor chord. Here's the usual barre version of each one, majors on top, minors underneath.</p>
+        <ul>
+          <li><strong>E shape</strong> (root on the thick low E string): <strong>F</strong> at fret 1, <strong>G</strong> at 3, <strong>A</strong> at 5.</li>
+          <li><strong>A shape</strong> (root on the A string): <strong>B</strong> at fret 2, <strong>C</strong> at 3, <strong>D</strong> at 5, <strong>E</strong> at 7.</li>
+          <li>For the <strong>minor</strong>, lift one finger: the E shape becomes the Em shape, the A shape becomes the Am shape.</li>
+        </ul>
+        <p class="jg-note">Learn F, Fm, Bm and B first: they come up the most. The rest are the same two shapes, slid along the neck.</p>`,
+        diagrams: BARRE_SET },
     ],
     songs: ["Love Story", "Count on Me", "Summer of '69"],
   },
