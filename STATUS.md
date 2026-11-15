@@ -14,7 +14,8 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 - **Owner's lesson feedback fixed:** optional "tell me more" questions no longer block the task (card 3 left-handed); new messages appear at the bottom like WhatsApp; "Hear G" etc. on chord cards; "Skip this lesson" names its destination and ignores double taps (the jumps to 20 / 31); basics run 1-1/18 … 1-18/18 then return to card 2; tuning repeated only once; songs only use chords already taught (Man in the Mirror no longer at card 29); acoustic-version links on song cards; barre chart A–G majors/minors.
 - **Tuner:** over-the-shoulder drawing (low E closest), reference tone repeats every 4 s, no auto-advance ("Next string" when in tune), better pitch detection (`scripts/test-tuner-pitch.mjs` passes). Chord cards listen for the strummed chord (chord-detect); app sounds are ignored by the mic.
 - **App Store Connect:** new description/promo (tools-first), 12 new screenshots (`ios/screenshots/app-store-v4/`), review notes updated.
-- **Blocked:** build 42 is archived but the upload failed: "PLA Update available": the Account Holder must accept the latest Program License Agreement at developer.apple.com. Then export/upload build 42, attach, reply to App Review (4.3 explanation) and resubmit.
+- **Submitted 2026-11-16:** owner accepted the updated Program License Agreement; build 42 uploaded and attached, 4.3 reply sent to App Review (guitar-only features, own design, Simply Guitar / Simply Piano precedent), **resubmitted, Waiting for Review**. If 4.3 comes back again, the fallback is merging guitar into Hayden Keys rather than resubmitting.
+- **Owner to do:** add a card to the Apple Account so the developer membership auto-renews.
 - **Not tested on a real guitar:** strum check and chord-card listening thresholds may need tuning on a device.
 
 ## 2026-11-10: Rejected again (Tip jar not found), fixed and resubmitted with build 41
