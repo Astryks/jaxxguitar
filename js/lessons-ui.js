@@ -272,23 +272,35 @@ function showHome() {
         <span class="jg-hero-cta">${done ? "Continue ▶" : "Start now ▶"}</span>
       </span>
     </button>` : `<div class="jg-hero-card">${heroArt}<span class="jg-hero-body"><span class="jg-hero-title">You've finished every lesson! 🎉</span></span></div>`;
+  // The Jam room: a guitar player's home. Your next lesson, then the guitar
+  // tools (tuner, strum check, chord library, capo finder, strum trainer,
+  // upload a song), today's riff and a guitar legend.
+  const legend = LEGENDS[homeGuitarThisVisit = homeGuitarThisVisit || nextHomeGuitar()];
   panelEl.innerHTML = `
-    <div class="jg-home-clean">
-      <div class="jg-home-stage">${homeGuitar(homeGuitarThisVisit = homeGuitarThisVisit || nextHomeGuitar())}
-        <p class="jg-home-stage-cap">🎸 <b>${esc(LEGENDS[homeGuitarThisVisit].name)}</b> · ${esc(LEGENDS[homeGuitarThisVisit].who)}<br>${esc(LEGENDS[homeGuitarThisVisit].fact)}</p></div>
+    <div class="jg-jam">
+      <div class="jg-jam-head">
+        <h2>Jam room</h2>
+        ${streak.count ? `<span class="jg-jam-streak">${icon("flame", 16)} ${streak.count}-day streak</span>` : ""}
+      </div>
       ${hero}
-      <button class="jg-home-upload" data-home-upload type="button">
-        ${icon("cassette", 44)}
-        <span><b>Upload any song</b><span>and we'll find the chords for you</span></span>
-        <span class="jg-home-upload-go">Upload</span>
-      </button>
-      <!-- The course list was removed from home (owner request); Lessons opens your next lesson. -->
-      ${isLessonComplete("lesson-1") ? `<button class="jg-home-how jg-open-review" type="button">${icon("flame", 18)} 2-minute review${reviewDoneToday() ? " ✓" : ""}</button>` : ""}
-      <button class="jg-home-how" data-home-how type="button">${icon("star", 18)} How it works</button>
+      <h3 class="jg-jam-h">Guitar tools</h3>
+      <div class="jg-jam-tools">
+        <button class="jg-jam-tile" data-jam="tuner" type="button"><span class="jg-jam-ico">🎵</span><b>Tuner</b><small>String by string</small></button>
+        <span class="jg-jam-more"></span>
+        <button class="jg-jam-tile" data-home-upload type="button"><span class="jg-jam-ico">📼</span><b>Upload a song</b><small>We find the chords</small></button>
+      </div>
+      <div class="jg-jam-riff"></div>
+      <div class="jg-jam-legend">${homeGuitar(homeGuitarThisVisit)}
+        <p>🎸 <b>${esc(legend.name)}</b> · ${esc(legend.who)}<br>${esc(legend.fact)}</p></div>
+      <div class="jg-jam-links">
+        ${isLessonComplete("lesson-1") ? `<button class="jg-home-how jg-open-review" type="button">${icon("flame", 18)} 2-minute review${reviewDoneToday() ? " ✓" : ""}</button>` : ""}
+        <button class="jg-home-how" data-home-how type="button">${icon("star", 18)} How it works</button>
+      </div>
       ${tipJarHtml()}
-      <p class="jg-home-credit">Supported by the Astryks Group (<a href="https://astryks.com" target="_blank" rel="noopener">astryks.com</a>)</p>
+      <p class="jg-home-credit">Jaxx Guitar · made by Astryks (<a href="https://astryks.com" target="_blank" rel="noopener">astryks.com</a>)</p>
     </div>`;
   panelEl.querySelector("[data-home-how]")?.addEventListener("click", () => window.dispatchEvent(new CustomEvent("jg-show", { detail: "how" })));
+  panelEl.querySelector('[data-jam="tuner"]').addEventListener("click", () => document.querySelector('.jg-tab[data-tab="tuner"]')?.click());
   wireTipJar(panelEl);
   panelEl.querySelector("[data-home-upload]")?.addEventListener("click", () => {
     document.querySelector('.jg-tab[data-tab="practice"]')?.click();
@@ -298,7 +310,30 @@ function showHome() {
       setTimeout(() => document.querySelector('#panel-practice input[type="file"]')?.click(), 50);
     }, 50);
   });
+  // The guitar tools (js/jam-tools.js) open full screen over the Jam room.
+  import("./jam-tools.js").then((jt) => {
+    if (!panelEl.querySelector(".jg-jam")) return;
+    const more = panelEl.querySelector(".jg-jam-more");
+    more.outerHTML = jt.JAM_TOOLS.filter((t) => t.id !== "riff").map((t) => `<button class="jg-jam-tile" data-tool="${t.id}" type="button"><span class="jg-jam-ico">${icon(t.icon, 28)}</span><b>${esc(t.title)}</b><small>${esc(t.blurb)}</small></button>`).join("");
+    panelEl.querySelectorAll("[data-tool]").forEach((b) => b.addEventListener("click", () => openJamTool(jt.JAM_TOOLS.find((t) => t.id === b.dataset.tool))));
+    const riff = panelEl.querySelector(".jg-jam-riff");
+    if (riff && jt.mountRiffOfTheDay) cleanup.push(jt.mountRiffOfTheDay(riff));
+  }).catch(() => panelEl.querySelector(".jg-jam-more")?.remove());
   wireCommon();
+}
+
+function openJamTool(tool) {
+  if (!tool) return;
+  runCleanup();
+  document.body.classList.add("jg-lesson-open");
+  panelEl.innerHTML = `<div class="jg-jam-sheet">
+      <div class="jg-cards-top"><button class="jg-cards-back jg-jam-back" type="button">← Jam room</button><b class="jg-cards-title">${esc(tool.title)}</b><span></span></div>
+      <div class="jg-jam-tool"></div>
+    </div>`;
+  window.scrollTo(0, 0);
+  panelEl.querySelector(".jg-jam-back").addEventListener("click", showHome);
+  const stop = tool.mount(panelEl.querySelector(".jg-jam-tool"));
+  if (typeof stop === "function") cleanup.push(stop);
 }
 
 function wireCommon() {

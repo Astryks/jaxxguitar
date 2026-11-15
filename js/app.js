@@ -104,7 +104,7 @@ function confetti() {
   host.className = "jg-notefall";
   host.setAttribute("aria-hidden", "true");
   const glyphs = ["♪", "♫", "♩", "♬"];
-  const colors = ["#c46a1f", "#2f8f83", "#e1a62b", "#7d5bc9", "#e0625b"];
+  const colors = ["#d9638f", "#e48fb0", "#d9678f", "#f2b630", "#f2a3c0"]; // Hayden Keys family
   for (let i = 0; i < 46; i++) {
     const n = document.createElement("span");
     n.textContent = glyphs[i % glyphs.length];

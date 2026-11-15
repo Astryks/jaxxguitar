@@ -1,4 +1,4 @@
-// Tip jar: an optional, collapsed line at the bottom of the home screen.
+// Treat jar ("buy Jaxx a treat"): optional tips, a collapsed line at the bottom of the Jam room.
 // Tips go through Apple's In-App Purchase (consumables that unlock
 // nothing), so it only appears inside the iPhone/iPad app, never on the
 // website. Prices come from Apple, already in the person's currency.
@@ -76,9 +76,9 @@ const REPLAY = `<button class="${P}-tip-replay" type="button" data-tip-replay>�
 function tipJarHtml() {
   if (!tipPlugin()) return "";
   return `<details class="${P}-tipjar">
-    <summary>${JAR}<span>Tip jar</span><small>${thanked() ? "thank you ♥" : "optional"}</small></summary>
+    <summary><span class="jg-treat-ico" aria-hidden="true">🦴</span><span>Treat jar: buy Jaxx a treat</span><small>${thanked() ? "thank you ♥" : "optional"}</small></summary>
     <div class="${P}-tipjar-body">
-      <p>${APP} is free, with no ads and no account. If it has helped you play, a tip helps keep it that way. It doesn't unlock any features; everything stays free for everyone.</p>
+      <p>Jaxx works for treats 🐶 If the lessons, tuner or songs have helped you play, a treat keeps the music going. It's a thank-you only: it doesn't unlock anything, and everything stays free for everyone.</p>
       <div class="${P}-tip-list"><span class="${P}-tip-note">Loading…</span></div>
       <p class="${P}-tip-note" data-tip-note>Paid securely through Apple.</p>
       ${thanked() ? REPLAY : ""}
