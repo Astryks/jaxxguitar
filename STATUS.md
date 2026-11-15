@@ -6,6 +6,17 @@ Repo: https://github.com/Astryks/jaxxguitar · Site: https://jaxxguitar.com (Git
 
 ---
 
+## 2026-11-16: Rejected under 4.3(a) "spam" (too similar to Hayden Keys); made distinct, build 42 ready
+
+- **Apple's reason (13 Nov):** 4.3(a), shares a similar binary/metadata/concept with other apps (Hayden Keys), with a warning that repeat submissions can lead to account action.
+- **Owner's choice:** keep two separate apps; make Jaxx clearly its own app. Colours: pastel pink (owner), not Hayden's purple.
+- **Done:** pastel pink theme; new splash (Jaxx in front of six vibrating strings, "Let's jam" / "Tune my guitar first"); new home "Jam room" with guitar tools: chord library (108 chords, open + E/A barre), capo calculator, strum check (which strings rang), strum trainer (8 patterns, click), riff of the day (public-domain / original licks, tab); Treat jar ("buy Jaxx a treat") replaces the Tip jar wording; footer "Jaxx Guitar · made by Astryks".
+- **Owner's lesson feedback fixed:** optional "tell me more" questions no longer block the task (card 3 left-handed); new messages appear at the bottom like WhatsApp; "Hear G" etc. on chord cards; "Skip this lesson" names its destination and ignores double taps (the jumps to 20 / 31); basics run 1-1/18 … 1-18/18 then return to card 2; tuning repeated only once; songs only use chords already taught (Man in the Mirror no longer at card 29); acoustic-version links on song cards; barre chart A–G majors/minors.
+- **Tuner:** over-the-shoulder drawing (low E closest), reference tone repeats every 4 s, no auto-advance ("Next string" when in tune), better pitch detection (`scripts/test-tuner-pitch.mjs` passes). Chord cards listen for the strummed chord (chord-detect); app sounds are ignored by the mic.
+- **App Store Connect:** new description/promo (tools-first), 12 new screenshots (`ios/screenshots/app-store-v4/`), review notes updated.
+- **Blocked:** build 42 is archived but the upload failed: "PLA Update available": the Account Holder must accept the latest Program License Agreement at developer.apple.com. Then export/upload build 42, attach, reply to App Review (4.3 explanation) and resubmit.
+- **Not tested on a real guitar:** strum check and chord-card listening thresholds may need tuning on a device.
+
 ## 2026-11-10: Rejected again (Tip jar not found), fixed and resubmitted with build 41
 
 - **Real cause:** the Tip jar never appeared in the iOS app. `SceneDelegate.swift` created a plain `CAPBridgeViewController`, so the custom bridge view controller that registers the TipJar and SongRecognizer plugins was never used (song recognition never worked natively either). Fixed in SceneDelegate, plus `js/native-plugin.js`, which falls back to `Capacitor.nativePromise` (the app doesn't load @capacitor/core, so `registerPlugin` doesn't exist). Verified on the iPad simulator: Tip jar shows and loads Apple's prices ($1 / $5 / $10).
